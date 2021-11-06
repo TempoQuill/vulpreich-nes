@@ -1,0 +1,92 @@
+Total instrucitons: 56
+	STATUS FLAGS
+	s z c i d o
+- math - 2
+ADC - Add memory to A
+	+ + + - - + (c clears during instruction, increment a if c = 1)
+SBC - Subract memory from A
+	+ + + - - + (c sets during instruction, decrement a if c = 0)
+- logic - 11
+ASL - Double memory/A (c = bit 8)
+LSR - Halve memory/A (c = remainder)
+ROL - Rotate memory/A left (c = wraparound)
+ROR - Rotate memory/A right
+	+ + + - - -
+AND - Deactivate bits that are not fully active
+EOR - Flip bits to A according to memory
+ORA - Combine active bits from memory onto A
+	+ + - - - -
+BIT - Test bits 6 / 7
+	b7- - - - b6
+CMP - Subract memory from A and only store resulting flags
+CPX - Subract memory from X and only store resulting flags
+CPY - Subract memory from Y and only store resulting flags
+	+ + + - - - (r<m -> +00, r=m -> +11, r>m -> +01, r-m ≥ $80 -> 1++, r-m < $80 -> 0++)0
+- branch/jump - 13
+BCC - Branch if carry = 0
+BCS - Branch if carry = 1
+BNE - Branch if zero = 0
+BEQ - Branch if zero = 1
+BPL - Branch if sign = 0
+BMI - Branch if sign = 1
+BVC - Branch if overflow = 0
+BVS - Branch if overflow = 1
+JMP - Jump to new location
+JSR - Jump and save current location
+
+BRK - Branch to interrupt
+RTS - Return from subroutine
+RTI - Return from interrupt
+	- - - 1 - -
+
+- Flags - 7
+CLC - Clear carry flag
+	- - 0 - - -
+SEC - Set carry flag
+	- - 1 - - -
+CLD - Clear decimal flag
+	- - - - 0 -
+SED - Set decimal flag
+	- - - - 1 -
+CLI - Clear interrupt flag
+	- - - 0 - -
+SEI - Set interrupt flag
+	- - - 1 - -
+CLV - Clear overflow flag
+	- - - - - 0
+- stepping - 6
+DEC - Subract 1 from memory
+DEX - Subract 1 from X
+DEY - Subract 1 from Y
+INC - Add 1 to memory
+INX - Add 1 to X
+INY - Add 1 to Y
+	+ + - - - - (0 -> 01, 1-7f -> 00, 80-ff -> 10)
+
+- Transfers - 16
+LDA - Load A with memory
+LDX - Load X with memory
+LDY - Load Y with memory
+STA - Store A onto memory
+STX - Store X onto memory
+STY - Store Y onto memory
+PHA - Backup A onto stack
+PHP - Backup status onto stack
+PLA - Retrieve A from stack
+PLP - Retrieve status from stack
+TAX - Transfer A to X
+TAY - Transfer A to Y
+TXA - Transfer X to A
+TYA - Transfer Y to A
+TSX - Transfer stack to X
+TXS - Transfer X to stack
+
+- misc - 1
+NOP - Do nothing
+
+s Sign (can the new value be negative?)
+z Zero (is the new value silent?)
+c Carry (is advanced logic involved?)
+i Interrupt (are we in an interrupt?)
+d Decimal (are we in decimal mode?)
+o Overflow (did bit 6 carry over?)

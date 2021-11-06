@@ -1,0 +1,9 @@
+Bank number coordinates:
+hex	address range	note
+$80	8000-9fff	- start bank
+$81	a000-bfff	- start bank
+$82	c000-dfff	- start bank, eligable for dpcm
+$83	8000-9fff	- audio engine
+$84	a000-bfff	- music
+$fe	c000-dfff	- all dpcm data
+$ff	e000-ffff	- boot area / home ROM

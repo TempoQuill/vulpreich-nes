@@ -1,0 +1,5 @@
+.include "def/hardware.asm"
+.include "def/ppu.asm"
+.include "def/prg.asm"
+.include "def/sound.asm"
+.include "def/music.asm"

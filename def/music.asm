@@ -1,0 +1,2 @@
+MUSIC_NONE = $0
+MUSIC_TITLE = $1
