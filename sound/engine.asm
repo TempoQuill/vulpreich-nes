@@ -1304,9 +1304,9 @@ GetDrumSample:
 	RTS
 
 @NonRestDPCM:
-	LSR
-	LSR
-	LSR
+	LSR A
+	LSR A
+	LSR A
 	ADC DrumAddresses + 2
 	STA DrumAddresses + 2
 	LDA #0
@@ -1343,9 +1343,9 @@ GetDrumSample:
 	RTS
 
 @NonRestNoise:
-	LSR
-	LSR
-	LSR
+	LSR A
+	LSR A
+	LSR A
 	ADC DrumAddresses
 	STA DrumAddresses
 	LDA #0
