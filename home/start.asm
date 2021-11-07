@@ -412,6 +412,7 @@ RESET:
 IRQ:
 	RTI
 
+.pad $fff1, $00
 ; title of the game, fff1
 	.db "VULPREICH"
 
