@@ -35,4 +35,4 @@ fd	4	loop
 fe	3	call
 ff	1	return
 
-note: prior to migration, e4, e5 and ef all had commands.  However, these were tailor to features the NES simply did not have like stereo and global volume.
+note: prior to migration, e4, e5 and ef all had commands.  However, these were tailored to features the NES simply did not have like stereo and global volume.
