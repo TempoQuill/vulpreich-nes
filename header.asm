@@ -10,5 +10,7 @@
 	.db MMC5 & %00001111 << 4 | IGNORE_MIRRORING | BATTERY_RAM
 	.db MMC5 & %11110000      | NES_2_0
 	.db 0, 0 ; unused
-	.db $10 ; 128 kilobytes of PRG RAM
-	.db 0, 0, 0, 0, 0 ; unused
+	.db $0b ; 128 kilobytes of PRG RAM
+	.db 0
+	.db 0 ; NTSC
+	.db 0, 0, 0 ; unused

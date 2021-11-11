@@ -225,7 +225,7 @@ ChannelVibratoPreamble:
 	.dsb 16
 ChannelVibratoDepth:
 	.dsb 16
-ChannelVibratoSpeed:
+ChannelVibratoTimer:
 	.dsb 16
 ChannelSlideTarget:
 	.dsb 32 ; 0400

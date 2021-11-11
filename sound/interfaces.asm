@@ -50,7 +50,7 @@ _LoadMusicByte:
 	LDY BackupX
 	LDA ChannelAddress + 16, X
 	STA AuxAddresses + 1
-	LDX #0
+	LDX #0 ; window offset
 	AND #$60
 	BEQ @Switch
 @Loop:

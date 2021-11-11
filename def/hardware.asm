@@ -89,6 +89,7 @@ DPCM_SIZE = $4013   ; 0-7: (size - 1) / $10
 
 OAM_DMA = $4014   ; CPU memory page $XX00 - $XXFF
 
+; BUG: DPCM samples retrigger when poked
 SND_CHN = $4015   ; master APU register: each bit is the corresponding channel power flag, 5-7 are not used
 
 JOY1 = $4016
