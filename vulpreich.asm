@@ -34,7 +34,7 @@
 ; bank 00-02 starter banks
 .dsb (3 * $2000), $00
 
-; bank 03
+; bank 03 - sound engine
 .base $8000
 .include "sound/engine.asm"
 .pad $a000, $00
@@ -44,8 +44,15 @@
 .include "music/title.asm"
 .pad $c000, $00
 
+.dsb $2000, $00
+
+; bank 06 - text engine
+.base $8000
+.include "engine/text.asm"
+.pad $a000, $00
+
 ; bank 05-7d - unused (for now)
-.dsb (($fd - PRG_Music0) * $2000), $00
+.dsb (($fd - PRG_TextEngine) * $2000), $00
 
 .base $c000
 .incbin "raw-data/dpcm-7e.bin"

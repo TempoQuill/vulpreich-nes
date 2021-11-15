@@ -84,6 +84,17 @@ TXS - Transfer X to stack
 - misc - 1
 NOP - Do nothing
 
+ADDRESSING MODES:
+i      - use opcode as address
+r      - potentially add to program counter depending on flags
+#n     - use program counter as address
+z      - use operand as address 00zz
+n      - use operand as address
+(n)    - get address indicated by memory
+(z, x) - add index before getting final address
+(z), y - add index to final address
+
+FLAGS:
 s Sign (can the new value be negative?)
 z Zero (is the new value silent?)
 c Carry (is advanced logic involved?)

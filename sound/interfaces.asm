@@ -5,8 +5,6 @@ InitSound:
 	PHA
 	TYA
 	PHA
-	LDA #>_InitSound
-	AND #$60 ; A will always be zero
 	LDA MMC5_PRGBankSwitch2
 	STA Window1
 	LDA #PRG_Audio
@@ -28,8 +26,6 @@ UpdateSound:
 	PHA
 	TYA
 	PHA
-	LDA #>_UpdateSound
-	AND #$60
 	LDA MMC5_PRGBankSwitch2
 	STA Window1
 	LDA #PRG_Audio
@@ -50,14 +46,7 @@ _LoadMusicByte:
 	LDY BackupX
 	LDA ChannelAddress + 16, X
 	STA AuxAddresses + 1
-	LDX #0 ; window offset
-	AND #$60
-	BEQ @Switch
-@Loop:
-	INX
-	SBC #$20
-	BNE @Loop
-@Switch:
+	JSR GetWindowIndex
 	LDA MMC5_PRGBankSwitch2, X
 	STA Window1, X ; preserve old bank
 	LDA ChannelBank, Y
@@ -77,8 +66,6 @@ PlayMusic:
 	PHA
 	TYA
 	PHA
-	LDA #>_PlayMusic
-	AND #$60
 	LDA MMC5_PRGBankSwitch2
 	STA Window1
 	LDA #PRG_Audio
@@ -111,8 +98,6 @@ PlayMusic2:
 	PHA
 	TYA
 	PHA
-	LDA #>_PlayMusic
-	AND #$60
 	LDA MMC5_PRGBankSwitch2
 	STA Window1
 	LDA #PRG_Audio
@@ -151,8 +136,6 @@ PlaySFX:
 	BCS @Done
 
 @Play:
-	LDA #>_PlaySFX
-	AND #$60
 	LDA MMC5_PRGBankSwitch2
 	STA Window1
 	LDA #PRG_Audio

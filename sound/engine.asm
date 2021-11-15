@@ -2,10 +2,6 @@
 
 ; Interfaces are in bank 7f.
 
-; Notable functions:
-; 	FadeMusic
-; 	PlayStereoSFX
-
 _InitSound:
 ; restart sound operation
 ; clear all relevant hardware registers & ram
@@ -2022,6 +2018,7 @@ Music_ToggleDrum: ; command e3
 	LDA ChannelFlagSection1, X
 	EOR #1 << SOUND_NOISE
 	STA ChannelFlagSection1, X
+	AND #1 << SOUND_NOISE ; isolate bit
 	BNE @GetParam ; if routine turns on sampling, read param
 	RTS
 
@@ -2039,6 +2036,7 @@ Music_SFXToggleDrum: ; command f0
 	LDA ChannelFlagSection1, X
 	EOR #1 << SOUND_NOISE
 	STA ChannelFlagSection1, X
+	AND #1 << SOUND_NOISE ; isolate bit
 	BNE @GetParam ; if routine turns on sampling, read param
 	RTS
 

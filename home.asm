@@ -1,3 +1,5 @@
+.include "home/misc.asm"
+.include "home/text.asm"
 .include "home/math.asm"
 .include "sound/interfaces.asm"
 .include "home/start.asm"

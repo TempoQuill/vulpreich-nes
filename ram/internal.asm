@@ -108,7 +108,7 @@ Window4:
 
 AuxAddresses: ; back up 4 at a time
 ; 0: audio
-; 1: updates
+; 1: updates / text
 ; 2: vblank
 ; 3: everything else
 	.dsb 8 ; 0038
@@ -155,11 +155,15 @@ CurrentPrice:
 	.dsb 3
 CurrentCardBalanceBCD:
 	.dsb 7 ; 0068
-	.dsb 1
-	.dsb 16
 DecimalPlaceBuffer:
+	.dsb 16
+StringXOffset:
+	.dsb 1
+StringBuffer:
 	.dsb $20 ; 0080
-	.dsb $60 ; 00a0
+	.dsb $20 ; 00a0
+	.dsb $20 ; 00c0
+	.dsb $20 ; 00e0
 
 ; section: STACK
 Stack:

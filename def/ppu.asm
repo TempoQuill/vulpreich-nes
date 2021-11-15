@@ -1,3 +1,10 @@
+; name lengths
+ITEM_NAME_LENGTH = $b
+
+; y = x * 32 (horizontal tile count)
+TEXT_COORD_1 = $342 ; (2, 26)
+TEXT_COORD_2 = $382 ; (2, 28)
+TEXT_BOX_WIDTH = $1c
 
 ; enum ScreenUpdateBuffer
 ScreenUpdateBuffer_RAM_301 = $00
