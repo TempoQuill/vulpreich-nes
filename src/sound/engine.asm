@@ -1026,11 +1026,12 @@ HandleNoise:
 ;       zz: pitch
 
 	; is it empty?
+	LDY #0
 	LDA DrumAddresses
 	ORA DrumAddresses + 1
 	BEQ @Quit
 
-	LDA (DrumAddresses)
+	LDA (DrumAddresses), Y
 	INC DrumAddresses
 
 	BNE @SkipCarry1
@@ -1044,15 +1045,15 @@ HandleNoise:
 	STA DrumDelay
 	INC DrumDelay ; adds one frame to depicted duration
 
-	LDA (DrumAddresses)
+	LDA (DrumAddresses), Y
 	INC DrumAddresses
 
-	BEQ @SkipCarry2
+	BEQ @SkipCarry2, Y
 	INC DrumAddresses + 1
 
 @SkipCarry2:
 	STA CurrentTrackEnvelope
-	LDA (DrumAddresses)
+	LDA (DrumAddresses), Y
 	INC DrumAddresses
 
 	BEQ @SkipCarry3
@@ -1101,11 +1102,12 @@ HandleDPCM: ; NES only
 ;	x: pitch
 ;	yy: sample offset
 ;       zz: sample size
+	LDY #0
 	LDA DrumAddresses + 2
 	ORA DrumAddresses + 3
 	BEQ @Quit
 
-	LDA (DrumAddresses + 2)
+	LDA (DrumAddresses + 2), Y
 	INC DrumAddresses + 2
 	BNE @SkipCarry1
 
@@ -1117,7 +1119,7 @@ HandleDPCM: ; NES only
 	STA Window3 ; c000-dfff address range
 	JSR UpdatePRG
 
-	LDA (DrumAddresses + 2)
+	LDA (DrumAddresses + 2), Y
 	INC DrumAddresses + 2
 	BNE @SkipCarry2
 
@@ -1127,7 +1129,7 @@ HandleDPCM: ; NES only
 	AND #$1f
 	STA DPCMSamplePitch
 
-	LDA (DrumAddresses + 2)
+	LDA (DrumAddresses + 2), Y
 	INC DrumAddresses + 2
 	BEQ @SkipCarry3
 
@@ -1136,7 +1138,7 @@ HandleDPCM: ; NES only
 @SkipCarry3:
 	STA DPCMSampleOffset
 
-	LDA (DrumAddresses + 2)
+	LDA (DrumAddresses + 2), Y
 	INC DrumAddresses + 2
 	BEQ @SkipCarry4
 
@@ -1445,8 +1447,9 @@ GetDrumSample:
 	LDA SampleKits, Y
 	STA DrumAddresses + 2
 	LDA SampleKits + 1, Y
+	LDY #0
 	STA DrumAddresses + 3
-	LDA (DrumAddresses + 2)
+	LDA (DrumAddresses + 2), Y
 	AND #$10
 	BNE @DPCMOn
 	RTS
@@ -1490,7 +1493,8 @@ GetDrumSample:
 	LDA DrumKits + 1, Y
 	STA DrumAddresses + 1
 
-	LDA (DrumAddresses)
+	LDY #0
+	LDA (DrumAddresses), Y
 	AND #$8
 	BNE @NoiseOn
 	RTS

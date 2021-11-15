@@ -53,7 +53,8 @@ _LoadMusicByte:
 	STA MMC5_PRGBankSwitch2, X
 	LDA ChannelAddress, Y
 	STA AuxAddresses
-	LDA (AuxAddresses)
+	LDY #0
+	LDA (AuxAddresses), Y
 	STA CurrentMusicByte
 	JSR UpdatePRG ; restore old bank
 	LDX BackupX
