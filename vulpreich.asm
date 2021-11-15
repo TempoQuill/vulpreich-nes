@@ -1,15 +1,14 @@
 ; -----------------------------------------
 ; Add definitions
 .enum $0000
-.include "def.asm"
+.include "src/def.asm"
 .ende
 
-.include "constants.asm"
 .include "header.asm"
 
 ; -----------------------------------------
 ; Add macros
-.include "macros.asm"
+.include "src/macros.asm"
 
 ; -----------------------------------------
 ; Add RAM definitions
@@ -59,4 +58,4 @@
 .pad $e000, $00
 
 .base $e000
-.include "home.asm"
+.include "src/home.asm"
