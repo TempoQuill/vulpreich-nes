@@ -14,11 +14,11 @@
 
 ; Add RAM definitions
 .enum $0000
-.include "ram/internal.asm"
+.include "src/ram/internal.asm"
 .ende
 
 .enum MMC5_ExpansionRAMStart
-.include "ram/chip.asm"
+.include "src/ram/chip.asm"
 .ende
 
 ; add each of the banks
@@ -36,26 +36,26 @@
 
 ; bank 03 - sound engine
 .base $8000
-.include "sound/engine.asm"
+.include "src/sound/engine.asm"
 .pad $a000, $00
 
 ; bank 04 - music bank
 .base $a000
-.include "music/title.asm"
+.include "src/music/title.asm"
 .pad $c000, $00
 
 .dsb $2000, $00
 
 ; bank 06 - text engine
 .base $8000
-.include "engine/text.asm"
+.include "src/engine/text.asm"
 .pad $a000, $00
 
 ; bank 05-7d - unused (for now)
 .dsb (($fd - PRG_TextEngine) * $2000), $00
 
 .base $c000
-.incbin "raw-data/dpcm-7e.bin"
+.incbin "src/raw-data/dpcm-7e.bin"
 .pad $e000, $00
 
 .base $e000

@@ -1,6 +1,6 @@
-.include "def/hardware.asm"
-.include "def/ppu.asm"
-.include "def/prg.asm"
-.include "def/sound.asm"
-.include "def/music.asm"
-.include "def/chr.asm" ; it's not really CHR ROM.  It's just the text definitions.
+.include "src/def/hardware.asm"
+.include "src/def/ppu.asm"
+.include "src/def/prg.asm"
+.include "src/def/sound.asm"
+.include "src/def/music.asm"
+.include "src/def/chr.asm" ; it's not really CHR ROM.  It's just the text definitions.

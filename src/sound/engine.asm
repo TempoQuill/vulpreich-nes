@@ -1537,7 +1537,7 @@ ParseMusicCommand:
 	JMP (CommandPointer)
 
 MusicCommands:
-; entries correspond to audio constants (see def/sound.asm)
+; entries correspond to audio constants (see src/def/sound.asm)
 	; d0
 	.dw Music_Octave
 	.dw Music_Octave
@@ -2599,10 +2599,10 @@ LoadMusicByte:
 	LDA CurrentMusicByte
 	RTS
 
-.include "sound/notes.asm"
-.include "sound/envelope-groups.asm"
-.include "sound/noise-kits.asm"
-.include "sound/sample-kits.asm"
+.include "src/sound/notes.asm"
+.include "src/sound/envelope-groups.asm"
+.include "src/sound/noise-kits.asm"
+.include "src/sound/sample-kits.asm"
 
 ClearChannels:
 ; runs ClearChannel for all 5 channels
@@ -2632,6 +2632,6 @@ ClearChannel:
 	STA SQ1_HI, Y
 	RTS
 
-.include "sound/music-pointers.asm"
-.include "sound/sfx-pointers.asm"
-.include "music/none.asm"
+.include "src/sound/music-pointers.asm"
+.include "src/sound/sfx-pointers.asm"
+.include "src/music/none.asm"
