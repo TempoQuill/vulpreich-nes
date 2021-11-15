@@ -1,3 +1,8 @@
+; -----------------------------------------
+; Add definitions
+.enum $0000
+.include "def.asm"
+.ende
 
 .include "constants.asm"
 .include "header.asm"
@@ -7,11 +12,6 @@
 .include "macros.asm"
 
 ; -----------------------------------------
-; Add definitions
-.enum $0000
-.include "def.asm"
-.ende
-
 ; Add RAM definitions
 .enum $0000
 .include "src/ram/internal.asm"
