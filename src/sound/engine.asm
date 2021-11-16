@@ -592,7 +592,7 @@ LoadNote:
 
 	LDA ChannelFlagSection3, X
 	AND #$ff ^ (1 << SOUND_REL_PITCH_FLAG)
-	STA ChannelFlagSection3
+	STA ChannelFlagSection3, X
 
 @CheckEnvelopePattern:
 	PLA
@@ -1186,7 +1186,7 @@ ParseMusic:
 ; special notes
 	LDA ChannelFlagSection1, X
 	PHA
-	AND #1 << SOUND_SFX | 1 << SOUND_REST  ; sfx / sfx
+	AND #1 << SOUND_READING_MODE | 1 << SOUND_REST  ; sfx / sfx
 	BEQ @NextCheck
 	PLA
 	JMP ParseSFXOrRest
@@ -1627,7 +1627,7 @@ Music_PitchIncSwitch: ; command f1
 
 Music_SetMusic: ; command f3
 	LDA ChannelFlagSection1, X
-	ORA #1 << SOUND_SFX
+	ORA #1 << SOUND_READING_MODE
 	STA ChannelFlagSection1, X
 	RTS
 
@@ -2007,7 +2007,7 @@ Music_ToggleMusic: ; command df
 ; switch to music mode
 ; params: none
 	LDA ChannelFlagSection1, X
-	EOR #1 << SOUND_SFX
+	EOR #1 << SOUND_READING_MODE
 	STA ChannelFlagSection1, X
 	RTS
 
@@ -2507,7 +2507,7 @@ _PlaySFX:
 	JSR LoadChannel
 	LDX BackupX ; X = current channel
 	LDA ChannelFlagSection1, X
-	ORA #1 << SOUND_SFX
+	ORA #1 << SOUND_READING_MODE
 	STA ChannelFlagSection1, X
 	JSR StartChannel
 	PLA
@@ -2567,7 +2567,7 @@ LoadChannel:
 	LDA #0
 	STA ChannelTempo, X
 	ADC #0
-	STA ChannelTempo + 1, X
+	STA ChannelTempo + 16, X
 	; set note length to default ($1) (fast)
 	STA ChannelNoteDuration, X
 	JSR LoadMusicByte
