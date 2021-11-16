@@ -1,4 +1,3 @@
-
 UpdatePRG:
 	LDA RAMBank
 	STA MMC5_PRGBankSwitch1
@@ -217,7 +216,13 @@ NMI_CheckWaitFlag:
 	BNE NMI_Waiting
 NMI_Gameplay:
 UpdatePPUFromBufferNMI:
-	LDA #PPUCtrl_Base2000 | PPUCtrl_WriteHorizontal | PPUCtrl_Sprite0000 | PPUCtrl_Background1000 | PPUCtrl_SpriteSize8x16 | PPUCtrl_NMIEnabled
+; PPUCtrl_Base2000
+; PPUCtrl_WriteHorizontal
+; PPUCtrl_Sprite0000
+; PPUCtrl_Background1000
+; PPUCtrl_SpriteSize8x16
+; PPUCtrl_NMIEnabled
+	LDA #$ec
 	STA PPUCTRL
 	LDY #$00
 
@@ -247,8 +252,13 @@ UpdatePPUFromBufferNMI_CopyLoop:
 PPUBufferUpdatesComplete:
 
 	JSR ResetPPUAddress
-
-	LDA #PPUCtrl_Base2000 | PPUCtrl_WriteHorizontal | PPUCtrl_Sprite0000 | PPUCtrl_Background1000 | PPUCtrl_SpriteSize8x16 | PPUCtrl_NMIEnabled
+; PPUCtrl_Base2000
+; PPUCtrl_WriteHorizontal
+; PPUCtrl_Sprite0000
+; PPUCtrl_Background1000
+; PPUCtrl_SpriteSize8x16
+; PPUCtrl_NMIEnabled
+	LDA #$ec
 	ORA PPUScrollXHiMirror
 
 	STA PPUCTRL
