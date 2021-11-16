@@ -1,0 +1,8 @@
+.include "src/sound/engine.asm"
+.include "src/sound/notes.asm"
+.include "src/sound/envelope-groups.asm"
+.include "src/sound/noise-kits.asm"
+.include "src/sound/sample-kits.asm"
+.include "src/sound/music-pointers.asm"
+.include "src/sound/sfx-pointers.asm"
+.include "src/music/none.asm"

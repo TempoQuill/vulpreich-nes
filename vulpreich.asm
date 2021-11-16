@@ -35,7 +35,7 @@
 
 ; bank 03 - sound engine
 .base $8000
-.include "src/sound/engine.asm"
+.include "src/sound.asm"
 .pad $a000, $00
 
 ; bank 04 - music bank

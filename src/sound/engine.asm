@@ -2603,11 +2603,6 @@ LoadMusicByte:
 	LDA CurrentMusicByte
 	RTS
 
-.include "src/sound/notes.asm"
-.include "src/sound/envelope-groups.asm"
-.include "src/sound/noise-kits.asm"
-.include "src/sound/sample-kits.asm"
-
 ClearChannels:
 ; runs ClearChannel for all 5 channels
 ; functionally identical to InitSound
@@ -2635,7 +2630,3 @@ ClearChannel:
 	STA SQ1_LO, Y
 	STA SQ1_HI, Y
 	RTS
-
-.include "src/sound/music-pointers.asm"
-.include "src/sound/sfx-pointers.asm"
-.include "src/music/none.asm"
