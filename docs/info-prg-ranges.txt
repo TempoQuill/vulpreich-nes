@@ -6,5 +6,6 @@ $82	c000-dfff	- start bank, eligable for dpcm
 $83	8000-9fff	- audio engine
 $84	a000-bfff	- music
 $86	8000-9fff	- text engine
+$87	c000-dfff	- name list
 $fe	c000-dfff	- all dpcm data
 $ff	e000-ffff	- boot area / home ROM

@@ -15,6 +15,8 @@ CurrentIndex:
 	.dsb 1
 CurrentRAMAddress:
 	.dsb 2 ; 5c10
-	.dsb $2ee
+CurrentROMBank:
+	.dsb 1
+	.dsb $2ed
 TextBuffer:
 	.dsb $100 ; 5f00

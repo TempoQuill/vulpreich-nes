@@ -1,3 +1,45 @@
+GetNamePointer:
+	; turn ObjectType into index Y
+	LDA ObjectType
+	CLC
+	SBC #0
+	STA BackupA
+	LSR A
+	ADC BackupA
+	TAY
+	; get three-byte pointer
+	; high
+	INY
+	INY
+	LDA NamesPointers, Y
+	STA AuxAddresses + 7
+	JSR GetWindowIndex
+	; low
+	DEY
+	LDA NamesPointers, Y
+	STA AuxAddresses + 6
+	; bank
+	DEY
+	LDA NamesPointers, Y
+	RTS
+
+CopyCurrentIndex:
+	; get current index number
+	LDA CurrentIndex
+	CLC
+	SBC #0
+	JSR GetNthString
+
+	; copy ITEM_NAME_LENGTH bytes to string buffer
+	LDY #ITEM_NAME_LENGTH + 1
+	LDA #StringBuffer ; ZP RAM
+	STA AuxAddresses + 2
+	STA CurrentRAMAddress
+	LDA #0
+	STA AuxAddresses + 3
+	STA CurrentRAMAddress + 1
+	JMP CopyBytes
+
 _PrintText:
 ; Current character = (AuxAddresses + 6) + Y
 ; Text Command Pointer = AuxAddresses 2

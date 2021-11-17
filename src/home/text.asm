@@ -2,10 +2,8 @@ PrintText:
 	SEC
 	LDA #>_PrintText
 	JSR GetWindowIndex
-	LDA MMC5_PRGBankSwitch2, X
-	STA Window1, X
 	LDA #PRG_TextEngine
-	STA MMC5_PRGBankSwitch2, X
+	JSR StoreIndexedBank
 	JSR _PrintText
 	JMP UpdatePRG
 
@@ -75,7 +73,7 @@ GetNameTableOffsetLine2:
 	STA NametableAddress + 1
 	RTS
 
-GetName::
+GetName:
 ; Return name CurrentIndex from name list ObjectType in StringBuffer.
 
 	; preserve registers
@@ -85,41 +83,18 @@ GetName::
 	PHA
 	TYA
 	PHA
-	; turn ObjectType into index Y
-	LDA ObjectType
-	CLC
-	SBC #0
-	STA BackupA
-	LSR A
-	ADC BackupA
-	TAY
-	; get three-byte pointer
-	; high
-	LDA NamesPointers + 2, Y
-	STA AuxAddresses + 7
+	LDA #>GetNamePointer
 	JSR GetWindowIndex
-	; low
-	LDA NamesPointers + 1, Y
-	STA AuxAddresses + 6
-	; bank
-	LDA NamesPointers, Y
+	LDA #PRG_TextEngine
+	JSR StoreIndexedBank
+	JSR GetNamePointer
 	STA MMC5_PRGBankSwitch2, X
 
-	; get current index number
-	LDA CurrentIndex
-	CLC
-	SBC #0
-	JSR GetNthString
-
-	; copy ITEM_NAME_LENGTH bytes to string buffer
-	LDY #ITEM_NAME_LENGTH + 1
-	LDA #StringBuffer ; ZP RAM
-	STA AuxAddresses + 2
-	STA CurrentRAMAddress
-	LDA #0
-	STA AuxAddresses + 3
-	STA CurrentRAMAddress + 1
-	JSR CopyBytes
+	LDA #>CopyCurrentIndex
+	JSR GetWindowIndex
+	LDA #PRG_TextEngine
+	JSR StoreIndexedBank
+	JSR CopyCurrentIndex
 
 	; restore all registers
 	PLA
@@ -131,7 +106,10 @@ GetName::
 	; bank switch
 	JMP UpdatePRG
 
-GetNthString::
+NamesPointers:
+	dba PRG_Names0, ItemNames
+
+GetNthString:
 ; Return the address of the
 ; ath string starting from (AuxAddresses) + 6
 

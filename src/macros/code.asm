@@ -1,3 +1,8 @@
+MACRO dba bank, label
+	.db bank
+	.dw label
+ENDM
+
 MACRO LTH register
 	ASL register
 	ASL register

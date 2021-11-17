@@ -47,10 +47,8 @@ _LoadMusicByte:
 	LDA ChannelAddress + 16, X
 	STA AuxAddresses + 1
 	JSR GetWindowIndex
-	LDA MMC5_PRGBankSwitch2, X
-	STA Window1, X ; preserve old bank
 	LDA ChannelBank, Y
-	STA MMC5_PRGBankSwitch2, X
+	JSR StoreIndexedBank
 	LDA ChannelAddress, Y
 	STA AuxAddresses
 	LDY #0
