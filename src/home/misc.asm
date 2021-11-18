@@ -9,7 +9,7 @@ GetWindowIndex:
 	INX
 	SBC #$20
 	BNE @Loop
-@Quit
+@Quit:
 	RTS
 
 StoreIndexedBank:

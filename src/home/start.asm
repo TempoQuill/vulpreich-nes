@@ -40,18 +40,18 @@ ResetPPUAddress:
 UpdateJoypads:
 	JSR ReadJoypads
 
-UpdateJoypads_DoubleCheck:
+@DoubleCheck:
 	; Work around DPCM sample bug,
 	; where some spurious inputs are read
 	LDY InputBottleNeck
 	JSR ReadJoypads
 
 	CPY InputBottleNeck
-	BNE UpdateJoypads_DoubleCheck
+	BNE @DoubleCheck
 
 	LDX #$01
 
-UpdateJoypads_Loop:
+@Loop:
 	LDA InputBottleNeck, X ; Update the press/held values
 	TAY
 	EOR InputCurrentState, X
@@ -59,7 +59,7 @@ UpdateJoypads_Loop:
 	STA InputBottleNeck, X
 	STY InputCurrentState, X
 	DEX
-	BPL UpdateJoypads_Loop
+	BPL @Loop
 
 	RTS
 
@@ -74,17 +74,17 @@ ReadJoypads:
 	STX JOY1
 
 	LDX #$08
-ReadJoypadLoop:
+@Loop:
 	LDA JOY1
 	LSR A
-	; Read D0 standard controller data
+	; Read standard controller data
 	ROL InputBottleNeck
 
 	LDA JOY2
 	LSR A
 	ROL InputBottleNeck + 1 ; player 2
 	DEX
-	BNE ReadJoypadLoop
+	BNE @Loop
 
 	RTS
 
@@ -102,59 +102,10 @@ Start:
 	STA PPUCTRL
 	STA PPUCtrlMirror
 	JSR InitSound
-	LDY #0 ; MUSIC_NONE
+	LDY #MUSIC_NONE
 	JSR PlayMusic
-Start_Loop:
-	JMP Start_Loop
-;
-; NMI logic for during a transition
-;
-NMI_Transition:
-	LDA #$00
-	STA OAMADDR
-	LDA #$02
-	STA OAM_DMA
-	JSR UpdateCHR
-
-	LDA PPUMaskMirror
-	STA PPUMASK
-	JSR NMI_DoSoundProcessing
-
-	LDA PPUCtrlMirror
-	STA PPUCTRL
-	DEC NMIWaitFlag
-	JMP NMI_Exit
-
-;
-; NMI logic for during the pause menu
-;
-NMI_PauseOrMenu:
-	LDA #$00
-	STA PPUMASK
-	STA OAMADDR
-	LDA #$02
-	STA OAM_DMA
-	JSR UpdateCHR
-
-	JSR UpdatePPUFromBufferWithOptions
-
-	JSR ResetPPUAddress
-
-	LDA PPUScrollXMirror
-	STA PPUSCROLL
-	LDA #$00
-	STA PPUSCROLL
-	LDA PPUMaskMirror
-	STA PPUMASK
-	JMP NMI_CheckScreenUpdateIndex
-
-
-; When waiting for an NMI, just run the audio engine
-;
-NMI_Waiting:
-	LDA PPUMaskMirror
-	STA PPUMASK
-	JMP NMI_DoSoundProcessing
+@Loop:
+	JMP @Loop
 ;
 ; Public NMI: where dreams come true!
 ;
@@ -199,10 +150,8 @@ NMI:
 	PHA
 
 	BIT StackBottom
-	BPL NMI_PauseOrMenu ; branch if bit 7 was 0
-
-	BVC NMI_Transition ; branch if bit 6 was 0
-
+	BPL @PauseOrMenu ; branch if bit 7 was 0
+	BVC @Transition ; branch if bit 6 was 0
 	LDA #$00
 	STA PPUMASK
 	STA OAMADDR
@@ -211,11 +160,10 @@ NMI:
 
 	JSR UpdateCHR
 
-NMI_CheckWaitFlag:
 	LDA NMIWaitFlag
-	BNE NMI_Waiting
-NMI_Gameplay:
-UpdatePPUFromBufferNMI:
+	BEQ @NotWaiting
+	JMP @Waiting
+@NotWaiting
 ; PPUCtrl_Base2000
 ; PPUCtrl_WriteHorizontal
 ; PPUCtrl_Sprite0000
@@ -225,31 +173,6 @@ UpdatePPUFromBufferNMI:
 	LDA #$ec
 	STA PPUCTRL
 	LDY #$00
-
-UpdatePPUFromBufferNMI_CheckForBuffer:
-	LDA (RAM_PPUDataBufferPointer), Y
-	BEQ PPUBufferUpdatesComplete
-
-	LDX PPUSTATUS
-	STA PPUADDR
-	INY
-	LDA (RAM_PPUDataBufferPointer), Y
-	STA PPUADDR
-	INY
-	LDA (RAM_PPUDataBufferPointer), Y
-	TAX
-
-UpdatePPUFromBufferNMI_CopyLoop:
-	INY
-	LDA (RAM_PPUDataBufferPointer), Y
-	STA PPUDATA
-	DEX
-	BNE UpdatePPUFromBufferNMI_CopyLoop
-
-	INY
-	JMP UpdatePPUFromBufferNMI_CheckForBuffer
-
-PPUBufferUpdatesComplete:
 
 	JSR ResetPPUAddress
 ; PPUCtrl_Base2000
@@ -272,21 +195,21 @@ PPUBufferUpdatesComplete:
 	LDA PPUMaskMirror
 	STA PPUMASK
 	INC GlobalFrameCounter
-NMI_CheckScreenUpdateIndex:
+@CheckScreenUpdateIndex:
 	LDA ScreenUpdateIndex
-	BNE NMI_ResetScreenUpdateIndex
+	BNE @ResetScreenUpdateIndex
 
 	STA PPUBuffer
 	STA PPUBuffer + 1
 
-NMI_ResetScreenUpdateIndex:
+@ResetScreenUpdateIndex:
 	LDA #ScreenUpdateBuffer_RAM_301
 	STA ScreenUpdateIndex
 	JSR UpdateJoypads
 	DEC NMIWaitFlag
-NMI_DoSoundProcessing:
+@DoSoundProcessing:
 	JSR UpdateSound
-NMI_Exit:
+@Exit:
 	PLA
 	TAY
 	PLA
@@ -294,6 +217,55 @@ NMI_Exit:
 	PLA
 	PLP
 	RTI
+;
+; NMI logic for during a transition
+;
+@Transition:
+	LDA #$00
+	STA OAMADDR
+	LDA #$02
+	STA OAM_DMA
+	JSR UpdateCHR
+
+	LDA PPUMaskMirror
+	STA PPUMASK
+	JSR @DoSoundProcessing
+
+	LDA PPUCtrlMirror
+	STA PPUCTRL
+	DEC NMIWaitFlag
+	JMP @Exit
+
+;
+; NMI logic for during the pause menu
+;
+@PauseOrMenu:
+	LDA #$00
+	STA PPUMASK
+	STA OAMADDR
+	LDA #$02
+	STA OAM_DMA
+	JSR UpdateCHR
+
+	JSR UpdatePPUFromBufferWithOptions
+
+	JSR ResetPPUAddress
+
+	LDA PPUScrollXMirror
+	STA PPUSCROLL
+	LDA #$00
+	STA PPUSCROLL
+	LDA PPUMaskMirror
+	STA PPUMASK
+	JMP @CheckScreenUpdateIndex
+
+
+; When waiting for an NMI, just run the audio engine
+;
+@Waiting:
+	LDA PPUMaskMirror
+	STA PPUMASK
+	JMP @DoSoundProcessing
 
 ;
 ; Public RESET
@@ -423,8 +395,9 @@ IRQ:
 	RTI
 
 .pad $fff1, $00
+UnreferencedTitle:
 ; title of the game, fff1
-	.db "VULPREICH"
+	ascii "VULPREICH"
 
 NESVectorTables:
 	.dw NMI   ; runs every frame

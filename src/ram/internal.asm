@@ -5,43 +5,37 @@
 AudioZPRAM:
 CurrentTrackEnvelope:
 	.dsb 1 ; 0000
-CurrentTrackSweep:
-	.dsb 1
 ; also includes note length
 CurrentTrackRawPitch:
 	.dsb 2
-CurrentTrackLength:
-	.dsb 1 ; 0004
 CurrentNoteDuration:
 	.dsb 1
 CurrentMusicByte:
-	.dsb 1
+	.dsb 1 ; 0004
 CurrentChannel:
 	.dsb 1
 
 ; linear length + flag
 HillLinearLength:
-	.dsb 1 ; 0008
+	.dsb 1
 ; 0 = off
 ; 1 = on
 ; 0-1: Pulses 2: Hill 3: Noise 4: DPCM
 Mixer:
 	.dsb 1
 Sweep1:
-	.dsb 1
+	.dsb 1 ; 0008
 Sweep2:
 	.dsb 1
 MusicID:
-	.dsb 2 ; 000c
-MusicBank:
 	.dsb 1
-BCDNumber:
+MusicBank:
 	.dsb 1
 
 DrumAddresses:
-	.dsb 4 ; 0010
+	.dsb 4 ; 000c
 DrumChannel:
-	.dsb 1 ; 0014
+	.dsb 1 ; 0010
 DrumDelay:
 	.dsb 1
 MusicDrumSet:
@@ -50,7 +44,7 @@ SFXDrumSet:
 	.dsb 1
 
 DPCMSamplePitch:
-	.dsb 1 ; 0018
+	.dsb 1 ; 0014
 DPCMSampleOffset:
 	.dsb 1
 DPCMSampleLength:
@@ -59,32 +53,37 @@ DPCMSampleBank:
 	.dsb 1
 ; 0: Sound event 1: SFX Priority 2: MusicPlaying 3: frame swap 4-7: RAM Conditions
 AudioCommandFlags:
-	.dsb 1 ; 001c
-SFXDuration:
-	.dsb 1
+	.dsb 1 ; 0018
 CurrentSFX:
-	.dsb 2
+	.dsb 1
 
 ChannelFunctionPointer:
-	.dsb 2 ; 0020
+	.dsb 2
 CommandPointer:
-	.dsb 2
+	.dsb 2 ; 001c
 RawPitchBackup:
-	.dsb 2 ; 0024
-RawPitchTargetBackup:
 	.dsb 2
+; unused, stored but never read
+RawPitchTargetBackup:
+	.dsb 2 ; 0020
 
 PitchSlideDifference:
-	.dsb 2 ; 0028
-PitchSlideIncremental:
 	.dsb 2
 VibratoBackup:
-	.dsb 1 ; 002c
+	.dsb 1 ; 0024
 CurrentEnvelopeGroupOffset:
 	.dsb 1
 CurrentEnvelopeGroupAddress:
 	.dsb 2
 ZPAudioEnd:
+; FOR RENT
+	.dsb 5
+PPUScrollXHiMirror:
+	.dsb 1
+RAM_PPUDataBufferPointer:
+	.dsb 2
+NMIWaitFlag:
+	.dsb 1
 
 ; section: Hardware Assistive RAM
 ; backup registers, banks, addresses, and buffers
@@ -218,48 +217,41 @@ ChannelLoopCounter:
 	.dsb 16
 ChannelTempo:
 	.dsb 32 ; 0380
-; bit arr. 0/1: Pulse 2: Hill 3: Noise 4: DPCM 5-7: never used
-ChannelTrackID:
-	.dsb 16
 ChannelCyclePattern:
 	.dsb 16
 ChannelVibratoCounter:
-	.dsb 16 ; 03c0
-ChannelVibratoPreamble:
 	.dsb 16
+ChannelVibratoPreamble:
+	.dsb 16 ; 03c0
 ChannelVibratoDepth:
 	.dsb 16
 ChannelVibratoTimer:
 	.dsb 16
 ChannelSlideTarget:
-	.dsb 32 ; 0400
+	.dsb 32
 ChannelSlideDepth:
 	.dsb 16
 ChannelSlideFraction:
 	.dsb 16
 ChannelSlideTempo:
-	.dsb 16 ; 0440
-ChannelMuteCounter:
 	.dsb 16
+ChannelMuteCounter:
+	.dsb 16 ; 0440
 ChannelPitchModifier:
 	.dsb 32
 ChannelRelativeNoteID:
-	.dsb 16 ; 0480
-ChannelEnvelopeGroup:
 	.dsb 16
+ChannelEnvelopeGroup:
+	.dsb 16 ; 0480
 ChannelEnvelopeGroupOffset:
 	.dsb 16
 ChannelMuteMain:
 	.dsb 16
 ChannelNoteLength:
-	.dsb 16 ; 04c0
-ChannelTempoOffset:
 	.dsb 16
-ChannelBCDPreamble:
-	.dsb 16
-ChannelBCDCounter:
-	.dsb 32 ; 0500
 ChannelRAMEnd:
+; FOR RENT
+	.dsb $50 ; 04c0
 HorizontalScrollingPPUAttributeUpdateBuffer:
 	.dsb $42 ; 0510 - 0551
 VerticalScrollingPPUAttributeUpdateBuffer:

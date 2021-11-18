@@ -50,7 +50,7 @@
 .include "src/engine/text.asm"
 .pad $a000, $00
 
-; bank 05-7d - unused (for now)
+; bank 07-7d - unused (for now)
 .dsb (($fd - PRG_TextEngine) * $2000), $00
 
 .base $c000

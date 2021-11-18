@@ -21,3 +21,7 @@ ENDM
 MACRO done
 	.db $55
 ENDM
+
+MACRO ascii text
+	.db (text + 31)
+ENDM
