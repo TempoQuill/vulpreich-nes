@@ -31,6 +31,8 @@
 00:0025		CurrentEnvelopeGroupOffset
 00:0026		CurrentEnvelopeGroupAddress
 00:0028		ZPAudioEnd
+00:002e         PPUScrollXHiMirror
+00:002f		NMIWaitFlag
 00:0030		BackupA
 00:0031		BackupX
 00:0032		BackupY

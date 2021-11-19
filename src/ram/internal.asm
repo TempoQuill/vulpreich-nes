@@ -77,11 +77,9 @@ CurrentEnvelopeGroupAddress:
 	.dsb 2
 ZPAudioEnd:
 ; FOR RENT
-	.dsb 5
+	.dsb 7
 PPUScrollXHiMirror:
 	.dsb 1
-RAM_PPUDataBufferPointer:
-	.dsb 2
 NMIWaitFlag:
 	.dsb 1
 
