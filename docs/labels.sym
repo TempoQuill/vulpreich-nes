@@ -1,505 +1,514 @@
 
-00:0000    AudioZPRAM
-00:0000    CurrentTrackEnvelope
-00:0001    CurrentTrackRawPitch
-00:0003    CurrentNoteDuration
-00:0004    CurrentMusicByte
-00:0005    CurrentChannel
-00:0006    HillLinearLength
-00:0007    Mixer
-00:0008    Sweep1
-00:0009    Sweep2
-00:000a    MusicID
-00:000b    MusicBank
-00:000c    DrumAddresses
-00:0010    DrumChannel
-00:0011    DrumDelay
-00:0012    MusicDrumSet
-00:0013    SFXDrumSet
-00:0014    DPCMSamplePitch
-00:0015    DPCMSampleOffset
-00:0016    DPCMSampleLength
-00:0017    DPCMSampleBank
-00:0018    AudioCommandFlags
-00:0019    CurrentSFX
-00:001a    ChannelFunctionPointer
-00:001c    CommandPointer
-00:001e    RawPitchBackup
-00:0020    RawPitchTargetBackup
-00:0022    PitchSlideDifference
-00:0024    VibratoBackup
-00:0025    CurrentEnvelopeGroupOffset
-00:0026    CurrentEnvelopeGroupAddress
-00:0028    ZPAudioEnd
-00:0030    BackupA
-00:0031    BackupX
-00:0032    BackupY
-00:0033    RAMBank
-00:0034    Window1
-00:0035    Window2
-00:0036    Window3
-00:0037    Window4
-00:0038    AuxAddresses
-00:0040    FactorBuffer
-00:0044    DividerBuffer
-00:0048    AddendBuffer
-00:004c    DifferentialBuffer
-00:0050    InputBottleNeck
-00:0052    InputCurrentState
-00:0054    ScreenUpdateIndex
-00:0055    GlobalFrameCounter
-00:0056    BackgroundXOffset
-00:0057    BackgroundYOffset
-00:0058    DrawBackgroundAttributesPPUBigAddr
-00:005c    PPUScrollYMirror
-00:005d    PPUScrollXMirror
-00:005e    PPUMaskMirror
-00:005f    PPUCtrlMirror
-00:0060    CHRWindow0
-00:0061    CHRWindow1
-00:0062    CurrentCardBalance
-00:0065    CurrentPrice
-00:0068    CurrentCardBalanceBCD
-00:006f    DecimalPlaceBuffer
-00:007f    StringXOffset
-00:0080    StringBuffer
-00:0100    Stack
-00:0100    StackBottom
-00:0200    StackTop
-00:0200    ChannelRAM
-00:0200    ChannelID
-00:0210    ChannelBank
-00:0220    ChannelFlagSection1
-00:0230    ChannelFlagSection2
-00:0240    ChannelFlagSection3
-00:0250    ChannelAddress
-00:0270    ChannelBackupAddress1
-00:0290    ChannelBackupAddress2
-00:02b0    ChannelNoteFlags
-00:02c0    ChannelCondition
-00:02d0    ChannelCycle
-00:02e0    ChannelEnvelope
-00:02f0    ChannelRawPitch
-00:0310    ChannelNoteID
-00:0320    ChannelOctave
-00:0330    ChannelTransposition
-00:0340    ChannelNoteDuration
-00:0350    ChannelNoteFlow
-00:0360    ChannelPitchIncrementation
-00:0370    ChannelLoopCounter
-00:0380    ChannelTempo
-00:03b0    ChannelCyclePattern
-00:03c0    ChannelVibratoCounter
-00:03d0    ChannelVibratoPreamble
-00:03e0    ChannelVibratoDepth
-00:03f0    ChannelVibratoTimer
-00:0400    ChannelSlideTarget
-00:0420    ChannelSlideDepth
-00:0430    ChannelSlideFraction
-00:0440    ChannelSlideTempo
-00:0450    ChannelMuteCounter
-00:0460    ChannelPitchModifier
-00:0480    ChannelRelativeNoteID
-00:0490    ChannelEnvelopeGroup
-00:04a0    ChannelEnvelopeGroupOffset
-00:04b0    ChannelMuteMain
-00:04c0    ChannelNoteLength
-00:0510    ChannelRAMEnd
-00:0510    HorizontalScrollingPPUAttributeUpdateBuffer
-00:0552    VerticalScrollingPPUAttributeUpdateBuffer
-00:0600    PPUBuffer
-00:0680    ScrollingPPUTileUpdateBuffer
-00:0700    OAM
-00:5c00    CardBCDBalance
-00:5c04    CurrentBCDPrice
-00:5c08    NametableAddress
-00:5c0a    ObjectIndex
-00:5c0b    ObjectType
-00:5c0c    NamePointer
-00:5c0f    CurrentIndex
-00:5c10    CurrentRAMAddress
-00:5c12    CurrentROMBank
-00:5f00    TextBuffer
-03:8000 0e _InitSound
-03:800e 07 _InitSound@ClearZP
-03:8015 06 _InitSound@ClearCRAMPart1
-03:801b 13 _InitSound@ClearCRAMPart2
-03:802e 0a PreserveIDRestart
-03:8038 07 MusicOn
-03:803f 07 MusicOff
-03:8046 07 _UpdateSound
-03:804d 08 _UpdateSound@PlayerOn
-03:8055 0a _UpdateSound@Loop
-03:805f 0d _UpdateSound@AndItsOn
-03:806c 11 _UpdateSound@NoteOver
-03:807d 19 _UpdateSound@ContinueSoundUpdate
-03:8096 05 _UpdateSound@Hill
-03:809b 4a _UpdateSound@Continue
-03:80e5 08 _UpdateSound@RestNote
-03:80ed 0c _UpdateSound@Next
-03:80f9 03 _UpdateSound@SFXChannel
-03:80fc 05 _UpdateSound@SoundChannelOn
-03:8101 10 _UpdateSound@NextChannel
-03:8111 03 _UpdateSound@Valid
-03:8114 01 _UpdateSound@Done
-03:8115 11 UpdateChannels
-03:8126 1a UpdateChannels@FunctionPointers
-03:8140 0d UpdateChannels@Pulse1
-03:814d 21 UpdateChannels@Pulse1_NoSweep
-03:816e 0a UpdateChannels@Pulse1_PitchOverride
-03:8178 07 UpdateChannels@Pulse1_CheckCycleOverride
-03:817f    UpdateChannels@Pulse1_CycleOverride
-03:817f 07 UpdateChannels@Pulse1_EnvOverride
-03:8186 0c UpdateChannels@Pulse1_VibratoOverride
-03:8192 08 UpdateChannels@Pulse1_Rest
-03:819a 11 UpdateChannels@Pulse1_NoiseSampling
-03:81ab 0d UpdateChannels@Pulse2
-03:81b8 1f UpdateChannels@Pulse2_NoSweep
-03:81d7 07 UpdateChannels@Pulse2_EnvCycleOverrides
-03:81de 0c UpdateChannels@Pulse2_PitchOverride
-03:81ea 0c UpdateChannels@Pulse2_VibratoOverride
-03:81f6 08 UpdateChannels@Pulse2_Rest
-03:81fe 11 UpdateChannels@Pulse2_NoiseSampling
-03:820f 21 UpdateChannels@Hill
-03:8230 0c UpdateChannels@Hill_PitchOverride
-03:823c 07 UpdateChannels@Hill_VibratoOverride
-03:8243 08 UpdateChannels@Hill_Rest
-03:824b 11 UpdateChannels@Hill_NoiseSampling
-03:825c 0f UpdateChannels@Noise
-03:826b 08 UpdateChannels@Noise_Rest
-03:8273 11 UpdateChannels@Noise_NoiseSampling
-03:8284 0f UpdateChannels@DPCM
-03:8293 11 UpdateChannels@DPCM_Rest
-03:82a4 11 UpdateChannels@DPCM_DeltaNoiseSamplingOverrides
-03:82b5 01 UpdateChannels@None
-03:82b6 0b LoadNote
-03:82c1 09 LoadNote@PitchSlide
-03:82ca 3c LoadNote@PitchSlide_OK
-03:8306 08 LoadNote@PitchSlide_Greater
-03:830e 02 LoadNote@PitchSlide_Resume
-03:8310 12 LoadNote@PitchSlide_Loop
-03:8322 11 LoadNote@PitchSlide_Quit
-03:8333 0e LoadNote@CheckRelativePitch
-03:8341 13 LoadNote@CheckEnvelopePattern
-03:8354 06 LoadNote@CheckMuteTimer
-03:835a 07 LoadNote@MuteTimer
-03:8361 24 GeneralHandler
-03:8385 2d GeneralHandler@CheckRelativePitch
-03:83b2 06 GeneralHandler@RelativePitch_SetFlag
-03:83b8 13 GeneralHandler@CheckPitchModifier
-03:83cb 12 GeneralHandler@CheckPitchInc
-03:83dd 02 GeneralHandler@CheckPitchInc_NoCarry
-03:83df 21 GeneralHandler@CheckVibrato
-03:8400 06 GeneralHandler@Vibrato_Subexit2
-03:8406 2a GeneralHandler@Vibrato_Bend
-03:8430 16 GeneralHandler@Vibrato_Down
-03:8446    GeneralHandler@Vibrato_NoBorrow
-03:8446 0a GeneralHandler@Vibrato_NoCarry
-03:8450 1b GeneralHandler@CheckEnvelopePattern
-03:846b 10 GeneralHandler@EnvelopePattern_NotHill
-03:847b 0d GeneralHandler@EnvelopePattern_Set
-03:8488 06 GeneralHandler@CheckMuteTimer
-03:848e 09 GeneralHandler@MuteTimer
-03:8497 09 GeneralHandler@MuteTimer_Enable
-03:84a0 08 ApplyPitchSlide
-03:84a8 4d ApplyPitchSlide@Now
-03:84f5 03 ApplyPitchSlide@JumpToContinue
-03:84f8 0c ApplyPitchSlide@SlidingUp
-03:8504 2b ApplyPitchSlide@SlidingUp_NoDec
-03:852f 11 ApplyPitchSlide@Finished
-03:8540 09 ApplyPitchSlide@Continue
-03:8549 08 HandleNoise
-03:8551 0d HandleNoise@CheckIfSFX
-03:855e 0d HandleNoise@Next
-03:856b 10 HandleNoise@Read
-03:857b 12 HandleNoise@SkipCarry1
-03:858d 0a HandleNoise@SkipCarry2
-03:8597 0f HandleNoise@SkipCarry3
-03:85a6 07 HandleNoise@Quit
-03:85ad 08 HandleDPCM
-03:85b5 16 HandleDPCM@Next
-03:85cb 11 HandleDPCM@SkipCarry1
-03:85dc 0c HandleDPCM@SkipCarry2
-03:85e8 0a HandleDPCM@SkipCarry3
-03:85f2 14 HandleDPCM@SkipCarry4
-03:8606 10 HandleDPCM@Quit
-03:8616 0b ParseMusic
-03:8621 06 ParseMusic@ReadCommand
-03:8627 0c ParseMusic@ReadNote
-03:8633 08 ParseMusic@NextCheck
-03:863b 29 ParseMusic@NormalNote
-03:8664 09 ParseMusic@Rest
-03:866d 13 ParseMusic@SoundRet
-03:8680 0a ParseMusic@Channel8toC
-03:868a 0d ParseMusic@SkipSub
-03:8697 19 ParseMusic@OK
-03:86b0 06 RestoreVolume
-03:86b6 17 RestoreVolume@Channel9
-03:86cd 1f ParseSFXOrRest
-03:86ec 06 ParseSFXOrRest@Hill
-03:86f2 0e ParseSFXOrRest@GetRawPitch
-03:8700 07 ParseSFXOrRest@NotNoise
-03:8707 3c GetByteInEnvelopeGroup
-03:8743 06 GetByteInEnvelopeGroup@Next
-03:8749 02 GetByteInEnvelopeGroup@Quit
-03:874b 08 GetDrumSample
-03:8753 18 GetDrumSample@Valid
-03:876b 08 GetDrumSample@CheckDPCM
-03:8773 05 GetDrumSample@ContinueDPCM
-03:8778 02 GetDrumSample@SFXDPCM
-03:877a 13 GetDrumSample@NextDPCM
-03:878d 0e GetDrumSample@NonRestDPCM
-03:879b 05 GetDrumSample@ContinueNoise
-03:87a0 02 GetDrumSample@SFXNoise
-03:87a2 13 GetDrumSample@NextNoise
-03:87b5 12 GetDrumSample@NonRestNoise
-03:87c7 13 ParseMusicCommand
-03:87da 60 MusicCommands
-03:883a 01 MusicDummy
-03:883b 08 Music_FrameSwap
-03:8843 09 Music_FrameSwap@Percussion
-03:884c 11 Music_PitchIncSwitch
-03:885d 09 Music_SetMusic
-03:8866 23 Music_Ret
-03:8889 09 Music_Ret@ClearFlag
-03:8892 2d Music_Call
-03:88b9 0d Music_Jump
-03:88cc 1a Music_Loop
-03:88e6 08 Music_Loop@CheckLoop
-03:88ee 0d Music_Loop@Loop
-03:88fb 19 Music_Loop@EndLoop
-03:8914 06 Music_SetCondition
-03:891a 19 Music_JumpIf
-03:8933 0d Music_JumpIf@Jump
-03:8940 1c Music_JumpRAM
-03:895c 12 Music_JumpRAM@Jump
-03:896e 05 Music_JumpRAM@Masks
-03:8973 09 Music_SetSoundEvent
-03:897c 0f Music_TimeMute
-03:898b 40 Music_Vibrato
-03:89cb 25 Music_PitchSlide
-03:89f0 15 Music_PitchOffset
-03:8a05 0f Music_RelativePitch
-03:8a14 16 Music_CyclePattern
-03:8a1a 0f Music_EnvelopePattern
-03:8a29 09 Music_ToggleMusic
-03:8a32 0d Music_ToggleDrum
-03:8a3f 06 Music_ToggleDrum@GetParam
-03:8a45 0d Music_SFXToggleDrum
-03:8a52 06 Music_SFXToggleDrum@GetParam
-03:8a58 13 Music_PitchSweep
-03:8a6b 06 Music_PitchSweep@Pulse2
-03:8a71 0d Music_Cycle
-03:8a7e 0c Music_NoteType
-03:8a8a 07 Music_Envelope
-03:8a91 0a Music_Tempo
-03:8a9b 09 Music_Octave
-03:8aa4 07 Music_Transpose
-03:8aab 0c Music_TempoRelative
-03:8ab7 02 Music_TempoRelative@Minus
-03:8ab9 0d Music_TempoRelative@OK
-03:8ac6 09 Music_SFXPriorityOn
-03:8acf 09 Music_SFXPriorityOff
-03:8ad8 22 Music_RestartChannel
-03:8afa 0c Music_NewSong
-03:8b06 14 GetMusicByte
-03:8b1a 24 GetPitch
-03:8b3e 12 GetPitch@Loop
-03:8b50 08 GetPitch@OK
-03:8b58 2d SetNoteDuration
-03:8b85 04 SetNoteDuration@Multiply
-03:8b89 11 SetNoteDuration@Loop
-03:8b9a 09 SetNoteDuration@Skip
-03:8ba3 21 SetGlobalTempo
-03:8bc4 15 SetGlobalTempo@SFXChannel
-03:8bd9 05 SetGlobalTempo@End
-03:8bde 0e Tempo
-03:8bec 0b StartChannel
-03:8bf7 20 _PlayMusic
-03:8c17 21 _PlayMusic@Loop
-03:8c38 15 _PlaySFX
-03:8c4d 10 _PlaySFX@Ch9
-03:8c5d 0e _PlaySFX@ChA
-03:8c6b 0e _PlaySFX@ChB
-03:8c79 0e _PlaySFX@ChC
-03:8c87 1f _PlaySFX@ChannelsCleared
-03:8ca6 1e _PlaySFX@StartChannels
-03:8cc4 09 LoadChannel
-03:8ccd 16 LoadChannel@NoCarry1
-03:8ce3 0f LoadChannel@Loop1
-03:8cf2 26 LoadChannel@Loop2
-03:8d18 0c LoadChannel@NoCarry2
-03:8d24 0b LoadChannel@NoCarry3
-03:8d2f 06 LoadMusicByte
-03:8d35 21 ClearChannels
-03:8d56 0f ClearChannel
-03:8d65 38 NoteTable
-03:8d9d 0c EnvelopeGroups
-03:8da9 4d Group0
-03:8df6 21 Group1
-03:8e17 29 Group2
-03:8e40 10 Group3
-03:8e50 01 Group4
-03:8e51 0e DrumKits
-03:8e5f 1a Drumkit0
-03:8e79 01 Drum0_0
-03:8e7a 0d Drum0_1
-03:8e87 28 Drum0_2
-03:8eaf 0e SampleKits
-03:8ebd 1a SampleKit0
-03:8ed7 04 Sample0_0
-03:8edb 04 Sample0_1
-03:8edf 04 Sample0_2
-03:8ee3 04 Sample0_3
-03:8ee7 04 Sample0_4
-03:8eeb 04 Sample0_5
-03:8eef 04 Sample0_6
-03:8ef3 04 Sample0_7
-03:8ef7 04 Sample0_8
-03:8efb 04 Sample0_9
-03:8eff 04 Sample0_A
-03:8f03 04 Sample0_B
-03:8f07 04 Sample0_C
-03:8f0b 1a SampleKit1
-03:8f25 04 Sample1_2
-03:8f29 04 Sample1_3
-03:8f2d 04 Sample1_4
-03:8f31 04 Sample1_5
-03:8f35 04 Sample1_6
-03:8f39 04 Sample1_7
-03:8f3d 04 Sample1_8
-03:8f41 04 Sample1_9
-03:8f45 04 Sample1_A
-03:8f49 04 Sample1_B
-03:8f4d 04 Sample1_C
-03:8f51 1a SampleKit2
-03:8f6b    SampleKit3
-03:8f6b    SampleKit4
-03:8f6b    SampleKit5
-03:8f6b 1a SampleKit6
-03:8f85 02 MusicBanks
-03:8f87 02 MusicLo
-03:8f89 02 MusicHi
-03:8f8b 01 SFXBanks
-03:8f8c 01 SFXLo
-03:8f8d 01 SFXHi
-03:8f8e 0f Music_None
-03:8f9d    Music_None_Pulse1
-03:8f9d    Music_None_Pulse2
-03:8f9d    Music_None_Hill
-03:8f9d    Music_None_Noise
-03:8f9d 01 Music_None_DPCM
+00:0000		AudioZPRAM
+00:0000		CurrentTrackEnvelope
+00:0001		CurrentTrackRawPitch
+00:0003		CurrentNoteDuration
+00:0004		CurrentMusicByte
+00:0005		CurrentChannel
+00:0006		HillLinearLength
+00:0007		Mixer
+00:0008		Sweep1
+00:0009		Sweep2
+00:000a		MusicID
+00:000b		MusicBank
+00:000c		DrumAddresses
+00:0010		DrumChannel
+00:0011		DrumDelay
+00:0012		MusicDrumSet
+00:0013		SFXDrumSet
+00:0014		DPCMSamplePitch
+00:0015		DPCMSampleOffset
+00:0016		DPCMSampleLength
+00:0017		DPCMSampleBank
+00:0018		AudioCommandFlags
+00:0019		CurrentSFX
+00:001a		ChannelFunctionPointer
+00:001c		CommandPointer
+00:001e		RawPitchBackup
+00:0020		RawPitchTargetBackup
+00:0022		PitchSlideDifference
+00:0024		VibratoBackup
+00:0025		CurrentEnvelopeGroupOffset
+00:0026		CurrentEnvelopeGroupAddress
+00:0028		ZPAudioEnd
+00:0030		BackupA
+00:0031		BackupX
+00:0032		BackupY
+00:0033		RAMBank
+00:0034		Window1
+00:0035		Window2
+00:0036		Window3
+00:0037		Window4
+00:0038		AuxAddresses
+00:0040		FactorBuffer
+00:0044		DividerBuffer
+00:0048		AddendBuffer
+00:004c		DifferentialBuffer
+00:0050		InputBottleNeck
+00:0052		InputCurrentState
+00:0054		ScreenUpdateIndex
+00:0055		GlobalFrameCounter
+00:0056		BackgroundXOffset
+00:0057		BackgroundYOffset
+00:0058		DrawBackgroundAttributesPPUBigAddr
+00:005c		PPUScrollYMirror
+00:005d		PPUScrollXMirror
+00:005e		PPUMaskMirror
+00:005f		PPUCtrlMirror
+00:0060		CHRWindow0
+00:0061		CHRWindow1
+00:0062		CurrentCardBalance
+00:0065		CurrentPrice
+00:0068		CurrentCardBalanceBCD
+00:006f		DecimalPlaceBuffer
+00:007f		StringXOffset
+00:0080		StringBuffer
+00:0100		Stack
+00:0100		StackBottom
+00:0200		StackTop
+00:0200		ChannelRAM
+00:0200		ChannelID
+00:0210		ChannelBank
+00:0220		ChannelFlagSection1
+00:0230		ChannelFlagSection2
+00:0240		ChannelFlagSection3
+00:0250		ChannelAddress
+00:0270		ChannelBackupAddress1
+00:0290		ChannelBackupAddress2
+00:02b0		ChannelNoteFlags
+00:02c0		ChannelCondition
+00:02d0		ChannelCycle
+00:02e0		ChannelEnvelope
+00:02f0		ChannelRawPitch
+00:0310		ChannelNoteID
+00:0320		ChannelOctave
+00:0330		ChannelTransposition
+00:0340		ChannelNoteDuration
+00:0350		ChannelNoteFlow
+00:0360		ChannelPitchIncrementation
+00:0370		ChannelLoopCounter
+00:0380		ChannelTempo
+00:03b0		ChannelCyclePattern
+00:03c0		ChannelVibratoCounter
+00:03d0		ChannelVibratoPreamble
+00:03e0		ChannelVibratoDepth
+00:03f0		ChannelVibratoTimer
+00:0400		ChannelSlideTarget
+00:0420		ChannelSlideDepth
+00:0430		ChannelSlideFraction
+00:0440		ChannelSlideTempo
+00:0450		ChannelMuteCounter
+00:0460		ChannelPitchModifier
+00:0480		ChannelRelativeNoteID
+00:0490		ChannelEnvelopeGroup
+00:04a0		ChannelEnvelopeGroupOffset
+00:04b0		ChannelMuteMain
+00:04c0		ChannelNoteLength
+00:0510		ChannelRAMEnd
+00:0510		HorizontalScrollingPPUAttributeUpdateBuffer
+00:0552		VerticalScrollingPPUAttributeUpdateBuffer
+00:0600		PPUBuffer
+00:0680		ScrollingPPUTileUpdateBuffer
+00:0700		OAM
+00:5c00		CardBCDBalance
+00:5c04		CurrentBCDPrice
+00:5c08		NametableAddress
+00:5c0a		ObjectIndex
+00:5c0b		ObjectType
+00:5c0c		NamePointer
+00:5c0f		CurrentIndex
+00:5c10		CurrentRAMAddress
+00:5c12		CurrentROMBank
+00:5f00		TextBuffer
+00:	PRG_Start0
+01:	PRG_Start1
+02:	PRG_Start2
+03:	PRG_Audio
+03:8000	0e	_InitSound
+03:800e	07	_InitSound@ClearZP
+03:8015	06	_InitSound@ClearCRAMPart1
+03:801b	13	_InitSound@ClearCRAMPart2
+03:802e	0a	PreserveIDRestart
+03:8038	07	MusicOn
+03:803f	07	MusicOff
+03:8046	07	_UpdateSound
+03:804d	08	_UpdateSound@PlayerOn
+03:8055	0a	_UpdateSound@Loop
+03:805f	0d	_UpdateSound@AndItsOn
+03:806c	11	_UpdateSound@NoteOver
+03:807d	19	_UpdateSound@ContinueSoundUpdate
+03:8096	05	_UpdateSound@Hill
+03:809b	4a	_UpdateSound@Continue
+03:80e5	08	_UpdateSound@RestNote
+03:80ed	0c	_UpdateSound@Next
+03:80f9	03	_UpdateSound@SFXChannel
+03:80fc	05	_UpdateSound@SoundChannelOn
+03:8101	10	_UpdateSound@NextChannel
+03:8111	03	_UpdateSound@Valid
+03:8114	01	_UpdateSound@Done
+03:8115	11	UpdateChannels
+03:8126	1a	UpdateChannels@FunctionPointers
+03:8140	0d	UpdateChannels@Pulse1
+03:814d	21	UpdateChannels@Pulse1_NoSweep
+03:816e	0a	UpdateChannels@Pulse1_PitchOverride
+03:8178	07	UpdateChannels@Pulse1_CheckCycleOverride
+03:817f		UpdateChannels@Pulse1_CycleOverride
+03:817f	07	UpdateChannels@Pulse1_EnvOverride
+03:8186	0c	UpdateChannels@Pulse1_VibratoOverride
+03:8192	08	UpdateChannels@Pulse1_Rest
+03:819a	11	UpdateChannels@Pulse1_NoiseSampling
+03:81ab	0d	UpdateChannels@Pulse2
+03:81b8	1f	UpdateChannels@Pulse2_NoSweep
+03:81d7	07	UpdateChannels@Pulse2_EnvCycleOverrides
+03:81de	0c	UpdateChannels@Pulse2_PitchOverride
+03:81ea	0c	UpdateChannels@Pulse2_VibratoOverride
+03:81f6	08	UpdateChannels@Pulse2_Rest
+03:81fe	11	UpdateChannels@Pulse2_NoiseSampling
+03:820f	21	UpdateChannels@Hill
+03:8230	0c	UpdateChannels@Hill_PitchOverride
+03:823c	07	UpdateChannels@Hill_VibratoOverride
+03:8243	08	UpdateChannels@Hill_Rest
+03:824b	11	UpdateChannels@Hill_NoiseSampling
+03:825c	0f	UpdateChannels@Noise
+03:826b	08	UpdateChannels@Noise_Rest
+03:8273	11	UpdateChannels@Noise_NoiseSampling
+03:8284	0f	UpdateChannels@DPCM
+03:8293	11	UpdateChannels@DPCM_Rest
+03:82a4	11	UpdateChannels@DPCM_DeltaNoiseSamplingOverrides
+03:82b5	01	UpdateChannels@None
+03:82b6	0b	LoadNote
+03:82c1	09	LoadNote@PitchSlide
+03:82ca	3c	LoadNote@PitchSlide_OK
+03:8306	08	LoadNote@PitchSlide_Greater
+03:830e	02	LoadNote@PitchSlide_Resume
+03:8310	12	LoadNote@PitchSlide_Loop
+03:8322	11	LoadNote@PitchSlide_Quit
+03:8333	0e	LoadNote@CheckRelativePitch
+03:8341	13	LoadNote@CheckEnvelopePattern
+03:8354	06	LoadNote@CheckMuteTimer
+03:835a	07	LoadNote@MuteTimer
+03:8361	24	GeneralHandler
+03:8385	2d	GeneralHandler@CheckRelativePitch
+03:83b2	06	GeneralHandler@RelativePitch_SetFlag
+03:83b8	13	GeneralHandler@CheckPitchModifier
+03:83cb	12	GeneralHandler@CheckPitchInc
+03:83dd	02	GeneralHandler@CheckPitchInc_NoCarry
+03:83df	21	GeneralHandler@CheckVibrato
+03:8400	06	GeneralHandler@Vibrato_Subexit2
+03:8406	2a	GeneralHandler@Vibrato_Bend
+03:8430	16	GeneralHandler@Vibrato_Down
+03:8446		GeneralHandler@Vibrato_NoBorrow
+03:8446	0a	GeneralHandler@Vibrato_NoCarry
+03:8450	1b	GeneralHandler@CheckEnvelopePattern
+03:846b	10	GeneralHandler@EnvelopePattern_NotHill
+03:847b	0d	GeneralHandler@EnvelopePattern_Set
+03:8488	06	GeneralHandler@CheckMuteTimer
+03:848e	09	GeneralHandler@MuteTimer
+03:8497	09	GeneralHandler@MuteTimer_Enable
+03:84a0	08	ApplyPitchSlide
+03:84a8	4d	ApplyPitchSlide@Now
+03:84f5	03	ApplyPitchSlide@JumpToContinue
+03:84f8	0c	ApplyPitchSlide@SlidingUp
+03:8504	2b	ApplyPitchSlide@SlidingUp_NoDec
+03:852f	11	ApplyPitchSlide@Finished
+03:8540	09	ApplyPitchSlide@Continue
+03:8549	08	HandleNoise
+03:8551	0d	HandleNoise@CheckIfSFX
+03:855e	0d	HandleNoise@Next
+03:856b	10	HandleNoise@Read
+03:857b	12	HandleNoise@SkipCarry1
+03:858d	0a	HandleNoise@SkipCarry2
+03:8597	0f	HandleNoise@SkipCarry3
+03:85a6	07	HandleNoise@Quit
+03:85ad	08	HandleDPCM
+03:85b5	16	HandleDPCM@Next
+03:85cb	11	HandleDPCM@SkipCarry1
+03:85dc	0c	HandleDPCM@SkipCarry2
+03:85e8	0a	HandleDPCM@SkipCarry3
+03:85f2	14	HandleDPCM@SkipCarry4
+03:8606	10	HandleDPCM@Quit
+03:8616	0b	ParseMusic
+03:8621	06	ParseMusic@ReadCommand
+03:8627	0c	ParseMusic@ReadNote
+03:8633	08	ParseMusic@NextCheck
+03:863b	29	ParseMusic@NormalNote
+03:8664	09	ParseMusic@Rest
+03:866d	13	ParseMusic@SoundRet
+03:8680	0a	ParseMusic@Channel8toC
+03:868a	0d	ParseMusic@SkipSub
+03:8697	19	ParseMusic@OK
+03:86b0	06	RestoreVolume
+03:86b6	17	RestoreVolume@Channel9
+03:86cd	1f	ParseSFXOrRest
+03:86ec	06	ParseSFXOrRest@Hill
+03:86f2	0e	ParseSFXOrRest@GetRawPitch
+03:8700	07	ParseSFXOrRest@NotNoise
+03:8707	3c	GetByteInEnvelopeGroup
+03:8743	06	GetByteInEnvelopeGroup@Next
+03:8749	02	GetByteInEnvelopeGroup@Quit
+03:874b	08	GetDrumSample
+03:8753	18	GetDrumSample@Valid
+03:876b	08	GetDrumSample@CheckDPCM
+03:8773	05	GetDrumSample@ContinueDPCM
+03:8778	02	GetDrumSample@SFXDPCM
+03:877a	13	GetDrumSample@NextDPCM
+03:878d	0e	GetDrumSample@NonRestDPCM
+03:879b	05	GetDrumSample@ContinueNoise
+03:87a0	02	GetDrumSample@SFXNoise
+03:87a2	13	GetDrumSample@NextNoise
+03:87b5	12	GetDrumSample@NonRestNoise
+03:87c7	13	ParseMusicCommand
+03:87da	60	MusicCommands
+03:883a	01	MusicDummy
+03:883b	08	Music_FrameSwap
+03:8843	09	Music_FrameSwap@Percussion
+03:884c	11	Music_PitchIncSwitch
+03:885d	09	Music_SetMusic
+03:8866	23	Music_Ret
+03:8889	09	Music_Ret@ClearFlag
+03:8892	2d	Music_Call
+03:88b9	0d	Music_Jump
+03:88cc	1a	Music_Loop
+03:88e6	08	Music_Loop@CheckLoop
+03:88ee	0d	Music_Loop@Loop
+03:88fb	19	Music_Loop@EndLoop
+03:8914	06	Music_SetCondition
+03:891a	19	Music_JumpIf
+03:8933	0d	Music_JumpIf@Jump
+03:8940	1c	Music_JumpRAM
+03:895c	12	Music_JumpRAM@Jump
+03:896e	05	Music_JumpRAM@Masks
+03:8973	09	Music_SetSoundEvent
+03:897c	0f	Music_TimeMute
+03:898b	40	Music_Vibrato
+03:89cb	25	Music_PitchSlide
+03:89f0	15	Music_PitchOffset
+03:8a05	0f	Music_RelativePitch
+03:8a14	16	Music_CyclePattern
+03:8a1a	0f	Music_EnvelopePattern
+03:8a29	09	Music_ToggleMusic
+03:8a32	0d	Music_ToggleDrum
+03:8a3f	06	Music_ToggleDrum@GetParam
+03:8a45	0d	Music_SFXToggleDrum
+03:8a52	06	Music_SFXToggleDrum@GetParam
+03:8a58	13	Music_PitchSweep
+03:8a6b	06	Music_PitchSweep@Pulse2
+03:8a71	0d	Music_Cycle
+03:8a7e	0c	Music_NoteType
+03:8a8a	07	Music_Envelope
+03:8a91	0a	Music_Tempo
+03:8a9b	09	Music_Octave
+03:8aa4	07	Music_Transpose
+03:8aab	0c	Music_TempoRelative
+03:8ab7	02	Music_TempoRelative@Minus
+03:8ab9	0d	Music_TempoRelative@OK
+03:8ac6	09	Music_SFXPriorityOn
+03:8acf	09	Music_SFXPriorityOff
+03:8ad8	22	Music_RestartChannel
+03:8afa	0c	Music_NewSong
+03:8b06	14	GetMusicByte
+03:8b1a	24	GetPitch
+03:8b3e	12	GetPitch@Loop
+03:8b50	08	GetPitch@OK
+03:8b58	2d	SetNoteDuration
+03:8b85	04	SetNoteDuration@Multiply
+03:8b89	11	SetNoteDuration@Loop
+03:8b9a	09	SetNoteDuration@Skip
+03:8ba3	21	SetGlobalTempo
+03:8bc4	15	SetGlobalTempo@SFXChannel
+03:8bd9	05	SetGlobalTempo@End
+03:8bde	0e	Tempo
+03:8bec	0b	StartChannel
+03:8bf7	20	_PlayMusic
+03:8c17	21	_PlayMusic@Loop
+03:8c38	15	_PlaySFX
+03:8c4d	10	_PlaySFX@Ch9
+03:8c5d	0e	_PlaySFX@ChA
+03:8c6b	0e	_PlaySFX@ChB
+03:8c79	0e	_PlaySFX@ChC
+03:8c87	1f	_PlaySFX@ChannelsCleared
+03:8ca6	1e	_PlaySFX@StartChannels
+03:8cc4	09	LoadChannel
+03:8ccd	16	LoadChannel@NoCarry1
+03:8ce3	0f	LoadChannel@Loop1
+03:8cf2	26	LoadChannel@Loop2
+03:8d18	0c	LoadChannel@NoCarry2
+03:8d24	0b	LoadChannel@NoCarry3
+03:8d2f	06	LoadMusicByte
+03:8d35	21	ClearChannels
+03:8d56	0f	ClearChannel
+03:8d65	38	NoteTable
+03:8d9d	0c	EnvelopeGroups
+03:8da9	4d	Group0
+03:8df6	21	Group1
+03:8e17	29	Group2
+03:8e40	10	Group3
+03:8e50	01	Group4
+03:8e51	0e	DrumKits
+03:8e5f	1a	Drumkit0
+03:8e79	01	Drum0_0
+03:8e7a	0d	Drum0_1
+03:8e87	28	Drum0_2
+03:8eaf	0e	SampleKits
+03:8ebd	1a	SampleKit0
+03:8ed7	04	Sample0_0
+03:8edb	04	Sample0_1
+03:8edf	04	Sample0_2
+03:8ee3	04	Sample0_3
+03:8ee7	04	Sample0_4
+03:8eeb	04	Sample0_5
+03:8eef	04	Sample0_6
+03:8ef3	04	Sample0_7
+03:8ef7	04	Sample0_8
+03:8efb	04	Sample0_9
+03:8eff	04	Sample0_A
+03:8f03	04	Sample0_B
+03:8f07	04	Sample0_C
+03:8f0b	1a	SampleKit1
+03:8f25	04	Sample1_2
+03:8f29	04	Sample1_3
+03:8f2d	04	Sample1_4
+03:8f31	04	Sample1_5
+03:8f35	04	Sample1_6
+03:8f39	04	Sample1_7
+03:8f3d	04	Sample1_8
+03:8f41	04	Sample1_9
+03:8f45	04	Sample1_A
+03:8f49	04	Sample1_B
+03:8f4d	04	Sample1_C
+03:8f51	1a	SampleKit2
+03:8f6b		SampleKit3
+03:8f6b		SampleKit4
+03:8f6b		SampleKit5
+03:8f6b	1a	SampleKit6
+03:8f85	02	MusicBanks
+03:8f87	02	MusicLo
+03:8f89	02	MusicHi
+03:8f8b	01	SFXBanks
+03:8f8c	01	SFXLo
+03:8f8d	01	SFXHi
+03:8f8e	0f	Music_None
+03:8f9d		Music_None_Pulse1
+03:8f9d		Music_None_Pulse2
+03:8f9d		Music_None_Hill
+03:8f9d		Music_None_Noise
+03:8f9d	01	Music_None_DPCM
 03:8f9e
-04:a000 0f Music_TitleScreen
-04:a00f 09 Music_TitleScreen_Pulse1
-04:a018 0b Music_TitleScreen_Pulse1@Mainloop
-04:a023 07 Music_TitleScreen_Pulse1@Loop1
-04:a02a 5f Music_TitleScreen_Pulse1@Loop2
-04:a089 2f Music_TitleScreen_Pulse1@Sub1
-04:a0b8 06 Music_TitleScreen_Pulse2
-04:a0be 07 Music_TitleScreen_Pulse2@Mainloop
-04:a0c5 c5 Music_TitleScreen_Pulse2@Loop1
-04:a18a 37 Music_TitleScreen_Pulse2@Sub1
-04:a1c1 04 Music_TitleScreen_Hill
-04:a1c5 11 Music_TitleScreen_Hill@Mainloop
-04:a1d6 39 Music_TitleScreen_Hill@Loop1
-04:a20f 25 Music_TitleScreen_Hill@Sub1
-04:a234 0a Music_TitleScreen_Hill@Sub2
-04:a23e 0d Music_TitleScreen_Hill@Sub3
-04:a24b 05 Music_TitleScreen_Noise
-04:a250 01 Music_TitleScreen_Noise@Mainloop
-04:a251 06 Music_TitleScreen_Noise@Loop1
-04:a257 13 Music_TitleScreen_Noise@Loop2
-04:a26a 01 Music_TitleScreen_Noise@Sub1
-04:a26b 06 Music_TitleScreen_Noise@Sub1_Loop1
-04:a271 0a Music_TitleScreen_Noise@Sub1_Loop2
-04:a27b 07 Music_TitleScreen_DPCM
-04:a282 22 Music_TitleScreen_DPCM@Mainloop
-04:a2a4 27 Music_TitleScreen_DPCM@Sub1
-04:a2cb 2b Music_TitleScreen_DPCM@Sub2
+04:	PRG_Music0
+04:a000	0f	Music_TitleScreen
+04:a00f	09	Music_TitleScreen_Pulse1
+04:a018	0b	Music_TitleScreen_Pulse1@Mainloop
+04:a023	07	Music_TitleScreen_Pulse1@Loop1
+04:a02a	5f	Music_TitleScreen_Pulse1@Loop2
+04:a089	2f	Music_TitleScreen_Pulse1@Sub1
+04:a0b8	06	Music_TitleScreen_Pulse2
+04:a0be	07	Music_TitleScreen_Pulse2@Mainloop
+04:a0c5	c5	Music_TitleScreen_Pulse2@Loop1
+04:a18a	37	Music_TitleScreen_Pulse2@Sub1
+04:a1c1	04	Music_TitleScreen_Hill
+04:a1c5	11	Music_TitleScreen_Hill@Mainloop
+04:a1d6	39	Music_TitleScreen_Hill@Loop1
+04:a20f	25	Music_TitleScreen_Hill@Sub1
+04:a234	0a	Music_TitleScreen_Hill@Sub2
+04:a23e	0d	Music_TitleScreen_Hill@Sub3
+04:a24b	05	Music_TitleScreen_Noise
+04:a250	01	Music_TitleScreen_Noise@Mainloop
+04:a251	06	Music_TitleScreen_Noise@Loop1
+04:a257	13	Music_TitleScreen_Noise@Loop2
+04:a26a	01	Music_TitleScreen_Noise@Sub1
+04:a26b	06	Music_TitleScreen_Noise@Sub1_Loop1
+04:a271	0a	Music_TitleScreen_Noise@Sub1_Loop2
+04:a27b	07	Music_TitleScreen_DPCM
+04:a282	22	Music_TitleScreen_DPCM@Mainloop
+04:a2a4	27	Music_TitleScreen_DPCM@Sub1
+04:a2cb	2b	Music_TitleScreen_DPCM@Sub2
 04:a2f6
-06:8000 21 GetNamePointer
-06:8021 1c CopyCurrentIndex
-06:803d 12 _PrintText
-06:804f 13 _PrintText@CopyToPPU
-06:8062 13 _PrintText@ReadCommand
-06:8075 0c _PrintText@CommandTable
-06:8081 33 _PrintText@Continue
-06:80b4 0a _PrintText@Line
-06:80be 12 _PrintText@Para
-06:80d0 25 _PrintText@ParaLoop
-06:80f5 01 _PrintText@TextEnd
-06:80f6 0f _PrintText@Next
-06:8105 03 _PrintText@NextByte
-06:8108 11 _PrintText@NextWrite
+06	PRG_TextEngine
+06:8000	21	GetNamePointer
+06:8021	1c	CopyCurrentIndex
+06:803d	12	_PrintText
+06:804f	13	_PrintText@CopyToPPU
+06:8062	13	_PrintText@ReadCommand
+06:8075	0c	_PrintText@CommandTable
+06:8081	33	_PrintText@Continue
+06:80b4	0a	_PrintText@Line
+06:80be	12	_PrintText@Para
+06:80d0	25	_PrintText@ParaLoop
+06:80f5	01	_PrintText@TextEnd
+06:80f6	0f	_PrintText@Next
+06:8105	03	_PrintText@NextByte
+06:8108	11	_PrintText@NextWrite
 06:8119
-7f:fb3d 07 GetWindowIndex
-7f:fb44 05 GetWindowIndex@Loop
-7f:fb49 01 GetWindowIndex@Quit
-7f:fb4a 0f StoreIndexedBank
-7f:fb59 08 CopyBytes
-7f:fb61 11 PrintText
-7f:fb72 0d GetPPUAddressFromNameTable
-7f:fb7f 04 ReadPPUData
-7f:fb83 0e ReadPPUData@Loop
-7f:fb91 04 WritePPUData
-7f:fb95 0e WritePPUData@Loop
-7f:fba3 04 WritePPUDataFromStringBuffer
-7f:fba7 10 WritePPUDataFromStringBuffer@Loop
-7f:fbb7 10 GetNameTableOffsetLine1
-7f:fbc7 10 GetNameTableOffsetLine2
-7f:fbd7 2c GetName
-7f:fc03 03 NamesPointers
-7f:fc06 09 GetNthString
-7f:fc0f 08 GetNthString@Loop
-7f:fc17 0b GetNthString@Next
-7f:fc22 01 GetNthString@Quit
-7f:fc23 25 Purchase
-7f:fc48 18 Purchase@BCDLoop
-7f:fc60 0d Purchase@BCDInc
-7f:fc6d 29 Purchase@BCDSubExit
-7f:fc94 01 Purchase@Done
-7f:fc95 18 Purchase@Backup
-7f:fcad 1d InitSound
-7f:fcca 1d UpdateSound
-7f:fce7 25 _LoadMusicByte
-7f:fd0c 1c PlayMusic
-7f:fd28 03 PlayMusic@NoMusic
-7f:fd2b 0a PlayMusic@Continue
-7f:fd35 26 PlayMusic2
-7f:fd5b 15 PlaySFX
-7f:fd70 12 PlaySFX@Play
-7f:fd82 07 PlaySFX@Done
-7f:fd89 06 WaitPlaySFX
-7f:fd8f 24 WaitSFX
-7f:fda3 05 SkipMusic
-7f:fda8 08 SkipMusic@Update
-7f:fdb0 23 CheckSFX
-7f:fdd3 01 CheckSFX@Carry
-7f:fdd4 01 CheckSFX@NoCarry
-7f:fdd5 1a UpdatePRG
-7f:fdef 0e UpdateCHR
-7f:fdfd 14 ResetPPUAddress
-7f:fe11 03 UpdateJoypads
-7f:fe14 0b UpdateJoypads@DoubleCheck
-7f:fe1f 0f UpdateJoypads@Loop
-7f:fe2e 0b ReadJoypads
-7f:fe39 10 ReadJoypads@Loop
-7f:fe49 14 Start
-7f:fe5d 03 Start@Loop
-7f:fe60 24 NMI
-7f:fe84 27 NMI@NotWaiting
-7f:feab 0a NMI@CheckScreenUpdateIndex
-7f:feb5 09 NMI@ResetScreenUpdateIndex
-7f:febe 03 NMI@DoSoundProcessing
-7f:fec1 07 NMI@Exit
-7f:fec8 1f NMI@Transition
-7f:fee7 28 NMI@PauseOrMenu
-7f:ff0f 08 NMI@Waiting
-7f:ff17 45 RESET
-7f:ff5c 0b RESET@VBlank2Loop
-7f:ff67 86 RESET@Loop
-7f:ffed 03 RESET@Next
-7f:fff0 01 IRQ 
-7f:fff1 09 UnreferencedTitle
-7f:fffa    NESVectorTables
+07:	PRG_Names0
+07:c000	0d	ItemNames
+07:c00d
+7f:fb3d	07	GetWindowIndex
+7f:fb44	05	GetWindowIndex@Loop
+7f:fb49	01	GetWindowIndex@Quit
+7f:fb4a	0f	StoreIndexedBank
+7f:fb59	08	CopyBytes
+7f:fb61	11	PrintText
+7f:fb72	0d	GetPPUAddressFromNameTable
+7f:fb7f	04	ReadPPUData
+7f:fb83	0e	ReadPPUData@Loop
+7f:fb91	04	WritePPUData
+7f:fb95	0e	WritePPUData@Loop
+7f:fba3	04	WritePPUDataFromStringBuffer
+7f:fba7	10	WritePPUDataFromStringBuffer@Loop
+7f:fbb7	10	GetNameTableOffsetLine1
+7f:fbc7	10	GetNameTableOffsetLine2
+7f:fbd7	2c	GetName
+7f:fc03	03	NamesPointers
+7f:fc06	09	GetNthString
+7f:fc0f	08	GetNthString@Loop
+7f:fc17	0b	GetNthString@Next
+7f:fc22	01	GetNthString@Quit
+7f:fc23	25	Purchase
+7f:fc48	18	Purchase@BCDLoop
+7f:fc60	0d	Purchase@BCDInc
+7f:fc6d	29	Purchase@BCDSubExit
+7f:fc94	01	Purchase@Done
+7f:fc95	18	Purchase@Backup
+7f:fcad	1d	InitSound
+7f:fcca	1d	UpdateSound
+7f:fce7	25	_LoadMusicByte
+7f:fd0c	1c	PlayMusic
+7f:fd28	03	PlayMusic@NoMusic
+7f:fd2b	0a	PlayMusic@Continue
+7f:fd35	26	PlayMusic2
+7f:fd5b	15	PlaySFX
+7f:fd70	12	PlaySFX@Play
+7f:fd82	07	PlaySFX@Done
+7f:fd89	06	WaitPlaySFX
+7f:fd8f	24	WaitSFX
+7f:fda3	05	SkipMusic
+7f:fda8	08	SkipMusic@Update
+7f:fdb0	23	CheckSFX
+7f:fdd3	01	CheckSFX@Carry
+7f:fdd4	01	CheckSFX@NoCarry
+7f:fdd5	1a	UpdatePRG
+7f:fdef	0e	UpdateCHR
+7f:fdfd	14	ResetPPUAddress
+7f:fe11	03	UpdateJoypads
+7f:fe14	0b	UpdateJoypads@DoubleCheck
+7f:fe1f	0f	UpdateJoypads@Loop
+7f:fe2e	0b	ReadJoypads
+7f:fe39	10	ReadJoypads@Loop
+7f:fe49	14	Start
+7f:fe5d	03	Start@Loop
+7f:fe60	24	NMI
+7f:fe84	27	NMI@NotWaiting
+7f:feab	0a	NMI@CheckScreenUpdateIndex
+7f:feb5	09	NMI@ResetScreenUpdateIndex
+7f:febe	03	NMI@DoSoundProcessing
+7f:fec1	07	NMI@Exit
+7f:fec8	1f	NMI@Transition
+7f:fee7	28	NMI@PauseOrMenu
+7f:ff0f	08	NMI@Waiting
+7f:ff17	45	RESET
+7f:ff5c	0b	RESET@VBlank2Loop
+7f:ff67	86	RESET@Loop
+7f:ffed	03	RESET@Next
+7f:fff0	01	IRQ
+7f:fff1	09	UnreferencedTitle
+7f:fffa		NESVectorTables
