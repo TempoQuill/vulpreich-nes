@@ -1,7 +1,9 @@
 PrintText:
 	SEC
+	; get index according to location upper digits
 	LDA #>_PrintText
 	JSR GetWindowIndex
+	; load bank into corresponding window
 	LDA #PRG_TextEngine
 	JSR StoreIndexedBank
 	JSR _PrintText
@@ -75,7 +77,6 @@ GetNameTableOffsetLine2:
 
 GetName:
 ; Return name CurrentIndex from name list ObjectType in StringBuffer.
-
 	; preserve registers
 	PHP
 	PHA
@@ -110,10 +111,8 @@ NamesPointers:
 	dba PRG_Names0, ItemNames
 
 GetNthString:
-; Return the address of the
-; ath string starting from (AuxAddresses) + 6
-
-	; return if a - 1 = 0
+; Return the address of the Ath string starting from (AuxAddresses + 6)
+	; return if A - 1 = 0
 	BEQ @Quit
 	; preserve X and Y
 	STY BackupY

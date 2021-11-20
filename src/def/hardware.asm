@@ -58,7 +58,7 @@ PPUDATA = $2007   ; current byte
 ;  $4000-$4015         $4016-$4017
 ; APU Features
 ; volume (with barebones sweep functions) (pulses, noise)
-; 11-bit pitch (pulses, triangle)
+; 11-bit pitch (pulses, hill)
 ; some features run at 240 Hz rather than the standard 60, marked by *
 ;
 
@@ -72,7 +72,7 @@ SQ2_SWEEP = $4005
 SQ2_LO = $4006
 SQ2_HI = $4007
 
-; $4009 isn't functional 55053
+; $4009 isn't functional
 TRI_LINEAR = $4008 ; 0-6: linear load* 7:   linear flag
 TRI_LO = $400a     ; 0-7: pitch
 TRI_HI = $400b     ; 0-2: pitch        3-7: length load

@@ -1,3 +1,24 @@
+HideSprites:
+	SEC
+	LDY #$ff
+	LDX #0
+@Loop:
+	TXA
+	SBC #4
+	TAX
+	STY OAM, X
+	BNE @Loop
+	RTS
+
+ClearOAM:
+	LDA #0
+	LDX #0
+@Loop:
+	DEX
+	STA OAM, X
+	BNE @Loop
+	RTS
+
 GetWindowIndex:
 ; input -  A - $80-$df
 ; output - X - PRG window X
@@ -13,6 +34,7 @@ GetWindowIndex:
 	RTS
 
 StoreIndexedBank:
+; store bank A into bank window X
 	STA CurrentROMBank
 	LDA MMC5_PRGBankSwitch2, X
 	STA Window1, X

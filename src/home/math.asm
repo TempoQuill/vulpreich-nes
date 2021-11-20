@@ -1,3 +1,27 @@
+SimpleMultiply:
+; multiply FactorBuffer * a
+	AND #$ff
+	BEQ @Quit
+@Loop:
+	CLC
+	ADC FactorBuffer
+	DEC FactorBuffer + 1
+	BNE @Loop
+@Quit:
+	RTS
+
+SimpleDivide:
+	LDX #0
+	STX DividerBuffer + 1
+@Loop:
+	SEC
+	INC DividerBuffer + 1
+	SBC DividerBuffer
+	BCS @Loop
+	DEC DividerBuffer + 1
+	ADC DividerBuffer
+	RTS
+
 Purchase:
 ; Subract current price from balance
 ; convert to decimal for display purposes

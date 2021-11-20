@@ -90,23 +90,23 @@
 00:0360		ChannelPitchIncrementation
 00:0370		ChannelLoopCounter
 00:0380		ChannelTempo
-00:03b0		ChannelCyclePattern
-00:03c0		ChannelVibratoCounter
-00:03d0		ChannelVibratoPreamble
-00:03e0		ChannelVibratoDepth
-00:03f0		ChannelVibratoTimer
-00:0400		ChannelSlideTarget
-00:0420		ChannelSlideDepth
-00:0430		ChannelSlideFraction
-00:0440		ChannelSlideTempo
-00:0450		ChannelMuteCounter
-00:0460		ChannelPitchModifier
-00:0480		ChannelRelativeNoteID
-00:0490		ChannelEnvelopeGroup
-00:04a0		ChannelEnvelopeGroupOffset
-00:04b0		ChannelMuteMain
-00:04c0		ChannelNoteLength
-00:0510		ChannelRAMEnd
+00:03a0		ChannelCyclePattern
+00:03b0		ChannelVibratoCounter
+00:03c0		ChannelVibratoPreamble
+00:03d0		ChannelVibratoDepth
+00:03e0		ChannelVibratoTimer
+00:03f0		ChannelSlideTarget
+00:0410		ChannelSlideDepth
+00:0420		ChannelSlideFraction
+00:0430		ChannelSlideTempo
+00:0440		ChannelMuteCounter
+00:0450		ChannelPitchModifier
+00:0470		ChannelRelativeNoteID
+00:0480		ChannelEnvelopeGroup
+00:0490		ChannelEnvelopeGroupOffset
+00:04a0		ChannelMuteMain
+00:04b0		ChannelNoteLength
+00:04c0		ChannelRAMEnd
 00:0510		HorizontalScrollingPPUAttributeUpdateBuffer
 00:0552		VerticalScrollingPPUAttributeUpdateBuffer
 00:0600		PPUBuffer
@@ -444,33 +444,42 @@
 07:	PRG_Names0
 07:c000	0d	ItemNames
 07:c00d
-7f:fb3d	07	GetWindowIndex
-7f:fb44	05	GetWindowIndex@Loop
-7f:fb49	01	GetWindowIndex@Quit
-7f:fb4a	0f	StoreIndexedBank
-7f:fb59	08	CopyBytes
-7f:fb61	11	PrintText
-7f:fb72	0d	GetPPUAddressFromNameTable
-7f:fb7f	04	ReadPPUData
-7f:fb83	0e	ReadPPUData@Loop
-7f:fb91	04	WritePPUData
-7f:fb95	0e	WritePPUData@Loop
-7f:fba3	04	WritePPUDataFromStringBuffer
-7f:fba7	10	WritePPUDataFromStringBuffer@Loop
-7f:fbb7	10	GetNameTableOffsetLine1
-7f:fbc7	10	GetNameTableOffsetLine2
-7f:fbd7	2c	GetName
-7f:fc03	03	NamesPointers
-7f:fc06	09	GetNthString
-7f:fc0f	08	GetNthString@Loop
-7f:fc17	0b	GetNthString@Next
-7f:fc22	01	GetNthString@Quit
-7f:fc23	25	Purchase
-7f:fc48	18	Purchase@BCDLoop
-7f:fc60	0d	Purchase@BCDInc
-7f:fc6d	29	Purchase@BCDSubExit
-7f:fc94	01	Purchase@Done
-7f:fc95	18	Purchase@Backup
+7f:fb07	04	SimpleMultiply
+7f:fb0b	07	SimpleMultiply@Loop
+7f:fb12	01	SimpleMultiply@Quit
+7f:fb13	04	SimpleDivide
+7f:fb17	0c	SimpleDivide@Loop
+7f:fb23	25	Purchase
+7f:fb48	18	Purchase@BCDLoop
+7f:fb60	0d	Purchase@BCDInc
+7f:fb6d	29	Purchase@BCDSubExit
+7f:fb96	01	Purchase@Done
+7f:fb97	18	Purchase@Backup
+7f:fbaf	05	HideSprites
+7f:fbb4	0a	HideSprites@Loop
+7f:fbbe	04	ClearOAM
+7f:fbc2	07	ClearOAM@Loop
+7f:fbc9	07	GetWindowIndex
+7f:fbd0	05	GetWindowIndex@Loop
+7f:fbd5	01	GetWindowIndex@Quit
+7f:fbd6	0f	StoreIndexedBank
+7f:fbe5	08	CopyBytes
+7f:fbeb	11	PrintText
+7f:fbfc	0d	GetPPUAddressFromNameTable
+7f:fc09	04	ReadPPUData
+7f:fc0d	0e	ReadPPUData@Loop
+7f:fc1b	04	WritePPUData
+7f:fc1f	0e	WritePPUData@Loop
+7f:fc2d	04	WritePPUDataFromStringBuffer
+7f:fc31	10	WritePPUDataFromStringBuffer@Loop
+7f:fc41	10	GetNameTableOffsetLine1
+7f:fc51	10	GetNameTableOffsetLine2
+7f:fc61	2c	GetName
+7f:fc8d	03	NamesPointers
+7f:fc90	09	GetNthString
+7f:fc99	08	GetNthString@Loop
+7f:fca1	0b	GetNthString@Next
+7f:fcac	01	GetNthString@Quit
 7f:fcad	1d	InitSound
 7f:fcca	1d	UpdateSound
 7f:fce7	25	_LoadMusicByte

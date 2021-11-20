@@ -14,7 +14,7 @@ df	1	switch data reading mode
 e0	3	note slide
 e1	3	vibrato
 e2	2	manual note length (turn off after x time)
-e3	2 / 1	turn music drum flag on (select kit)
+e3	2 / 1	turn music drum flag on/off (select kit)
 e6	3	raw pitch modifier
 e7	2	relative pitch
 e8	2	volume envelope group
@@ -24,8 +24,8 @@ eb	3	new song
 ec	1	sound effect priority on
 ed	1	sound effect priority off
 ee	3	jump according to flags within ZP ram
-f0	2 / 1	turn sound effect drum flag on (select kit)
-f1	1	decrement pitch timer (sharpens pitch)
+f0	2 / 1	turn sound effect drum flag on/off (select kit)
+f1	1	when on, decrement pitch timer (sharpens pitch)
 f2	1	swap between animation frames
 f3	1	treat proceeding data as music
 f9	1	turn event flag on

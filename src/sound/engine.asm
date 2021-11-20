@@ -1,4 +1,4 @@
-; The entire sound engine. Uses 00-2f in ZP RAM and 0200-050f in internal RAM.
+; The entire sound engine. Uses 00-27 in ZP RAM and 0200-04bf in internal RAM.
 
 ; Interfaces are in bank 7f.
 
@@ -40,7 +40,7 @@ _InitSound:
 	RTS
 
 PreserveIDRestart:
-; restart but keep the music id
+; restart but preserve music id
 	LDA MusicID
 	PHA
 	JSR _InitSound
@@ -1585,7 +1585,7 @@ MusicDummy: ; command e4 e5 ef f4 f5 f6 f7 f8
 	RTS
 
 Music_FrameSwap: ; command f2
-;  controlled by AudioCommandFlags >> FRAME_SWAP
+; controlled by AudioCommandFlags >> FRAME_SWAP
 ; only works on noise channels
 	TXA
 	AND #$ff ^ (1 << SFX_CHANNEL)

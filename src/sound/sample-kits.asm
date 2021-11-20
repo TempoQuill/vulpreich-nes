@@ -23,7 +23,7 @@ SampleKit0:
 	.dw Sample0_C ; double snare
 
 Sample0_0:
-	;   bnk, pch, ofs, len
+	;   bank, pitch, offset, length
 	.db PRG_DPCM0, $0f, $00, $00 ; bank $7e, pitch $f, $c000, $001 bytes
 
 Sample0_1:
