@@ -2,262 +2,262 @@
 ; section: AUDIO RAM (zero page)
 
 ; duty cycle, length flag, volume ramp flag, ramp length/volume
-AudioZPRAM:
-CurrentTrackEnvelope:
+zAudioRAM:
+zCurrentTrackEnvelope:
 	.dsb 1 ; 0000
 ; also includes note length
-CurrentTrackRawPitch:
+zCurrentTrackRawPitch:
 	.dsb 2
-CurrentNoteDuration:
+zCurrentNoteDuration:
 	.dsb 1
-CurrentMusicByte:
+zCurrentMusicByte:
 	.dsb 1 ; 0004
-CurrentChannel:
+zCurrentChannel:
 	.dsb 1
 
 ; linear length + flag
-HillLinearLength:
+zHillLinearLength:
 	.dsb 1
 ; 0 = off
 ; 1 = on
 ; 0-1: Pulses 2: Hill 3: Noise 4: DPCM
-Mixer:
+zMixer:
 	.dsb 1
-Sweep1:
+zSweep1:
 	.dsb 1 ; 0008
-Sweep2:
+zSweep2:
 	.dsb 1
-MusicID:
+zMusicID:
 	.dsb 1
-MusicBank:
+zMusicBank:
 	.dsb 1
 
-DrumAddresses:
+zDrumAddresses:
 	.dsb 4 ; 000c
-DrumChannel:
+zDrumChannel:
 	.dsb 1 ; 0010
-DrumDelay:
+zDrumDelay:
 	.dsb 1
-MusicDrumSet:
+zMusicDrumSet:
 	.dsb 1
-SFXDrumSet:
+zSFXDrumSet:
 	.dsb 1
 
-DPCMSamplePitch:
+zDPCMSamplePitch:
 	.dsb 1 ; 0014
-DPCMSampleOffset:
+zDPCMSampleOffset:
 	.dsb 1
-DPCMSampleLength:
+zDPCMSampleLength:
 	.dsb 1
-DPCMSampleBank:
+zDPCMSampleBank:
 	.dsb 1
 ; 0: Sound event 1: SFX Priority 2: MusicPlaying 3: frame swap 4-7: RAM Conditions
-AudioCommandFlags:
+zAudioCommandFlags:
 	.dsb 1 ; 0018
-CurrentSFX:
+zCurrentSFX:
 	.dsb 1
 
-ChannelFunctionPointer:
+zChannelFunctionPointer:
 	.dsb 2
-AudioCommandPointer:
+zAudioCommandPointer:
 	.dsb 2 ; 001c
-RawPitchBackup:
+zRawPitchBackup:
 	.dsb 2
 ; unused, stored but never read
-RawPitchTargetBackup:
+zRawPitchTargetBackup:
 	.dsb 2 ; 0020
 
-PitchSlideDifference:
+zPitchSlideDifference:
 	.dsb 2
-VibratoBackup:
+zVibratoBackup:
 	.dsb 1 ; 0024
-CurrentEnvelopeGroupOffset:
+zCurrentEnvelopeGroupOffset:
 	.dsb 1
-CurrentEnvelopeGroupAddress:
+zCurrentEnvelopeGroupAddress:
 	.dsb 2
-ZPAudioEnd:
+zAudioRAMEnd:
 ; FOR RENT
 	.dsb 7
-PPUScrollXHiMirror:
+zPPUScrollXHiMirror:
 	.dsb 1
-NMIWaitFlag:
+zNMIWaitFlag:
 	.dsb 1
 
 ; section: Hardware Assistive RAM
 ; backup registers, banks, addresses, and buffers
 
-BackupA:
+zBackupA:
 	.dsb 1 ; 0030
-BackupX:
+zBackupX:
 	.dsb 1
-BackupY:
+zBackupY:
 	.dsb 1
-RAMBank: ; MMC5 backups, also it's the zero page equivalent!
+zRAMBank: ; MMC5 backups, also it's the zero page equivalent!
 	.dsb 1
-Window1:
+zWindow1:
 	.dsb 1 ; 0034
-Window2:
+zWindow2:
 	.dsb 1
-Window3:
+zWindow3:
 	.dsb 1
-Window4:
+zWindow4:
 	.dsb 1
 
-AuxAddresses: ; back up 4 at a time
+zAuxAddresses: ; back up 4 at a time
 ; 0: audio
 ; 1: updates / text
 ; 2: vblank
 ; 3: everything else
 	.dsb 8 ; 0038
 
-FactorBuffer:
+zFactorBuffer:
 	.dsb 4 ; 0040
-DividerBuffer:
+zDividerBuffer:
 	.dsb 4 ; 0044
-AddendBuffer:
+zAddendBuffer:
 	.dsb 4 ; 0048
-DifferentialBuffer:
+zDifferentialBuffer:
 	.dsb 4 ; 004c
 
-InputBottleNeck:
+zInputBottleNeck:
 	.dsb 2 ; 0050
-InputCurrentState:
+zInputCurrentState:
 	.dsb 2
-ScreenUpdateIndex:
+zScreenUpdateIndex:
 	.dsb 1 ; 0054
-GlobalFrameCounter:
+zGlobalFrameCounter:
 	.dsb 1
-BackgroundXOffset:
+zBackgroundXOffset:
 	.dsb 1
-BackgroundYOffset:
+zBackgroundYOffset:
 	.dsb 1
-DrawBackgroundAttributesPPUBigAddr:
+zDrawBackgroundAttributesPPUBigAddr:
 	.dsb 2 ; 0058
 	.dsb 2
-PPUScrollYMirror:
+zPPUScrollYMirror:
 	.dsb 1 ; 005c
-PPUScrollXMirror:
+zPPUScrollXMirror:
 	.dsb 1
-PPUMaskMirror:
+zPPUMaskMirror:
 	.dsb 1
-PPUCtrlMirror:
+zPPUCtrlMirror:
 	.dsb 1
-CHRWindow0:
+zCHRWindow0:
 	.dsb 1 ; 0060
-CHRWindow1:
+zCHRWindow1:
 	.dsb 1
-CurrentCardBalance:
+zCurrentCardBalance:
 	.dsb 3
-CurrentPrice:
+zCurrentPrice:
 	.dsb 3
-CurrentCardBalanceBCD:
+zCurrentCardBalanceBCD:
 	.dsb 7 ; 0068
-DecimalPlaceBuffer:
+zDecimalPlaceBuffer:
 	.dsb 16
-StringXOffset:
+zStringXOffset:
 	.dsb 1
-StringBuffer:
+zStringBuffer:
 	.dsb $20 ; 0080
 	.dsb $20 ; 00a0
 	.dsb $20 ; 00c0
 	.dsb $20 ; 00e0
 
 ; section: STACK
-Stack:
-StackBottom:
+iStack:
+iStackBottom:
 	.dsb $100
-StackTop:
+iStackTop:
 
 ; section: AUDIO RAM (channels) 0200 - 050f
 ; each entry is spread across 16 bytes
 ; xx0 pulse 1 xx1 pulse 2 xx2 hill xx3 noise xx4 DPCM
 ; xx8 pulse 1 xx9 pulse 2 xxa hill xxb noise xxc DPCM
-ChannelRAM:
-ChannelID:
+iChannelRAM:
+iChannelID:
 	.dsb 16 ; 0200
-ChannelBank:
+iChannelBank:
 	.dsb 16
-ChannelFlagSection1:
+iChannelFlagSection1:
 	.dsb 16
-ChannelFlagSection2:
+iChannelFlagSection2:
 	.dsb 16
-ChannelFlagSection3:
+iChannelFlagSection3:
 	.dsb 16 ; 0240
-ChannelAddress:
+iChannelAddress:
 	.dsb 32
-ChannelBackupAddress1:
+iChannelBackupAddress1:
 	.dsb 32
-ChannelBackupAddress2:
+iChannelBackupAddress2:
 	.dsb 32
-ChannelNoteFlags:
+iChannelNoteFlags:
 	.dsb 16
-ChannelCondition:
+iChannelCondition:
 	.dsb 16 ; 02c0
-ChannelCycle:
+iChannelCycle:
 	.dsb 16
-ChannelEnvelope:
+iChannelEnvelope:
 	.dsb 16
-ChannelRawPitch:
+iChannelRawPitch:
 	.dsb 32
-ChannelNoteID:
+iChannelNoteID:
 	.dsb 16
-ChannelOctave:
+iChannelOctave:
 	.dsb 16
-ChannelTransposition:
+iChannelTransposition:
 	.dsb 16
-ChannelNoteDuration:
+iChannelNoteDuration:
 	.dsb 16 ; 0340
-ChannelNoteFlow:
+iChannelNoteFlow:
 	.dsb 16
-ChannelPitchIncrementation:
+iChannelPitchIncrementation:
 	.dsb 16
-ChannelLoopCounter:
+iChannelLoopCounter:
 	.dsb 16
-ChannelTempo:
+iChannelTempo:
 	.dsb 32 ; 0380
-ChannelCyclePattern:
+iChannelCyclePattern:
 	.dsb 16
-ChannelVibratoCounter:
+iChannelVibratoCounter:
 	.dsb 16
-ChannelVibratoPreamble:
+iChannelVibratoPreamble:
 	.dsb 16 ; 03c0
-ChannelVibratoDepth:
+iChannelVibratoDepth:
 	.dsb 16
-ChannelVibratoTimer:
+iChannelVibratoTimer:
 	.dsb 16
-ChannelSlideTarget:
+iChannelSlideTarget:
 	.dsb 32
-ChannelSlideDepth:
+iChannelSlideDepth:
 	.dsb 16
-ChannelSlideFraction:
+iChannelSlideFraction:
 	.dsb 16
-ChannelSlideTempo:
+iChannelSlideTempo:
 	.dsb 16
-ChannelMuteCounter:
+iChannelMuteCounter:
 	.dsb 16 ; 0440
-ChannelPitchModifier:
+iChannelPitchModifier:
 	.dsb 32
-ChannelRelativeNoteID:
+iChannelRelativeNoteID:
 	.dsb 16
-ChannelEnvelopeGroup:
+iChannelEnvelopeGroup:
 	.dsb 16 ; 0480
-ChannelEnvelopeGroupOffset:
+iChannelEnvelopeGroupOffset:
 	.dsb 16
-ChannelMuteMain:
+iChannelMuteMain:
 	.dsb 16
-ChannelNoteLength:
+iChannelNoteLength:
 	.dsb 16
-ChannelRAMEnd:
+iChannelRAMEnd:
 ; FOR RENT
 	.dsb $50 ; 04c0
-HorizontalScrollingPPUAttributeUpdateBuffer:
+iHorizontalScrollingPPUAttributeUpdateBuffer:
 	.dsb $42 ; 0510 - 0551
-VerticalScrollingPPUAttributeUpdateBuffer:
+iVerticalScrollingPPUAttributeUpdateBuffer:
 	.dsb $42 ; 0552 - 0593
 	.dsb $6c ; 0594 - 05ff
-PPUBuffer:
+iPPUBuffer:
 	.dsb $80 ; 0600 - 067f
-ScrollingPPUTileUpdateBuffer:
+iScrollingPPUTileUpdateBuffer:
 	.dsb $80 ; 0680 - 06ff
-OAM:
+iVirtualOAM:
 	.dsb $100 ; 0700 - 07ff

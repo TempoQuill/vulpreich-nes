@@ -11,47 +11,47 @@ PrintText:
 
 GetPPUAddressFromNameTable:
 ; store the nametable pointer through PPU
-	LDA NametableAddress + 1
+	LDA cNametableAddress + 1
 	STA PPUADDR
-	LDA NametableAddress
+	LDA cNametableAddress
 	STA PPUADDR
 	RTS
 
 ReadPPUData:
 ; copy 
 	LDX #TEXT_BOX_WIDTH
-	STX BackupX
+	STX zBackupX
 @Loop:
 	DEX
-	DEC BackupX
+	DEC zBackupX
 	LDA PPUDATA
-	STA StringBuffer + $30, X
-	LDX BackupX
+	STA zStringBuffer + $30, X
+	LDX zBackupX
 	BNE @Loop
 	RTS
 
 WritePPUData:
 	LDX #TEXT_BOX_WIDTH
-	STX BackupX
+	STX zBackupX
 @Loop:
 	DEX
-	DEC BackupX
+	DEC zBackupX
 	STA PPUDATA
-	INC NametableAddress
-	LDX BackupX
+	INC cNametableAddress
+	LDX zBackupX
 	BNE @Loop
 	RTS
 
 WritePPUDataFromStringBuffer:
 	LDX #TEXT_BOX_WIDTH
-	STX BackupX
+	STX zBackupX
 @Loop:
 	DEX
-	DEC BackupX
-	LDA StringBuffer + $30, X
+	DEC zBackupX
+	LDA zStringBuffer + $30, X
 	STA PPUDATA
-	INC NametableAddress
-	LDX BackupX
+	INC cNametableAddress
+	LDX zBackupX
 	BNE @Loop
 	RTS
 
@@ -59,24 +59,24 @@ GetNameTableOffsetLine1:
 	LDA #0
 	CLC
 	ADC #<TEXT_COORD_1
-	STA NametableAddress
+	STA cNametableAddress
 	LDA #$20
 	ADC #>TEXT_COORD_1
-	STA NametableAddress + 1
+	STA cNametableAddress + 1
 	RTS
 
 GetNameTableOffsetLine2:
 	LDA #0
 	CLC
 	ADC #<TEXT_COORD_2
-	STA NametableAddress
+	STA cNametableAddress
 	LDA #$20
 	ADC #>TEXT_COORD_2
-	STA NametableAddress + 1
+	STA cNametableAddress + 1
 	RTS
 
 GetName:
-; Return name CurrentIndex from name list ObjectType in StringBuffer.
+; Return name cCurrentIndex from name list cObjectType in zStringBuffer.
 	; preserve registers
 	PHP
 	PHA
@@ -111,22 +111,22 @@ NamesPointers:
 	dba PRG_Names0, ItemNames
 
 GetNthString:
-; Return the address of the Ath string starting from (AuxAddresses + 6)
+; Return the address of the Ath string starting from (zAuxAddresses + 6)
 	; return if A - 1 = 0
 	BEQ @Quit
 	; preserve X and Y
-	STY BackupY
-	STX BackupX
+	STY zBackupY
+	STX zBackupX
 	; Y has to be 0 to read 
 	LDY #0
-	; X = (CurrentIndex) - 1
+	; X = (cCurrentIndex - 1)
 	TAX
 @Loop:
 	; loop if not terminator
-	LDA (AuxAddresses + 6), Y
-	INC AuxAddresses + 6
+	LDA (zAuxAddresses + 6), Y
+	INC zAuxAddresses + 6
 	BEQ @Next
-	INC AuxAddresses + 7
+	INC zAuxAddresses + 7
 @Next:
 	CMP #"@"
 	BNE @Loop
@@ -134,7 +134,7 @@ GetNthString:
 	DEY
 	BNE @Loop
 	; restore X and Y
-	LDX BackupX
-	LDY BackupY
+	LDX zBackupX
+	LDY zBackupY
 @Quit:
 	RTS

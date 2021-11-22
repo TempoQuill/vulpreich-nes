@@ -6,7 +6,7 @@ HideSprites:
 	TXA
 	SBC #4
 	TAX
-	STY OAM, X
+	STY iVirtualOAM, X
 	BNE @Loop
 	RTS
 
@@ -15,7 +15,7 @@ ClearOAM:
 	LDX #0
 @Loop:
 	DEX
-	STA OAM, X
+	STA iVirtualOAM, X
 	BNE @Loop
 	RTS
 
@@ -35,17 +35,17 @@ GetWindowIndex:
 
 StoreIndexedBank:
 ; store bank A into bank window X
-	STA CurrentROMBank
+	STA cCurrentROMBank
 	LDA MMC5_PRGBankSwitch2, X
-	STA Window1, X
-	LDA CurrentROMBank
+	STA zWindow1, X
+	LDA cCurrentROMBank
 	STA MMC5_PRGBankSwitch2, X
 	RTS
 
 CopyBytes:
-; copy Y bytes from (AuxAddresses + 6) to (AuxAddresses + 2)
-	LDA (AuxAddresses + 6), Y
+; copy Y bytes from (zAuxAddresses + 6) to (zAuxAddresses + 2)
+	LDA (zAuxAddresses + 6), Y
 	DEY
-	STA (AuxAddresses + 2), Y
+	STA (zAuxAddresses + 2), Y
 	BNE CopyBytes
 	RTS

@@ -1,23 +1,23 @@
 GetNamePointer:
-	; turn ObjectType into index Y
-	LDA ObjectType
+	; turn cObjectType into index Y
+	LDA cObjectType
 	CLC
 	SBC #0
-	STA BackupA
+	STA zBackupA
 	LSR A
-	ADC BackupA
+	ADC zBackupA
 	TAY
 	; get three-byte pointer
 	; high
 	INY
 	INY
 	LDA NamesPointers, Y
-	STA AuxAddresses + 7
+	STA zAuxAddresses + 7
 	JSR GetWindowIndex
 	; low
 	DEY
 	LDA NamesPointers, Y
-	STA AuxAddresses + 6
+	STA zAuxAddresses + 6
 	; bank
 	DEY
 	LDA NamesPointers, Y
@@ -25,37 +25,37 @@ GetNamePointer:
 
 CopyCurrentIndex:
 	; get current index number
-	LDA CurrentIndex
+	LDA cCurrentIndex
 	CLC
 	SBC #0
 	JSR GetNthString
 
 	; copy ITEM_NAME_LENGTH bytes to string buffer
 	LDY #ITEM_NAME_LENGTH + 1
-	LDA #StringBuffer ; ZP RAM
-	STA AuxAddresses + 2
-	STA CurrentRAMAddress
+	LDA #zStringBuffer ; ZP RAM
+	STA zAuxAddresses + 2
+	STA cCurrentRAMAddress
 	LDA #0
-	STA AuxAddresses + 3
-	STA CurrentRAMAddress + 1
+	STA zAuxAddresses + 3
+	STA cCurrentRAMAddress + 1
 	JMP CopyBytes
 
 _PrintText:
-; Current character = (AuxAddresses + 6) + Y
-; Text Command Pointer = AuxAddresses 2
-; PPUADDR input = NametableAddress
-	LDA (AuxAddresses + 6), Y
+; Current character = (zAuxAddresses + 6) + Y
+; Text Command Pointer = zAuxAddresses 2
+; PPUADDR input = cNametableAddress
+	LDA (zAuxAddresses + 6), Y
 	CMP #"@"
 	PHA
 	BCS @ReadCommand
-	STA TextBuffer, Y
-	INC NametableAddress
+	STA cTextBuffer, Y
+	INC cNametableAddress
 	BNE @CopyToPPU
-	INC NametableAddress + 1
+	INC cNametableAddress + 1
 @CopyToPPU:
-	LDA NametableAddress + 1
+	LDA cNametableAddress + 1
 	STA PPUADDR
-	LDA NametableAddress
+	LDA cNametableAddress
 	STA PPUADDR
 	PLA
 	STA PPUDATA
@@ -68,11 +68,11 @@ _PrintText:
 	ASL A ; only sets c if A ≥ $80 at this point
 	TAX
 	LDA @CommandTable, X
-	STA AuxAddresses + 2
+	STA zAuxAddresses + 2
 	INX
 	LDA @CommandTable, X
-	STA AuxAddresses + 3
-	JMP (AuxAddresses + 2)
+	STA zAuxAddresses + 3
+	JMP (zAuxAddresses + 2)
 
 @CommandTable:
 ; text commands 50-cf
@@ -88,12 +88,12 @@ _PrintText:
 ; move line 2 to line 1 and print on line 2
 	JSR GetNameTableOffsetLine2
 	SEC
-	LDA NametableAddress
+	LDA cNametableAddress
 	SBC #$40
-	STA AuxAddresses + 2
-	LDA NametableAddress + 1
+	STA zAuxAddresses + 2
+	LDA cNametableAddress + 1
 	SBC #0
-	STA AuxAddresses + 3
+	STA zAuxAddresses + 3
 	JSR GetPPUAddressFromNameTable
 	JSR ReadPPUData
 	JSR GetNameTableOffsetLine1
@@ -117,14 +117,14 @@ _PrintText:
 @Para:
 ; start new paragraph
 ; effectively extends text beyond 256 bytes per string
-	; zipper Y with (AuxAddresses + 6)
+	; zipper Y with (zAuxAddresses + 6)
 	TYA
 	CLC ; only needed if we're on command $d2
-	ADC AuxAddresses + 6
-	STA AuxAddresses + 6
+	ADC zAuxAddresses + 6
+	STA zAuxAddresses + 6
 	LDA #0
-	ADC AuxAddresses + 7
-	STA AuxAddresses + 7
+	ADC zAuxAddresses + 7
+	STA zAuxAddresses + 7
 	; clear y
 	LDY #0
 	; use x to clear the text buffer
@@ -132,7 +132,7 @@ _PrintText:
 	LDA #" "
 @ParaLoop:
 	DEX
-	STA TextBuffer, X
+	STA cTextBuffer, X
 	BNE @ParaLoop
 	JSR GetNameTableOffsetLine2
 	JSR GetPPUAddressFromNameTable
@@ -151,19 +151,19 @@ _PrintText:
 	RTS
 
 @Next:
-; print at next line, offset by StringXOffset
-	INC NametableAddress
-	LDA NametableAddress
+; print at next line, offset by zStringXOffset
+	INC cNametableAddress
+	LDA cNametableAddress
 	BEQ @NextByte
 	AND #$3f
 	BEQ @NextWrite
 	JMP @Next
 @NextByte:
-	INC NametableAddress + 1
+	INC cNametableAddress + 1
 @NextWrite:
-	LDA NametableAddress + 1
+	LDA cNametableAddress + 1
 	STA PPUADDR
-	LDA NametableAddress
-	ADC StringXOffset
+	LDA cNametableAddress
+	ADC zStringXOffset
 	STA PPUADDR
 	JMP PrintText

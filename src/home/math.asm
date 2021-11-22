@@ -1,25 +1,25 @@
 SimpleMultiply:
-; multiply FactorBuffer * a
+; multiply zFactorBuffer * a
 	AND #$ff
 	BEQ @Quit
 @Loop:
 	CLC
-	ADC FactorBuffer
-	DEC FactorBuffer + 1
+	ADC zFactorBuffer
+	DEC zFactorBuffer + 1
 	BNE @Loop
 @Quit:
 	RTS
 
 SimpleDivide:
 	LDX #0
-	STX DividerBuffer + 1
+	STX zDividerBuffer + 1
 @Loop:
 	SEC
-	INC DividerBuffer + 1
-	SBC DividerBuffer
+	INC zDividerBuffer + 1
+	SBC zDividerBuffer
 	BCS @Loop
-	DEC DividerBuffer + 1
-	ADC DividerBuffer
+	DEC zDividerBuffer + 1
+	ADC zDividerBuffer
 	RTS
 
 Purchase:
@@ -28,76 +28,76 @@ Purchase:
 ; final balance = $(Y)(X)(A)
 	SEC
 	LDX #0
-	STX BackupX ; decimal placeholder
-	LDA CurrentCardBalance
-	SBC CurrentPrice
-	STA CurrentCardBalance
-	LDA CurrentCardBalance + 1
-	SBC CurrentPrice + 1
-	STA CurrentCardBalance + 1
+	STX zBackupX ; decimal placeholder
+	LDA zCurrentCardBalance
+	SBC zCurrentPrice
+	STA zCurrentCardBalance
+	LDA zCurrentCardBalance + 1
+	SBC zCurrentPrice + 1
+	STA zCurrentCardBalance + 1
 	TAX
-	LDA CurrentCardBalance + 2
-	SBC CurrentPrice + 2
-	STA CurrentCardBalance + 2
+	LDA zCurrentCardBalance + 2
+	SBC zCurrentPrice + 2
+	STA zCurrentCardBalance + 2
 	TAY
 
 	; bcd code
 	; clear buffer
 	LDA #0
-	STA DividerBuffer
-	STA DividerBuffer + 1
-	STA DividerBuffer + 2
-	STA DividerBuffer + 3
+	STA zDividerBuffer
+	STA zDividerBuffer + 1
+	STA zDividerBuffer + 2
+	STA zDividerBuffer + 3
 
 	; convert balance to decimal for display
-	LDA CurrentCardBalance
+	LDA zCurrentCardBalance
 
 @BCDLoop:
 	SBC #10
-	; c = 0 means CurrentCardBalance rolled over
+	; c = 0 means zCurrentCardBalance rolled over
 	BCS @BCDInc
 
 	; dec X in a way that clobbers the carry flag exactly once
-	STA BackupA
+	STA zBackupA
 	TXA
 	SBC #0
 	TAX
-	LDA BackupA
+	LDA zBackupA
 	BCS @BCDInc ; if still clear skip parameter
 
 	; dec Y in a way that clobbers the carry flag exactly once
-	STA BackupA
+	STA zBackupA
 	TYA
 	SBC #0
 	TAY
-	LDA BackupA
+	LDA zBackupA
 	BCC @BCDSubExit ; if still clear branch to subexit
 
 @BCDInc:
-	INC DividerBuffer
+	INC zDividerBuffer
 	BNE @BCDLoop
-	INC DividerBuffer + 1
+	INC zDividerBuffer + 1
 	BNE @BCDLoop
-	INC DividerBuffer + 2
+	INC zDividerBuffer + 2
 	JMP @BCDLoop
 
 @BCDSubExit:
-	LDA DividerBuffer + 2
-	STA CurrentCardBalance + 2
-	LDA DividerBuffer + 1
-	STA CurrentCardBalance + 1
-	LDA DividerBuffer
-	STA CurrentCardBalance
+	LDA zDividerBuffer + 2
+	STA zCurrentCardBalance + 2
+	LDA zDividerBuffer + 1
+	STA zCurrentCardBalance + 1
+	LDA zDividerBuffer
+	STA zCurrentCardBalance
 
-	LDA DividerBuffer + 2
+	LDA zDividerBuffer + 2
 	BNE @BCDLoop
-	LDA DividerBuffer + 1
+	LDA zDividerBuffer + 1
 	BNE @BCDLoop
-	LDA DividerBuffer
+	LDA zDividerBuffer
 	CMP #10
 	BCC @BCDLoop
-	LDX BackupX
-	STA CurrentCardBalanceBCD, X
+	LDX zBackupX
+	STA zCurrentCardBalanceBCD, X
 	INX
 	CPX #7
 	BEQ @Done
@@ -107,17 +107,17 @@ Purchase:
 	RTS
 
 @Backup:
-	STX BackupX
+	STX zBackupX
 	TXA
 	ASL A
-	ADC BackupX
+	ADC zBackupX
 	TAX
-	LDA CurrentCardBalance + 2
-	STA DecimalPlaceBuffer + 2, X
-	LDA CurrentCardBalance + 1
-	STA DecimalPlaceBuffer + 1, X
-	LDA CurrentCardBalance
-	STA DecimalPlaceBuffer, X
-	LDA BackupA
-	LDX CurrentCardBalance + 1
+	LDA zCurrentCardBalance + 2
+	STA zDecimalPlaceBuffer + 2, X
+	LDA zCurrentCardBalance + 1
+	STA zDecimalPlaceBuffer + 1, X
+	LDA zCurrentCardBalance
+	STA zDecimalPlaceBuffer, X
+	LDA zBackupA
+	LDX zCurrentCardBalance + 1
 	RTS

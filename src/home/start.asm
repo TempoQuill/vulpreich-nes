@@ -1,13 +1,13 @@
 UpdatePRG:
-	LDA RAMBank
+	LDA zRAMBank
 	STA MMC5_PRGBankSwitch1
-	LDA Window1
+	LDA zWindow1
 	STA MMC5_PRGBankSwitch2
-	LDA Window2
+	LDA zWindow2
 	STA MMC5_PRGBankSwitch3
-	LDA Window3
+	LDA zWindow3
 	STA MMC5_PRGBankSwitch4
-	LDA Window4
+	LDA zWindow4
 	STA MMC5_PRGBankSwitch5
 	RTS
 
@@ -16,10 +16,10 @@ UpdateCHR:
 ; 1024K only modes 0 and 1 can access the entire ROM with base registers
 ; 512K modes 0, 1 and 2 can access the entire ROM with base registers
 ; 256K all 4 modes 0-3 can access the entire ROM with base registers
-	LDA CHRWindow0
+	LDA zCHRWindow0
 	STA MMC5_CHRBankSwitch4 ; 0000-0fff
 
-	LDA CHRWindow1
+	LDA zCHRWindow1
 	STA MMC5_CHRBankSwitch8  ; 1000-1fff
 	STA MMC5_CHRBankSwitch12 ; 1000-1fff, 0000-0fff
 
@@ -43,21 +43,21 @@ UpdateJoypads:
 @DoubleCheck:
 	; Work around DPCM sample bug,
 	; where some spurious inputs are read
-	LDY InputBottleNeck
+	LDY zInputBottleNeck
 	JSR ReadJoypads
 
-	CPY InputBottleNeck
+	CPY zInputBottleNeck
 	BNE @DoubleCheck
 
 	LDX #$01
 
 @Loop:
-	LDA InputBottleNeck, X ; Update the press/held values
+	LDA zInputBottleNeck, X ; Update the press/held values
 	TAY
-	EOR InputCurrentState, X
-	AND InputBottleNeck, X
-	STA InputBottleNeck, X
-	STY InputCurrentState, X
+	EOR zInputCurrentState, X
+	AND zInputBottleNeck, X
+	STA zInputBottleNeck, X
+	STY zInputCurrentState, X
 	DEX
 	BPL @Loop
 
@@ -78,11 +78,11 @@ ReadJoypads:
 	LDA JOY1
 	LSR A
 	; Read standard controller data
-	ROL InputBottleNeck
+	ROL zInputBottleNeck
 
 	LDA JOY2
 	LSR A
-	ROL InputBottleNeck + 1 ; player 2
+	ROL zInputBottleNeck + 1 ; player 2
 	DEX
 	BNE @Loop
 
@@ -100,7 +100,7 @@ Start:
 ; PPUCtrl_NMIDisabled
 	LDA #$30
 	STA PPUCTRL
-	STA PPUCtrlMirror
+	STA zPPUCtrlMirror
 	JSR InitSound
 	LDY #MUSIC_NONE
 	JSR PlayMusic
@@ -126,7 +126,7 @@ Start:
 ;     divert to that code instead.
 ;  3. Hide the sprites/background and update the sprite OAM.
 ;  4. Load the current CHR banks.
-;  5. Check the `NMIWaitFlag`. If it's nonzero, restore `PPUMASK` and skip to
+;  5. Check the `zNMIWaitFlag`. If it's nonzero, restore `PPUMASK` and skip to
 ;     handling the sound processing.
 ;  6. Handle any horizontal or vertical scrolling tile updates.
 ;  7. Update PPU using the current screen update buffer.
@@ -134,12 +134,12 @@ Start:
 ;  9. Increment the global frame counter.
 ; 10. Reset PPU buffer if we just used it for the screen update.
 ; 11. Read joypad input.
-; 12. Decrement `NMIWaitFlag`, unblocking any code that was waiting for the NMI.
+; 12. Decrement `zNMIWaitFlag`, unblocking any code that was waiting for the NMI.
 ; 13. Run the audio engine.
 ; 14. Restore registers and processor flags, yield back to the game loop.
 ;
 ; The game loop is synchronized with rendering using `JSR WaitForNMI`, which
-; sets `NMIWaitFlag` to `$00` until the NMI completes and decrements it.
+; sets `zNMIWaitFlag` to `$00` until the NMI completes and decrements it.
 ;
 NMI:
 	PHP
@@ -149,7 +149,7 @@ NMI:
 	TYA
 	PHA
 
-	BIT StackBottom
+	BIT iStackBottom
 	BPL @PauseOrMenu ; branch if bit 7 was 0
 	BVC @Transition ; branch if bit 6 was 0
 	LDA #$00
@@ -160,7 +160,7 @@ NMI:
 
 	JSR UpdateCHR
 
-	LDA NMIWaitFlag
+	LDA zNMIWaitFlag
 	BEQ @NotWaiting
 	JMP @Waiting
 @NotWaiting
@@ -182,31 +182,31 @@ NMI:
 ; PPUCtrl_SpriteSize8x16
 ; PPUCtrl_NMIEnabled
 	LDA #$ec
-	ORA PPUScrollXHiMirror
+	ORA zPPUScrollXHiMirror
 
 	STA PPUCTRL
-	STA PPUCtrlMirror
-	LDA PPUScrollXMirror
+	STA zPPUCtrlMirror
+	LDA zPPUScrollXMirror
 	STA PPUSCROLL
-	LDA PPUScrollYMirror
+	LDA zPPUScrollYMirror
 	CLC
-	ADC BackgroundYOffset
+	ADC zBackgroundYOffset
 	STA PPUSCROLL
-	LDA PPUMaskMirror
+	LDA zPPUMaskMirror
 	STA PPUMASK
-	INC GlobalFrameCounter
+	INC zGlobalFrameCounter
 @CheckScreenUpdateIndex:
-	LDA ScreenUpdateIndex
+	LDA zScreenUpdateIndex
 	BNE @ResetScreenUpdateIndex
 
-	STA PPUBuffer
-	STA PPUBuffer + 1
+	STA iPPUBuffer
+	STA iPPUBuffer + 1
 
 @ResetScreenUpdateIndex:
 	LDA #ScreenUpdateBuffer_RAM_301
-	STA ScreenUpdateIndex
+	STA zScreenUpdateIndex
 	JSR UpdateJoypads
-	DEC NMIWaitFlag
+	DEC zNMIWaitFlag
 @DoSoundProcessing:
 	JSR UpdateSound
 @Exit:
@@ -227,13 +227,13 @@ NMI:
 	STA OAM_DMA
 	JSR UpdateCHR
 
-	LDA PPUMaskMirror
+	LDA zPPUMaskMirror
 	STA PPUMASK
 	JSR @DoSoundProcessing
 
-	LDA PPUCtrlMirror
+	LDA zPPUCtrlMirror
 	STA PPUCTRL
-	DEC NMIWaitFlag
+	DEC zNMIWaitFlag
 	JMP @Exit
 
 ;
@@ -251,11 +251,11 @@ NMI:
 
 	JSR ResetPPUAddress
 
-	LDA PPUScrollXMirror
+	LDA zPPUScrollXMirror
 	STA PPUSCROLL
 	LDA #$00
 	STA PPUSCROLL
-	LDA PPUMaskMirror
+	LDA zPPUMaskMirror
 	STA PPUMASK
 	JMP @CheckScreenUpdateIndex
 
@@ -263,7 +263,7 @@ NMI:
 ; When waiting for an NMI, just run the audio engine
 ;
 @Waiting:
-	LDA PPUMaskMirror
+	LDA zPPUMaskMirror
 	STA PPUMASK
 	JMP @DoSoundProcessing
 
@@ -294,7 +294,7 @@ RESET:
 	STA MMC5_NametableMapping
 
 	LDA #$0
-	STA RAMBank
+	STA zRAMBank
 	STA MMC5_CHRBankSwitchUpper
 
 	; MMC5 Pulse channels
@@ -302,13 +302,13 @@ RESET:
 	STA MMC5_SND_CHN
 
 	LDA #PRG_Start0
-	STA Window1
+	STA zWindow1
 	LDA #PRG_Start1
-	STA Window2
+	STA zWindow2
 	LDA #PRG_Start2
-	STA Window3
+	STA zWindow3
 	LDA #PRG_Home
-	STA Window4
+	STA zWindow4
 	JSR UpdatePRG
 
 	SEI

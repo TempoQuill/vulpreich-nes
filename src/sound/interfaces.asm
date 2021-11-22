@@ -6,7 +6,7 @@ InitSound:
 	TYA
 	PHA
 	LDA MMC5_PRGBankSwitch2
-	STA Window1
+	STA zWindow1
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
 	JSR _InitSound
@@ -27,7 +27,7 @@ UpdateSound:
 	TYA
 	PHA
 	LDA MMC5_PRGBankSwitch2
-	STA Window1
+	STA zWindow1
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
 	JSR _UpdateSound
@@ -41,21 +41,21 @@ UpdateSound:
 	RTS
 
 _LoadMusicByte:
-	STX BackupX
-	STY BackupY
-	LDY BackupX
-	LDA ChannelAddress + 16, X
-	STA AuxAddresses + 1
+	STX zBackupX
+	STY zBackupY
+	LDY zBackupX
+	LDA iChannelAddress + 16, X
+	STA zAuxAddresses + 1
 	JSR GetWindowIndex
-	LDA ChannelBank, Y
+	LDA iChannelBank, Y
 	JSR StoreIndexedBank
-	LDA ChannelAddress, Y
-	STA AuxAddresses
+	LDA iChannelAddress, Y
+	STA zAuxAddresses
 	LDY #0
-	LDA (AuxAddresses), Y
-	STA CurrentMusicByte
+	LDA (zAuxAddresses), Y
+	STA zCurrentMusicByte
 	JSR UpdatePRG ; restore old bank
-	LDX BackupX
+	LDX zBackupX
 	RTS
 
 PlayMusic:
@@ -66,12 +66,12 @@ PlayMusic:
 	TYA
 	PHA
 	LDA MMC5_PRGBankSwitch2
-	STA Window1
+	STA zWindow1
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
 
-	STY BackupY
-	LDY BackupY
+	STY zBackupY
+	LDY zBackupY
 	BEQ @NoMusic
 
 	JSR _PlayMusic
@@ -98,15 +98,15 @@ PlayMusic2:
 	TYA
 	PHA
 	LDA MMC5_PRGBankSwitch2
-	STA Window1
+	STA zWindow1
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
 
-	STY BackupY
+	STY zBackupY
 	LDY #0
 	JSR _PlayMusic
 
-	LDY BackupY
+	LDY zBackupY
 	JSR _PlayMusic
 
 	JSR UpdatePRG
@@ -128,19 +128,19 @@ PlaySFX:
 	JSR CheckSFX
 	BCC @Play
 
-	LDA CurrentSFX
-	STY BackupY
-	CMP BackupY
+	LDA zCurrentSFX
+	STY zBackupY
+	CMP zBackupY
 	BEQ @Play
 	BCS @Done
 
 @Play:
 	LDA MMC5_PRGBankSwitch2
-	STA Window1
+	STA zWindow1
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
 
-	STY CurrentSFX
+	STY zCurrentSFX
 	JSR _PlaySFX
 	JSR UpdatePRG
 
@@ -158,23 +158,23 @@ WaitPlaySFX:
 	JMP PlaySFX
 
 WaitSFX:
-	LDA ChannelFlagSection1 + CHAN_8
+	LDA iChannelFlagSection1 + CHAN_8
 	AND #1 << SOUND_CHANNEL_ON
 	BNE WaitSFX
 
-	LDA ChannelFlagSection1 + CHAN_9
+	LDA iChannelFlagSection1 + CHAN_9
 	AND #1 << SOUND_CHANNEL_ON
 	BNE WaitSFX
 
-	LDA ChannelFlagSection1 + CHAN_A
+	LDA iChannelFlagSection1 + CHAN_A
 	AND #1 << SOUND_CHANNEL_ON
 	BNE WaitSFX
 
-	LDA ChannelFlagSection1 + CHAN_B
+	LDA iChannelFlagSection1 + CHAN_B
 	AND #1 << SOUND_CHANNEL_ON
 	BNE WaitSFX
 
-	LDA ChannelFlagSection1 + CHAN_C
+	LDA iChannelFlagSection1 + CHAN_C
 	AND #1 << SOUND_CHANNEL_ON
 	BNE WaitSFX
 	RTS
@@ -189,23 +189,23 @@ SkipMusic:
 	JMP SkipMusic
 
 CheckSFX:
-	LDA ChannelFlagSection1 + CHAN_8
+	LDA iChannelFlagSection1 + CHAN_8
 	AND #1 << SOUND_CHANNEL_ON
 	BNE @Carry
 
-	LDA ChannelFlagSection1 + CHAN_9
+	LDA iChannelFlagSection1 + CHAN_9
 	AND #1 << SOUND_CHANNEL_ON
 	BNE @Carry
 
-	LDA ChannelFlagSection1 + CHAN_A
+	LDA iChannelFlagSection1 + CHAN_A
 	AND #1 << SOUND_CHANNEL_ON
 	BNE @Carry
 
-	LDA ChannelFlagSection1 + CHAN_B
+	LDA iChannelFlagSection1 + CHAN_B
 	AND #1 << SOUND_CHANNEL_ON
 	BNE @Carry
 
-	LDA ChannelFlagSection1 + CHAN_C
+	LDA iChannelFlagSection1 + CHAN_C
 	AND #1 << SOUND_CHANNEL_ON
 	BEQ @NoCarry
 

@@ -1,22 +1,22 @@
-CardBCDBalance:
+cCardBCDBalance:
 	.dsb 4 ; 5c00
-CurrentBCDPrice:
+cCurrentBCDPrice:
 	.dsb 4 ; 5c04
-NametableAddress:
+cNametableAddress:
 	.dsb 2 ; 5c08
-ObjectIndex:
+cObjectIndex:
 	.dsb 1
-ObjectType:
+cObjectType:
 	.dsb 1
-NamePointer:
+cNamePointer:
 ; bank, lo, high
 	.dsb 3 ; 5c0c
-CurrentIndex:
+cCurrentIndex:
 	.dsb 1
-CurrentRAMAddress:
+cCurrentRAMAddress:
 	.dsb 2 ; 5c10
-CurrentROMBank:
+cCurrentROMBank:
 	.dsb 1
 	.dsb $2ed
-TextBuffer:
+cTextBuffer:
 	.dsb $100 ; 5f00

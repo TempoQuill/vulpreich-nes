@@ -14,21 +14,21 @@ _InitSound:
 	JSR MusicOff
 	JSR ClearChannels
 	; clear 0000-0027
-	LDX #ZPAudioEnd - AudioZPRAM
+	LDX #zAudioRAMEnd - zAudioRAM
 @ClearZP:
 	DEX
-	STA AudioZPRAM, X
+	STA zAudioRAM, X
 	BNE @ClearZP
 	; clear 0200-04bf
-	LDX #<ChannelRAMEnd - <ChannelRAM
+	LDX #<iChannelRAMEnd - <iChannelRAM
 @ClearCRAMPart1:
 	DEX
-	STA ChannelRAM + $200, X
+	STA iChannelRAM + $200, X
 	BNE @ClearCRAMPart1
 @ClearCRAMPart2:
 	DEX
-	STA ChannelRAM, X
-	STA ChannelRAM + $100, X
+	STA iChannelRAM, X
+	STA iChannelRAM + $100, X
 	BNE @ClearCRAMPart2
 	JSR MusicOn
 	PLA
@@ -41,29 +41,29 @@ _InitSound:
 
 PreserveIDRestart:
 ; restart but preserve music id
-	LDA MusicID
+	LDA zMusicID
 	PHA
 	JSR _InitSound
 	PLA
-	STA MusicID
+	STA zMusicID
 	RTS
 
 MusicOn:
-	LDA AudioCommandFlags
+	LDA zAudioCommandFlags
 	ORA #1 << MUSIC_PLAYING
-	STA AudioCommandFlags
+	STA zAudioCommandFlags
 	RTS
 
 MusicOff:
-	LDA AudioCommandFlags
+	LDA zAudioCommandFlags
 	AND #$ff ^ (1 << MUSIC_PLAYING)
-	STA AudioCommandFlags
+	STA zAudioCommandFlags
 	RTS
 
 _UpdateSound:
 ; called once per frame
 	; no use updating audio if it's not playing
-	LDA AudioCommandFlags
+	LDA zAudioCommandFlags
 	AND #1 << MUSIC_PLAYING
 	BNE @PlayerOn
 	RTS
@@ -71,34 +71,34 @@ _UpdateSound:
 @PlayerOn:
 	; start at ch1
 	LDA #$f
-	STA Mixer
+	STA zMixer
 	LDX #CHAN_0
-	STX CurrentChannel
+	STX zCurrentChannel
 
 @Loop:
 	; check channel power
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	AND #1 << SOUND_CHANNEL_ON
 	BEQ @AndItsOn ; aaaaand it's on!
 	JMP @NextChannel
 
 @AndItsOn:
 	; check time left in the current note
-	LDA ChannelNoteDuration, X
+	LDA iChannelNoteDuration, X
 	CMP #2 ; 1 or 0?
 	BCC @NoteOver
 
-	DEC ChannelNoteDuration, X
+	DEC iChannelNoteDuration, X
 	JMP @ContinueSoundUpdate
 
 @NoteOver:
 	; reset vibrato delay
-	LDA ChannelVibratoPreamble, X
-	STA ChannelVibratoCounter, X
+	LDA iChannelVibratoPreamble, X
+	STA iChannelVibratoCounter, X
 	; turn vibrato off for now
-	LDA ChannelFlagSection2, X
+	LDA iChannelFlagSection2, X
 	AND #$ff ^ (1 << SOUND_VIBRATO)
-	STA ChannelFlagSection2, X
+	STA iChannelFlagSection2, X
 	; get next note
 	JSR ParseMusic
 @ContinueSoundUpdate:
@@ -112,29 +112,29 @@ _UpdateSound:
 	BEQ @Continue
 
 	; duty cycle
-	LDA ChannelCycle, X
+	LDA iChannelCycle, X
 	; volume envelope
-	ORA ChannelEnvelope, X
-	STA CurrentTrackEnvelope
+	ORA iChannelEnvelope, X
+	STA zCurrentTrackEnvelope
 	JMP @Continue
 
 @Hill:
 	; linear envelope
-	LDA ChannelEnvelope, X
-	STA HillLinearLength
+	LDA iChannelEnvelope, X
+	STA zHillLinearLength
 
 @Continue:
 	; raw pitch
-	LDY ChannelRawPitch + 16, X
-	LDA ChannelRawPitch, X
-	STY CurrentTrackRawPitch + 1
-	STA CurrentTrackRawPitch
+	LDY iChannelRawPitch + 16, X
+	LDA iChannelRawPitch, X
+	STY zCurrentTrackRawPitch + 1
+	STA zCurrentTrackRawPitch
 	; effects, noise, DPCM
 	JSR GeneralHandler
 	JSR HandleNoise
 	JSR HandleDPCM
 	; turn off music when playing sfx?
-	LDA AudioCommandFlags
+	LDA zAudioCommandFlags
 	AND #1 << SFX_PRIORITY
 	BEQ @Next
 	; are we in a sfx channel right now?
@@ -143,38 +143,38 @@ _UpdateSound:
 	BNE @Next
 	; are any sfx channels active?
 	; if so, mute
-	LDA ChannelFlagSection1 + CHAN_8
+	LDA iChannelFlagSection1 + CHAN_8
 	AND #1 << SOUND_CHANNEL_ON
 	BNE @RestNote
-	LDA ChannelFlagSection1 + CHAN_9
+	LDA iChannelFlagSection1 + CHAN_9
 	AND #1 << SOUND_CHANNEL_ON
 	BNE @RestNote
-	LDA ChannelFlagSection1 + CHAN_A
+	LDA iChannelFlagSection1 + CHAN_A
 	AND #1 << SOUND_CHANNEL_ON
 	BNE @RestNote
-	LDA ChannelFlagSection1 + CHAN_B
+	LDA iChannelFlagSection1 + CHAN_B
 	AND #1 << SOUND_CHANNEL_ON
 	BNE @RestNote
-	LDA ChannelFlagSection1 + CHAN_C
+	LDA iChannelFlagSection1 + CHAN_C
 	AND #1 << SOUND_CHANNEL_ON
 	BEQ @Next
 
-	LDA Mixer
+	LDA zMixer
 	EOR #$10 ; turn on DPCM
-	STA Mixer
+	STA zMixer
 	STA SND_CHN
 
 @RestNote:
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_REST ; rest
-	STA ChannelNoteFlags, X
+	STA iChannelNoteFlags, X
 
 @Next:
 	; are we in a sfx channel right now?
 	TXA
 	AND #1 << SFX_CHANNEL
 	BNE @SFXChannel
-	LDA ChannelFlagSection1 + (1 << SFX_CHANNEL), X
+	LDA iChannelFlagSection1 + (1 << SFX_CHANNEL), X
 	AND #1 << SOUND_CHANNEL_ON
 	BNE @SoundChannelOn
 @SFXChannel:
@@ -182,11 +182,11 @@ _UpdateSound:
 @SoundChannelOn:
 	; clear note flags
 	LDA #0
-	STA ChannelNoteFlags, X
+	STA iChannelNoteFlags, X
 @NextChannel:
 	; next channel
 	INX
-	INC CurrentChannel
+	INC zCurrentChannel
 	TXA
 	CMP #CHAN_C + 1
 	BCS @Done
@@ -206,11 +206,11 @@ UpdateChannels:
 	ASL A
 	TAY
 	LDA @FunctionPointers, Y
-	STA ChannelFunctionPointer
+	STA zChannelFunctionPointer
 	INY
 	LDA @FunctionPointers, Y
-	STA ChannelFunctionPointer + 1
-	JMP (ChannelFunctionPointer)
+	STA zChannelFunctionPointer + 1
+	JMP (zChannelFunctionPointer)
 
 @FunctionPointers:
 ; music channels
@@ -231,12 +231,12 @@ UpdateChannels:
 	.dw @DPCM
 
 @Pulse1:
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	PHA
 	AND #1 << NOTE_PITCH_SWEEP
 	BEQ @Pulse1_NoSweep
 
-	LDA Sweep1
+	LDA zSweep1
 	STA SQ1_SWEEP
 
 @Pulse1_NoSweep:
@@ -268,8 +268,8 @@ UpdateChannels:
 	JMP @Pulse1_CheckCycleOverride
 
 @Pulse1_PitchOverride:
-	LDA CurrentTrackRawPitch
-	LDY CurrentTrackRawPitch + 1
+	LDA zCurrentTrackRawPitch
+	LDY zCurrentTrackRawPitch + 1
 	STA SQ1_LO
 	STY SQ1_HI
 
@@ -283,14 +283,14 @@ UpdateChannels:
 @Pulse1_CycleOverride:
 @Pulse1_EnvOverride:
 	PLA
-	LDA CurrentTrackEnvelope
+	LDA zCurrentTrackEnvelope
 	STA SQ1_ENV
 	RTS
 
 @Pulse1_VibratoOverride:
 	PLA
-	LDA CurrentTrackEnvelope
-	LDY CurrentTrackRawPitch
+	LDA zCurrentTrackEnvelope
+	LDY zCurrentTrackRawPitch
 	STA SQ1_ENV
 	STY SQ1_LO
 	RTS
@@ -303,21 +303,21 @@ UpdateChannels:
 
 @Pulse1_NoiseSampling:
 	PLA
-	LDA CurrentTrackEnvelope
-	LDY CurrentTrackRawPitch
+	LDA zCurrentTrackEnvelope
+	LDY zCurrentTrackRawPitch
 	STA SQ1_ENV
-	LDA CurrentTrackRawPitch + 1
+	LDA zCurrentTrackRawPitch + 1
 	STY SQ1_LO
 	STA SQ1_HI
 	RTS
 
 @Pulse2:
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	PHA
 	AND #1 << NOTE_PITCH_SWEEP
 	BEQ @Pulse2_NoSweep
 
-	LDA Sweep2
+	LDA zSweep2
 	STA SQ2_SWEEP
 
 @Pulse2_NoSweep:
@@ -349,22 +349,22 @@ UpdateChannels:
 
 @Pulse2_EnvCycleOverrides:
 	PLA
-	LDA CurrentTrackEnvelope
+	LDA zCurrentTrackEnvelope
 	STA SQ2_ENV
 	RTS
 
 @Pulse2_PitchOverride:
 	PLA
-	LDA CurrentTrackRawPitch
-	LDY CurrentTrackRawPitch + 1
+	LDA zCurrentTrackRawPitch
+	LDY zCurrentTrackRawPitch + 1
 	STA SQ2_LO
 	STY SQ2_HI
 	RTS
 
 @Pulse2_VibratoOverride:
 	PLA
-	LDA CurrentTrackEnvelope
-	LDY CurrentTrackRawPitch
+	LDA zCurrentTrackEnvelope
+	LDY zCurrentTrackRawPitch
 	STA SQ2_ENV
 	STY SQ2_LO
 	RTS
@@ -377,16 +377,16 @@ UpdateChannels:
 
 @Pulse2_NoiseSampling:
 	PLA
-	LDA CurrentTrackEnvelope
-	LDY CurrentTrackRawPitch
+	LDA zCurrentTrackEnvelope
+	LDY zCurrentTrackRawPitch
 	STA SQ2_ENV
-	LDA CurrentTrackRawPitch + 1
+	LDA zCurrentTrackRawPitch + 1
 	STY SQ2_LO
 	STA SQ2_HI
 	RTS
 
 @Hill:
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	PHA
 	AND #1 << NOTE_REST
 	BNE @Hill_Rest
@@ -414,15 +414,15 @@ UpdateChannels:
 
 @Hill_PitchOverride:
 	PLA
-	LDA CurrentTrackRawPitch
-	LDY CurrentTrackRawPitch + 1
+	LDA zCurrentTrackRawPitch
+	LDY zCurrentTrackRawPitch + 1
 	STA TRI_LO
 	STY TRI_HI
 	RTS
 
 @Hill_VibratoOverride:
 	PLA
-	LDA CurrentTrackRawPitch
+	LDA zCurrentTrackRawPitch
 	STA TRI_LO
 	RTS
 
@@ -434,16 +434,16 @@ UpdateChannels:
 
 @Hill_NoiseSampling:
 	PLA
-	LDA HillLinearLength
-	LDY CurrentTrackRawPitch
+	LDA zHillLinearLength
+	LDY zCurrentTrackRawPitch
 	STA TRI_LINEAR
-	LDA CurrentTrackRawPitch + 1
+	LDA zCurrentTrackRawPitch + 1
 	STY TRI_HO
 	STA TRI_HI
 	RTS
 
 @Noise:
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	PHA
 	AND #1 << NOTE_NOISE_SAMPLING
 	BNE @Noise_NoiseSampling
@@ -462,8 +462,8 @@ UpdateChannels:
 
 @Noise_NoiseSampling:
 	PLA
-	LDA CurrentTrackEnvelope
-	LDY CurrentTrackRawPitch
+	LDA zCurrentTrackEnvelope
+	LDY zCurrentTrackRawPitch
 	STA NOISE_ENV
 	STY NOISE_LO
 	LDA #$8
@@ -471,7 +471,7 @@ UpdateChannels:
 	RTS
 
 @DPCM:
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	PHA
 	AND #1 << NOTE_DELTA_OVERRIDE | 1 << NOTE_NOISE_SAMPLING
 	BNE @DPCM_DeltaNoiseSamplingOverrides
@@ -484,9 +484,9 @@ UpdateChannels:
 
 @DPCM_Rest:
 	PLA
-	LDA Mixer
+	LDA zMixer
 	EOR #$10 ; turn off DPCM
-	STA Mixer
+	STA zMixer
 	STA SND_CHN
 	LDY #CHAN_4 << 2
 	LDA #$0
@@ -494,11 +494,11 @@ UpdateChannels:
 
 @DPCM_DeltaNoiseSamplingOverrides:
 	PLA
-	LDA DPCMSamplePitch
+	LDA zDPCMSamplePitch
 	STA DPCM_ENV
-	LDA DPCMSampleOffset
+	LDA zDPCMSampleOffset
 	STA DPCM_OFFSET
-	LDA DPCMSampleLength
+	LDA zDPCMSampleLength
 	STA DPCM_SIZE
 	RTS
 
@@ -507,83 +507,83 @@ UpdateChannels:
 
 LoadNote:
 	; wait for pitch slide to finish
-	LDA ChannelFlagSection2, X
+	LDA iChannelFlagSection2, X
 	PHA
 	AND #1 << SOUND_PITCH_SLIDE
 	BNE @PitchSlide
 	JMP @CheckRelativePitch
 	; get note duration
 @PitchSlide:
-	LDA ChannelNoteDuration, X
-	SBC CurrentNoteDuration
+	LDA iChannelNoteDuration, X
+	SBC zCurrentNoteDuration
 	BPL @PitchSlide_OK
 	LDA #1
 @PitchSlide_OK:
-	STA CurrentNoteDuration
+	STA zCurrentNoteDuration
 	; get raw pitch
-	LDA ChannelRawPitch, X
-	LDY ChannelRawPitch + 16, X
-	STA RawPitchBackup
-	STY RawPitchBackup + 1
+	LDA iChannelRawPitch, X
+	LDY iChannelRawPitch + 16, X
+	STA zRawPitchBackup
+	STY zRawPitchBackup + 1
 	; get direction of pitch slide
-	LDA ChannelSlideTarget, X
-	LDY ChannelSlideTarget + 16, X
-	STA RawPitchTargetBackup
-	STY RawPitchTargetBackup + 1
-	SBC ChannelRawPitch, X
-	STA PitchSlideDifference
+	LDA iChannelSlideTarget, X
+	LDY iChannelSlideTarget + 16, X
+	STA zRawPitchTargetBackup
+	STY zRawPitchTargetBackup + 1
+	SBC iChannelRawPitch, X
+	STA zPitchSlideDifference
 	TYA
-	SBC ChannelRawPitch + 16, X
-	STA PitchSlideDifference + 1
+	SBC iChannelRawPitch + 16, X
+	STA zPitchSlideDifference + 1
 	BCS @PitchSlide_Greater
-	LDA ChannelFlagSection3, X
+	LDA iChannelFlagSection3, X
 	ORA #1 << SOUND_PITCH_SLIDE_DIR
-	STA ChannelFlagSection3, X
+	STA iChannelFlagSection3, X
 	; flip bits of differential
-	LDA PitchSlideDifference + 1
+	LDA zPitchSlideDifference + 1
 	EOR #$ff
-	STA PitchSlideDifference + 1
-	LDA PitchSlideDifference
+	STA zPitchSlideDifference + 1
+	LDA zPitchSlideDifference
 	EOR #$ff
 	ADC #1
-	STA PitchSlideDifference
+	STA zPitchSlideDifference
 	JMP @PitchSlide_Resume
 
 @PitchSlide_Greater:
 	; clear directional flag
-	LDA ChannelFlagSection3, X
+	LDA iChannelFlagSection3, X
 	AND #$ff ^ (1 << SOUND_PITCH_SLIDE_DIR)
-	STA ChannelFlagSection3, X
+	STA iChannelFlagSection3, X
 
 @PitchSlide_Resume:
 	LDY #0 ; quotient
 
 @PitchSlide_Loop:
-	; PitchSlideDifference = x' * CurrentNoteDuration + y'
-	; x' + 1 -> >PitchSlideDifference
+	; zPitchSlideDifference = x' * zCurrentNoteDuration + y'
+	; x' + 1 -> >zPitchSlideDifference
 	; y' -> a
 	INY
-	LDA PitchSlideDifference
-	SBC CurrentNoteDuration
-	STA PitchSlideDifference
+	LDA zPitchSlideDifference
+	SBC zCurrentNoteDuration
+	STA zPitchSlideDifference
 	; borrow is not needed, loop
 	BCS @PitchSlide_Loop
 
-	LDA PitchSlideDifference + 1
+	LDA zPitchSlideDifference + 1
 	BEQ @PitchSlide_Quit
 
-	DEC PitchSlideDifference + 1
+	DEC zPitchSlideDifference + 1
 	JMP @PitchSlide_Loop
 
 @PitchSlide_Quit:
-	LDA PitchSlideDifference ; remainder
-	ADC CurrentNoteDuration
-	STY PitchSlideDifference + 1 ; quotient
+	LDA zPitchSlideDifference ; remainder
+	ADC zCurrentNoteDuration
+	STY zPitchSlideDifference + 1 ; quotient
 
-	STY ChannelSlideDepth, X ; quotient
-	STA ChannelSlideFraction, X ; remainder
+	STY iChannelSlideDepth, X ; quotient
+	STA iChannelSlideFraction, X ; remainder
 	LDA #0
-	STA ChannelSlideTempo, X
+	STA iChannelSlideTempo, X
 
 @CheckRelativePitch:
 	PLA
@@ -591,9 +591,9 @@ LoadNote:
 	AND #1 << SOUND_RELATIVE_PITCH
 	BEQ @CheckEnvelopePattern
 
-	LDA ChannelFlagSection3, X
+	LDA iChannelFlagSection3, X
 	AND #$ff ^ (1 << SOUND_REL_PITCH_FLAG)
-	STA ChannelFlagSection3, X
+	STA iChannelFlagSection3, X
 
 @CheckEnvelopePattern:
 	PLA
@@ -601,12 +601,12 @@ LoadNote:
 	AND #1 << SOUND_ENV_PTRN
 	BEQ @CheckMuteTimer
 
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	AND #$ff ^ (1 << NOTE_ENV_OVERRIDE)
-	STA ChannelNoteFlags, X
+	STA iChannelNoteFlags, X
 	; reset offset
 	LDA #0
-	STA ChannelEnvelopeGroupOffset, X
+	STA iChannelEnvelopeGroupOffset, X
 
 @CheckMuteTimer:
 	PLA
@@ -616,32 +616,32 @@ LoadNote:
 
 @MuteTimer:
 	; read main byte
-	LDA ChannelMuteMain, X
+	LDA iChannelMuteMain, X
 	; copy to counter
-	STA ChannelMuteCounter, X
+	STA iChannelMuteCounter, X
 	RTS
 
 GeneralHandler:
 ; handle cycle, pitch, env ptrn, mute, and vibrato
-	LDA ChannelFlagSection2, X
+	LDA iChannelFlagSection2, X
 	PHA
 	AND #1 << SOUND_CYCLE_LOOP ; cycle looping
 	BEQ @CheckRelativePitch
 
-	LDA CurrentTrackEnvelope
+	LDA zCurrentTrackEnvelope
 	AND #$3f
-	STA CurrentTrackEnvelope
-	LDA ChannelCyclePattern, X
+	STA zCurrentTrackEnvelope
+	LDA iChannelCyclePattern, X
 	ROL A
 	ROL A
-	STA ChannelCyclePattern, X
+	STA iChannelCyclePattern, X
 	AND #$c0
-	ORA CurrentTrackEnvelope
-	STA CurrentTrackEnvelope
+	ORA zCurrentTrackEnvelope
+	STA zCurrentTrackEnvelope
 
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_CYCLE_OVERRIDE
-	STA ChannelNoteFlags, X
+	STA iChannelNoteFlags, X
 
 @CheckRelativePitch:
 	PLA
@@ -650,7 +650,7 @@ GeneralHandler:
 	BEQ @CheckPitchOffset
 
 	; is relative pitch on?
-	LDA ChannelFlagSection3, X
+	LDA iChannelFlagSection3, X
 	PHA
 	AND #1 << SOUND_REL_PITCH_FLAG
 
@@ -659,29 +659,29 @@ GeneralHandler:
 	PLA
 	PHA
 	AND #$ff ^ (1 << SOUND_REL_PITCH_FLAG)
-	STA ChannelFlagSection3, X
+	STA iChannelFlagSection3, X
 
 	AND #1 << SOUND_REST
 	BNE @RelativePitch_SetFlag
 
 	PLA
 	; get pitch
-	LDA ChannelNoteID, X
+	LDA iChannelNoteID, X
 	; add to pitch value
-	ADC ChannelRelativeNoteID, X
-	STA ChannelNoteID, X
+	ADC iChannelRelativeNoteID, X
+	STA iChannelNoteID, X
 
 	; get octave
-	LDY ChannelOctave, X
+	LDY iChannelOctave, X
 	; get final tone
 	JSR GetPitch
-	STA CurrentTrackRawPitch
-	STY CurrentTrackRawPitch + 1
+	STA zCurrentTrackRawPitch
+	STY zCurrentTrackRawPitch + 1
 
 @RelativePitch_SetFlag:
 	PLA
 	ORA #1 << SOUND_REL_PITCH_FLAG
-	STA ChannelFlagSection3, X
+	STA iChannelFlagSection3, X
 
 ; interesting notes:
 ;	$d9 and $e7 can stack with each other
@@ -693,66 +693,66 @@ GeneralHandler:
 	AND #1 << SOUND_PITCH_MODIFIER
 	BEQ @CheckPitchInc
 
-	; sub offset to ChannelRawPitch
-	LDA CurrentTrackRawPitch
-	SBC ChannelPitchModifier + 16, X
-	STA CurrentTrackRawPitch
+	; sub offset to iChannelRawPitch
+	LDA zCurrentTrackRawPitch
+	SBC iChannelPitchModifier + 16, X
+	STA zCurrentTrackRawPitch
 
-	LDA CurrentTrackRawPitch + 1
-	SBC ChannelPitchModifier, X
-	STA CurrentTrackRawPitch + 1
+	LDA zCurrentTrackRawPitch + 1
+	SBC iChannelPitchModifier, X
+	STA zCurrentTrackRawPitch + 1
 
 @CheckPitchInc:
 	; is pitch inc on?
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	AND #1 << SOUND_PITCH_INC_SWITCH
 	BEQ @CheckVibrato
 
 	; is the byte active?
-	LDA ChannelPitchIncrementation, X
+	LDA iChannelPitchIncrementation, X
 	BEQ @CheckVibrato
 
 	; if so, inc the pitch by 1
-	LDA CurrentTrackRawPitch
+	LDA zCurrentTrackRawPitch
 	BEQ @CheckPitchInc_NoCarry
 
 	; inc high byte if low byte rolls over
-	DEC CurrentTrackRawPitch + 1
+	DEC zCurrentTrackRawPitch + 1
 
 ; incidentally, pitch_inc_switch can stack with pitch_offset
 ; for example, $f1 followed by $e6 $0001 would essentially mean $e6 $0002
 @CheckPitchInc_NoCarry:
-	DEC CurrentTrackRawPitch
+	DEC zCurrentTrackRawPitch
 
 @CheckVibrato:
 	; is vibrato on?
-	LDA ChannelFlagSection2, X
+	LDA iChannelFlagSection2, X
 	PHA
 	AND #1 << SOUND_VIBRATO ; vibrato
 	BEQ @CheckEnvelopePattern
 
 	; is vibrato active for this note yet?
 	; is the preamble over?
-	LDA ChannelVibratoCounter, X
+	LDA iChannelVibratoCounter, X
 	BNE @Vibrato_Subexit2
 
 	; is the depth nonzero?
-	LDA ChannelVibratoDepth, X
+	LDA iChannelVibratoDepth, X
 	BEQ @CheckEnvelopePattern
 
 	; save it for later
-	STA VibratoBackup
+	STA zVibratoBackup
 
 	; is it time to bend up/down?
-	LDA ChannelVibratoTimer, X
+	LDA iChannelVibratoTimer, X
 	AND #$f ; timer
 	BEQ @Vibrato_Bend
 
-	DEC ChannelVibratoTimer, X
+	DEC iChannelVibratoTimer, X
 	JMP @CheckEnvelopePattern
 
 @Vibrato_Subexit2:
-	DEC ChannelVibratoCounter, X
+	DEC iChannelVibratoCounter, X
 	JMP @CheckEnvelopePattern
 
 @Vibrato_Bend:
@@ -761,15 +761,15 @@ GeneralHandler:
 	ASL A
 	ASL A
 	ASL A
-	ORA ChannelVibratoTimer, X
-	STA ChannelVibratoTimer, X
+	ORA iChannelVibratoTimer, X
+	STA iChannelVibratoTimer, X
 
 	; get raw pitch
-	LDA CurrentTrackRawPitch
+	LDA zCurrentTrackRawPitch
 	TAY
 
 	; get direction
-	LDA ChannelFlagSection3, X
+	LDA iChannelFlagSection3, X
 	PHA
 	AND #1 << SOUND_VIBRATO_DIR ; vibrato up/down
 	BEQ @Vibrato_Down
@@ -779,13 +779,13 @@ GeneralHandler:
 	; vibrato down
 	PLA
 	AND #$ff ^ (1 << SOUND_VIBRATO_DIR)
-	STA ChannelFlagSection3, X
+	STA iChannelFlagSection3, X
 	; get the depth
-	LDA VibratoBackup
+	LDA zVibratoBackup
 	AND #$f ; low
-	STA VibratoBackup
+	STA zVibratoBackup
 	TYA
-	SBC VibratoBackup
+	SBC zVibratoBackup
 	BCS @Vibrato_NoBorrow
 	LDA #0
 	BEQ @Vibrato_NoCarry
@@ -794,27 +794,27 @@ GeneralHandler:
 	; vibrato up
 	PLA
 	ORA #1 << SOUND_VIBRATO_DIR
-	STA ChannelFlagSection3, X
+	STA iChannelFlagSection3, X
 
 	; get the depth
-	LDA VibratoBackup
+	LDA zVibratoBackup
 	AND #$f0 ; high
 	; move it to lo
 	LSR A
 	LSR A
 	LSR A
 	LSR A
-	STY VibratoBackup
-	ADC VibratoBackup
+	STY zVibratoBackup
+	ADC zVibratoBackup
 	BCC @Vibrato_NoCarry
 	LDA #$ff
 
 @Vibrato_NoBorrow:
 @Vibrato_NoCarry:
-	STA CurrentTrackRawPitch
-	LDA ChannelNoteFlags, X
+	STA zCurrentTrackRawPitch
+	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_VIBRATO_OVERRIDE
-	STA ChannelNoteFlags, X
+	STA iChannelNoteFlags, X
 
 @CheckEnvelopePattern:
 	PLA
@@ -822,12 +822,12 @@ GeneralHandler:
 	AND #1 << SOUND_ENV_PTRN
 	BEQ @CheckMuteTimer
 
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_ENV_OVERRIDE
-	STA ChannelNoteFlags, X
+	STA iChannelNoteFlags, X
 
 	; get group pointer
-	LDA ChannelEnvelopeGroup, X
+	LDA iChannelEnvelopeGroup, X
 	ASL A
 	TAY
 	TXA
@@ -843,18 +843,18 @@ GeneralHandler:
 	BCC @EnvelopePattern_Set
 
 	; pause during rest
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_REST
-	STA ChannelNoteFlags, X
+	STA iChannelNoteFlags, X
 	JMP @CheckMuteTimer
 
 @EnvelopePattern_Set:
 	; store envelope during note
-	ORA ChannelCycle, X
-	STA CurrentTrackEnvelope
-	LDA ChannelNoteFlags, X
+	ORA iChannelCycle, X
+	STA zCurrentTrackEnvelope
+	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_NOISE_SAMPLING
-	STA ChannelNoteFlags, X
+	STA iChannelNoteFlags, X
 
 @CheckMuteTimer:
 	PLA
@@ -864,129 +864,129 @@ GeneralHandler:
 
 @MuteTimer:
 	; check for active counter
-	LDA ChannelMuteCounter, X
+	LDA iChannelMuteCounter, X
 	BEQ @MuteTimer_Enable
 
 	; disable
-	DEC ChannelMuteCounter, X
+	DEC iChannelMuteCounter, X
 	RTS
 
 @MuteTimer_Enable:
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_REST
-	STA ChannelNoteFlags, X
+	STA iChannelNoteFlags, X
 	RTS
 
 ApplyPitchSlide:
 	; quit if pitch slide inactive
-	LDA ChannelFlagSection2, X
+	LDA iChannelFlagSection2, X
 	AND #1 << SOUND_PITCH_SLIDE
 	BNE @Now
 	RTS
 
 @Now:
 	; back up raw pitch
-	LDA ChannelRawPitch, X
-	LDY ChannelRawPitch + 16, X
-	STA RawPitchBackup
-	STY RawPitchBackup + 1
+	LDA iChannelRawPitch, X
+	LDY iChannelRawPitch + 16, X
+	STA zRawPitchBackup
+	STY zRawPitchBackup + 1
 
 	; check whether pitch slide is going up or down
-	LDA ChannelFlagSection3, X
+	LDA iChannelFlagSection3, X
 	AND #1 << SOUND_PITCH_SLIDE_DIR
 	BNE @SlidingUp
 
 	; sliding down
 	CLC
-	LDA RawPitchBackup
-	ADC ChannelSlideDepth, X
-	STA ChannelRawPitch, X
+	LDA zRawPitchBackup
+	ADC iChannelSlideDepth, X
+	STA iChannelRawPitch, X
 	TYA
 	ADC #0
-	STA ChannelRawPitch + 16, X
+	STA iChannelRawPitch + 16, X
 
-	; ChannelSlideTempo += ChannelSlideFraction
+	; iChannelSlideTempo += iChannelSlideFraction
 	; if rollover: pitch += 1
-	LDA ChannelSlideTempo, X
-	ADC ChannelSlideFraction, X
-	STA ChannelSlideFraction, X
+	LDA iChannelSlideTempo, X
+	ADC iChannelSlideFraction, X
+	STA iChannelSlideFraction, X
 
 	LDA #0
-	ADC ChannelRawPitch, X
-	STA ChannelRawPitch, X
+	ADC iChannelRawPitch, X
+	STA iChannelRawPitch, X
 	LDA #0
-	ADC ChannelRawPitch + 16, X
-	STA ChannelRawPitch + 16, X
+	ADC iChannelRawPitch + 16, X
+	STA iChannelRawPitch + 16, X
 
-	; Compare the dw at ChannelSlideTarget to ChannelRawPitch.
+	; Compare the dw at iChannelSlideTarget to iChannelRawPitch.
 	; If pitch is greater, we're finished.
 	; Otherwise, load the pitch and set two flags.
-	LDA ChannelSlideTarget + 16, X
-	CMP ChannelRawPitch + 16, X
+	LDA iChannelSlideTarget + 16, X
+	CMP iChannelRawPitch + 16, X
 	BCS @Finished
 	BNE @Continue
 
-	LDA ChannelSlideTarget, X
-	CMP ChannelRawPitch, X
+	LDA iChannelSlideTarget, X
+	CMP iChannelRawPitch, X
 	BEQ @JumpToContinue
 	BCS @Finished
 @JumpToContinue:
 	JMP @Continue
 
 @SlidingUp:
-	; pitch -= ChannelSlideDepth
+	; pitch -= iChannelSlideDepth
 	SEC
-	LDA RawPitchBackup
-	SBC ChannelSlideDepth, X
-	STA ChannelRawPitch, X
+	LDA zRawPitchBackup
+	SBC iChannelSlideDepth, X
+	STA iChannelRawPitch, X
 	BCS @SlidingUp_NoDec
 	DEY
 @SlidingUp_NoDec:
-	STA ChannelRawPitch + 16, X
+	STA iChannelRawPitch + 16, X
 
-	; ChannelSlideTempo *= 2
+	; iChannelSlideTempo *= 2
 	; if rollover: pitch -= 1
-	LDA ChannelSlideFraction, X
+	LDA iChannelSlideFraction, X
 	ASL A
-	STA ChannelSlideFraction, X
-	LDA ChannelRawPitch, X
+	STA iChannelSlideFraction, X
+	LDA iChannelRawPitch, X
 	SBC #0
-	STA ChannelRawPitch, X
+	STA iChannelRawPitch, X
 	TYA
 	SBC #0
 	TAY
-	STA ChannelRawPitch + 16, X
+	STA iChannelRawPitch + 16, X
 
-	; Compare the dw at ChannelSlideTarget to ChannelRawPitch.
+	; Compare the dw at iChannelSlideTarget to iChannelRawPitch.
 	; If pitch is lower, we're finished.
 	; Otherwise, load the pitch and set two flags.
-	LDA ChannelSlideTarget + 16, X
-	CMP ChannelRawPitch + 16, X
+	LDA iChannelSlideTarget + 16, X
+	CMP iChannelRawPitch + 16, X
 	BCS @Finished
 	BNE @Continue
 
-	LDA ChannelSlideTarget, X
-	CMP ChannelRawPitch, X
+	LDA iChannelSlideTarget, X
+	CMP iChannelRawPitch, X
 	BCC @Continue
 
 @Finished:
-	LDA ChannelFlagSection2, X
+	LDA iChannelFlagSection2, X
 	AND #FF ^ (1 << SOUND_PITCH_SLIDE)
-	STA ChannelFlagSection2, X
-	LDA ChannelFlagSection3, X
+	STA iChannelFlagSection2, X
+	LDA iChannelFlagSection3, X
 	AND #FF ^ (1 << SOUND_PITCH_SLIDE_DIR)
-	STA ChannelFlagSection3, X
+	STA iChannelFlagSection3, X
 	RTS
 
 @Continue:
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_PITCH_OVERRIDE | 1 << NOTE_CYCLE_OVERRIDE
-	STA ChannelNoteFlags, X
+	STA iChannelNoteFlags, X
 	RTS
 
 HandleNoise:
 	; is noise on?
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	AND #1 << SOUND_NOISE ; noise
 	BNE @CheckIfSFX
 	RTS
@@ -999,21 +999,21 @@ HandleNoise:
 
 	; is ch12 on? (noise)
 	; is ch12 playing noise?
-	LDA ChannelFlagSection1 + CHAN_B
+	LDA iChannelFlagSection1 + CHAN_B
 	AND #1 << SOUND_NOISE | 1 << SOUND_CHANNEL_ON
 	BEQ @Next
 	RTS ; quit if so
 
 @Next:
 	; exclusive to NES - percussion uses two channels: Noise and DPCM
-	LDA DrumChannel
+	LDA zDrumChannel
 	ORA #$8
-	STA DrumChannel
+	STA zDrumChannel
 
-	LDA DrumDelay
+	LDA zDrumDelay
 	BEQ @Read
 
-	DEC DrumDelay
+	DEC zDrumDelay
 	RTS
 
 @Read:
@@ -1027,57 +1027,57 @@ HandleNoise:
 
 	; is it empty?
 	LDY #0
-	LDA DrumAddresses
-	ORA DrumAddresses + 1
+	LDA zDrumAddresses
+	ORA zDrumAddresses + 1
 	BEQ @Quit
 
-	LDA (DrumAddresses), Y
-	INC DrumAddresses
+	LDA (zDrumAddresses), Y
+	INC zDrumAddresses
 
 	BNE @SkipCarry1
-	INC DrumAddresses + 1
+	INC zDrumAddresses + 1
 
 @SkipCarry1:
 	CMP #sound_ret_cmd
 	BEQ @Quit
 
 	AND #$f
-	STA DrumDelay
-	INC DrumDelay ; adds one frame to depicted duration
+	STA zDrumDelay
+	INC zDrumDelay ; adds one frame to depicted duration
 
-	LDA (DrumAddresses), Y
-	INC DrumAddresses
+	LDA (zDrumAddresses), Y
+	INC zDrumAddresses
 
 	BEQ @SkipCarry2, Y
-	INC DrumAddresses + 1
+	INC zDrumAddresses + 1
 
 @SkipCarry2:
-	STA CurrentTrackEnvelope
-	LDA (DrumAddresses), Y
-	INC DrumAddresses
+	STA zCurrentTrackEnvelope
+	LDA (zDrumAddresses), Y
+	INC zDrumAddresses
 
 	BEQ @SkipCarry3
-	INC DrumAddresses + 1
+	INC zDrumAddresses + 1
 
 @SkipCarry3:
-	STA CurrentTrackRawPitch
+	STA zCurrentTrackRawPitch
 	LDA #8
-	STA CurrentTrackRawPitch + 1
+	STA zCurrentTrackRawPitch + 1
 
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_NOISE_SAMPLING
-	STA ChannelNoteFlags, X
+	STA iChannelNoteFlags, X
 	RTS
 
 @Quit:
-	LDA DrumChannel
+	LDA zDrumChannel
 	EOR #$8
-	STA DrumChannel
+	STA zDrumChannel
 	RTS
 
 HandleDPCM: ; NES only
 	; is DPCM on?
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	AND #1 << SOUND_DPCM ; DPCM
 	BNE @CheckIfSFX
 	RTS
@@ -1085,15 +1085,15 @@ HandleDPCM: ; NES only
 @CheckIfSFX:
 	; is ch13 on? (DPCM)
 	; is ch13 playing samples?
-	LDA ChannelFlagSection1 + CHAN_C
+	LDA iChannelFlagSection1 + CHAN_C
 	AND #1 << SOUND_DPCM | 1 << SOUND_CHANNEL_ON
 	BEQ @Next
 	RTS ; quit if so
 
 @Next:
-	LDA DrumChannel
+	LDA zDrumChannel
 	ORA #$10
-	STA DrumChannel
+	STA zDrumChannel
 
 ; sample struct:
 ;	[vv] [wx] [yy] [zz]
@@ -1103,67 +1103,67 @@ HandleDPCM: ; NES only
 ;	yy: sample offset
 ;       zz: sample size
 	LDY #0
-	LDA DrumAddresses + 2
-	ORA DrumAddresses + 3
+	LDA zDrumAddresses + 2
+	ORA zDrumAddresses + 3
 	BEQ @Quit
 
-	LDA (DrumAddresses + 2), Y
-	INC DrumAddresses + 2
+	LDA (zDrumAddresses + 2), Y
+	INC zDrumAddresses + 2
 	BNE @SkipCarry1
 
-	INC DrumAddresses + 3
+	INC zDrumAddresses + 3
 
 @SkipCarry1:
-	STA DPCMSampleBank
+	STA zDPCMSampleBank
 	ORA #$80    ; ensures bank # points to ROM
-	STA Window3 ; c000-dfff address range
+	STA zWindow3 ; c000-dfff address range
 	JSR UpdatePRG
 
-	LDA (DrumAddresses + 2), Y
-	INC DrumAddresses + 2
+	LDA (zDrumAddresses + 2), Y
+	INC zDrumAddresses + 2
 	BNE @SkipCarry2
 
-	INC DrumAddresses + 3
+	INC zDrumAddresses + 3
 
 @SkipCarry2:
 	AND #$1f
-	STA DPCMSamplePitch
+	STA zDPCMSamplePitch
 
-	LDA (DrumAddresses + 2), Y
-	INC DrumAddresses + 2
+	LDA (zDrumAddresses + 2), Y
+	INC zDrumAddresses + 2
 	BEQ @SkipCarry3
 
-	INC DrumAddresses + 3
+	INC zDrumAddresses + 3
 
 @SkipCarry3:
-	STA DPCMSampleOffset
+	STA zDPCMSampleOffset
 
-	LDA (DrumAddresses + 2), Y
-	INC DrumAddresses + 2
+	LDA (zDrumAddresses + 2), Y
+	INC zDrumAddresses + 2
 	BEQ @SkipCarry4
 
-	INC DrumAddresses + 3
+	INC zDrumAddresses + 3
 
 @SkipCarry4:
-	STA DPCMSampleLength
-	LDA ChannelNoteFlags, X
+	STA zDPCMSampleLength
+	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_DELTA_OVERRIDE | 1 << NOTE_NOISE_SAMPLING
-	STA ChannelNoteFlags, X
+	STA iChannelNoteFlags, X
 
-	LDA Mixer
+	LDA zMixer
 	EOR #$10 ; turn on DPCM
-	STA Mixer
+	STA zMixer
 	STA SND_CHN
 	RTS
 
 @Quit:
-	LDA DrumChannel
+	LDA zDrumChannel
 	EOR #$10
-	STA DrumChannel
+	STA zDrumChannel
 
-	LDA Mixer
+	LDA zMixer
 	EOR #$10 ; turn off DPCM
-	STA Mixer
+	STA zMixer
 	STA SND_CHN
 	RTS
 
@@ -1182,9 +1182,9 @@ ParseMusic:
 	JMP ParseMusic ; start over
 
 @ReadNote:
-; CurrentMusicByte contains current note
+; zCurrentMusicByte contains current note
 ; special notes
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	PHA
 	AND #1 << SOUND_READING_MODE | 1 << SOUND_REST  ; sfx / sfx
 	BEQ @NextCheck
@@ -1200,12 +1200,12 @@ ParseMusic:
 @NormalNote:
 ; normal note
 	; set note duration (bottom nybble)
-	LDA CurrentMusicByte
+	LDA zCurrentMusicByte
 	AND #$f
 	JSR SetNoteDuration
 
 	; get note ID (top nybble)
-	LDA CurrentMusicByte
+	LDA zCurrentMusicByte
 	AND #$f0
 	LSR A
 	LSR A
@@ -1214,30 +1214,30 @@ ParseMusic:
 	BEQ @Rest ; note 0 -> rest
 
 	; update note ID
-	STA ChannelNoteID, X
+	STA iChannelNoteID, X
 	; store octave in Y
-	LDY ChannelOctave, X
+	LDY iChannelOctave, X
 	; update raw pitch
 	JSR GetPitch
-	STA CurrentTrackRawPitch
-	STY CurrentTrackRawPitch + 1
+	STA zCurrentTrackRawPitch
+	STY zCurrentTrackRawPitch + 1
 
 	; check if note or rest
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_NOISE_SAMPLING
-	STA ChannelNoteFlags, X
+	STA iChannelNoteFlags, X
 	JMP LoadNote
 
 @Rest:
 ; note = rest
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_REST
-	STA ChannelNoteFlags, X
+	STA iChannelNoteFlags, X
 	RTS
 
 @SoundRet:
 ; $ff is reached in music data
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	AND #1 << SOUND_SUBROUTINE ; in a subroutine?
 	BNE @ReadCommand ; execute
 
@@ -1246,12 +1246,12 @@ ParseMusic:
 	BCS @Channel8toC
 
 	; check if Channel 9's on
-	LDA ChannelFlagSection1 + (1 << SFX_CHANNEL), X
+	LDA iChannelFlagSection1 + (1 << SFX_CHANNEL), X
 	AND #1 << SOUND_CHANNEL_ON
 	BNE @OK
 
 @Channel8toC:
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	AND #1 << SOUND_REST
 	BEQ @SkipSub
 	JSR RestoreVolume
@@ -1271,19 +1271,19 @@ ParseMusic:
 ; stop playing
 
 	; turn channel off
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	AND #$ff ^ (1 << SOUND_CHANNEL_ON)
-	STA ChannelFlagSection1, X
+	STA iChannelFlagSection1, X
 
 	; note = rest
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_REST
-	STA ChannelNoteFlags, X
+	STA iChannelNoteFlags, X
 
 	; clear music id & bank
 	LDA #0
-	STA ChannelID, X
-	STA ChannelBank, X
+	STA iChannelID, X
+	STA iChannelBank, X
 	RTS
 
 RestoreVolume:
@@ -1295,24 +1295,24 @@ RestoreVolume:
 
 @Channel9:
 	LDA #0
-	STA ChannelPitchModifier + CHAN_9
-	STA ChannelPitchModifier + CHAN_9 + 16
-	STA ChannelPitchModifier + CHAN_B
-	STA ChannelPitchModifier + CHAN_B + 16
+	STA iChannelPitchModifier + CHAN_9
+	STA iChannelPitchModifier + CHAN_9 + 16
+	STA iChannelPitchModifier + CHAN_B
+	STA iChannelPitchModifier + CHAN_B + 16
 
-	LDA AudioCommandFlags
+	LDA zAudioCommandFlags
 	AND #$ff ^ (1 << SFX_PRIORITY)
-	STA AudioCommandFlags
+	STA zAudioCommandFlags
 	RTS
 
 ParseSFXOrRest:
 	; turn noise on
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_NOISE_SAMPLING
-	STA ChannelNoteFlags, X
+	STA iChannelNoteFlags, X
 
 	; update note duration
-	LDA CurrentMusicByte
+	LDA zCurrentMusicByte
 	JSR SetNoteDuration ; SFX notes can be longer than 16
 
 	TXA
@@ -1323,15 +1323,15 @@ ParseSFXOrRest:
 	; update volume envelope from next param
 	JSR GetMusicByte
 	AND #$3f
-	STA ChannelEnvelope, X
+	STA iChannelEnvelope, X
 	JMP @GetRawPitch
 @Hill:
 	JSR GetMusicByte
-	STA ChannelEnvelope, X
+	STA iChannelEnvelope, X
 @GetRawPitch:
 	; update low pitch from next param
 	JSR GetMusicByte
-	STA ChannelRawPitch, X
+	STA iChannelRawPitch, X
 
 	; are we on the last PSG channel? (noise)
 	TXA
@@ -1343,32 +1343,32 @@ ParseSFXOrRest:
 @NotNoise:
 	; update high pitch from next param
 	JSR GetMusicByte
-	STA ChannelRawPitch + 16, X
+	STA iChannelRawPitch + 16, X
 	RTS
 
 GetByteInEnvelopeGroup:
 	; get pointer
 	LDA EnvelopeGroups, Y
-	STA CurrentEnvelopeGroupAddress
+	STA zCurrentEnvelopeGroupAddress
 	LDA EnvelopeGroups + 1, Y
-	STA CurrentEnvelopeGroupAddress + 1
+	STA zCurrentEnvelopeGroupAddress + 1
 
 	; store the offset in ZP RAM
 	; each group can only be 256 bytes long
-	LDA ChannelEnvelopeGroupOffset, X
-	STA CurrentEnvelopeGroupOffset
-	ADC CurrentEnvelopeGroupAddress
-	STA CurrentEnvelopeGroupAddress
+	LDA iChannelEnvelopeGroupOffset, X
+	STA zCurrentEnvelopeGroupOffset
+	ADC zCurrentEnvelopeGroupAddress
+	STA zCurrentEnvelopeGroupAddress
 
 	LDA #0
-	STY BackupY ; save param
+	STY zBackupY ; save param
 	TAY
-	ADC CurrentEnvelopeGroupAddress + 1
-	STA CurrentEnvelopeGroupAddress + 1
+	ADC zCurrentEnvelopeGroupAddress + 1
+	STA zCurrentEnvelopeGroupAddress + 1
 
 	; check for ff/fe
-	LDA (CurrentEnvelopeGroupAddress), Y
-	LDY BackupY
+	LDA (zCurrentEnvelopeGroupAddress), Y
+	LDY zBackupY
 	CMP #$ff
 	BEQ @Quit
 
@@ -1378,19 +1378,19 @@ GetByteInEnvelopeGroup:
 	; reset offset when reading fe
 	; effectively loops the envelope sequence
 	LDA #0
-	STA ChannelEnvelopeGroupOffset, X
-	STA CurrentEnvelopeGroupOffset
+	STA iChannelEnvelopeGroupOffset, X
+	STA zCurrentEnvelopeGroupOffset
 
 	LDA EnvelopeGroups, Y
-	STA CurrentEnvelopeGroupAddress
+	STA zCurrentEnvelopeGroupAddress
 	LDA EnvelopeGroups + 1, Y
-	STA CurrentEnvelopeGroupAddress + 1
+	STA zCurrentEnvelopeGroupAddress + 1
 	TAY
-	LDA (CurrentEnvelopeGroupAddress), Y
+	LDA (zCurrentEnvelopeGroupAddress), Y
 
 @Next:
-	INC ChannelEnvelopeGroupOffset, X
-	INC CurrentEnvelopeGroupOffset
+	INC iChannelEnvelopeGroupOffset, X
+	INC zCurrentEnvelopeGroupOffset
 	RTS
 
 @Quit:
@@ -1398,7 +1398,7 @@ GetByteInEnvelopeGroup:
 	RTS
 
 GetDrumSample:
-; load ptr to sample headers in DrumAddresses
+; load ptr to sample headers in zDrumAddresses
 
 	; are we on the last channels?
 	TXA
@@ -1411,7 +1411,7 @@ GetDrumSample:
 
 @Valid:
 	; update note duration
-	LDA CurrentMusicByte
+	LDA zCurrentMusicByte
 	AND #$f
 	JSR SetNoteDuration
 
@@ -1421,24 +1421,24 @@ GetDrumSample:
 	BEQ @SFXNoise
 	BCS @SFXDPCM
 
-	LDA ChannelFlagSection1 + CHAN_B
+	LDA iChannelFlagSection1 + CHAN_B
 	AND #1 << SOUND_CHANNEL_ON ; is ch12 on? (noise)
 	BNE @CheckDPCM
 	JSR @ContinueNoise
 
 @CheckDPCM:
-	LDA ChannelFlagSection1 + CHAN_C
+	LDA iChannelFlagSection1 + CHAN_C
 	AND #1 << SOUND_CHANNEL_ON ; is ch13 on? (dpcm)
 	BEQ @ContinueDPCM
 	RTS
 
 @ContinueDPCM:
 	; load set ID
-	LDA MusicDrumSet
+	LDA zMusicDrumSet
 	JMP @NextDPCM
 
 @SFXDPCM:
-	LDA SFXDrumSet
+	LDA zSFXDrumSet
 
 @NextDPCM:
 	; load pointer to sample in A
@@ -1446,11 +1446,11 @@ GetDrumSample:
 	ASL A
 	TAY
 	LDA SampleKits, Y
-	STA DrumAddresses + 2
+	STA zDrumAddresses + 2
 	LDA SampleKits + 1, Y
-	STA DrumAddresses + 3
+	STA zDrumAddresses + 3
 	; get note
-	LDA CurrentMusicByte
+	LDA zCurrentMusicByte
 	; non-rest note?
 	AND #$f0
 	BNE @NonRestDPCM
@@ -1461,32 +1461,32 @@ GetDrumSample:
 	LSR A
 	LSR A
 	LSR A
-	; load pointer into part 2 of DrumAddresses
-	ADC DrumAddresses + 2
-	STA DrumAddresses + 2
+	; load pointer into part 2 of zDrumAddresses
+	ADC zDrumAddresses + 2
+	STA zDrumAddresses + 2
 	LDA #0
-	ADC DrumAddresses + 3
-	STA DrumAddresses + 3
+	ADC zDrumAddresses + 3
+	STA zDrumAddresses + 3
 	RTS
 
 @ContinueNoise:
 	; load set ID
-	LDA MusicDrumSet
+	LDA zMusicDrumSet
 	JMP @NextNoise
 
 @SFXNoise:
-	LDA SFXDrumSet
+	LDA zSFXDrumSet
 
 @NextNoise:
 	; load pointer to noise in A
 	ASL A
 	TAY
 	LDA DrumKits, Y
-	STA DrumAddresses
+	STA zDrumAddresses
 	LDA DrumKits + 1, Y
-	STA DrumAddresses + 1
+	STA zDrumAddresses + 1
 	; get note
-	LDA CurrentMusicByte
+	LDA zCurrentMusicByte
 	; non-rest note?
 	AND #$f0
 	BNE @NonRestNoise
@@ -1497,32 +1497,32 @@ GetDrumSample:
 	LSR A
 	LSR A
 	LSR A
-	; load pointer into part 1 of DrumAddresses
-	ADC DrumAddresses
-	STA DrumAddresses
+	; load pointer into part 1 of zDrumAddresses
+	ADC zDrumAddresses
+	STA zDrumAddresses
 	LDA #0
-	ADC DrumAddresses + 1
-	STA DrumAddresses + 1
+	ADC zDrumAddresses + 1
+	STA zDrumAddresses + 1
 
 	; clear delay
 	LDA #0
-	STA DrumDelay
+	STA zDrumDelay
 	RTS
 
 ParseMusicCommand:
 	; reload command
-	LDA CurrentMusicByte
+	LDA zCurrentMusicByte
 	; get command #
 	SBC #FIRST_SOUND_COMMAND
 	ASL A
 	TAY
 	; seek command pointer
 	LDA MusicCommands, Y
-	STA AudioCommandPointer
+	STA zAudioCommandPointer
 	LDA MusicCommands + 1, Y
-	STA AudioCommandPointer + 1
+	STA zAudioCommandPointer + 1
 	; jump to the new pointer
-	JMP (AudioCommandPointer)
+	JMP (zAudioCommandPointer)
 
 MusicCommands:
 ; entries correspond to audio constants (see src/def/sound.asm)
@@ -1585,7 +1585,7 @@ MusicDummy: ; command e4 e5 ef f4 f5 f6 f7 f8
 	RTS
 
 Music_FrameSwap: ; command f2
-; controlled by AudioCommandFlags >> FRAME_SWAP
+; controlled by zAudioCommandFlags >> FRAME_SWAP
 ; only works on noise channels
 	TXA
 	AND #$ff ^ (1 << SFX_CHANNEL)
@@ -1594,25 +1594,25 @@ Music_FrameSwap: ; command f2
 	RTS
 
 @Percussion:
-	LDA AudioCommandFlags
+	LDA zAudioCommandFlags
 	EOR #1 << FRAME_SWAP
-	STA AudioCommandFlags
+	STA zAudioCommandFlags
 	RTS
 
 Music_PitchIncSwitch: ; command f1
 ; dec APU timer by 1, thus incrementing pitch
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	ORA #1 << SOUND_PITCH_INC_SWITCH
-	STA ChannelFlagSection1, X
-	LDA ChannelPitchIncrementation, X
+	STA iChannelFlagSection1, X
+	LDA iChannelPitchIncrementation, X
 	EOR #$1
-	STA ChannelPitchIncrementation, X
+	STA iChannelPitchIncrementation, X
 	RTS
 
 Music_SetMusic: ; command f3
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	ORA #1 << SOUND_READING_MODE
-	STA ChannelFlagSection1, X
+	STA iChannelFlagSection1, X
 	RTS
 
 Music_Ret: ; command ff
@@ -1621,55 +1621,55 @@ Music_Ret: ; command ff
 ; return to source address (if possible)
 
 	; halves of the old code are reversed to apply a stack check
-	; copy ChannelBackupAddress1 to ChannelAddress
-	LDA ChannelBackupAddress1, X
-	LDY ChannelBackupAddress1 + 16, X
-	STA ChannelAddress, X
-	STY ChannelAddress + 16, X
-	; copy ChannelBackupAddress2 to ChannelBackupAddress1
-	LDA ChannelBackupAddress2, X
-	LDY ChannelBackupAddress2 + 16, X
-	STA ChannelBackupAddress1, X
-	STY ChannelBackupAddress1 + 16, X
+	; copy iChannelBackupAddress1 to iChannelAddress
+	LDA iChannelBackupAddress1, X
+	LDY iChannelBackupAddress1 + 16, X
+	STA iChannelAddress, X
+	STY iChannelAddress + 16, X
+	; copy iChannelBackupAddress2 to iChannelBackupAddress1
+	LDA iChannelBackupAddress2, X
+	LDY iChannelBackupAddress2 + 16, X
+	STA iChannelBackupAddress1, X
+	STY iChannelBackupAddress1 + 16, X
 	BEQ @ClearFlag
 
 	LDA #0
-	STA ChannelBackupAddress2, X
-	STA ChannelBackupAddress2 + 16, X
+	STA iChannelBackupAddress2, X
+	STA iChannelBackupAddress2 + 16, X
 	RTS
 
 @ClearFlag:
 	; reset subroutine flag
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	AND #$ff ^ (1 << SOUND_SUBROUTINE)
-	STA ChannelFlagSection1, X
+	STA iChannelFlagSection1, X
 	RTS
 
 Music_Call: ; command fe
 ; call music stream (subroutine)
 ; parameters: ll hh ; pointer to subroutine
 
-	; copy ChannelBackupAddress1 to ChannelBackupAddress2
-	LDA ChannelBackupAddress1, X
-	LDY ChannelBackupAddress1 + 16, X
-	STA ChannelBackupAddress2, X
-	STA ChannelBackupAddress2 + 16, X
-	; copy ChannelAddress to ChannelBackupAddress1
-	LDA ChannelAddress, X
-	LDY ChannelAddress + 16, X
-	STA ChannelBackupAddress1, X
-	STY ChannelBackupAddress1 + 16, X
+	; copy iChannelBackupAddress1 to iChannelBackupAddress2
+	LDA iChannelBackupAddress1, X
+	LDY iChannelBackupAddress1 + 16, X
+	STA iChannelBackupAddress2, X
+	STA iChannelBackupAddress2 + 16, X
+	; copy iChannelAddress to iChannelBackupAddress1
+	LDA iChannelAddress, X
+	LDY iChannelAddress + 16, X
+	STA iChannelBackupAddress1, X
+	STY iChannelBackupAddress1 + 16, X
 
 	; get pointer from next 2 bytes
 	JSR GetMusicByte
-	STA ChannelAddress, X
+	STA iChannelAddress, X
 	JSR GetMusicByte
-	STA ChannelAddress + 16, X
+	STA iChannelAddress + 16, X
 
 	; set subroutine flag
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	ORA #1 << SOUND_SUBROUTINE
-	STA ChannelFlagSection1, X
+	STA iChannelFlagSection1, X
 	RTS
 
 Music_Jump: ; command fc
@@ -1678,9 +1678,9 @@ Music_Jump: ; command fc
 
 	; get pointer from next 2 bytes
 	JSR GetMusicByte
-	STA ChannelAddress, X
+	STA iChannelAddress, X
 	JSR GetMusicByte
-	STA ChannelAddress + 16, X
+	STA iChannelAddress + 16, X
 	RTS
 
 Music_Loop: ; command fd
@@ -1693,48 +1693,48 @@ Music_Loop: ; command fd
 
 	; get loop count
 	JSR GetMusicByte
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	AND #1 << SOUND_LOOPING ; has the loop been initiated?
 	BNE @CheckLoop
 
-	LDY CurrentMusicByte ; loop counter 0 = infinite
+	LDY zCurrentMusicByte ; loop counter 0 = infinite
 	BEQ @Loop
 
 	; initiate loop
 	DEY
-	LDA ChannelFlagSection1, X ; set loop flag
+	LDA iChannelFlagSection1, X ; set loop flag
 	ORA #1 << SOUND_LOOPING
-	STA ChannelFlagSection1, X
-	STY ChannelLoopCounter, X ; store loop counter
+	STA iChannelFlagSection1, X
+	STY iChannelLoopCounter, X ; store loop counter
 
 @CheckLoop:
-	LDA ChannelLoopCounter, X ; are we done?
+	LDA iChannelLoopCounter, X ; are we done?
 	BEQ @EndLoop
 
-	DEC ChannelLoopCounter, X
+	DEC iChannelLoopCounter, X
 
 @Loop:
 	; get pointer
 	JSR GetMusicByte
-	; load new pointer into ChannelAddress
-	STA ChannelAddress, X
+	; load new pointer into iChannelAddress
+	STA iChannelAddress, X
 	JSR GetMusicByte
-	STA ChannelAddress + 16, X
+	STA iChannelAddress + 16, X
 	RTS
 
 @EndLoop:
 	; reset loop flag
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	AND #$ff ^ (1 << SOUND_LOOPING)
-	STA ChannelFlagSection1, X
+	STA iChannelFlagSection1, X
 
 	; skip to next command
-	LDA ChannelAddress, X
+	LDA iChannelAddress, X
 	ADC #2 ; skip pointer
-	STA ChannelAddress, X
-	LDA ChannelAddress + 16, X
+	STA iChannelAddress, X
+	LDA iChannelAddress + 16, X
 	ADC #0 ; update high byte in case of carry
-	STA ChannelAddress + 16, X
+	STA iChannelAddress + 16, X
 	RTS
 
 Music_SetCondition: ; command fa
@@ -1746,7 +1746,7 @@ Music_SetCondition: ; command fa
 
 	; set condition
 	JSR GetMusicByte
-	STA ChannelCondition, X
+	STA iChannelCondition, X
 	RTS
 
 Music_JumpIf: ; command fb
@@ -1761,33 +1761,33 @@ Music_JumpIf: ; command fb
 	; a = condition
 	JSR GetMusicByte
 	; if existing condition matches, jump to new address
-	CMP ChannelCondition, X
+	CMP iChannelCondition, X
 	BEQ @Jump
 ; skip to next command
 	; get address
-	LDA ChannelAddress, X
+	LDA iChannelAddress, X
 	ADC #2 ; skip pointer
-	STA ChannelAddress, X
-	LDA ChannelAddress + 16, X
+	STA iChannelAddress, X
+	LDA iChannelAddress + 16, X
 	ADC #0 ; update high byte in case of carry
-	STA ChannelAddress + 16, X
+	STA iChannelAddress + 16, X
 	RTS
 
 @Jump:
 ; jump to the new address
 	; get pointer
 	JSR GetMusicByte
-	; update pointer in ChannelAddress
-	STA ChannelAddress, X
+	; update pointer in iChannelAddress
+	STA iChannelAddress, X
 	JSR GetMusicByte
-	STA ChannelAddress + 16, X
+	STA iChannelAddress + 16, X
 	RTS
 
 Music_JumpRAM: ; command ee
 ; conditional jump
 ; checks for active condition flags in ZP RAM
 ; in Pokemon each condition flag had their own byte
-; in Vulpreich, to save space, these are stored as flags in AudioCommandFlags
+; in Vulpreich, to save space, these are stored as flags in zAudioCommandFlags
 ; params: 2
 ; ll hh ; pointer
 
@@ -1795,27 +1795,27 @@ Music_JumpRAM: ; command ee
 	TXA
 	AND #$ff ^ (1 << SFX_CHANNEL)
 	TAY
-	LDA AudioCommandFlags
+	LDA zAudioCommandFlags
 	; mask current channel (DPCM = noise for the sake of percussion)
 	AND @Masks, Y
 	BNE @Jump ; if active, jump
 	; skip pointer
-	LDA ChannelAddress, X
+	LDA iChannelAddress, X
 	ADC #2
-	STA ChannelAddress, X
-	LDA ChannelAddress + 16, X
+	STA iChannelAddress, X
+	LDA iChannelAddress + 16, X
 	ADC #0
-	STA ChannelAddress + 16, X
+	STA iChannelAddress + 16, X
 	RTS
 
 @Jump:
-	LDA AudioCommandFlags
+	LDA zAudioCommandFlags
 	EOR @Masks, Y
 
 	JSR GetMusicByte
-	STA ChannelAddress, X
+	STA iChannelAddress, X
 	JSR GetMusicByte
-	STA ChannelAddress + 16, X
+	STA iChannelAddress + 16, X
 	RTS
 
 @Masks:
@@ -1827,11 +1827,11 @@ Music_JumpRAM: ; command ee
 
 Music_SetSoundEvent: ; command f9
 ; $F9
-; sets an exclusive flag in AudioCommandFlags
+; sets an exclusive flag in zAudioCommandFlags
 ; params: 0
-	LDA AudioCommandFlags
+	LDA zAudioCommandFlags
 	ORA #1 << SOUND_EVENT
-	STA AudioCommandFlags
+	STA zAudioCommandFlags
 	RTS
 
 Music_TimeMute: ; command e2
@@ -1840,11 +1840,11 @@ Music_TimeMute: ; command e2
 ; params: 1
 
 	JSR GetMusicByte
-	STA ChannelMuteMain, X
+	STA iChannelMuteMain, X
 
-	LDA ChannelFlagSection2, X
+	LDA iChannelFlagSection2, X
 	ORA #1 << SOUND_MUTE
-	STA ChannelFlagSection2, X
+	STA iChannelFlagSection2, X
 	RTS
 
 Music_Vibrato: ; command e1
@@ -1857,20 +1857,20 @@ Music_Vibrato: ; command e1
 	; z: rate (# frames per cycle)
 
 	; set vibrato flag?
-	LDA ChannelFlagSection2, X
+	LDA iChannelFlagSection2, X
 	ORA #1 << SOUND_VIBRATO
-	STA ChannelFlagSection2, X
+	STA iChannelFlagSection2, X
 
 	; start at lower frequency (depth is positive)
-	LDA ChannelFlagSection3, X
+	LDA iChannelFlagSection3, X
 	AND #$ff ^ (1 << SOUND_VIBRATO_DIR)
-	STA ChannelFlagSection3, X
+	STA iChannelFlagSection3, X
 	; get preamble
 	JSR GetMusicByte
 ; update preamble
-	STA ChannelVibratoPreamble, X
+	STA iChannelVibratoPreamble, X
 ; update counter
-	STA ChannelVibratoCounter, X
+	STA iChannelVibratoCounter, X
 ; update depth
 ; this is split into halves only to get added back together at the last second
 	; get depth/timer
@@ -1882,25 +1882,25 @@ Music_Vibrato: ; command e1
 	LSR A
 	LSR A
 	LSR A ; halve
-	STA VibratoBackup
+	STA zVibratoBackup
 	ADC #0 ; round up
 	ASL A
 	ASL A
 	ASL A
 	ASL A
-	ORA VibratoBackup
-	STA ChannelVibratoDepth, X
+	ORA zVibratoBackup
+	STA iChannelVibratoDepth, X
 ; update timer
-	LDA CurrentMusicByte
+	LDA zCurrentMusicByte
 	; get bottom nybble
 	AND #$f
-	STA VibratoBackup
+	STA zVibratoBackup
 	ASL A
 	ASL A
 	ASL A
 	ASL A
-	ORA VibratoBackup
-	STA ChannelVibratoTimer, X
+	ORA zVibratoBackup
+	STA iChannelVibratoTimer, X
 	RTS
 
 Music_PitchSlide: ; command e0
@@ -1909,7 +1909,7 @@ Music_PitchSlide: ; command e0
 ; note duration
 ; target note
 	JSR GetMusicByte
-	STA CurrentNoteDuration
+	STA zCurrentNoteDuration
 	JSR GetMusicByte
 
 	; octave in Y
@@ -1921,78 +1921,78 @@ Music_PitchSlide: ; command e0
 	TAY
 
 	; pitch in A
-	LDA CurrentMusicByte
+	LDA zCurrentMusicByte
 	AND #$f
 	JSR GetPitch
 
-	STA ChannelSlideTarget, X
-	STY ChannelSlideTarget + 16, X
+	STA iChannelSlideTarget, X
+	STY iChannelSlideTarget + 16, X
 
-	LDA ChannelFlagSection2, X
+	LDA iChannelFlagSection2, X
 	ORA #1 << SOUND_PITCH_SLIDE
-	STA ChannelFlagSection2, X
+	STA iChannelFlagSection2, X
 	RTS
 
 Music_PitchOffset: ; command e6
 ; tone
 ; params: 1 (bigdw)
 ; offset to add to each note frequency
-	LDA ChannelFlagSection2, X
+	LDA iChannelFlagSection2, X
 	ORA #1 << SOUND_PITCH_MODIFIER
-	STA ChannelFlagSection2, X
+	STA iChannelFlagSection2, X
 
 	JSR GetMusicByte
-	STA ChannelPitchModifier + 16, X
+	STA iChannelPitchModifier + 16, X
 	JSR GetMusicByte
-	STA ChannelPitchModifier, X
+	STA iChannelPitchModifier, X
 	RTS
 
 Music_RelativePitch: ; command e7
 ; set a note medium
 ; operates squarely on NoteTable
 ; params: 1
-	LDA ChannelFlagSection2, X
+	LDA iChannelFlagSection2, X
 	ORA #1 << SOUND_RELATIVE_PITCH
-	STA ChannelFlagSection2, X
+	STA iChannelFlagSection2, X
 
 	JSR GetMusicByte
-	STA ChannelRelativeNoteID, X
+	STA iChannelRelativeNoteID, X
 	RTS
 
 Music_CyclePattern: ; command de
 ; sequence of 4 cycles to be looped
 ; params: 1 (4 2-bit cycle arguments)
-	LDA ChannelFlagSection2, X
+	LDA iChannelFlagSection2, X
 	ORA #1 << SOUND_CYCLE_LOOP ; cycle looping
-	STA ChannelFlagSection2, X
+	STA iChannelFlagSection2, X
 
 	; cycle sequence
 	JSR GetMusicByte
 	ROR A
 	ROR A
-	STA ChannelCyclePattern, X
+	STA iChannelCyclePattern, X
 	; update duty cycle
 	AND #$c0 ; only uses top 2 bits
-	STA ChannelCycle, X
+	STA iChannelCycle, X
 	RTS
 
 Music_EnvelopePattern: ; command e8
 ; envelope group
 ; params: 1
-	LDA ChannelFlagSection2, X
+	LDA iChannelFlagSection2, X
 	ORA #1 << SOUND_ENV_PTRN
-	STA ChannelFlagSection2, X
+	STA iChannelFlagSection2, X
 
 	JSR GetMusicByte
-	STA ChannelEnvelopeGroup, X
+	STA iChannelEnvelopeGroup, X
 	RTS
 
 Music_ToggleMusic: ; command df
 ; switch to music mode
 ; params: none
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	EOR #1 << SOUND_READING_MODE
-	STA ChannelFlagSection1, X
+	STA iChannelFlagSection1, X
 	RTS
 
 Music_ToggleDrum: ; command e3
@@ -2003,16 +2003,16 @@ Music_ToggleDrum: ; command e3
 ; 	noise on: 1
 ; 	noise off: 0
 	; toggle sampling
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	EOR #1 << SOUND_NOISE
-	STA ChannelFlagSection1, X
+	STA iChannelFlagSection1, X
 	AND #1 << SOUND_NOISE ; isolate bit
 	BNE @GetParam ; if routine turns on sampling, read param
 	RTS
 
 @GetParam:
 	JSR GetMusicByte
-	STA MusicDrumSet, X
+	STA zMusicDrumSet
 	RTS
 
 Music_SFXToggleDrum: ; command f0
@@ -2021,35 +2021,35 @@ Music_SFXToggleDrum: ; command f0
 ;	on: 1
 ; 	off: 0
 	; toggle sampling
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	EOR #1 << SOUND_NOISE
-	STA ChannelFlagSection1, X
+	STA iChannelFlagSection1, X
 	AND #1 << SOUND_NOISE ; isolate bit
 	BNE @GetParam ; if routine turns on sampling, read param
 	RTS
 
 @GetParam:
 	JSR GetMusicByte
-	STA SFXDrumSet, X
+	STA zSFXDrumSet, X
 	RTS
 
 Music_PitchSweep: ; command dd
 ; update pitch sweep
 ; params: 1
-	LDA ChannelNoteFlags, X
+	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_PITCH_SWEEP
-	STA ChannelNoteFlags, X
+	STA iChannelNoteFlags, X
 	TXA
 	AND #1
 	BNE @Pulse2
 
 	JSR GetMusicByte
-	STA Sweep1
+	STA zSweep1
 	RTS
 
 @Pulse2:
 	JSR GetMusicByte
-	STA Sweep2
+	STA zSweep2
 	RTS
 
 Music_Cycle: ; command db
@@ -2062,7 +2062,7 @@ Music_Cycle: ; command db
 	ASL A
 	ASL A
 	ASL A
-	STA ChannelCycle, X
+	STA iChannelCycle, X
 	RTS
 
 Music_NoteType: ; command d8
@@ -2073,7 +2073,7 @@ Music_NoteType: ; command d8
 
 	; note length
 	JSR GetMusicByte
-	STA ChannelNoteLength, X
+	STA iChannelNoteLength, X
 	TXA
 	CMP #3
 	BCC Music_Envelope
@@ -2085,7 +2085,7 @@ Music_Envelope: ; command dc
 ;	ch1-2: volume settings (loop, ramp, volume)
 ;	ch3: linear length (toggle, length)
 	JSR GetMusicByte
-	STA ChannelEnvelope, X
+	STA iChannelEnvelope, X
 	RTS
 
 Music_Tempo: ; command da
@@ -2099,23 +2099,23 @@ Music_Tempo: ; command da
 
 Music_Octave: ; command d0-d7
 ; set octave based on lo nybble of the command
-	LDA CurrentMusicByte
+	LDA zCurrentMusicByte
 	AND #7
-	STA ChannelOctave, X
+	STA iChannelOctave, X
 	RTS
 
 Music_Transpose: ; command d9
 ; pitch / octave offset
 ; params: 1
 	JSR GetMusicByte
-	STA ChannelTransposition, X
+	STA iChannelTransposition, X
 	RTS
 
 Music_TempoRelative: ; command e9
 ; set global tempo to current channel tempo +/- param
 ; params: 1 signed
 	JSR GetMusicByte
-	LDA CurrentMusicByte
+	LDA zCurrentMusicByte
 	BMI @Minus
 
 	LDY #0
@@ -2125,10 +2125,10 @@ Music_TempoRelative: ; command e9
 	LDY #$ff
 
 @OK:
-	ADC ChannelTempo + 16, X
+	ADC iChannelTempo + 16, X
 	PHA
 	TYA
-	ADC ChannelTempo, X
+	ADC iChannelTempo, X
 	TAY
 	PLA
 	JMP SetGlobalTempo
@@ -2136,17 +2136,17 @@ Music_TempoRelative: ; command e9
 Music_SFXPriorityOn: ; command ec
 ; turn sfx priority on
 ; params: none
-	LDA AudioCommandFlags
+	LDA zAudioCommandFlags
 	ORA #1 << SFX_PRIORITY
-	STA AudioCommandFlags
+	STA zAudioCommandFlags
 	RTS
 
 Music_SFXPriorityOff: ; command ed
 ; turn sfx priority off
 ; params: none
-	LDA AudioCommandFlags
+	LDA zAudioCommandFlags
 	AND #$ff ^ (1 << SFX_PRIORITY)
-	STA AudioCommandFlags
+	STA zAudioCommandFlags
 	RTS
 
 Music_RestartChannel: ; command ea
@@ -2158,22 +2158,22 @@ Music_RestartChannel: ; command ea
 ;		zzyy: pointer to new music data
 
 	; update music id
-	LDA ChannelID, X
-	STA MusicID
-	LDA ChannelBank, X
-	STA MusicBank
+	LDA iChannelID, X
+	STA zMusicID
+	LDA iChannelBank, X
+	STA zMusicBank
 
 	JSR GetMusicByte
 	TAY
 	JSR GetMusicByte
-	STX BackupX
+	STX zBackupX
 	TAX
 	TYA
-	STA AuxAddresses
-	STX AuxAddresses + 1
+	STA zAuxAddresses
+	STX zAuxAddresses + 1
 	JSR LoadChannel
 	JSR StartChannel
-	LDX BackupX
+	LDX zBackupX
 	RTS
 
 Music_NewSong: ; command eb
@@ -2182,9 +2182,9 @@ Music_NewSong: ; command eb
 ;	Y: song id
 	JSR GetMusicByte
 	TAY
-	STX BackupX
+	STX zBackupX
 	JSR _PlayMusic
-	LDX BackupX
+	LDX zBackupX
 	RTS
 
 GetMusicByte:
@@ -2192,40 +2192,40 @@ GetMusicByte:
 ; advances to next byte in music data
 ; input: X = current channel
 	JSR _LoadMusicByte ; home ROM
-	INC ChannelAddress, X
-	INC AuxAddresses
+	INC iChannelAddress, X
+	INC zAuxAddresses
 	BNE @Quit
-	INC ChannelAddress + 16, X
-	INC AuxAddresses + 1
+	INC iChannelAddress + 16, X
+	INC zAuxAddresses + 1
 @Quit:
-	LDY BackupY
-	LDA CurrentMusicByte
+	LDY zBackupY
+	LDA zCurrentMusicByte
 	RTS
 
 GetPitch:
 ;     in     out
 ; A = Pitch  lo
 ; Y = Octave hi
-	STY BackupY ; store input for use
-	STA BackupA
+	STY zBackupY ; store input for use
+	STA zBackupA
 	; get octave
-	LDA ChannelTransposition, X
+	LDA iChannelTransposition, X
 	AND #$f0
 	LSR A
 	LSR A
 	LSR A
 	LSR A
-	ADC BackupY
+	ADC zBackupY
 	PHA ; save octave
 	; add pitch
-	LDA ChannelTransposition, X
+	LDA iChannelTransposition, X
 	AND #$f
-	ADC BackupA
+	ADC zBackupA
 	ASL A
 	TAY
 	; X = lo, Y = hi
 	LDA NoteTable, Y
-	STX BackupX
+	STX zBackupX
 	TAX
 	LDA NoteTable + 1, Y
 	TAY
@@ -2252,47 +2252,47 @@ GetPitch:
 	ORA #$8 ; make sure the note is on
 	TAY
 	TXA
-	LDX BackupX
+	LDX zBackupX
 	RTS
 
 SetNoteDuration:
 ; input: a = note duration in 16ths
 
-	; store delay units in FactorBuffer
+	; store delay units in zFactorBuffer
 	ADC #1
-	STA FactorBuffer
+	STA zFactorBuffer
 	LDY #0
-	STY FactorBuffer + 1
+	STY zFactorBuffer + 1
 	; store NoteLength in a
-	LDA ChannelNoteLength, X
+	LDA iChannelNoteLength, X
 	; multiply NoteLength by delay units
-	STY FactorBuffer + 2 ; just multiply
+	STY zFactorBuffer + 2 ; just multiply
 	JSR @Multiply
-	; store Tempo in FactorBuffer
-	LDA ChannelTempo, X
-	STA FactorBuffer
-	LDA ChannelTempo + 16, X
-	STA FactorBuffer + 1
+	; store Tempo in zFactorBuffer
+	LDA iChannelTempo, X
+	STA zFactorBuffer
+	LDA iChannelTempo + 16, X
+	STA zFactorBuffer + 1
 	; add workflow to the next result
-	LDA ChannelNoteFlow, X
-	STY FactorBuffer + 2
-	; multiply Tempo by last result (ChannelNoteLength * LOW(delay))
+	LDA iChannelNoteFlow, X
+	STY zFactorBuffer + 2
+	; multiply Tempo by last result (iChannelNoteLength * LOW(delay))
 	JSR @Multiply
-	; copy result to FactorBuffer offset 2
-	LDA FactorBuffer + 2
-	LDY FactorBuffer + 3
-	; store result in ChannelNoteFlow
-	STA ChannelNoteFlow, X
+	; copy result to zFactorBuffer offset 2
+	LDA zFactorBuffer + 2
+	LDY zFactorBuffer + 3
+	; store result in iChannelNoteFlow
+	STA iChannelNoteFlow, X
 	; store result in NoteDuration
-	STY ChannelNoteDuration, X
+	STY iChannelNoteDuration, X
 	RTS
 
 @Multiply:
-; multiplies a and FactorBuffer
+; multiplies a and zFactorBuffer
 ; adds the result to l
-; stores the result in FactorBuffer offset 2
+; stores the result in zFactorBuffer offset 2
 	LDY #0
-	STY FactorBuffer + 3
+	STY zFactorBuffer + 3
 
 @Loop:
 	; halve a
@@ -2301,27 +2301,27 @@ SetNoteDuration:
 	BCC @Skip
 
 	; add it to the result
-	STA BackupA
-	LDA FactorBuffer
-	ADC FactorBuffer + 2
-	STA FactorBuffer + 2
-	LDA FactorBuffer + 1
-	ADC FactorBuffer + 3
-	STA FactorBuffer + 3
+	STA zBackupA
+	LDA zFactorBuffer
+	ADC zFactorBuffer + 2
+	STA zFactorBuffer + 2
+	LDA zFactorBuffer + 1
+	ADC zFactorBuffer + 3
+	STA zFactorBuffer + 3
 
 @Skip:
-	ROL FactorBuffer
-	ROL FactorBuffer + 1
+	ROL zFactorBuffer
+	ROL zFactorBuffer + 1
 
 	; are we done?
-	LDA BackupA
+	LDA zBackupA
 	BNE @Loop
 
 	RTS
 
 SetGlobalTempo:
-	STX BackupX ; save current channel
-	STA BackupA
+	STX zBackupX ; save current channel
+	STA zBackupA
 	; are we dealing with music or sfx?
 	TXA
 	AND #1 << SFX_CHANNEL
@@ -2351,8 +2351,8 @@ SetGlobalTempo:
 	JSR Tempo
 
 @End:
-	LDX BackupX ; restore current channel
-	LDA BackupA
+	LDX zBackupX ; restore current channel
+	LDA zBackupA
 	RTS
 
 Tempo:
@@ -2360,32 +2360,32 @@ Tempo:
 ; 	AY: note length
 
 	; update Tempo
-	LDA BackupA
-	STA ChannelTempo, X
-	STY ChannelTempo + 16, X
+	LDA zBackupA
+	STA iChannelTempo, X
+	STY iChannelTempo + 16, X
 	; clear workflow
 	LDA #0
-	STA ChannelNoteFlow, X
+	STA iChannelNoteFlow, X
 	RTS
 
 StartChannel:
-	LDX BackupX
-	LDA ChannelFlagSection1, X
+	LDX zBackupX
+	LDA iChannelFlagSection1, X
 	ORA #1 << SOUND_CHANNEL_ON ; turn channel on
-	STA ChannelFlagSection1, X
+	STA iChannelFlagSection1, X
 	RTS
 
 _PlayMusic:
 ; load music
 	JSR MusicOff
-	STY MusicID ; song number
+	STY zMusicID ; song number
 	; bank list
 	LDA MusicBanks, Y
-	STA MusicBank
+	STA zMusicBank
 	LDA MusicLo, Y ; music header address
 	LDX MusicHi, Y
-	STA AuxAddresses
-	STX AuxAddresses + 1
+	STA zAuxAddresses
+	STX zAuxAddresses + 1
 	JSR LoadMusicByte ; store first byte of music header in a
 	AND #$e0 ; get channel total
 	LSR A
@@ -2403,42 +2403,42 @@ _PlayMusic:
 	PLA
 	SBC #1
 	BNE @Loop
-	STA DrumAddresses
-	STA DrumAddresses + 1
-	STA DrumAddresses + 2
-	STA DrumAddresses + 3
-	STA DrumDelay
-	STA MusicDrumSet
-	LDA AudioCommandFlags
+	STA zDrumAddresses
+	STA zDrumAddresses + 1
+	STA zDrumAddresses + 2
+	STA zDrumAddresses + 3
+	STA zDrumDelay
+	STA zMusicDrumSet
+	LDA zAudioCommandFlags
 	AND #1 << MUSIC_PLAYING | 1 << SFX_PRIORITY
-	STA AudioCommandFlags
+	STA zAudioCommandFlags
 	JMP MusicOn
 
 _PlaySFX:
 ; clear channels if they aren't already
-	STY BackupY
+	STY zBackupY
 	JSR MusicOff
-	LDA ChannelFlagSection1 + CHAN_8
+	LDA iChannelFlagSection1 + CHAN_8
 	AND #1 << SOUND_CHANNEL_ON ; ch9 on?
 	BEQ @Ch9
 
 	LDY #CHAN_0 << 2 ; turn it off
 	LDA #$30
 	JSR ClearChannel
-	STA Sweep1
+	STA zSweep1
 
 @Ch9:
-	LDA ChannelFlagSection1 + CHAN_9
+	LDA iChannelFlagSection1 + CHAN_9
 	AND #1 << SOUND_CHANNEL_ON
 	BEQ @ChA
 
 	LDY #CHAN_1 << 2 ; turn it off
 	LDA #$30
 	JSR ClearChannel
-	STA Sweep2
+	STA zSweep2
 
 @ChA:
-	LDA ChannelFlagSection1 + CHAN_A
+	LDA iChannelFlagSection1 + CHAN_A
 	AND #1 << SOUND_CHANNEL_ON
 	BEQ @ChB
 
@@ -2447,7 +2447,7 @@ _PlaySFX:
 	JSR ClearChannel
 
 @ChB:
-	LDA ChannelFlagSection1 + CHAN_B
+	LDA iChannelFlagSection1 + CHAN_B
 	AND #1 << SOUND_CHANNEL_ON
 	BEQ @ChC
 
@@ -2456,7 +2456,7 @@ _PlaySFX:
 	JSR ClearChannel
 
 @ChC:
-	LDA ChannelFlagSection1 + CHAN_C
+	LDA iChannelFlagSection1 + CHAN_C
 	AND #1 << SOUND_CHANNEL_ON
 	BEQ @ChannelsCleared
 
@@ -2466,15 +2466,15 @@ _PlaySFX:
 
 @ChannelsCleared:
 ; start reading sfx header for # chs
-	LDY BackupY
-	STY MusicID
+	LDY zBackupY
+	STY zMusicID
 	; bank list
 	LDA SFXBanks, Y
-	STA MusicBank
+	STA zMusicBank
 	LDA SFXLo, Y ; sfx header address
 	LDX SFXHi, Y
-	STA AuxAddresses
-	STX AuxAddresses + 1
+	STA zAuxAddresses
+	STX zAuxAddresses + 1
 	JSR LoadMusicByte ; store first byte of music header in a
 	AND #$e0 ; get channel total
 	LSR A
@@ -2488,49 +2488,49 @@ _PlaySFX:
 ; start playing channels
 	PHA
 	JSR LoadChannel
-	LDA ChannelFlagSection1, X
+	LDA iChannelFlagSection1, X
 	ORA #1 << SOUND_READING_MODE
-	STA ChannelFlagSection1, X
+	STA iChannelFlagSection1, X
 	JSR StartChannel
 	PLA
 	SBC #1
 	BNE @StartChannels
 	JSR MusicOn
-	LDA AudioCommandFlags
+	LDA zAudioCommandFlags
 	AND #$ff ^ (1 << SFX_PRIORITY)
-	STA AudioCommandFlags
+	STA zAudioCommandFlags
 	RTS
 
 LoadChannel:
 ; prep channel for use
 ; input:
-; 	AuxAddresses:
+; 	zAuxAddresses:
 	; get pointer to current channel
 	JSR LoadMusicByte
-	INC AuxAddresses
+	INC zAuxAddresses
 	BNE @NoCarry1
-	INC AuxAddresses + 1
+	INC zAuxAddresses + 1
 @NoCarry1:
-	STA BackupA
+	STA zBackupA
 	AND #$f ; bit 0-3 (current channel)
-	STA CurrentChannel
+	STA zCurrentChannel
 	TAY
-	LDX CurrentChannel
-	LDA ChannelFlagSection1, X
+	LDX zCurrentChannel
+	LDA iChannelFlagSection1, X
 	AND #$ff ^ (1 << SOUND_CHANNEL_ON) ; channel off
-	STA ChannelFlagSection1, X
+	STA iChannelFlagSection1, X
 
 ; make sure channel is cleared
 ; set default tempo and note length in case nothing is loaded
-	STY BackupY
-	LDA CurrentChannel
+	STY zBackupY
+	LDA zCurrentChannel
 	CLC ; start
 	; clear channel
 @Loop1:
 	TAY
 	LDA #0
-	STA ChannelRAM, Y
-	STA ChannelRAM + $100, Y
+	STA iChannelRAM, Y
+	STA iChannelRAM + $100, Y
 	TYA
 	ADC #$10
 	BCC @Loop1
@@ -2539,49 +2539,49 @@ LoadChannel:
 @Loop2:
 	TAY
 	LDA #0
-	STA ChannelRAM + $200, Y
+	STA iChannelRAM + $200, Y
 	TYA
 	ADC #$10
-	CMP #<ChannelRAMEnd
+	CMP #<iChannelRAMEnd
 	BCC @Loop2
 	; set tempo to default ($100)
 	LDA #0
-	STA ChannelTempo, X
+	STA iChannelTempo, X
 	ADC #0
-	STA ChannelTempo + 16, X
+	STA iChannelTempo + 16, X
 	; set note length to default ($1) (fast)
-	STA ChannelNoteDuration, X
+	STA iChannelNoteDuration, X
 	JSR LoadMusicByte
-	STA ChannelAddress, X
-	INC AuxAddresses
+	STA iChannelAddress, X
+	INC zAuxAddresses
 	BNE @NoCarry2
 
-	INC AuxAddresses + 1
+	INC zAuxAddresses + 1
 
 @NoCarry2:
 	; load music pointer
 	JSR LoadMusicByte
-	STA ChannelAddress + 16, X
-	INC AuxAddresses
+	STA iChannelAddress + 16, X
+	INC zAuxAddresses
 	BNE @NoCarry3
 
-	INC AuxAddresses + 1
+	INC zAuxAddresses + 1
 @NoCarry3:
 	; load music id
-	LDA MusicID
-	STA ChannelID, X
+	LDA zMusicID
+	STA iChannelID, X
 	; load music bank
-	LDA MusicBank
-	STA ChannelBank, X
+	LDA zMusicBank
+	STA iChannelBank, X
 	RTS
 
 LoadMusicByte:
 ; input:
-;   AuxAddresses
+;   zAuxAddresses
 ; output:
-;   A = CurrentMusicByte
+;   A = zCurrentMusicByte
 	JSR _LoadMusicByte ; home ROM
-	LDA CurrentMusicByte
+	LDA zCurrentMusicByte
 	RTS
 
 ClearChannels:

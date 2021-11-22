@@ -56,7 +56,7 @@ NOTE_DELTA_OVERRIDE   = 7
 
 SFX_CHANNEL = 3
 
-; AudioCommandFlags
+; zAudioCommandFlags
 SOUND_EVENT      = 0
 SFX_PRIORITY     = 1
 MUSIC_PLAYING    = 2
