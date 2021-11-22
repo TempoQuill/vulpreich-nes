@@ -1518,11 +1518,11 @@ ParseMusicCommand:
 	TAY
 	; seek command pointer
 	LDA MusicCommands, Y
-	STA CommandPointer
+	STA AudioCommandPointer
 	LDA MusicCommands + 1, Y
-	STA CommandPointer + 1
+	STA AudioCommandPointer + 1
 	; jump to the new pointer
-	JMP (CommandPointer)
+	JMP (AudioCommandPointer)
 
 MusicCommands:
 ; entries correspond to audio constants (see src/def/sound.asm)

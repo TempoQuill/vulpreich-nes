@@ -23,7 +23,7 @@
 00:0018		AudioCommandFlags
 00:0019		CurrentSFX
 00:001a		ChannelFunctionPointer
-00:001c		CommandPointer
+00:001c		AudioCommandPointer
 00:001e		RawPitchBackup
 00:0020		RawPitchTargetBackup
 00:0022		PitchSlideDifference

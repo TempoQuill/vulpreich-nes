@@ -59,7 +59,7 @@ CurrentSFX:
 
 ChannelFunctionPointer:
 	.dsb 2
-CommandPointer:
+AudioCommandPointer:
 	.dsb 2 ; 001c
 RawPitchBackup:
 	.dsb 2
