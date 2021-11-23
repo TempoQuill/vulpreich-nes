@@ -79,7 +79,7 @@ _UpdateSound:
 	; check channel power
 	LDA iChannelFlagSection1, X
 	AND #1 << SOUND_CHANNEL_ON
-	BEQ @AndItsOn ; aaaaand it's on!
+	BNE @AndItsOn ; aaaaand it's on!
 	JMP @NextChannel
 
 @AndItsOn:
@@ -89,7 +89,7 @@ _UpdateSound:
 	BCC @NoteOver
 
 	DEC iChannelNoteDuration, X
-	JMP @ContinueSoundUpdate
+	BCS @ContinueSoundUpdate
 
 @NoteOver:
 	; reset vibrato delay
@@ -265,7 +265,7 @@ UpdateChannels:
 	AND #1 << NOTE_VIBRATO_OVERRIDE
 	BNE @Pulse1_VibratoOverride
 
-	JMP @Pulse1_CheckCycleOverride
+	BEQ @Pulse1_CheckCycleOverride
 
 @Pulse1_PitchOverride:
 	LDA zCurrentTrackRawPitch
@@ -846,7 +846,7 @@ GeneralHandler:
 	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_REST
 	STA iChannelNoteFlags, X
-	JMP @CheckMuteTimer
+	BNE @CheckMuteTimer
 
 @EnvelopePattern_Set:
 	; store envelope during note
@@ -923,15 +923,13 @@ ApplyPitchSlide:
 	; Otherwise, load the pitch and set two flags.
 	LDA iChannelSlideTarget + 16, X
 	CMP iChannelRawPitch + 16, X
-	BCS @Finished
+	BCC @Finished
 	BNE @Continue
 
 	LDA iChannelSlideTarget, X
 	CMP iChannelRawPitch, X
-	BEQ @JumpToContinue
-	BCS @Finished
-@JumpToContinue:
-	JMP @Continue
+	BCC @Finished
+	BCS @Continue
 
 @SlidingUp:
 	; pitch -= iChannelSlideDepth
@@ -960,14 +958,14 @@ ApplyPitchSlide:
 	; Compare the dw at iChannelSlideTarget to iChannelRawPitch.
 	; If pitch is lower, we're finished.
 	; Otherwise, load the pitch and set two flags.
-	LDA iChannelSlideTarget + 16, X
-	CMP iChannelRawPitch + 16, X
-	BCS @Finished
+	LDA iChannelRawPitch + 16, X
+	CMP iChannelSlideTarget + 16, X
+	BCC @Finished
 	BNE @Continue
 
-	LDA iChannelSlideTarget, X
-	CMP iChannelRawPitch, X
-	BCC @Continue
+	LDA iChannelRawPitch, X
+	CMP iChannelSlideTarget, X
+	BCS @Continue
 
 @Finished:
 	LDA iChannelFlagSection2, X
@@ -1435,7 +1433,7 @@ GetDrumSample:
 @ContinueDPCM:
 	; load set ID
 	LDA zMusicDrumSet
-	JMP @NextDPCM
+	BPL @NextDPCM
 
 @SFXDPCM:
 	LDA zSFXDrumSet
@@ -1472,7 +1470,7 @@ GetDrumSample:
 @ContinueNoise:
 	; load set ID
 	LDA zMusicDrumSet
-	JMP @NextNoise
+	BPL @NextNoise
 
 @SFXNoise:
 	LDA zSFXDrumSet
@@ -2115,11 +2113,10 @@ Music_TempoRelative: ; command e9
 ; set global tempo to current channel tempo +/- param
 ; params: 1 signed
 	JSR GetMusicByte
-	LDA zCurrentMusicByte
 	BMI @Minus
 
 	LDY #0
-	JMP @OK
+	BEQ @OK
 
 @Minus:
 	LDY #$ff
@@ -2336,7 +2333,7 @@ SetGlobalTempo:
 	JSR Tempo
 	INX
 	JSR Tempo
-	JMP @End
+	BEQ @End
 
 @SFXChannel:
 	LDX #8
