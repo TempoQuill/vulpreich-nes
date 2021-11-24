@@ -160,7 +160,7 @@ _UpdateSound:
 	BEQ @Next
 
 	LDA zMixer
-	EOR #$10 ; turn on DPCM
+	ORA #1 << CHAN_4 ; turn on DPCM
 	STA zMixer
 	STA SND_CHN
 
@@ -229,6 +229,9 @@ UpdateChannels:
 	.dw @Hill
 	.dw @Noise
 	.dw @DPCM
+	; $b0bd - PRG ROM - in window 1
+	; $4802 - Mapper area
+	; $0829 - ZP RAM mirrored
 
 @Pulse1:
 	LDA iChannelNoteFlags, X
@@ -485,7 +488,7 @@ UpdateChannels:
 @DPCM_Rest:
 	PLA
 	LDA zMixer
-	EOR #$10 ; turn off DPCM
+	AND #$ff ^ (1 << CHAN_4) ; turn off DPCM
 	STA zMixer
 	STA SND_CHN
 	LDY #CHAN_4 << 2
@@ -1149,7 +1152,7 @@ HandleDPCM: ; NES only
 	STA iChannelNoteFlags, X
 
 	LDA zMixer
-	EOR #$10 ; turn on DPCM
+	ORA #1 << CHAN_4 ; turn on DPCM
 	STA zMixer
 	STA SND_CHN
 	RTS
@@ -1160,7 +1163,7 @@ HandleDPCM: ; NES only
 	STA zDrumChannel
 
 	LDA zMixer
-	EOR #$10 ; turn off DPCM
+	AND #$ff ^ (1 << CHAN_4) ; turn off DPCM
 	STA zMixer
 	STA SND_CHN
 	RTS
