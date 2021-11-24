@@ -348,6 +348,7 @@ UpdateChannels:
 	PHA
 	AND #1 << NOTE_VIBRATO_OVERRIDE
 	BNE @Pulse2_VibratoOverride
+	PLA
 	RTS
 
 @Pulse2_EnvCycleOverrides:
@@ -413,6 +414,7 @@ UpdateChannels:
 	PHA
 	AND #1 << NOTE_PITCH_OVERRIDE
 	BNE @Hill_PitchOverride
+	PLA
 	RTS
 
 @Hill_PitchOverride:
@@ -455,6 +457,7 @@ UpdateChannels:
 	PHA
 	AND #1 << NOTE_REST
 	BNE @Noise_Rest
+	PLA
 	RTS
 
 @Noise_Rest:
@@ -483,6 +486,7 @@ UpdateChannels:
 	PHA
 	AND #1 << NOTE_REST
 	BNE @DPCM_Rest
+	PLA
 	RTS
 
 @DPCM_Rest:
