@@ -70,7 +70,7 @@ _UpdateSound:
 
 @PlayerOn:
 	; start at ch1
-	LDA #$f
+	LDA #1 << CHAN_3 | 1 << CHAN_2 | 1 << CHAN_1 | 1 << CHAN_0
 	STA zMixer
 	LDX #CHAN_0
 	STX zCurrentChannel
@@ -187,15 +187,11 @@ _UpdateSound:
 	; next channel
 	INX
 	INC zCurrentChannel
-	TXA
-	CMP #CHAN_C + 1
+	CPX #CHAN_C + 1
 	BCS @Done
 	AND #$ff ^ (1 << SFX_CHANNEL)
-	CMP #CHAN_4
-	BCC @Valid
-	BNE @NextChannel ; > DPCM means go straight to the next channel
-
-@Valid:
+	CPX #CHAN_4 + 1
+	BCS @NextChannel ; > DPCM means go straight to the next channel
 	JMP @Loop
 @Done:
 	RTS
