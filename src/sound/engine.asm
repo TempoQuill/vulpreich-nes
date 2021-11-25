@@ -125,9 +125,9 @@ _UpdateSound:
 
 @Continue:
 	; raw pitch
-	LDY iChannelRawPitch + 16, X
+	LDA iChannelRawPitch + 16, X
+	STA zCurrentTrackRawPitch + 1
 	LDA iChannelRawPitch, X
-	STY zCurrentTrackRawPitch + 1
 	STA zCurrentTrackRawPitch
 	; effects, noise, DPCM
 	JSR GeneralHandler
@@ -268,9 +268,9 @@ UpdateChannels:
 
 @Pulse1_PitchOverride:
 	LDA zCurrentTrackRawPitch
-	LDY zCurrentTrackRawPitch + 1
 	STA SQ1_LO
-	STY SQ1_HI
+	LDA zCurrentTrackRawPitch + 1
+	STA SQ1_HI
 
 @Pulse1_CheckCycleOverride:
 	PLA
@@ -289,9 +289,9 @@ UpdateChannels:
 @Pulse1_VibratoOverride:
 	PLA
 	LDA zCurrentTrackEnvelope
-	LDY zCurrentTrackRawPitch
 	STA SQ1_ENV
-	STY SQ1_LO
+	LDA zCurrentTrackRawPitch
+	STA SQ1_LO
 	RTS
 
 @Pulse1_Rest:
@@ -303,10 +303,10 @@ UpdateChannels:
 @Pulse1_NoiseSampling:
 	PLA
 	LDA zCurrentTrackEnvelope
-	LDY zCurrentTrackRawPitch
 	STA SQ1_ENV
+	LDA zCurrentTrackRawPitch
+	STA SQ1_LO
 	LDA zCurrentTrackRawPitch + 1
-	STY SQ1_LO
 	STA SQ1_HI
 	RTS
 
@@ -356,17 +356,17 @@ UpdateChannels:
 @Pulse2_PitchOverride:
 	PLA
 	LDA zCurrentTrackRawPitch
-	LDY zCurrentTrackRawPitch + 1
 	STA SQ2_LO
-	STY SQ2_HI
+	LDA zCurrentTrackRawPitch + 1
+	STA SQ2_HI
 	RTS
 
 @Pulse2_VibratoOverride:
 	PLA
 	LDA zCurrentTrackEnvelope
-	LDY zCurrentTrackRawPitch
 	STA SQ2_ENV
-	STY SQ2_LO
+	LDA zCurrentTrackRawPitch
+	STA SQ2_LO
 	RTS
 	
 @Pulse2_Rest:
@@ -378,10 +378,10 @@ UpdateChannels:
 @Pulse2_NoiseSampling:
 	PLA
 	LDA zCurrentTrackEnvelope
-	LDY zCurrentTrackRawPitch
 	STA SQ2_ENV
+	LDA zCurrentTrackRawPitch
+	STA SQ2_LO
 	LDA zCurrentTrackRawPitch + 1
-	STY SQ2_LO
 	STA SQ2_HI
 	RTS
 
@@ -416,9 +416,9 @@ UpdateChannels:
 @Hill_PitchOverride:
 	PLA
 	LDA zCurrentTrackRawPitch
-	LDY zCurrentTrackRawPitch + 1
 	STA TRI_LO
-	STY TRI_HI
+	LDA zCurrentTrackRawPitch + 1
+	STA TRI_HI
 	RTS
 
 @Hill_VibratoOverride:
@@ -436,10 +436,10 @@ UpdateChannels:
 @Hill_NoiseSampling:
 	PLA
 	LDA zHillLinearLength
-	LDY zCurrentTrackRawPitch
 	STA TRI_LINEAR
+	LDA zCurrentTrackRawPitch
+	STA TRI_HO
 	LDA zCurrentTrackRawPitch + 1
-	STY TRI_HO
 	STA TRI_HI
 	RTS
 
@@ -465,9 +465,9 @@ UpdateChannels:
 @Noise_NoiseSampling:
 	PLA
 	LDA zCurrentTrackEnvelope
-	LDY zCurrentTrackRawPitch
 	STA NOISE_ENV
-	STY NOISE_LO
+	LDA zCurrentTrackRawPitch
+	STA NOISE_LO
 	LDA #$8
 	STA NOISE_HI
 	RTS
@@ -525,9 +525,9 @@ LoadNote:
 	STA zCurrentNoteDuration
 	; get raw pitch
 	LDA iChannelRawPitch, X
-	LDY iChannelRawPitch + 16, X
 	STA zRawPitchBackup
-	STY zRawPitchBackup + 1
+	LDA iChannelRawPitch + 16, X
+	STA zRawPitchBackup + 1
 	; get direction of pitch slide
 	LDA iChannelSlideTarget, X
 	LDY iChannelSlideTarget + 16, X
@@ -890,9 +890,9 @@ ApplyPitchSlide:
 @Now:
 	; back up raw pitch
 	LDA iChannelRawPitch, X
-	LDY iChannelRawPitch + 16, X
 	STA zRawPitchBackup
-	STY zRawPitchBackup + 1
+	LDA iChannelRawPitch + 16, X
+	STA zRawPitchBackup + 1
 
 	; check whether pitch slide is going up or down
 	LDA iChannelFlagSection3, X
@@ -1624,14 +1624,14 @@ Music_Ret: ; command ff
 	; halves of the old code are reversed to apply a stack check
 	; copy iChannelBackupAddress1 to iChannelAddress
 	LDA iChannelBackupAddress1, X
-	LDY iChannelBackupAddress1 + 16, X
 	STA iChannelAddress, X
-	STY iChannelAddress + 16, X
+	LDA iChannelBackupAddress1 + 16, X
+	STA iChannelAddress + 16, X
 	; copy iChannelBackupAddress2 to iChannelBackupAddress1
 	LDA iChannelBackupAddress2, X
-	LDY iChannelBackupAddress2 + 16, X
 	STA iChannelBackupAddress1, X
-	STY iChannelBackupAddress1 + 16, X
+	LDA iChannelBackupAddress2 + 16, X
+	STA iChannelBackupAddress1 + 16, X
 	BEQ @ClearFlag
 
 	LDA #0
@@ -1652,14 +1652,14 @@ Music_Call: ; command fe
 
 	; copy iChannelBackupAddress1 to iChannelBackupAddress2
 	LDA iChannelBackupAddress1, X
-	LDY iChannelBackupAddress1 + 16, X
 	STA iChannelBackupAddress2, X
+	LDA iChannelBackupAddress1 + 16, X
 	STA iChannelBackupAddress2 + 16, X
 	; copy iChannelAddress to iChannelBackupAddress1
 	LDA iChannelAddress, X
-	LDY iChannelAddress + 16, X
 	STA iChannelBackupAddress1, X
-	STY iChannelBackupAddress1 + 16, X
+	LDA iChannelAddress + 16, X
+	STA iChannelBackupAddress1 + 16, X
 
 	; get pointer from next 2 bytes
 	JSR GetMusicByte
@@ -2280,11 +2280,11 @@ SetNoteDuration:
 	JSR @Multiply
 	; copy result to zFactorBuffer offset 2
 	LDA zFactorBuffer + 2
-	LDY zFactorBuffer + 3
 	; store result in iChannelNoteFlow
 	STA iChannelNoteFlow, X
+	LDA zFactorBuffer + 3
 	; store result in NoteDuration
-	STY iChannelNoteDuration, X
+	STA iChannelNoteDuration, X
 	RTS
 
 @Multiply:

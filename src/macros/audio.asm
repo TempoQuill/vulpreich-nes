@@ -25,11 +25,10 @@ MACRO hill_note note_length, flag, linear, length, pitch
 	.db <pitch, length << 3 | >pitch
 ENDM
 
-MACRO noise_note note_length, rampflag, volumeramp, length, mode, pitch
-	.db note_length
+MACRO noise_note length, rampflag, volumeramp, mode, pitch
+	.db length
 	.db rampflag << 4 | volumeramp
 	.db mode << 7     | pitch
-	.db legnth
 ENDM
 
 MACRO rest length
