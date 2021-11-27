@@ -530,12 +530,11 @@ LoadNote:
 	STA zRawPitchBackup + 1
 	; get direction of pitch slide
 	LDA iChannelSlideTarget, X
-	LDY iChannelSlideTarget + 16, X
 	STA zRawPitchTargetBackup
-	STY zRawPitchTargetBackup + 1
 	SBC iChannelRawPitch, X
 	STA zPitchSlideDifference
-	TYA
+	LDA iChannelSlideTarget + 16, X
+	STA zRawPitchTargetBackup + 1
 	SBC iChannelRawPitch + 16, X
 	STA zPitchSlideDifference + 1
 	BCS @PitchSlide_Greater
@@ -1356,20 +1355,11 @@ GetByteInEnvelopeGroup:
 
 	; store the offset in ZP RAM
 	; each group can only be 256 bytes long
-	LDA iChannelEnvelopeGroupOffset, X
-	STA zCurrentEnvelopeGroupOffset
-	ADC zCurrentEnvelopeGroupAddress
-	STA zCurrentEnvelopeGroupAddress
-
-	LDA #0
-	STY zBackupY ; save param
-	TAY
-	ADC zCurrentEnvelopeGroupAddress + 1
-	STA zCurrentEnvelopeGroupAddress + 1
+	LDY iChannelEnvelopeGroupOffset, X
+	STY zCurrentEnvelopeGroupOffset
 
 	; check for ff/fe
 	LDA (zCurrentEnvelopeGroupAddress), Y
-	LDY zBackupY
 	CMP #$ff
 	BEQ @Quit
 
@@ -1378,15 +1368,9 @@ GetByteInEnvelopeGroup:
 
 	; reset offset when reading fe
 	; effectively loops the envelope sequence
-	LDA #0
-	STA iChannelEnvelopeGroupOffset, X
-	STA zCurrentEnvelopeGroupOffset
-
-	LDA EnvelopeGroups, Y
-	STA zCurrentEnvelopeGroupAddress
-	LDA EnvelopeGroups + 1, Y
-	STA zCurrentEnvelopeGroupAddress + 1
-	TAY
+	LDY #0
+	STY iChannelEnvelopeGroupOffset, X
+	STY zCurrentEnvelopeGroupOffset
 	LDA (zCurrentEnvelopeGroupAddress), Y
 
 @Next:
