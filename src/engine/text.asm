@@ -60,7 +60,7 @@ _PrintText:
 	PLA
 	STA PPUDATA
 	INY
-	BCC PrintText
+	BCC _PrintText
 
 @ReadCommand:
 	PLA
@@ -105,14 +105,14 @@ _PrintText:
 	JSR GetNameTableOffsetLine2
 	JSR GetPPUAddressFromNameTable
 	INY
-	JMP PrintText
+	JMP _PrintText
 
 @Line:
 ; print at textbox line 2
 	JSR GetNameTableOffsetLine2
 	JSR GetPPUAddressFromNameTable
 	INY
-	JMP PrintText
+	JMP _PrintText
 
 @Para:
 ; start new paragraph
@@ -144,7 +144,7 @@ _PrintText:
 	JSR WritePPUData
 	JSR GetNameTableOffsetLine1
 	JSR GetPPUAddressFromNameTable
-	JMP PrintText
+	JMP _PrintText
 
 @TextEnd:
 ; terminate printing routine
@@ -166,4 +166,4 @@ _PrintText:
 	LDA cNametableAddress
 	ADC zStringXOffset
 	STA PPUADDR
-	JMP PrintText
+	JMP _PrintText
