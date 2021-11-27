@@ -25,7 +25,7 @@ ReadPPUData:
 	DEX
 	DEC zBackupX
 	LDA PPUDATA
-	STA zStringBuffer + $30, X
+	STA zStringBuffer + $60, X
 	LDX zBackupX
 	BNE @Loop
 	RTS
@@ -48,7 +48,7 @@ WritePPUDataFromStringBuffer:
 @Loop:
 	DEX
 	DEC zBackupX
-	LDA zStringBuffer + $30, X
+	LDA zStringBuffer + $60, X
 	STA PPUDATA
 	INC cNametableAddress
 	LDX zBackupX
