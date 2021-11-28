@@ -3,6 +3,25 @@ MACRO dba bank, label
 	.dw label
 ENDM
 
+; jump subroutine home
+MACRO JSH bank, memory
+	LDA #>memory
+	JSR GetWindowIndex
+	LDA #bank
+	JSR StoreIndexedBank
+	JSR memory
+ENDM
+
+; jump home
+MACRO JPH bank, memory
+	LDA #>memory
+	JSR GetWindowIndex
+	LDA #bank
+	STA zWindow1, X
+	JSR UpdatePRG
+	JMP memory
+ENDM
+
 ; jump subroutine far
 MACRO JSF bank, memory
 	LDA #bank
@@ -35,10 +54,46 @@ MACRO HTL register
 	LSR register
 ENDM
 
-; reverse memory
-MACRO REV mem
+MACRO CPL mem
 	LDA mem
 	EOR #$ff
+	STA mem
+ENDM
+
+; sign byte
+MACRO SIB mem
+	LDA mem
+	EOR #$ff
+	ADC #1
+	STA mem
+ENDM
+
+MACRO SCB mem
+	LDA mem
+	EOR #$ff
+	ADC #0
+	STA mem
+ENDM
+
+; sign word
+MACRO SIW mem
+	LDA mem + 1
+	EOR #$ff
+	STA mem + 1
+	LDA mem
+	EOR #$ff
+	ADC #1
+	STA mem
+ENDM
+
+; sign carry word
+MACRO SCW mem
+	LDA mem + 1
+	EOR #$ff
+	STA mem + 1
+	LDA mem
+	EOR #$ff
+	ADC #0
 	STA mem
 ENDM
 

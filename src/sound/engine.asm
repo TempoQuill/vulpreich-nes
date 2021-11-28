@@ -542,13 +542,7 @@ LoadNote:
 	ORA #1 << SOUND_PITCH_SLIDE_DIR
 	STA iChannelFlagSection3, X
 	; flip bits of differential
-	LDA zPitchSlideDifference + 1
-	EOR #$ff
-	STA zPitchSlideDifference + 1
-	LDA zPitchSlideDifference
-	EOR #$ff
-	ADC #1
-	STA zPitchSlideDifference
+	SIW zPitchSlideDifference
 	JMP @PitchSlide_Resume
 
 @PitchSlide_Greater:
@@ -759,10 +753,7 @@ GeneralHandler:
 
 @Vibrato_Bend:
 	; refresh counter
-	ASL A
-	ASL A
-	ASL A
-	ASL A
+	LTH A
 	ORA iChannelVibratoTimer, X
 	STA iChannelVibratoTimer, X
 
@@ -802,10 +793,7 @@ GeneralHandler:
 	LDA zVibratoBackup
 	AND #$f0 ; high
 	; move it to lo
-	LSR A
-	LSR A
-	LSR A
-	LSR A
+	HTL A
 	STY zVibratoBackup
 	ADC zVibratoBackup
 	BCC @Vibrato_NoCarry
@@ -1042,8 +1030,7 @@ HandleNoise:
 	BEQ @Quit
 
 	AND #$f
-	STA zDrumDelay
-	INC zDrumDelay ; adds one frame to depicted duration
+	STI zDrumDelay ; adds one frame to depicted duration
 
 	LDA (zDrumAddresses), Y
 	INC zDrumAddresses
@@ -1207,10 +1194,7 @@ ParseMusic:
 	; get note ID (top nybble)
 	LDA zCurrentMusicByte
 	AND #$f0
-	LSR A
-	LSR A
-	LSR A
-	LSR A
+	HTL A
 	BEQ @Rest ; note 0 -> rest
 
 	; update note ID
@@ -1862,17 +1846,11 @@ Music_Vibrato: ; command e1
 	JSR GetMusicByte
 	; get top nybble
 	AND #$f0
-	LSR A
-	LSR A
-	LSR A
-	LSR A
+	HTL A
 	LSR A ; halve
 	STA zVibratoBackup
 	ADC #0 ; round up
-	ASL A
-	ASL A
-	ASL A
-	ASL A
+	LTH A
 	ORA zVibratoBackup
 	STA iChannelVibratoDepth, X
 ; update timer
@@ -1880,10 +1858,7 @@ Music_Vibrato: ; command e1
 	; get bottom nybble
 	AND #$f
 	STA zVibratoBackup
-	ASL A
-	ASL A
-	ASL A
-	ASL A
+	LTH A
 	ORA zVibratoBackup
 	STA iChannelVibratoTimer, X
 	RTS
@@ -1899,10 +1874,7 @@ Music_PitchSlide: ; command e0
 
 	; octave in Y
 	AND #$f0
-	LSR A
-	LSR A
-	LSR A
-	LSR A
+	HTL A
 	TAY
 
 	; pitch in A
@@ -2041,10 +2013,7 @@ Music_Cycle: ; command db
 ; cycle
 ; params: 1
 	JSR GetMusicByte
-	ASL A
-	ASL A
-	ASL A
-	ASL A
+	LTH A
 	ASL A
 	ASL A
 	STA iChannelCycle, X
@@ -2195,10 +2164,7 @@ GetPitch:
 	; get octave
 	LDA iChannelTransposition, X
 	AND #$f0
-	LSR A
-	LSR A
-	LSR A
-	LSR A
+	HTL A
 	ADC zBackupY
 	PHA ; save octave
 	; add pitch
@@ -2372,10 +2338,7 @@ _PlayMusic:
 	STX zAuxAddresses + 1
 	JSR LoadMusicByte ; store first byte of music header in a
 	AND #$e0 ; get channel total
-	LSR A
-	LSR A
-	LSR A
-	LSR A
+	HTL A
 	LSR A
 	ADC #1
 
@@ -2461,10 +2424,7 @@ _PlaySFX:
 	STX zAuxAddresses + 1
 	JSR LoadMusicByte ; store first byte of music header in a
 	AND #$e0 ; get channel total
-	LSR A
-	LSR A
-	LSR A
-	LSR A
+	HTL A
 	LSR A
 	ADC #1
 

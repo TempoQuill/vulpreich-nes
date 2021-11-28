@@ -1,12 +1,8 @@
 PrintText:
 	SEC
-	; get index according to location upper digits
-	LDA #>_PrintText
-	JSR GetWindowIndex
+	; get index according to upper digits of location
 	; load bank into corresponding window
-	LDA #PRG_TextEngine
-	JSR StoreIndexedBank
-	JSR _PrintText
+	JSH PRG_TextEngine, _PrintText
 	JMP UpdatePRG
 
 GetPPUAddressFromNameTable:
@@ -84,18 +80,10 @@ GetName:
 	PHA
 	TYA
 	PHA
-	LDA #>GetNamePointer
-	JSR GetWindowIndex
-	LDA #PRG_TextEngine
-	JSR StoreIndexedBank
-	JSR GetNamePointer
+	JSH PRG_TextEngine, GetNamePointer
 	STA MMC5_PRGBankSwitch2, X
 
-	LDA #>CopyCurrentIndex
-	JSR GetWindowIndex
-	LDA #PRG_TextEngine
-	JSR StoreIndexedBank
-	JSR CopyCurrentIndex
+	JSH PRG_TextEngine, CopyCurrentIndex
 
 	; restore all registers
 	PLA
