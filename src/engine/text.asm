@@ -32,7 +32,7 @@ CopyCurrentIndex:
 
 	; copy ITEM_NAME_LENGTH bytes to string buffer
 	LDY #ITEM_NAME_LENGTH + 1
-	LDA #zStringBuffer ; ZP RAM
+	LDA #zStringBuffer
 	STA zAuxAddresses + 2
 	STA cCurrentRAMAddress
 	LDA #0

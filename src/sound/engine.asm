@@ -14,13 +14,13 @@ _InitSound:
 	JSR MusicOff
 	JSR ClearChannels
 	; clear 0000-0027
-	LDX #zAudioRAMEnd - zAudioRAM
+	LDX #zAudioRAMEnd
 @ClearZP:
 	DEX
 	STA zAudioRAM, X
 	BNE @ClearZP
 	; clear 0200-04bf
-	LDX #<iChannelRAMEnd - <iChannelRAM
+	LDX #<iChannelRAMEnd
 @ClearCRAMPart1:
 	DEX
 	STA iChannelRAM + $200, X
@@ -215,8 +215,8 @@ UpdateChannels:
 	.dw @Hill
 	.dw @Noise
 	.dw @DPCM
-	.dw @None
-	.dw @None
+	.dw @None ; not sure how we'd get here without a debugger
+	.dw @None ; these channels would be skipped by the update routine
 	.dw @None
 ; sfx channels
 ; identical to music channels

@@ -3,6 +3,23 @@ MACRO dba bank, label
 	.dw label
 ENDM
 
+; jump subroutine far
+MACRO JSF bank, memory
+	LDA #bank
+	LDX #<memory
+	LDY #>memory
+	JSR FarCall
+ENDM
+
+; jump far
+MACRO JPF bank, memory
+	LDA #bank
+	LDX #<memory
+	LDY #>memory
+	JMP FarCall
+ENDM
+
+; low to high nybble
 MACRO LTH register
 	ASL register
 	ASL register
@@ -10,6 +27,7 @@ MACRO LTH register
 	ASL register
 ENDM
 
+; high to low nybble
 MACRO HTL register
 	LSR register
 	LSR register
@@ -17,12 +35,14 @@ MACRO HTL register
 	LSR register
 ENDM
 
+; reverse memory
 MACRO REV mem
 	LDA mem
 	EOR #$ff
 	STA mem
 ENDM
 
+; load + decrement
 MACRO LDD mem, register
 	IF register = Y
 		LDY mem
@@ -34,6 +54,7 @@ MACRO LDD mem, register
 	DEC mem
 ENDM
 
+; load + increment
 MACRO LDI mem, register
 	IF register = Y
 		LDY mem
@@ -45,6 +66,7 @@ MACRO LDI mem, register
 	INC mem
 ENDM
 
+; store + decrement
 MACRO STD mem, register
 	IF register = Y
 		STY mem
@@ -56,6 +78,7 @@ MACRO STD mem, register
 	DEC mem
 ENDM
 
+; store + increment
 MACRO STI mem, register
 	IF register = Y
 		STY mem
