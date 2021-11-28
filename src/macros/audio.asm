@@ -31,6 +31,12 @@ MACRO noise_note length, rampflag, volumeramp, mode, pitch
 	.db mode << 7     | pitch
 ENDM
 
+MACRO dpcm_entry bank, pitch, addr, size
+	.db bank, pitch
+	.db (addr & %0011111111000000) >> 10
+	.db size
+ENDM
+
 MACRO rest length
 	.db 0 << 4 | length - 1
 ENDM

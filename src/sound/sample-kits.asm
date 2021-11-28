@@ -23,44 +23,44 @@ SampleKit0:
 	.dw Sample0_C ; double snare
 
 Sample0_0:
-	;   bank, pitch, offset, length
-	.db PRG_DPCM0, $0f, $00, $00 ; bank $7e, pitch $f, $c000, $001 bytes
+	;           bank, pitch, offset, length
+	dpcm_entry PRG_DPCM0, 15, $c000, $00
 
 Sample0_1:
-	.db PRG_DPCM0, $0d, $00, $40 ; bank $7e, pitch $d, $c000, $401 bytes
+	dpcm_entry PRG_DPCM0, 13, $c000, $40
 
 Sample0_2:
-	.db PRG_DPCM0, $0e, $10, $27 ; bank $7e, pitch $e, $c400, $271 bytes
+	dpcm_entry PRG_DPCM0, 14, $c400, $27
 
 Sample0_3:
-	.db PRG_DPCM0, $0f, $1a, $19 ; bank $7e, pitch $f, $c680, $191 bytes
+	dpcm_entry PRG_DPCM0, 15, $c680, $19
 
 Sample0_4:
-	.db PRG_DPCM0, $0a, $21, $16 ; bank $7e, pitch $a, $c840, $161 bytes
+	dpcm_entry PRG_DPCM0, 10, $c840, $16
 
 Sample0_5:
-	.db PRG_DPCM0, $08, $21, $16 ; bank $7e, pitch $8, $c840, $161 bytes
+	dpcm_entry PRG_DPCM0, 8,  $c840, $16
 
 Sample0_6:
-	.db PRG_DPCM0, $06, $21, $16 ; bank $7e, pitch $6, $c840, $161 bytes
+	dpcm_entry PRG_DPCM0, 6,  $c840, $16
 
 Sample0_7:
-	.db PRG_DPCM0, $05, $21, $16 ; bank $7e, pitch $5, $c840, $161 bytes
+	dpcm_entry PRG_DPCM0, 5,  $c840, $16
 
 Sample0_8:
-	.db PRG_DPCM0, $0e, $27, $24 ; bank $7e, pitch $e, $c9c0, $241 bytes
+	dpcm_entry PRG_DPCM0, 14, $c9c0, $24
 
 Sample0_9:
-	.db PRG_DPCM0, $0e, $30, $24 ; bank $7e, pitch $e, $cc00, $241 bytes
+	dpcm_entry PRG_DPCM0, 14, $cc00, $24
 
 Sample0_A:
-	.db PRG_DPCM0, $0e, $39, $23 ; bank $7e, pitch $e, $ce40, $231 bytes
+	dpcm_entry PRG_DPCM0, 14, $ce40, $23
 
 Sample0_B:
-	.db PRG_DPCM0, $0f, $42, $27 ; bank $7e, pitch $f, $d080, $271 bytes
+	dpcm_entry PRG_DPCM0, 15, $d080, $27
 
 Sample0_C:
-	.db PRG_DPCM0, $0e, $4c, $25 ; bank $7e, pitch $e, $d300, $251 bytes
+	dpcm_entry PRG_DPCM0, 14, $d300, $25
 
 SampleKit1:
 	.dw Sample0_0 ; silence
@@ -78,37 +78,37 @@ SampleKit1:
 	.dw Sample1_C ; stomp drum
 
 Sample1_2:
-	.db PRG_DPCM0, $0e, $56, $1f ; bank $7e, pitch $e, $d580, $1f1 bytes
+	dpcm_entry PRG_DPCM0, 14, $d580, $1f
 
 Sample1_3:
-	.db PRG_DPCM0, $0e, $5e, $20 ; bank $7e, pitch $e, $d780, $201 bytes
+	dpcm_entry PRG_DPCM0, 14, $d780, $20
 
 Sample1_4:
-	.db PRG_DPCM0, $0e, $66, $07 ; bank $7e, pitch $e, $d980, $071 bytes
+	dpcm_entry PRG_DPCM0, 14, $d980, $07
 
 Sample1_5:
-	.db PRG_DPCM0, $0f, $68, $14 ; bank $7e, pitch $e, $da00, $141 bytes
+	dpcm_entry PRG_DPCM0, 15, $da00, $14
 
 Sample1_6:
-	.db PRG_DPCM0, $0f, $6D, $09 ; bank $7e, pitch $f, $db40, $091 bytes
+	dpcm_entry PRG_DPCM0, 15, $db40, $09
 
 Sample1_7:
-	.db PRG_DPCM0, $0c, $70, $09 ; bank $7e, pitch $c, $dc00, $091 bytes
+	dpcm_entry PRG_DPCM0, 12, $dc00, $09
 
 Sample1_8:
-	.db PRG_DPCM0, $0b, $70, $09 ; bank $7e, pitch $b, $dc00, $091 bytes
+	dpcm_entry PRG_DPCM0, 11, $dc00, $09
 
 Sample1_9:
-	.db PRG_DPCM0, $0a, $70, $09 ; bank $7e, pitch $a, $dc00, $091 bytes
+	dpcm_entry PRG_DPCM0, 10, $dc00, $09
 
 Sample1_A:
-	.db PRG_DPCM0, $0d, $73, $08 ; bank $7e, pitch $d, $dcc0, $081 bytes
+	dpcm_entry PRG_DPCM0, 13, $dcc0, $08
 
 Sample1_B:
-	.db PRG_DPCM0, $0d, $75, $0f ; bank $7e, pitch $d, $dd40, $0f1 bytes
+	dpcm_entry PRG_DPCM0, 13, $dd40, $0f
 
 Sample1_C:
-	.db PRG_DPCM0, $0d, $79, $0d ; bank $7e, pitch $d, $de40, $0d1 bytes
+	dpcm_entry PRG_DPCM0, 13, $de40, $0d
 
 SampleKit2:
 	.dw Sample0_0 ; silence
