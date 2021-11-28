@@ -33,7 +33,7 @@ ENDM
 
 MACRO dpcm_entry bank, pitch, addr, size
 	.db bank, pitch
-	.db (addr & %0011111111000000) >> 10
+	.db (addr & %0011111111000000) >> 6
 	.db size
 ENDM
 
