@@ -1030,7 +1030,7 @@ HandleNoise:
 	BEQ @Quit
 
 	AND #$f
-	STI zDrumDelay ; adds one frame to depicted duration
+	STI zDrumDelay, A ; adds one frame to depicted duration
 
 	LDA (zDrumAddresses), Y
 	INC zDrumAddresses
