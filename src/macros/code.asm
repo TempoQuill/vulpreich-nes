@@ -54,6 +54,7 @@ MACRO HTL register
 	LSR register
 ENDM
 
+; complement
 MACRO CPL mem
 	LDA mem
 	EOR #$ff
@@ -68,6 +69,7 @@ MACRO SIB mem
 	STA mem
 ENDM
 
+; sign carry byte
 MACRO SCB mem
 	LDA mem
 	EOR #$ff
