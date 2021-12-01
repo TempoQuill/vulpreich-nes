@@ -274,14 +274,13 @@ UpdateChannels:
 
 @Pulse1_CheckCycleOverride:
 	PLA
-	PHA
 	AND #1 << NOTE_CYCLE_OVERRIDE
 	BNE @Pulse1_CycleOverride
 	RTS
 
-@Pulse1_CycleOverride:
 @Pulse1_EnvOverride:
 	PLA
+@Pulse1_CycleOverride:
 	LDA zCurrentTrackEnvelope
 	STA SQ1_ENV
 	RTS
@@ -341,10 +340,8 @@ UpdateChannels:
 	BNE @Pulse2_EnvCycleOverrides
 
 	PLA
-	PHA
 	AND #1 << NOTE_VIBRATO_OVERRIDE
 	BNE @Pulse2_VibratoOverride
-	PLA
 	RTS
 
 @Pulse2_EnvCycleOverrides:
@@ -362,7 +359,6 @@ UpdateChannels:
 	RTS
 
 @Pulse2_VibratoOverride:
-	PLA
 	LDA zCurrentTrackEnvelope
 	STA SQ2_ENV
 	LDA zCurrentTrackRawPitch
@@ -407,14 +403,11 @@ UpdateChannels:
 	BNE @Hill_VibratoOverride
 
 	PLA
-	PHA
 	AND #1 << NOTE_PITCH_OVERRIDE
 	BNE @Hill_PitchOverride
-	PLA
 	RTS
 
 @Hill_PitchOverride:
-	PLA
 	LDA zCurrentTrackRawPitch
 	STA TRI_LO
 	LDA zCurrentTrackRawPitch + 1
@@ -450,14 +443,11 @@ UpdateChannels:
 	BNE @Noise_NoiseSampling
 
 	PLA
-	PHA
 	AND #1 << NOTE_REST
 	BNE @Noise_Rest
-	PLA
 	RTS
 
 @Noise_Rest:
-	PLA
 	LDY #CHAN_3 << 2
 	LDA #$30
 	JMP ClearChannel
@@ -479,14 +469,11 @@ UpdateChannels:
 	BNE @DPCM_DeltaNoiseSamplingOverrides
 
 	PLA
-	PHA
 	AND #1 << NOTE_REST
 	BNE @DPCM_Rest
-	PLA
 	RTS
 
 @DPCM_Rest:
-	PLA
 	LDA zMixer
 	AND #$ff ^ (1 << CHAN_4) ; turn off DPCM
 	STA zMixer
@@ -647,20 +634,18 @@ GeneralHandler:
 
 	; is relative pitch on?
 	LDA iChannelFlagSection3, X
-	PHA
 	AND #1 << SOUND_REL_PITCH_FLAG
 
 	BEQ @RelativePitch_SetFlag
 
-	PLA
-	PHA
+	LDA iChannelFlagSection3, X
 	AND #$ff ^ (1 << SOUND_REL_PITCH_FLAG)
 	STA iChannelFlagSection3, X
 
+	LDA iChannelFlagSection1, X
 	AND #1 << SOUND_REST
 	BNE @RelativePitch_SetFlag
 
-	PLA
 	; get pitch
 	LDA iChannelNoteID, X
 	; add to pitch value
@@ -675,7 +660,7 @@ GeneralHandler:
 	STY zCurrentTrackRawPitch + 1
 
 @RelativePitch_SetFlag:
-	PLA
+	LDA iChannelFlagSection3, X
 	ORA #1 << SOUND_REL_PITCH_FLAG
 	STA iChannelFlagSection3, X
 
