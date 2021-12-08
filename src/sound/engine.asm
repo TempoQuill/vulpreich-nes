@@ -563,8 +563,9 @@ LoadNote:
 	ADC zCurrentNoteDuration
 	STY zPitchSlideDifference + 1 ; quotient
 
-	STY iChannelSlideDepth, X ; quotient
 	STA iChannelSlideFraction, X ; remainder
+	TYA
+	STA iChannelSlideDepth, X ; quotient
 	LDA #0
 	STA iChannelSlideTempo, X
 
@@ -1337,8 +1338,9 @@ GetByteInEnvelopeGroup:
 
 	; reset offset when reading fe
 	; effectively loops the envelope sequence
-	LDY #0
-	STY iChannelEnvelopeGroupOffset, X
+	LDA #0
+	STA iChannelEnvelopeGroupOffset, X
+	TAY
 	STY zCurrentEnvelopeGroupOffset
 	LDA (zCurrentEnvelopeGroupAddress), Y
 
@@ -1659,7 +1661,8 @@ Music_Loop: ; command fd
 	LDA iChannelFlagSection1, X ; set loop flag
 	ORA #1 << SOUND_LOOPING
 	STA iChannelFlagSection1, X
-	STY iChannelLoopCounter, X ; store loop counter
+	TYA
+	STA iChannelLoopCounter, X ; store loop counter
 
 @CheckLoop:
 	LDA iChannelLoopCounter, X ; are we done?
@@ -1868,7 +1871,8 @@ Music_PitchSlide: ; command e0
 	JSR GetPitch
 
 	STA iChannelSlideTarget, X
-	STY iChannelSlideTarget + 16, X
+	TYA
+	STA iChannelSlideTarget + 16, X
 
 	LDA iChannelFlagSection2, X
 	ORA #1 << SOUND_PITCH_SLIDE
@@ -2297,7 +2301,8 @@ Tempo:
 	; update Tempo
 	LDA zBackupA
 	STA iChannelTempo, X
-	STY iChannelTempo + 16, X
+	TYA
+	STA iChannelTempo + 16, X
 	; clear workflow
 	LDA #0
 	STA iChannelNoteFlow, X

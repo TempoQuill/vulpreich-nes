@@ -56,7 +56,8 @@ HideSprites:
 	TXA
 	SBC #4
 	TAX
-	STY iVirtualOAM, X
+	TYA
+	STA iVirtualOAM, X
 	BNE @Loop
 	RTS
 
