@@ -78,8 +78,8 @@ _UpdateSound:
 @Loop:
 	; check channel power
 	LDA iChannelFlagSection1, X
-	AND #1 << SOUND_CHANNEL_ON
-	BNE @AndItsOn ; aaaaand it's on!
+	LSR A
+	BCS @AndItsOn ; aaaaand it's on!
 	JMP @NextChannel
 
 @AndItsOn:
@@ -116,7 +116,9 @@ _UpdateSound:
 	; volume envelope
 	ORA iChannelEnvelope, X
 	STA zCurrentTrackEnvelope
-	JMP @Continue
+	; this assumes we're on pulses or noise
+	; 5-7 are skipped entirely later on
+	BCC @Continue
 
 @Hill:
 	; linear envelope
@@ -144,20 +146,24 @@ _UpdateSound:
 	; are any sfx channels active?
 	; if so, mute
 	LDA iChannelFlagSection1 + CHAN_8
-	AND #1 << SOUND_CHANNEL_ON
-	BNE @RestNote
+	LSR A
+	BCS @RestNote
+
 	LDA iChannelFlagSection1 + CHAN_9
-	AND #1 << SOUND_CHANNEL_ON
-	BNE @RestNote
+	LSR A
+	BCS @RestNote
+
 	LDA iChannelFlagSection1 + CHAN_A
-	AND #1 << SOUND_CHANNEL_ON
-	BNE @RestNote
+	LSR A
+	BCS @RestNote
+
 	LDA iChannelFlagSection1 + CHAN_B
-	AND #1 << SOUND_CHANNEL_ON
-	BNE @RestNote
+	LSR A
+	BCS @RestNote
+
 	LDA iChannelFlagSection1 + CHAN_C
-	AND #1 << SOUND_CHANNEL_ON
-	BEQ @Next
+	LSR A
+	BCS @Next
 
 	LDA zMixer
 	ORA #1 << CHAN_4 ; turn on DPCM
@@ -1196,7 +1202,21 @@ ParseMusic:
 	LDA iChannelFlagSection1, X
 	AND #1 << SOUND_REST
 	BEQ @SkipSub
-	JSR RestoreVolume
+
+	; ch9 only
+	TXA
+	CMP #CHAN_8
+	BNE @SkipSub
+
+	LDA #0
+	STA iChannelPitchModifier + CHAN_9
+	STA iChannelPitchModifier + CHAN_9 + 16
+	STA iChannelPitchModifier + CHAN_B
+	STA iChannelPitchModifier + CHAN_B + 16
+
+	LDA zAudioCommandFlags
+	AND #$ff ^ (1 << SFX_PRIORITY)
+	STA zAudioCommandFlags
 
 @SkipSub:
 	; end music
@@ -1226,25 +1246,6 @@ ParseMusic:
 	LDA #0
 	STA iChannelID, X
 	STA iChannelBank, X
-	RTS
-
-RestoreVolume:
-	; ch9 only
-	TXA
-	CMP #CHAN_8
-	BEQ @Channel9
-	RTS
-
-@Channel9:
-	LDA #0
-	STA iChannelPitchModifier + CHAN_9
-	STA iChannelPitchModifier + CHAN_9 + 16
-	STA iChannelPitchModifier + CHAN_B
-	STA iChannelPitchModifier + CHAN_B + 16
-
-	LDA zAudioCommandFlags
-	AND #$ff ^ (1 << SFX_PRIORITY)
-	STA zAudioCommandFlags
 	RTS
 
 ParseSFXOrRest:

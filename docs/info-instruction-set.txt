@@ -35,10 +35,11 @@ JMP - Jump to new location
 JSR - Jump and save current location
 
 BRK - Branch to interrupt
-RTS - Return from subroutine
-RTI - Return from interrupt
 	- - - 1 - -
-
+RTS - Return from subroutine
+	- - - - - -
+RTI - Return from interrupt
+	from stack
 - Flags - 7
 CLC - Clear carry flag
 	- - 0 - - -
