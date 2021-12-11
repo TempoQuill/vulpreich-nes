@@ -240,53 +240,44 @@ UpdateChannels:
 
 @Pulse1_NoSweep:
 	PLA
-	PHA
-	AND #1 << NOTE_REST
-	BNE @Pulse1_Rest
+	ASL A ; delta (DPCM only)
+	ASL A ; vibrato
+	BCS @Pulse1_VibratoOverride
 
-	PLA
-	PHA
-	AND #1 << NOTE_NOISE_SAMPLING
-	BNE @Pulse1_NoiseSampling
+	ASL A ; rest
+	BCS @Pulse1_Rest
 
-	PLA
-	PHA
-	AND #1 << NOTE_PITCH_OVERRIDE
-	BNE @Pulse1_PitchOverride
+	ASL A ; sampling
+	BCS @Pulse1_NoiseSampling
 
-	PLA
-	PHA
-	AND #1 << NOTE_ENV_OVERRIDE
-	BNE @Pulse1_EnvOverride
+	ASL A ; sweep (already covered)
+	ASL A ; env
+	BCS @Pulse1_EnvOverride
 
-	PLA
-	PHA
-	AND #1 << NOTE_VIBRATO_OVERRIDE
-	BNE @Pulse1_VibratoOverride
-
-	BEQ @Pulse1_CheckCycleOverride
+	ASL A ; pitch
+	BCS @Pulse1_PitchOverride
+	; cycle
+	BCC @Pulse1_CheckCycleOverride
 
 @Pulse1_PitchOverride:
+	PHA
 	LDA zCurrentTrackRawPitch
 	STA SQ1_LO
 	LDA zCurrentTrackRawPitch + 1
 	STA SQ1_HI
+	PLA
 
 @Pulse1_CheckCycleOverride:
-	PLA
-	AND #1 << NOTE_CYCLE_OVERRIDE
-	BNE @Pulse1_CycleOverride
+	BMI @Pulse1_CycleOverride
 	RTS
 
 @Pulse1_EnvOverride:
-	PLA
 @Pulse1_CycleOverride:
 	LDA zCurrentTrackEnvelope
 	STA SQ1_ENV
 	RTS
 
 @Pulse1_VibratoOverride:
-	PLA
 	LDA zCurrentTrackEnvelope
 	STA SQ1_ENV
 	LDA zCurrentTrackRawPitch
@@ -294,13 +285,11 @@ UpdateChannels:
 	RTS
 
 @Pulse1_Rest:
-	PLA
 	LDY #CHAN_0 << 2
 	LDA #$30
 	JMP ClearChannel
 
 @Pulse1_NoiseSampling:
-	PLA
 	LDA zCurrentTrackEnvelope
 	STA SQ1_ENV
 	LDA zCurrentTrackRawPitch
@@ -320,38 +309,32 @@ UpdateChannels:
 
 @Pulse2_NoSweep:
 	PLA
-	PHA
-	AND #1 << NOTE_REST
-	BNE @Pulse2_Rest
+	ASL A ; delta (DPCM only)
+	ASL A ; vibrato
+	BCS @Pulse2_VibratoOverride
 
-	PLA
-	PHA
-	AND #1 << NOTE_NOISE_SAMPLING
-	BNE @Pulse2_NoiseSampling
+	ASL A ; rest
+	BCS @Pulse2_Rest
 
-	PLA
-	PHA
-	AND #1 << NOTE_PITCH_OVERRIDE
-	BNE @Pulse2_PitchOverride
+	ASL A ; sampling
+	BCS @Pulse2_NoiseSampling
 
-	PLA
-	PHA
-	AND #1 << NOTE_ENV_OVERRIDE | 1 << NOTE_CYCLE_OVERRIDE
-	BNE @Pulse2_EnvCycleOverrides
+	ASL A ; sweep (already covered)
+	ASL A ; env
+	BCS @Pulse2_EnvCycleOverrides
 
-	PLA
-	AND #1 << NOTE_VIBRATO_OVERRIDE
-	BNE @Pulse2_VibratoOverride
+	ASL A ; pitch
+	BCS @Pulse2_PitchOverride
+	; cycle
+	BMI @Pulse2_EnvCycleOverrides
 	RTS
 
 @Pulse2_EnvCycleOverrides:
-	PLA
 	LDA zCurrentTrackEnvelope
 	STA SQ2_ENV
 	RTS
 
 @Pulse2_PitchOverride:
-	PLA
 	LDA zCurrentTrackRawPitch
 	STA SQ2_LO
 	LDA zCurrentTrackRawPitch + 1
@@ -366,13 +349,11 @@ UpdateChannels:
 	RTS
 	
 @Pulse2_Rest:
-	PLA
 	LDY #CHAN_1 << 2
 	LDA #$30
 	JMP ClearChannel
 
 @Pulse2_NoiseSampling:
-	PLA
 	LDA zCurrentTrackEnvelope
 	STA SQ2_ENV
 	LDA zCurrentTrackRawPitch
@@ -383,28 +364,20 @@ UpdateChannels:
 
 @Hill:
 	LDA iChannelNoteFlags, X
-	PHA
-	AND #1 << NOTE_REST
-	BNE @Hill_Rest
+	ASL A ; delta
+	ASL A ; vibrato
+	BCS @Hill_VibratoOverride
 
-	PLA
-	PHA
-	AND #1 << NOTE_NOISE_SAMPLING
-	BNE @Hill_NoiseSampling
+	ASL A ; rest
+	BCS @Hill_Rest
 
-	PLA
-	PHA
-	AND #1 << NOTE_ENV_OVERRIDE
-	BNE @Hill_EnvOverride
+	ASL A ; sampling
+	BCS @Hill_NoiseSampling
 
-	PLA
-	PHA
-	AND #1 << NOTE_VIBRATO_OVERRIDE
-	BNE @Hill_VibratoOverride
-
-	PLA
-	AND #1 << NOTE_PITCH_OVERRIDE
-	BNE @Hill_PitchOverride
+	ASL A ; sweep
+	ASL A ; env
+	BCS @Hill_EnvOverride
+	BMI @Hill_PitchOverride
 	RTS
 
 @Hill_PitchOverride:
@@ -415,19 +388,16 @@ UpdateChannels:
 	RTS
 
 @Hill_VibratoOverride:
-	PLA
 	LDA zCurrentTrackRawPitch
 	STA TRI_LO
 	RTS
 
 @Hill_Rest:
-	PLA
 	LDY #CHAN_2 << 2
 	LDA #$0
 	JMP ClearChannel
 
 @Hill_NoiseSampling:
-	PLA
 	LDA zHillLinearLength
 	STA TRI_LINEAR
 	LDA zCurrentTrackRawPitch
@@ -438,13 +408,11 @@ UpdateChannels:
 
 @Noise:
 	LDA iChannelNoteFlags, X
-	PHA
-	AND #1 << NOTE_NOISE_SAMPLING
-	BNE @Noise_NoiseSampling
-
-	PLA
-	AND #1 << NOTE_REST
-	BNE @Noise_Rest
+	ASL A ; delta
+	ASL A ; vibrato
+	ASL A ; rest
+	BCS @Noise_Rest
+	BMI @Noise_NoiseSampling
 	RTS
 
 @Noise_Rest:
@@ -453,7 +421,6 @@ UpdateChannels:
 	JMP ClearChannel
 
 @Noise_NoiseSampling:
-	PLA
 	LDA zCurrentTrackEnvelope
 	STA NOISE_ENV
 	LDA zCurrentTrackRawPitch
@@ -464,13 +431,13 @@ UpdateChannels:
 
 @DPCM:
 	LDA iChannelNoteFlags, X
-	PHA
-	AND #1 << NOTE_DELTA_OVERRIDE | 1 << NOTE_NOISE_SAMPLING
-	BNE @DPCM_DeltaNoiseSamplingOverrides
+	ASL A ; delta
+	BCS @DPCM_DeltaNoiseSamplingOverrides
 
-	PLA
-	AND #1 << NOTE_REST
-	BNE @DPCM_Rest
+	ASL A ; vibrato
+	ASL A ; rest
+	BCS @DPCM_Rest
+	BMI @DPCM_DeltaNoiseSamplingOverrides
 	RTS
 
 @DPCM_Rest:
@@ -483,7 +450,6 @@ UpdateChannels:
 	JMP ClearChannel
 
 @DPCM_DeltaNoiseSamplingOverrides:
-	PLA
 	LDA zDPCMSamplePitch
 	STA DPCM_ENV
 	LDA zDPCMSampleOffset

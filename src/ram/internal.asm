@@ -170,7 +170,7 @@ iStackBottom:
 	.dsb $100
 iStackTop:
 
-; section: AUDIO RAM (channels) 0200 - 050f
+; section: AUDIO RAM (channels) 0200 - 04bf
 ; each entry is spread across 16 bytes
 ; xx0 pulse 1 xx1 pulse 2 xx2 hill xx3 noise xx4 DPCM
 ; xx8 pulse 1 xx9 pulse 2 xxa hill xxb noise xxc DPCM
