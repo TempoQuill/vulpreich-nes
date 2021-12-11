@@ -241,18 +241,19 @@ UpdateChannels:
 @Pulse1_NoSweep:
 	PLA
 	ASL A ; delta (DPCM only)
+	BMI @Pulse1_VibratoOverride
 	ASL A ; vibrato
-	BCS @Pulse1_VibratoOverride
 
+	BMI @Pulse1_Rest
 	ASL A ; rest
-	BCS @Pulse1_Rest
 
+	BMI @Pulse1_NoiseSampling
 	ASL A ; sampling
-	BCS @Pulse1_NoiseSampling
 
 	ASL A ; sweep (already covered)
+
+	BMI @Pulse1_EnvOverride
 	ASL A ; env
-	BCS @Pulse1_EnvOverride
 
 	ASL A ; pitch
 	BCS @Pulse1_PitchOverride
@@ -310,21 +311,21 @@ UpdateChannels:
 @Pulse2_NoSweep:
 	PLA
 	ASL A ; delta (DPCM only)
+	BMI @Pulse2_VibratoOverride
 	ASL A ; vibrato
-	BCS @Pulse2_VibratoOverride
 
+	BMI @Pulse2_Rest
 	ASL A ; rest
-	BCS @Pulse2_Rest
 
+	BMI @Pulse2_NoiseSampling
 	ASL A ; sampling
-	BCS @Pulse2_NoiseSampling
 
 	ASL A ; sweep (already covered)
+	BMI @Pulse2_EnvCycleOverrides
 	ASL A ; env
-	BCS @Pulse2_EnvCycleOverrides
 
+	BMI @Pulse2_PitchOverride
 	ASL A ; pitch
-	BCS @Pulse2_PitchOverride
 	; cycle
 	BMI @Pulse2_EnvCycleOverrides
 	RTS
@@ -364,19 +365,22 @@ UpdateChannels:
 
 @Hill:
 	LDA iChannelNoteFlags, X
-	ASL A ; delta
+	ASL A ; delta (DPCM only)
+
+	BMI @Hill_VibratoOverride
 	ASL A ; vibrato
-	BCS @Hill_VibratoOverride
 
+	BMI @Hill_Rest
 	ASL A ; rest
-	BCS @Hill_Rest
 
+	BMI @Hill_NoiseSampling
 	ASL A ; sampling
-	BCS @Hill_NoiseSampling
 
 	ASL A ; sweep
+
+	BMI @Hill_EnvOverride
 	ASL A ; env
-	BCS @Hill_EnvOverride
+
 	BMI @Hill_PitchOverride
 	RTS
 
@@ -409,9 +413,11 @@ UpdateChannels:
 @Noise:
 	LDA iChannelNoteFlags, X
 	ASL A ; delta
+
 	ASL A ; vibrato
+	BMI @Noise_Rest
+
 	ASL A ; rest
-	BCS @Noise_Rest
 	BMI @Noise_NoiseSampling
 	RTS
 
@@ -431,12 +437,13 @@ UpdateChannels:
 
 @DPCM:
 	LDA iChannelNoteFlags, X
+
+	BMI @DPCM_DeltaNoiseSamplingOverrides
 	ASL A ; delta
-	BCS @DPCM_DeltaNoiseSamplingOverrides
 
 	ASL A ; vibrato
+	BMI @DPCM_Rest
 	ASL A ; rest
-	BCS @DPCM_Rest
 	BMI @DPCM_DeltaNoiseSamplingOverrides
 	RTS
 
@@ -538,8 +545,8 @@ LoadNote:
 @CheckRelativePitch:
 	PLA
 	PHA
-	AND #1 << SOUND_RELATIVE_PITCH
-	BEQ @CheckEnvelopePattern
+	ASL A ; relative pitch
+	BPL @CheckEnvelopePattern
 
 	LDA iChannelFlagSection3, X
 	AND #$ff ^ (1 << SOUND_REL_PITCH_FLAG)
@@ -596,8 +603,8 @@ GeneralHandler:
 @CheckRelativePitch:
 	PLA
 	PHA
-	AND #1 << SOUND_RELATIVE_PITCH
-	BEQ @CheckPitchOffset
+	ASL A ; relative pitch
+	BPL @CheckPitchOffset
 
 	; is relative pitch on?
 	LDA iChannelFlagSection3, X
@@ -653,8 +660,8 @@ GeneralHandler:
 @CheckPitchInc:
 	; is pitch inc on?
 	LDA iChannelFlagSection1, X
-	AND #1 << SOUND_PITCH_INC_SWITCH
-	BEQ @CheckVibrato
+	ASL A ; pitch inc switch
+	BPL @CheckVibrato
 
 	; is the byte active?
 	LDA iChannelPitchIncrementation, X
@@ -676,8 +683,8 @@ GeneralHandler:
 	; is vibrato on?
 	LDA iChannelFlagSection2, X
 	PHA
-	AND #1 << SOUND_VIBRATO ; vibrato
-	BEQ @CheckEnvelopePattern
+	LSR A ; vibrato
+	BCC @CheckEnvelopePattern
 
 	; is vibrato active for this note yet?
 	; is the preamble over?
@@ -716,8 +723,8 @@ GeneralHandler:
 	; get direction
 	LDA iChannelFlagSection3, X
 	PHA
-	AND #1 << SOUND_VIBRATO_DIR ; vibrato up/down
-	BEQ @Vibrato_Down
+	LSR A ; vibrato up/down
+	BCC @Vibrato_Down
 
 ; up
 
@@ -1015,10 +1022,9 @@ HandleNoise:
 	RTS
 
 HandleDPCM: ; NES only
-	; is DPCM on?
+	; is DPCM on? if so, sign flag is also on
 	LDA iChannelFlagSection1, X
-	AND #1 << SOUND_DPCM ; DPCM
-	BNE @CheckIfSFX
+	BMI @CheckIfSFX
 	RTS
 
 @CheckIfSFX:
@@ -1054,7 +1060,7 @@ HandleDPCM: ; NES only
 
 @SkipCarry1:
 	STA zDPCMSampleBank
-	ORA #$80    ; ensures bank # points to ROM
+	ORA #$80     ; ensures bank # points to ROM
 	STA zWindow3 ; c000-dfff address range
 	JSR UpdatePRG
 
@@ -1183,8 +1189,8 @@ ParseMusic:
 
 	; check if Channel 9's on
 	LDA iChannelFlagSection1 + (1 << SFX_CHANNEL), X
-	AND #1 << SOUND_CHANNEL_ON
-	BNE @OK
+	LSR A ; SOUND_CHANNEL_ON
+	BCS @OK
 
 @Channel8toC:
 	LDA iChannelFlagSection1, X
@@ -1344,19 +1350,22 @@ GetDrumSample:
 	BCS @SFXDPCM
 
 	LDA iChannelFlagSection1 + CHAN_B
-	AND #1 << SOUND_CHANNEL_ON ; is ch12 on? (noise)
-	BNE @CheckDPCM
+	LSR A ; is ch12 on? (noise)
+	BCS @CheckDPCM
 	JSR @ContinueNoise
 
 @CheckDPCM:
 	LDA iChannelFlagSection1 + CHAN_C
-	AND #1 << SOUND_CHANNEL_ON ; is ch13 on? (dpcm)
-	BEQ @ContinueDPCM
+	LSR A ; is ch13 on? (dpcm)
+	BCS @ContinueDPCM
 	RTS
 
 @ContinueDPCM:
 	; load set ID
 	LDA zMusicDrumSet
+	; $80-$ff is treated as $00
+	; falling through sign check, A gets overwritten by zSFXDrumSet
+	; at this point, zSFXDrumSet was previously cleared by _PlayMusic
 	BPL @NextDPCM
 
 @SFXDPCM:
@@ -1532,8 +1541,9 @@ Music_PitchIncSwitch: ; command f1
 	RTS
 
 Music_SetMusic: ; command f3
+; clear sound effect reading mode
 	LDA iChannelFlagSection1, X
-	ORA #1 << SOUND_READING_MODE
+	AND #$ff ^ (1 << SOUND_READING_MODE)
 	STA iChannelFlagSection1, X
 	RTS
 
@@ -1652,8 +1662,9 @@ Music_Loop: ; command fd
 	STA iChannelFlagSection1, X
 
 	; skip to next command
+	; use 1 instead of 2: c = 1 at this point
 	LDA iChannelAddress, X
-	ADC #2 ; skip pointer
+	ADC #1 ; skip pointer
 	STA iChannelAddress, X
 	LDA iChannelAddress + 16, X
 	ADC #0 ; update high byte in case of carry
@@ -1723,8 +1734,9 @@ Music_JumpRAM: ; command ee
 	AND @Masks, Y
 	BNE @Jump ; if active, jump
 	; skip pointer
+	; add only 1: c = 1 at this point
 	LDA iChannelAddress, X
-	ADC #2
+	ADC #1
 	STA iChannelAddress, X
 	LDA iChannelAddress + 16, X
 	ADC #0
@@ -1774,10 +1786,10 @@ Music_Vibrato: ; command e1
 ; vibrato
 ; params: 2
 ;	1: [xx]
-	; delay in frames
+	; x: preamble
 ;	2: [yz]
-	; y: extent
-	; z: rate (# frames per cycle)
+	; y: depth
+	; z: length
 
 	; set vibrato flag?
 	LDA iChannelFlagSection2, X
@@ -1846,9 +1858,8 @@ Music_PitchSlide: ; command e0
 	RTS
 
 Music_PitchOffset: ; command e6
-; tone
+; sub hhll from current APU timer
 ; params: 1 (bigdw)
-; offset to add to each note frequency
 	LDA iChannelFlagSection2, X
 	ORA #1 << SOUND_PITCH_MODIFIER
 	STA iChannelFlagSection2, X
@@ -1860,7 +1871,7 @@ Music_PitchOffset: ; command e6
 	RTS
 
 Music_RelativePitch: ; command e7
-; set a note medium
+; add x to final note id
 ; operates squarely on NoteTable
 ; params: 1
 	LDA iChannelFlagSection2, X
@@ -1890,7 +1901,7 @@ Music_CyclePattern: ; command de
 
 Music_EnvelopePattern: ; command e8
 ; envelope group
-; params: 1
+; params: 1 (8-bit)
 	LDA iChannelFlagSection2, X
 	ORA #1 << SOUND_ENV_PTRN
 	STA iChannelFlagSection2, X
@@ -1900,7 +1911,7 @@ Music_EnvelopePattern: ; command e8
 	RTS
 
 Music_ToggleMusic: ; command df
-; switch to music mode
+; switch between audio data reading modes
 ; params: none
 	LDA iChannelFlagSection1, X
 	EOR #1 << SOUND_READING_MODE
@@ -1911,8 +1922,9 @@ Music_ToggleDrum: ; command e3
 ; toggle music sampling
 ; can't be used as a straight toggle since the param is not read from on->off
 ; on NES, the drumset byte is shared between noise and DPCM
+; also on NES, A returns zSFXDrumSet $00 if param = $80 or higher
 ; params:
-; 	noise on: 1
+; 	noise on: 1 (7-bit)
 ; 	noise off: 0
 	; toggle sampling
 	LDA iChannelFlagSection1, X
@@ -1929,8 +1941,9 @@ Music_ToggleDrum: ; command e3
 
 Music_SFXToggleDrum: ; command f0
 ; toggle sfx sampling
+; on NES, A only keeps bits 0-6: bit 7 is uselessly transferred to c
 ; params:
-;	on: 1
+;	on: 1 (7-bit mirror)
 ; 	off: 0
 	; toggle sampling
 	LDA iChannelFlagSection1, X
@@ -1942,11 +1955,16 @@ Music_SFXToggleDrum: ; command f0
 
 @GetParam:
 	JSR GetMusicByte
-	STA zSFXDrumSet, X
+	STA zSFXDrumSet
 	RTS
 
 Music_PitchSweep: ; command dd
 ; update pitch sweep
+; WARNING:	Only works for pulse channels
+; 		Causes weird effects when on other channels
+; theoretical allocations:
+;	zSweep1 - Pulse1, Hill, DPCM
+;	zSweep2 - Pulse2, Noise
 ; params: 1
 	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_PITCH_SWEEP
@@ -2099,6 +2117,7 @@ GetMusicByte:
 ; returns byte from current address in A
 ; advances to next byte in music data
 ; input: X = current channel
+; output: C = 1
 	JSR _LoadMusicByte ; home ROM
 	INC iChannelAddress, X
 	INC zAuxAddresses
@@ -2312,6 +2331,7 @@ _PlayMusic:
 	STA zDrumAddresses + 3
 	STA zDrumDelay
 	STA zMusicDrumSet
+	STA zSFXDrumSet
 	LDA zAudioCommandFlags
 	AND #1 << MUSIC_PLAYING | 1 << SFX_PRIORITY
 	STA zAudioCommandFlags
@@ -2322,8 +2342,8 @@ _PlaySFX:
 	STY zBackupY
 	JSR MusicOff
 	LDA iChannelFlagSection1 + CHAN_8
-	AND #1 << SOUND_CHANNEL_ON ; ch9 on?
-	BEQ @Ch9
+	LSR A ; ch8 on?
+	BCS @Ch9
 
 	LDY #CHAN_0 << 2 ; turn it off
 	LDA #$30
@@ -2332,8 +2352,8 @@ _PlaySFX:
 
 @Ch9:
 	LDA iChannelFlagSection1 + CHAN_9
-	AND #1 << SOUND_CHANNEL_ON
-	BEQ @ChA
+	LSR A
+	BCS @ChA
 
 	LDY #CHAN_1 << 2 ; turn it off
 	LDA #$30
@@ -2342,8 +2362,8 @@ _PlaySFX:
 
 @ChA:
 	LDA iChannelFlagSection1 + CHAN_A
-	AND #1 << SOUND_CHANNEL_ON
-	BEQ @ChB
+	LSR A
+	BCS @ChB
 
 	LDY #CHAN_2 << 2 ; turn it off
 	LDA #$0
@@ -2351,8 +2371,8 @@ _PlaySFX:
 
 @ChB:
 	LDA iChannelFlagSection1 + CHAN_B
-	AND #1 << SOUND_CHANNEL_ON
-	BEQ @ChC
+	LSR A
+	BCS @ChC
 
 	LDY #CHAN_3 << 2 ; turn it off
 	LDA #$30
@@ -2360,8 +2380,8 @@ _PlaySFX:
 
 @ChC:
 	LDA iChannelFlagSection1 + CHAN_C
-	AND #1 << SOUND_CHANNEL_ON
-	BEQ @ChannelsCleared
+	LSR A
+	BCS @ChannelsCleared
 
 	LDY #CHAN_4 << 2 ; turn it off
 	LDA #$0
@@ -2486,10 +2506,9 @@ LoadMusicByte:
 
 ClearChannels:
 ; runs ClearChannel for all 5 channels
-; functionally identical to InitSound
 	LDA #0
 	STA SND_CHN
-	LDY #CHAN_0 << 2
+	TAY
 	LDA #$30
 	JSR ClearChannel
 	LDY #CHAN_1 << 2
