@@ -28,7 +28,6 @@ SOUND_SUBROUTINE       = 1
 SOUND_LOOPING          = 2
 SOUND_READING_MODE     = 3
 SOUND_NOISE            = 4
-SOUND_REST             = 5
 SOUND_PITCH_INC_SWITCH = 6
 SOUND_DPCM             = 7
 

@@ -383,8 +383,6 @@ UpdateChannels:
 	ASL A ; sampling
 
 	ASL A ; sweep
-
-	BMI @Hill_EnvOverride
 	ASL A ; env
 
 	BMI @Hill_PitchOverride
@@ -621,10 +619,6 @@ GeneralHandler:
 	LDA iChannelFlagSection3, X
 	AND #$ff ^ (1 << SOUND_REL_PITCH_FLAG)
 	STA iChannelFlagSection3, X
-
-	LDA iChannelFlagSection1, X
-	AND #1 << SOUND_REST
-	BNE @RelativePitch_SetFlag
 
 	; get pitch
 	LDA iChannelNoteID, X
@@ -1066,9 +1060,8 @@ HandleDPCM: ; NES only
 
 @SkipCarry1:
 	STA zDPCMSampleBank
-	ORA #$80     ; ensures bank # points to ROM
-	STA zWindow3 ; c000-dfff address range
-	JSR UpdatePRG
+	ORA #$80                ; ensures bank # points to ROM
+	STA MMC5_PRGBankSwitch4 ; c000-dfff address range
 
 	LDA (zDrumAddresses + 2), Y
 	INC zDrumAddresses + 2
@@ -1137,7 +1130,7 @@ ParseMusic:
 ; special notes
 	LDA iChannelFlagSection1, X
 	PHA
-	AND #1 << SOUND_READING_MODE | 1 << SOUND_REST  ; sfx / sfx
+	AND #1 << SOUND_READING_MODE ; sfx
 	BEQ @NextCheck
 	PLA
 	JMP ParseSFXOrRest
@@ -1191,32 +1184,12 @@ ParseMusic:
 
 	TXA
 	CMP #CHAN_8
-	BCS @Channel8toC
+	BCS @SkipSub
 
 	; check if Channel 9's on
 	LDA iChannelFlagSection1 + (1 << SFX_CHANNEL), X
 	LSR A ; SOUND_CHANNEL_ON
 	BCS @OK
-
-@Channel8toC:
-	LDA iChannelFlagSection1, X
-	AND #1 << SOUND_REST
-	BEQ @SkipSub
-
-	; ch9 only
-	TXA
-	CMP #CHAN_8
-	BNE @SkipSub
-
-	LDA #0
-	STA iChannelPitchModifier + CHAN_9
-	STA iChannelPitchModifier + CHAN_9 + 16
-	STA iChannelPitchModifier + CHAN_B
-	STA iChannelPitchModifier + CHAN_B + 16
-
-	LDA zAudioCommandFlags
-	AND #$ff ^ (1 << SFX_PRIORITY)
-	STA zAudioCommandFlags
 
 @SkipSub:
 	; end music
