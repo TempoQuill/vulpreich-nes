@@ -1,6 +1,4 @@
 UpdatePRG:
-	LDA zRAMBank
-	STA MMC5_PRGBankSwitch1
 	LDA zWindow1
 	STA MMC5_PRGBankSwitch2
 	LDA zWindow2
@@ -102,10 +100,7 @@ Start:
 	STA PPUCTRL
 	STA zPPUCtrlMirror
 	JSR InitSound
-	LDY #MUSIC_NONE
-	JSR PlayMusic
-@Loop:
-	JMP @Loop
+	JMP GameInit
 ;
 ; Public NMI: where dreams come true!
 ;

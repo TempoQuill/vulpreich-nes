@@ -1,3 +1,42 @@
+ClearWindowData:
+	LDA #<cWindowStackPointer
+	LDY #>cWindowStackPointer
+	JSR ByteFill
+	LDA #<cMenuHeader
+	LDY #>cMenuHeader
+	JSR ByteFill
+	LDA #<cMenuDataFlags
+	LDY #>cMenuDataFlags
+	JSR ByteFill
+	LDA #<c2DMenuCursorInitY
+	LDY #>c2DMenuCursorInitY
+	JSR ByteFill
+
+	LDA #0
+	STA zRAMBank
+	STA MMC5_PRGBankSwitch1
+
+	PHA
+	LDA #<sWindowStackTop
+	LDY #>sWindowStackTop
+	STA zAuxAddresses + 6
+	STY zAuxAddresses + 7
+	PLA
+	STD zAuxAddresses + 6, A
+	STD zAuxAddresses + 6, A
+	LDA zAuxAddresses + 6
+	STA cWindowStackPointer
+	LDA zAuxAddresses + 7
+	STA cWindowStackPointer + 1
+	RTS
+
+@bytefill:
+	STA zAuxAddresses + 6
+	STY zAuxAddresses + 7
+	LDA #0
+	LDY #$10
+	JMP ByteFill
+
 FarJump:
 	STX zBackupX
 	TXA
@@ -102,6 +141,17 @@ CopyBytes:
 	LDA (zAuxAddresses + 6), Y
 	STA (zAuxAddresses + 2), Y
 	DEY
+	BNE @Loop
+@Quit:
+	RTS
+
+ByteFill:
+; fill Y bytes at (zAuxAddresses + 6)
+	INY ; we bail the moment y = 0
+@Loop:
+	DEY
+	BEQ @Quit
+	STA (zAuxAddresses + 6), Y
 	BNE @Loop
 @Quit:
 	RTS

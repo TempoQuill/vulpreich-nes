@@ -15,8 +15,21 @@ cCurrentIndex:
 	.dsb 1
 cCurrentRAMAddress:
 	.dsb 2 ; 5c10
+cWindowStackPointer:
+	.dsb 2
 cCurrentROMBank:
+	.dsb 1 ; 5c14
+	.dsb 10
 	.dsb 1
-	.dsb $2ed
+	.dsb $2b0 ; 5c20
+c2DMenuCursorInitY:
+	.dsb 16
+cMenuData:
+cMenuDataFlags:
+	.dsb 16 ; 5ed0
+cMenuHeader:
+	.dsb 16 ; 5ee0
+cMenuHeaderEnd:
+	.dsb 16 ; 5ef0
 cTextBuffer:
 	.dsb $100 ; 5f00

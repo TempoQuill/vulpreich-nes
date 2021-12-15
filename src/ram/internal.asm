@@ -77,7 +77,9 @@ zCurrentEnvelopeGroupAddress:
 	.dsb 2
 zAudioRAMEnd:
 ; FOR RENT
-	.dsb 4
+zSaveFileExists:
+	.dsb 1
+	.dsb 3
 zTableOffset:
 	.dsb 2
 zPPUScrollXHiMirror:

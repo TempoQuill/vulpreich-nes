@@ -31,7 +31,9 @@
 ;             instruction data (mapper data, math, NMI, interfaces, etc.)
 
 ; bank 00-02 starter banks
-.dsb (3 * $2000), $00
+.base $8000
+.include "src/start-0.asm"
+.dsb (2 * $2000), $00
 
 ; bank 03 - sound engine
 .base $8000
