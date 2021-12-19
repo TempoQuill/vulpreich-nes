@@ -262,7 +262,6 @@ UpdateChannels:
 	ASL A ; env
 
 	ASL A ; pitch
-	BCS @Pulse1_PitchOverride
 	; cycle
 	BCC @Pulse1_CheckCycleOverride
 
@@ -2274,17 +2273,52 @@ StartChannel:
 	STA iChannelFlagSection1, X
 	RTS
 
+GenerateTrackOffset:
+; multiply zMusicID by 3
+; input  - Y
+; output - zAuxAddresses
+	LDA #0
+	STA zAuxAddresses + 1
+	TYA
+	STA zMusicID ; song number
+	STA zAuxAddresses
+	ROL A
+	ROL zAuxAddresses + 1
+	ADC zAuxAddresses
+	STA zAuxAddresses
+	BCC @SkipInc
+	CLC
+	INC zAuxAddresses + 1
+@SkipInc:
+	RTS
+
+ThreeByteAudioPointer:
+; read the track pointer
+	LDY #0
+	LDA (zAuxAddresses), Y
+	STA zMusicBank
+	INY
+	LDA (zAuxAddresses), Y
+	INY
+	PHA
+	LDA (zAuxAddresses), Y
+	STA zAuxAddresses + 1
+	PLA
+	STA zAuxAddresses
+	RTS
+
+
 _PlayMusic:
 ; load music
 	JSR MusicOff
-	STY zMusicID ; song number
-	; bank list
-	LDA MusicBanks, Y
-	STA zMusicBank
-	LDA MusicLo, Y ; music header address
-	LDX MusicHi, Y
+	JSR GenerateTrackOffset
+	LDA #<Music
+	ADC zAuxAddresses
 	STA zAuxAddresses
-	STX zAuxAddresses + 1
+	LDA #>Music
+	ADC zAuxAddresses + 1
+	STA zAuxAddresses + 1
+	JSR ThreeByteAudioPointer
 	JSR LoadMusicByte ; store first byte of music header in a
 	AND #$e0 ; get channel total
 	HTL A
@@ -2364,14 +2398,14 @@ _PlaySFX:
 @ChannelsCleared:
 ; start reading sfx header for # chs
 	LDY zBackupY
-	STY zMusicID
-	; bank list
-	LDA SFXBanks, Y
-	STA zMusicBank
-	LDA SFXLo, Y ; sfx header address
-	LDX SFXHi, Y
+	JSR GenerateTrackOffset
+	LDA #<SFX
+	ADC zAuxAddresses
 	STA zAuxAddresses
-	STX zAuxAddresses + 1
+	LDA #>SFX
+	ADC zAuxAddresses + 1
+	STA zAuxAddresses + 1
+	JSR ThreeByteAudioPointer
 	JSR LoadMusicByte ; store first byte of music header in a
 	AND #$e0 ; get channel total
 	HTL A

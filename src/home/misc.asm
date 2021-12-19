@@ -65,18 +65,32 @@ FarCall:
 	LDA cCurrentROMBank
 	JMP StoreIndexedBank
 
-ThreeBytePointers:
-	TYA
-	ASL A
-	STA zTableOffset
+FourBytePointers:
 	LDA #0
-	ADC #0
 	STA zTableOffset + 1
+	TYA
+	ROL A
+	ROL zTableOffset + 1
+	ROL A
+	ROL zTableOffset + 1
+	STA zTableOffset
+	RTS
+
+ThreeBytePointers:
+; entry  - y
+; offset - zTableOffset
+	LDA #0
+	STA zTableOffset + 1
+	TYA
+	ROL A
+	STA zTableOffset
+	ROL zTableOffset + 1
 	TYA
 	ADC zTableOffset
 	STA zTableOffset
-	LDA #0
-	ADC zTableOffset + 1
+	BCC @Done
+	INC zTableOffset + 1
+@Done:
 	RTS
 
 JumpTable:

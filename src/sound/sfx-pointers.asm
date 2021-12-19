@@ -1,8 +1,2 @@
-SFXBanks:
-	.db PRG_Audio
-
-SFXLo:
-	.db <Music_None
-
-SFXHi:
-	.db >Music_None
+SFX:
+	dba PRG_Audio,  Music_None
