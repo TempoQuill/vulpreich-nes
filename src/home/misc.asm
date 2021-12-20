@@ -69,9 +69,9 @@ FourBytePointers:
 	LDA #0
 	STA zTableOffset + 1
 	TYA
-	ROL A
+	ASL A
 	ROL zTableOffset + 1
-	ROL A
+	ASL A
 	ROL zTableOffset + 1
 	STA zTableOffset
 	RTS
@@ -82,7 +82,7 @@ ThreeBytePointers:
 	LDA #0
 	STA zTableOffset + 1
 	TYA
-	ROL A
+	ASL A
 	STA zTableOffset
 	ROL zTableOffset + 1
 	TYA

@@ -592,8 +592,8 @@ GeneralHandler:
 	AND #$3f
 	STA zCurrentTrackEnvelope
 	LDA iChannelCyclePattern, X
-	ROL A
-	ROL A
+	ROR A
+	ROR A
 	STA iChannelCyclePattern, X
 	AND #$c0
 	ORA zCurrentTrackEnvelope
@@ -2282,7 +2282,7 @@ GenerateTrackOffset:
 	TYA
 	STA zMusicID ; song number
 	STA zAuxAddresses
-	ROL A
+	ASL A
 	ROL zAuxAddresses + 1
 	ADC zAuxAddresses
 	STA zAuxAddresses
