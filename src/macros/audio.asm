@@ -105,7 +105,7 @@ ENDM
 
 MACRO pitch_slide tail, octave, pitch
 	.db pitch_slide_cmd, tail ; e0
-	.db octave << 4 | pitch
+	.db (8 - octave) << 4 | pitch
 ENDM
 
 MACRO vibrato preamble, depth, length

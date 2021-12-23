@@ -181,8 +181,8 @@ _UpdateSound:
 	AND #1 << SFX_CHANNEL
 	BNE @SFXChannel
 	LDA iChannelFlagSection1 + (1 << SFX_CHANNEL), X
-	AND #1 << SOUND_CHANNEL_ON
-	BNE @SoundChannelOn
+	LSR A
+	BCS @SoundChannelOn
 @SFXChannel:
 	JSR UpdateChannels
 @SoundChannelOn:
@@ -476,8 +476,7 @@ LoadNote:
 	LDA iChannelFlagSection2, X
 	PHA
 	AND #1 << SOUND_PITCH_SLIDE
-	BNE @PitchSlide
-	JMP @CheckRelativePitch
+	BEQ @CheckRelativePitch
 	; get note duration
 @PitchSlide:
 	LDA iChannelNoteDuration, X
@@ -532,7 +531,7 @@ LoadNote:
 	BEQ @PitchSlide_Quit
 
 	DEC zPitchSlideDifference + 1
-	JMP @PitchSlide_Loop
+	BCC @PitchSlide_Loop
 
 @PitchSlide_Quit:
 	LDA zPitchSlideDifference ; remainder
