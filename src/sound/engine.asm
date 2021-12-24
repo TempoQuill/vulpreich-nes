@@ -1131,7 +1131,7 @@ ParseMusic:
 	AND #1 << SOUND_READING_MODE ; sfx
 	BEQ @NextCheck
 	PLA
-	JMP ParseSFXOrRest
+	JMP ParseSoundEffect
 
 @NextCheck:
 	PLA
@@ -1219,7 +1219,7 @@ ParseMusic:
 	STA iChannelBank, X
 	RTS
 
-ParseSFXOrRest:
+ParseSoundEffect:
 	; turn noise on
 	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_NOISE_SAMPLING
