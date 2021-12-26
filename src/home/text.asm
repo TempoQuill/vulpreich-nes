@@ -5,6 +5,17 @@ PrintText:
 	JSH PRG_TextEngine, _PrintText
 	JMP UpdatePRG
 
+GetTextByte:
+	LDA zAuxAddresses + 7
+	JSR GetWindowIndex
+	LDA zTextBank
+	JSR StoreIndexedBank
+	LDA (zAuxAddresses + 6), Y
+	PHA
+	JSR UpdatePRG
+	PLA
+	RTS
+
 GetPPUAddressFromNameTable:
 ; store the nametable pointer through PPU
 	LDA cNametableAddress + 1

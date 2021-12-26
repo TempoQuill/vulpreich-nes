@@ -44,7 +44,7 @@ _PrintText:
 ; Current character = (zAuxAddresses + 6) + Y
 ; Text Command Pointer = zAuxAddresses 2
 ; PPUADDR input = cNametableAddress
-	LDA (zAuxAddresses + 6), Y
+	JSR GetTextByte
 	CMP #"@"
 	PHA
 	BCS @ReadCommand

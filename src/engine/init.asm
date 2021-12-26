@@ -51,4 +51,13 @@ GameInit:
 	JMP IntroSequence
 
 IntroSequence:
+	LDA #0
+	STA zStringXOffset
+	LDA #>BeginningText
+	STA zAuxAddresses + 7
+	LDA #<BeginningText
+	STA zAuxAddresses + 6
+	LDA #PRG_Start0
+	STA zTextBank
+	JSR PrintText
 	JMP IntroSequence

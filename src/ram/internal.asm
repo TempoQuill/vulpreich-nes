@@ -79,7 +79,11 @@ zAudioRAMEnd:
 ; FOR RENT
 zSaveFileExists:
 	.dsb 1
-	.dsb 3
+zTextBank:
+	.dsb 1
+zCurrentTextByte:
+	.dsb 1
+	.dsb 1
 zTableOffset:
 	.dsb 2
 zPPUScrollXHiMirror:

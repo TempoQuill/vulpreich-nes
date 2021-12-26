@@ -1,2 +1,2 @@
-
-.include "engine/init.asm"
+.include "src/engine/init.asm"
+.include "src/text/opening.asm"
