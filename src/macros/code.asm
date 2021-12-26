@@ -3,6 +3,21 @@ MACRO dba bank, label
 	.dw label
 ENDM
 
+; test single bit
+MACRO TSB bit
+	AND #1 << bit
+ENDM
+
+; set single bit
+MACRO SSB bit
+	ORA #1 << bit
+ENDM
+
+; reset single bit
+MACRO RSB bit
+	AND #$ff << (1 << bit)
+ENDM
+
 ; jump subroutine home
 MACRO JSH bank, memory
 	LDA #>memory

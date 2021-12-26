@@ -162,8 +162,8 @@ MACRO sfx_priority_off
 	.db sfx_priority_off_cmd ; ed
 ENDM
 
-MACRO sound_jump_ram address
-	.db sound_jump_ram_cmd ; ee
+MACRO sound_jump_flag address
+	.db sound_jump_flag_cmd ; ee
 	.dw address
 ENDM
 
