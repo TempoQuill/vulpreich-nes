@@ -144,6 +144,49 @@ Music_Journey_Pulse2:
 	sound_call Music_Journey_Pulse1@Sub2
 	sound_jump @Mainloop
 
+@Sub1:
+	set_mute_timer 7
+	vibrato 10, 5, 4
+	volume_envelope 1, 10
+	note C_, 2
+	volume_envelope 1, 5
+	note C_, 2
+	volume_envelope 1, 10
+	note D_, 2
+	volume_envelope 1, 5
+	note D_, 2
+	volume_envelope 1, 10
+	note F_, 2
+	volume_envelope 1, 5
+	note F_, 2
+	volume_envelope 1, 10
+	note E_, 2
+	volume_envelope 1, 5
+	note E_, 2
+	volume_envelope 1, 10
+	note D_, 2
+	volume_envelope 1, 5
+	note D_, 2
+	volume_envelope 1, 10
+	note C_, 2
+	volume_envelope 1, 5
+	note C_, 2
+	volume_envelope 1, 3
+	note C_, 2
+	volume_envelope 1, 2
+	note C_, 2
+	volume_envelope 1, 10
+	note D_, 2
+	volume_envelope 1, 5
+	note D_, 2
+	volume_envelope 1, 3
+	note D_, 2
+	volume_envelope 1, 2
+	note D_, 2
+	volume_envelope 1, 1
+	note D_, 2
+	sound_ret
+
 Music_Journey_Hill:
 	hill_type 12, 0, 40
 	octave 3
