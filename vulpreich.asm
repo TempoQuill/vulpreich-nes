@@ -42,7 +42,7 @@
 
 ; bank 04 - music bank
 .base $a000
-.include "src/music/title.asm"
+.include "src/music-0.asm"
 .pad $c000, $00
 
 .dsb $2000, $00
