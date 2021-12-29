@@ -11,6 +11,7 @@ GetTextByte:
 	LDA zTextBank
 	JSR StoreIndexedBank
 	LDA (zAuxAddresses + 6), Y
+	STA zCurrentTextByte
 	PHA
 	JSR UpdatePRG
 	PLA

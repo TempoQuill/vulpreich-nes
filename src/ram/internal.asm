@@ -76,20 +76,21 @@ zCurrentEnvelopeGroupOffset:
 zCurrentEnvelopeGroupAddress:
 	.dsb 2
 zAudioRAMEnd:
-; FOR RENT
+; section: miscellaneous
 zSaveFileExists:
 	.dsb 1
 zTextBank:
 	.dsb 1
 zCurrentTextByte:
 	.dsb 1
+zNMIState:
+	.dsb 1
+zCHRWindow0:
+	.dsb 1
+zCHRWindow1:
 	.dsb 1
 zTableOffset:
 	.dsb 2
-zPPUScrollXHiMirror:
-	.dsb 1
-zNMIWaitFlag:
-	.dsb 1
 
 ; section: Hardware Assistive RAM
 ; backup registers, banks, addresses, and buffers
@@ -131,39 +132,29 @@ zInputBottleNeck:
 	.dsb 2 ; 0050
 zInputCurrentState:
 	.dsb 2
-zScreenUpdateIndex:
+zPPUCtrlMirror:
 	.dsb 1 ; 0054
-zGlobalFrameCounter:
-	.dsb 1
-zBackgroundXOffset:
-	.dsb 1
-zBackgroundYOffset:
-	.dsb 1
-zDrawBackgroundAttributesPPUBigAddr:
-	.dsb 2 ; 0058
-	.dsb 2
-zPPUScrollYMirror:
-	.dsb 1 ; 005c
-zPPUScrollXMirror:
-	.dsb 1
 zPPUMaskMirror:
 	.dsb 1
-zPPUCtrlMirror:
+zPPUStatusMirror:
 	.dsb 1
-zCHRWindow0:
+	.dsb 1
+zPaletteIndex:
+	.dsb 8 ; 0058
+zPPUScrollXMirror:
 	.dsb 1 ; 0060
-zCHRWindow1:
+zPPUScrollYMirror:
+	.dsb 1
+zStringXOffset:
 	.dsb 1
 zCurrentCardBalance:
 	.dsb 3
 zCurrentPrice:
 	.dsb 3
 zCurrentCardBalanceBCD:
-	.dsb 7 ; 0068
+	.dsb 7
 zDecimalPlaceBuffer:
-	.dsb 16
-zStringXOffset:
-	.dsb 1
+	.dsb 16 ; 0070
 zStringBuffer:
 	.dsb $20 ; 0080
 	.dsb $20 ; 00a0
@@ -256,16 +247,9 @@ iChannelMuteMain:
 iChannelNoteLength:
 	.dsb 16
 iChannelRAMEnd:
-; FOR RENT
-	.dsb $50 ; 04c0
-iHorizontalScrollingPPUAttributeUpdateBuffer:
-	.dsb $42 ; 0510 - 0551
-iVerticalScrollingPPUAttributeUpdateBuffer:
-	.dsb $42 ; 0552 - 0593
-	.dsb $6c ; 0594 - 05ff
-iPPUBuffer:
-	.dsb $80 ; 0600 - 067f
-iScrollingPPUTileUpdateBuffer:
-	.dsb $80 ; 0680 - 06ff
+; section: groups
+iPals:
+	.dsb 16 ; 04c0
+	.dsb $230 ; 04d0 - 06ff
 iVirtualOAM:
 	.dsb $100 ; 0700 - 07ff

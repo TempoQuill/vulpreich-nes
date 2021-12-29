@@ -86,7 +86,6 @@ ReadJoypads:
 
 	RTS
 
-
 Start:
 	LDA #$00
 	STA PPUMASK
@@ -99,7 +98,8 @@ Start:
 	LDA #$30
 	STA PPUCTRL
 	STA zPPUCtrlMirror
-	JSR InitSound
+	LDY #MUSIC_NONE
+	JSR PlayMusic
 	JMP GameInit
 ;
 ; Public NMI: where dreams come true!
@@ -111,31 +111,16 @@ Start:
 ; It also runs the audio engine, allowing music to play continuously no matter
 ; how busy the rest of the game happens to be.
 ;
-; The NMI is actually separated into several distinct behaviors depending on the
-; game state, as dictated by flags in stack `$100`.
-;
-; For normal gameplay, here is the general flow of the NMI:
-;
-;  1. Push registers and processor flags so that we can restore them later.
-;  2. Check to see whether we're in a menu or transitioning. If so, use those
-;     divert to that code instead.
-;  3. Hide the sprites/background and update the sprite OAM.
-;  4. Load the current CHR banks.
-;  5. Check the `zNMIWaitFlag`. If it's nonzero, restore `PPUMASK` and skip to
-;     handling the sound processing.
-;  6. Handle any horizontal or vertical scrolling tile updates.
-;  7. Update PPU using the current screen update buffer.
-;  8. Write PPU control register, scroll position, and mask.
-;  9. Increment the global frame counter.
-; 10. Reset PPU buffer if we just used it for the screen update.
-; 11. Read joypad input.
-; 12. Decrement `zNMIWaitFlag`, unblocking any code that was waiting for the NMI.
-; 13. Run the audio engine.
-; 14. Restore registers and processor flags, yield back to the game loop.
-;
-; The game loop is synchronized with rendering using `JSR WaitForNMI`, which
-; sets `zNMIWaitFlag` to `$00` until the NMI completes and decrements it.
-;
+; 0: scroll
+; 1: map buffer
+; 2: palettes
+; 3: dma
+; 4: map
+; 5: tiles
+; 6: oam
+; 7: joypad
+; 8: sound
+; 9: additional stuff
 NMI:
 	PHP
 	PHA
@@ -144,67 +129,19 @@ NMI:
 	TYA
 	PHA
 
-	BIT iStackBottom
-	BPL @PauseOrMenu ; branch if bit 7 was 0
-	BVC @Transition ; branch if bit 6 was 0
-	LDA #$00
-	STA PPUMASK
-	STA OAMADDR
-	LDA #$02
-	STA OAM_DMA
-
-	JSR UpdateCHR
-
-	LDA zNMIWaitFlag
-	BEQ @NotWaiting
-	JMP @Waiting
-@NotWaiting
-; PPUCtrl_Base2000
-; PPUCtrl_WriteHorizontal
-; PPUCtrl_Sprite0000
-; PPUCtrl_Background1000
-; PPUCtrl_SpriteSize8x16
-; PPUCtrl_NMIEnabled
-	LDA #$ec
-	STA PPUCTRL
-	LDY #$00
-
-	JSR ResetPPUAddress
-; PPUCtrl_Base2000
-; PPUCtrl_WriteHorizontal
-; PPUCtrl_Sprite0000
-; PPUCtrl_Background1000
-; PPUCtrl_SpriteSize8x16
-; PPUCtrl_NMIEnabled
-	LDA #$ec
-	ORA zPPUScrollXHiMirror
-
-	STA PPUCTRL
-	STA zPPUCtrlMirror
-	LDA zPPUScrollXMirror
-	STA PPUSCROLL
-	LDA zPPUScrollYMirror
-	CLC
-	ADC zBackgroundYOffset
-	STA PPUSCROLL
-	LDA zPPUMaskMirror
-	STA PPUMASK
-	INC zGlobalFrameCounter
-@CheckScreenUpdateIndex:
-	LDA zScreenUpdateIndex
-	BNE @ResetScreenUpdateIndex
-
-	STA iPPUBuffer
-	STA iPPUBuffer + 1
-
-@ResetScreenUpdateIndex:
-	LDA #ScreenUpdateBuffer_RAM_301
-	STA zScreenUpdateIndex
-	JSR UpdateJoypads
-	DEC zNMIWaitFlag
-@DoSoundProcessing:
+	JSR @Scroll
+	JSR @MapBuffer
+	JSR @Palettes
+	JSR @DMA
+	JSR @Map
+	JSR @Tiles
+	JSR @OAM
+	JSR @JoyPad
 	JSR UpdateSound
-@Exit:
+
+	; special functions
+	LDA zNMIState
+
 	PLA
 	TAY
 	PLA
@@ -212,55 +149,99 @@ NMI:
 	PLA
 	PLP
 	RTI
-;
-; NMI logic for during a transition
-;
-@Transition:
-	LDA #$00
-	STA OAMADDR
-	LDA #$02
-	STA OAM_DMA
-	JSR UpdateCHR
 
-	LDA zPPUMaskMirror
-	STA PPUMASK
-	JSR @DoSoundProcessing
-
-	LDA zPPUCtrlMirror
-	STA PPUCTRL
-	DEC zNMIWaitFlag
-	JMP @Exit
-
-;
-; NMI logic for during the pause menu
-;
-@PauseOrMenu:
-	LDA #$00
-	STA PPUMASK
-	STA OAMADDR
-	LDA #$02
-	STA OAM_DMA
-	JSR UpdateCHR
-
-	JSR UpdatePPUFromBufferWithOptions
-
-	JSR ResetPPUAddress
-
+@Scroll:
+	LDA zNMIState
+	CMP #2
+	BEQ @ScrollQuit
+	CMP #4
+	BEQ @ScrollQuit
+	CMP #5
+	BNE @ScrollNormal
 	LDA zPPUScrollXMirror
 	STA PPUSCROLL
-	LDA #$00
+	LDA #0
 	STA PPUSCROLL
-	LDA zPPUMaskMirror
-	STA PPUMASK
-	JMP @CheckScreenUpdateIndex
+	BEQ @ScrollQuit
+@ScrollNormal:
+	LDA zPPUScrollXMirror
+	STA PPUSCROLL
+	LDA zPPUScrollYMirror
+	STA PPUSCROLL
+	BNE @ScrollQuit
+@ScrollQuit:
+	RTS
 
+@MapBuffer:
+	LDA zNMIState
+	BNE @MapBufferQuit
+	RTS
+@MapBufferQuit:
+	RTS
 
-; When waiting for an NMI, just run the audio engine
-;
-@Waiting:
-	LDA zPPUMaskMirror
-	STA PPUMASK
-	JMP @DoSoundProcessing
+@Palettes:
+	LDA zNMIState
+	CMP #2
+	BEQ @PalettesQuit
+	CMP #4
+	BEQ @PalettesQuit
+	LDA #$3f ; palette RAM hi
+	STA PPUADDR
+	LDA #$0 ; palette RAM lo
+	STA PPUADDR
+	TAX
+@PalettesLoop:
+	LDA iPals, x
+	STA PPUDATA
+	INX
+	CPX #$20
+	BCC @PalettesLoop
+@PalettesQuit:
+	RTS
+
+@DMA:
+	LDA zNMIState
+	BNE @DMAQuit
+	LDA #>iVirtualOAM
+	STA OAM_DMA
+@DMAQuit:
+	RTS
+
+@Map:
+	LDA zNMIState
+	CMP #2
+	BEQ @MapQuit
+	RTS
+@MapQuit:
+	RTS
+
+@Tiles:
+	LDA zNMIState
+	CMP #2
+	BEQ @TilesQuit
+	RTS
+@TilesQuit:
+	RTS
+
+@OAM:
+	LDA zNMIState
+	CMP #2
+	BEQ @OAMQuit
+	CMP #5
+	BEQ @OAMQuit
+	RTS
+@OAMQuit:
+	RTS
+
+@JoyPad:
+	LDA zNMIState
+	CMP #2
+	BEQ @JoyPadQuit
+	CMP #3
+	BEQ @JoyPadQuit
+	JSR UpdateJoypads
+@JoyPadQuit:
+	RTS
 
 ;
 ; Public RESET
@@ -335,12 +316,11 @@ RESET:
 	STA MMC5_NametableMapping
 	INX
 
+	JSR InitSound
 @Loop:
 	; clear RAM
 	DEX
 	STA $0, X ; internal RAM
-	STA $200, X
-	STA $300, X
 	STA $400, X
 	STA $500, X
 	STA $600, X
@@ -381,8 +361,7 @@ RESET:
 	STA $7d00, X
 	STA $7e00, X
 	STA $7f00, X
-	BEQ @Next
-	JMP @Loop
+	BNE @Loop
 @Next:
 	JMP Start
 
