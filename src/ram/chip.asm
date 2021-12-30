@@ -17,11 +17,10 @@ cCurrentRAMAddress:
 	.dsb 2 ; 5c10
 cWindowStackPointer:
 	.dsb 2
+	.dsb 12 ; 5c14
 cCurrentROMBank:
-	.dsb 1 ; 5c14
-	.dsb 10
-	.dsb 1
-	.dsb $2b0 ; 5c20
+	.dsb 1 ; 5c20
+	.dsb $2af
 c2DMenuCursorInitY:
 	.dsb 16
 cMenuData:

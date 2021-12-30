@@ -4,4 +4,4 @@ ReleaseInfo:
 
 BeginningText:
 	.db  "...inspired by Doug Tennapel's"
-	next "           CATSCRATCH...        @"
+	next "           CATSCRATCH...@"

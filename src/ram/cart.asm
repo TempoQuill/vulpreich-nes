@@ -11,7 +11,7 @@ sWindowStackTop:
 .base $6000
 sPlayerData:
 sCheckValue1:
-	.dsb 1
+	.dsb 1 ; 6000
 sCheckValue2:
 	.dsb 1
 	.dsb $1ffe
@@ -19,7 +19,7 @@ sCheckValue2:
 .base $6000
 sBackupPlayerData:
 sBackupCheckValue1:
-	.dsb 1
+	.dsb 1 ; 6000
 sBackupCheckValue2:
 	.dsb 1
 	.dsb $1ffe

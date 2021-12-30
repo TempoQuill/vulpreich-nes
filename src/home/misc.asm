@@ -1,16 +1,16 @@
 ClearWindowData:
 	LDA #<cWindowStackPointer
 	LDY #>cWindowStackPointer
-	JSR ByteFill
+	JSR @bytefill
 	LDA #<cMenuHeader
 	LDY #>cMenuHeader
-	JSR ByteFill
+	JSR @bytefill
 	LDA #<cMenuDataFlags
 	LDY #>cMenuDataFlags
-	JSR ByteFill
+	JSR @bytefill
 	LDA #<c2DMenuCursorInitY
 	LDY #>c2DMenuCursorInitY
-	JSR ByteFill
+	JSR @bytefill
 
 	LDA #0
 	STA zRAMBank

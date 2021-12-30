@@ -17,7 +17,7 @@ TryLoadSaveData:
 @corrupt:
 	RTS
 
-CheckBackupSaveFile:
+CheckPrimarySaveFile:
 	LDA #RAM_PrimaryPlayFile
 	STA zRAMBank
 	STA MMC5_PRGBankSwitch1

@@ -78,7 +78,7 @@ zCurrentEnvelopeGroupAddress:
 zAudioRAMEnd:
 ; section: miscellaneous
 zSaveFileExists:
-	.dsb 1
+	.dsb 1 ; 0028
 zTextBank:
 	.dsb 1
 zCurrentTextByte:
@@ -86,7 +86,7 @@ zCurrentTextByte:
 zNMIState:
 	.dsb 1
 zCHRWindow0:
-	.dsb 1
+	.dsb 1 ; 002c
 zCHRWindow1:
 	.dsb 1
 zTableOffset:
