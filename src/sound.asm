@@ -4,5 +4,6 @@
 .include "src/sound/noise-kits.asm"
 .include "src/sound/sample-kits.asm"
 .include "src/sound/music-pointers.asm"
-.include "src/sound/sfx-pointers.asm"
 .include "src/music/nothing.asm"
+.include "src/sound/sfx-pointers.asm"
+.include "src/sound/sfx.asm"

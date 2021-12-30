@@ -52,11 +52,32 @@
 .include "src/engine/text.asm"
 .pad $a000, $00
 
-; bank 07-7d - unused (for now)
-.dsb (($fd - PRG_TextEngine) * $2000), $00
+; bank 07-78 - unused (for now)
+.dsb (($f8 - PRG_TextEngine) * $2000), $00
+
+; dpcm data - 48K
+.base $c000
+.incbin "src/raw-data/dpcm79.bin"
+.pad $e000, $00
 
 .base $c000
-.incbin "src/raw-data/dpcm-7e.bin"
+.incbin "src/raw-data/dpcm7a.bin"
+.pad $e000, $00
+
+.base $c000
+.incbin "src/raw-data/dpcm7b.bin"
+.pad $e000, $00
+
+.base $c000
+.incbin "src/raw-data/dpcm7c.bin"
+.pad $e000, $00
+
+.base $c000
+.incbin "src/raw-data/dpcm7d.bin"
+.pad $e000, $00
+
+.base $c000
+.incbin "src/raw-data/dpcm7e.bin"
 .pad $e000, $00
 
 .base $e000

@@ -13,6 +13,20 @@ MACRO music_leftover channel
 	.db channel - 1
 ENDM
 
+MACRO sfx_header total, channel, label
+	.db (total - 1) << 5 | channel + 7
+	.dw label
+ENDM
+
+MACRO sfx_subheader channel, label
+	.db channel + 7
+	.dw label
+ENDM
+
+MACRO sfx_leftover channel
+	.db channel + 7
+ENDM
+
 MACRO pulse_note note_length, rampflag, volumeramp, length, pitch
 	.db note_length
 	.db rampflag << 4 | volumeramp
@@ -29,6 +43,12 @@ MACRO noise_note length, rampflag, volumeramp, mode, pitch
 	.db length
 	.db rampflag << 4 | volumeramp
 	.db mode << 7     | pitch
+ENDM
+
+MACRO dpcm_note length, bank, addr, size
+	.db length, pitch
+	.db (addr & %0011111111000000) >> 6
+	.db size
 ENDM
 
 MACRO dpcm_entry bank, pitch, addr, size
