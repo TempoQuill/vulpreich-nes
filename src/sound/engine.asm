@@ -1131,11 +1131,11 @@ ParseMusic:
 ; zCurrentMusicByte contains current note
 ; special notes
 	LDA iChannelFlagSection1, X
-	BMI @DPCM ; if SOUND_DPCM is on, sign flag is also on
 	PHA
 	TSB SOUND_READING_MODE ; sfx
 	BEQ @NextCheck
 	PLA
+	BMI @DPCM ; if SOUND_DPCM is on, sign flag is also on
 	JMP ParseSoundEffect
 
 @DPCM:
@@ -1228,13 +1228,20 @@ ParseMusic:
 	RTS
 
 ParseDPCM:
+; NOTE: sfx DPCM notes are locked at pitch $f
+; in order to have lower pitches, use the sample kits
+; sfx dpcm struct:
+;	[ww] [xx] [yy] [zz]
+;		w - note length (in frames - 1)
+;		x - sample bank ($80-$fe)
+;		y - sample address
+;		z - sample size
+	; hack proof
 	TXA
-	AND #$ff ^ 1 << SFX_CHANNEL
+	RSB SFX_CHANNEL
 	CMP #CHAN_4
-	BEQ @ThenParse
-	RTS
+	BNE ParseSoundEffect
 
-@ThenParse:
 	LDA iChannelNoteFlags, X
 	SSB NOTE_DELTA_OVERRIDE
 	STA iChannelNoteFlags, X
