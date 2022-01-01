@@ -478,7 +478,6 @@ LoadNote:
 	TSB SOUND_PITCH_SLIDE
 	BEQ @CheckRelativePitch
 	; get note duration
-@PitchSlide:
 	LDA iChannelNoteDuration, X
 	SBC zCurrentNoteDuration
 	BPL @PitchSlide_OK
@@ -916,10 +915,10 @@ ApplyPitchSlide:
 
 @Finished:
 	LDA iChannelFlagSection2, X
-	AND #FF ^ (1 << SOUND_PITCH_SLIDE)
+	RSB SOUND_PITCH_SLIDE
 	STA iChannelFlagSection2, X
 	LDA iChannelFlagSection3, X
-	AND #FF ^ (1 << SOUND_PITCH_SLIDE_DIR)
+	RSB SOUND_PITCH_SLIDE_DIR
 	STA iChannelFlagSection3, X
 	RTS
 
@@ -992,7 +991,7 @@ HandleNoise:
 	LDA (zDrumAddresses), Y
 	INC zDrumAddresses
 
-	BEQ @SkipCarry2, Y
+	BEQ @SkipCarry2
 	INC zDrumAddresses + 1
 
 @SkipCarry2:
@@ -1106,6 +1105,7 @@ HandleDPCM: ; NES only
 	LDA zMixer
 	RSB CHAN_4 ; turn off DPCM
 	STA zMixer
+	STA SND_CHN
 
 	LDA iChannelNoteFlags, X
 	AND #$ff ^ (1 << NOTE_DELTA_OVERRIDE | 1 << NOTE_NOISE_SAMPLING)
@@ -1335,7 +1335,7 @@ GetByteInEnvelopeGroup:
 	CLC
 
 @Next:
-	BCS @Quit ; C = 1 only if zCurrentEnvelopeGroupAddress = $ff
+	BCS @Quit ; C = 1 only if (zCurrentEnvelopeGroupAddress) = $ff
 	INC iChannelEnvelopeGroupOffset, X
 	INC zCurrentEnvelopeGroupOffset
 @Quit:

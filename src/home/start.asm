@@ -362,7 +362,6 @@ RESET:
 	STA $7e00, X
 	STA $7f00, X
 	BNE @Loop
-@Next:
 	JMP Start
 
 IRQ:
