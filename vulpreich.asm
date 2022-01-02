@@ -49,11 +49,14 @@
 
 ; bank 06 - text engine
 .base $8000
-.include "src/engine/text.asm"
+.include "src/text.asm"
 .pad $a000, $00
 
-; bank 07-78 - unused (for now)
-.dsb (($f8 - PRG_TextEngine) * $2000), $00
+; bank 07 - names
+.include "src/names-0.asm"
+
+; bank 08-78 - unused (for now)
+.dsb (($f8 - PRG_Names0) * $2000), $00
 
 ; dpcm data - 48K
 .base $c000

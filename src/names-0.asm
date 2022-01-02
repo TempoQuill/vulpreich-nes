@@ -1,0 +1,1 @@
+.incnlude "src/text/item-names.asm"
