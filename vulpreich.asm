@@ -53,7 +53,9 @@
 .pad $a000, $00
 
 ; bank 07 - names
+.base $c000
 .include "src/names-0.asm"
+.pad $e000, $00
 
 ; bank 08-78 - unused (for now)
 .dsb (($f8 - PRG_Names0) * $2000), $00
