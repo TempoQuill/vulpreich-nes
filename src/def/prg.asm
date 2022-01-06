@@ -18,9 +18,9 @@ ELSE
   PRG_DPCM0 = $06
   PRG_DPCM1 = $08
   PRG_DPCM2 = $0a
-  PRG_DPCM3 = $0b
-  PRG_DPCM4 = $0c
-  PRG_DPCM5 = $0d
+  PRG_DPCM3 = $0c
+  PRG_DPCM4 = $0e
+  PRG_DPCM5 = $10
   PRG_Home = $00
 ENDIF
 
