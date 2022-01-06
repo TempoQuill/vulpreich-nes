@@ -250,6 +250,8 @@ iChannelRAMEnd:
 ; section: groups
 iPals:
 	.dsb 16 ; 04c0
-	.dsb $230 ; 04d0 - 06ff
+iNSFBanks:
+	.dsb $8
+	.dsb $228 ; 04d8 - 06ff
 iVirtualOAM:
 	.dsb $100 ; 0700 - 07ff

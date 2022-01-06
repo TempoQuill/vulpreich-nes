@@ -23,5 +23,11 @@ MACRO done
 ENDM
 
 MACRO ascii text
-	.db (text + 31)
+	IF text = " "
+		.db (text + 20)
+	ELSEIF text < "9"
+		.db (text - 48)
+	ELSE
+		.db (text + 31)
+	ENDIF
 ENDM

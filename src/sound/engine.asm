@@ -605,7 +605,7 @@ GeneralHandler:
 	PLA
 	PHA
 	ASL A ; relative pitch
-	BPL @CheckPitchOffset
+	BPL @CheckPitchModifier
 
 	; is relative pitch on?
 	LDA iChannelFlagSection3, X
@@ -788,7 +788,7 @@ GeneralHandler:
 	JSR GetByteInEnvelopeGroup
 	BCC @EnvelopePattern_Set
 
-	; pause during rest
+	; if $ff was encountered, the envelope, therefore the note, has ended
 	LDA iChannelNoteFlags, X
 	SSB NOTE_REST
 	STA iChannelNoteFlags, X
@@ -796,6 +796,8 @@ GeneralHandler:
 
 @EnvelopePattern_Set:
 	; store envelope during note
+	; this was unorthodox in Gameboy titles, but old hat on NES
+	; NES doesn't reset notes when updating the corresponding envelope
 	ORA iChannelCycle, X
 	STA zCurrentTrackEnvelope
 	LDA iChannelNoteFlags, X
@@ -1057,8 +1059,14 @@ HandleDPCM: ; NES only
 
 @SkipCarry1:
 	STA zDPCMSampleBank
+IFNDEF NSF_FILE
 	ORA #$80                ; ensures bank # points to ROM
 	STA MMC5_PRGBankSwitch4 ; c000-dfff address range
+ELSE ; nsf file is 3 byte larger
+	STA $5ffc ; c000-cfff
+	ADC #0
+	STA $5ffd ; d000-dfff
+ENDIF
 
 	LDA (zDrumAddresses + 2), Y
 	INC zDrumAddresses + 2
@@ -1263,8 +1271,14 @@ ParseDPCM:
 	STA zDPCMSampleLength
 
 	LDA zDPCMSampleBank
+IFNDEF NSF_FILE
 	ORA #$80
 	STA MMC5_PRGBankSwitch4
+ELSE
+	STA $5ffc
+	ADC #0
+	STA $5ffd
+ENDIF
 	RTS
 
 ParseSoundEffect:
