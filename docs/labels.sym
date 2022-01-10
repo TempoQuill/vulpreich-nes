@@ -544,7 +544,9 @@
 86:811a
 ; PRG_Names0
 87:c000	ItemNames
-87:c00d
+87:c00d	CharacterFullNames
+87:c0a2	CharacterNames
+87:c0e5
 ; PRG_Home
 ff:e000	ClearWindowData
 ff:e040 ClearWindowData@bytefill
@@ -641,10 +643,10 @@ ff:e4b6	NMI@OAMQuit
 ff:e4b7	NMI@JoyPad
 ff:e4c4	NMI@JoyPadQuit
 ff:e4c5	RESET
-ff:e50a	RESET@VBlankLoop
-ff:e511	RESET@VBlank2Loop
-ff:e51f	RESET@Loop
-ff:e59f	IRQ
-ff:e5a0
+ff:e50b	RESET@VBlankLoop
+ff:e512	RESET@VBlank2Loop
+ff:e520	RESET@Loop
+ff:e5a0	IRQ
+ff:e5a1
 ff:fff1	UnreferencedTitle
 ff:fffa	NESVectorTables

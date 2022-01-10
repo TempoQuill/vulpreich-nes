@@ -278,14 +278,13 @@ RESET:
 	STA MMC5_SND_CHN
 
 	LDA #PRG_Start0
-	STA zWindow1
+	STA MMC5_PRGBankSwitch2
 	LDA #PRG_Start1
-	STA zWindow2
+	STA MMC5_PRGBankSwitch3
 	LDA #PRG_Start2
-	STA zWindow3
+	STA MMC5_PRGBankSwitch4
 	LDA #PRG_Home
-	STA zWindow4
-	JSR UpdatePRG
+	STA MMC5_PRGBankSwitch5
 
 	SEI
 	CLD
