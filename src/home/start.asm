@@ -315,6 +315,14 @@ RESET:
 	STA MMC5_NametableMapping
 	INX
 
+	LDA MMC5_PRGBankSwitch2
+	STA zWindow1
+	LDA MMC5_PRGBankSwitch3
+	STA zWindow3
+	LDA MMC5_PRGBankSwitch4
+	STA zWindow4
+	LDA MMC5_PRGBankSwitch5
+	STA zWindow5
 	JSR InitSound
 @Loop:
 	; clear RAM
