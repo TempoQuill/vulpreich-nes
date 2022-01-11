@@ -60,7 +60,7 @@ _PrintText:
 	PLA
 	STA PPUDATA
 	INY
-	BCC _PrintText
+	RTS
 
 @ReadCommand:
 	PLA

@@ -531,17 +531,17 @@
 86:8021	CopyCurrentIndex
 86:803d	_PrintText
 86:8050	_PrintText@CopyToPPU
-86:8063	_PrintText@ReadCommand
-86:8076	_PrintText@CommandTable
-86:8082	_PrintText@Continue
-86:80b5	_PrintText@Line
-86:80bf	_PrintText@Para
-86:80d1	_PrintText@ParaLoop
-86:80f6	_PrintText@TextEnd
-86:80f7	_PrintText@Next
-86:8106	_PrintText@NextByte
-86:8109	_PrintText@NextWrite
-86:811a
+86:8062	_PrintText@ReadCommand
+86:8075	_PrintText@CommandTable
+86:8081	_PrintText@Continue
+86:80b4	_PrintText@Line
+86:80be	_PrintText@Para
+86:80d0	_PrintText@ParaLoop
+86:80f5	_PrintText@TextEnd
+86:80f6	_PrintText@Next
+86:8105	_PrintText@NextByte
+86:8108	_PrintText@NextWrite
+86:8119
 ; PRG_Names0
 87:c000	ItemNames
 87:c00d	CharacterFullNames
