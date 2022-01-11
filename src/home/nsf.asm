@@ -3,8 +3,7 @@ LOAD:
 INIT:
 	PHA
 	JSR _InitSound
-	PLA
-	TAY
+	PLY
 IFNDEF SFX
 	INY
 	JMP _PlayMusic

@@ -1,20 +1,16 @@
 InitSound:
 	PHP
 	PHA
-	TXA
-	PHA
-	TYA
-	PHA
+	PHX
+	PHY
 	LDA MMC5_PRGBankSwitch2
 	STA zWindow1
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
 	JSR _InitSound
 	JSR UpdatePRG
-	PLA
-	TAY
-	PLA
-	TAX
+	PLY
+	PLX
 	PLA
 	PLP
 	RTS
@@ -22,20 +18,16 @@ InitSound:
 UpdateSound:
 	PHP
 	PHA
-	TXA
-	PHA
-	TYA
-	PHA
+	PHX
+	PHY
 	LDA MMC5_PRGBankSwitch2
 	STA zWindow1
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
 	JSR _UpdateSound
 	JSR UpdatePRG
-	PLA
-	TAY
-	PLA
-	TAX
+	PLY
+	PLX
 	PLA
 	PLP
 	RTS
@@ -61,10 +53,8 @@ _LoadMusicByte:
 PlayMusic:
 	PHP
 	PHA
-	TXA
-	PHA
-	TYA
-	PHA
+	PHX
+	PHY
 	LDA MMC5_PRGBankSwitch2
 	STA zWindow1
 	LDA #PRG_Audio
@@ -82,10 +72,8 @@ PlayMusic:
 
 @Continue:
 	JSR UpdatePRG
-	PLA
-	TAY
-	PLA
-	TAX
+	PLY
+	PLX
 	PLA
 	PLP
 	RTS
@@ -93,10 +81,8 @@ PlayMusic:
 PlayMusic2:
 	PHP
 	PHA
-	TXA
-	PHA
-	TYA
-	PHA
+	PHX
+	PHY
 	LDA MMC5_PRGBankSwitch2
 	STA zWindow1
 	LDA #PRG_Audio
@@ -110,10 +96,8 @@ PlayMusic2:
 	JSR _PlayMusic
 
 	JSR UpdatePRG
-	PLA
-	TAY
-	PLA
-	TAX
+	PLY
+	PLX
 	PLA
 	PLP
 	RTS
@@ -121,10 +105,8 @@ PlayMusic2:
 PlaySFX:
 	PHP
 	PHA
-	TXA
-	PHA
-	TYA
-	PHA
+	PHX
+	PHY
 	JSR CheckSFX
 	BCC @Play
 
@@ -145,10 +127,8 @@ PlaySFX:
 	JSR UpdatePRG
 
 @Done:
-	PLA
-	TAY
-	PLA
-	TAX
+	PLY
+	PLX
 	PLA
 	PLP
 	RTS

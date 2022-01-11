@@ -39,11 +39,9 @@ ClearWindowData:
 
 FarJump:
 	STX zBackupX
-	TXA
-	PHA
+	PHX
 	STY zBackupY
-	TYA
-	PHA
+	PHY
 	JSR GetWindowIndex
 	LDA cCurrentROMBank
 	STA zWindow1, X
@@ -56,11 +54,9 @@ FarCall:
 
 @jump:
 	STX zBackupX
-	TXA
-	PHA
+	PHX
 	STY zBackupY
-	TYA
-	PHA
+	PHY
 	JSR GetWindowIndex
 	LDA cCurrentROMBank
 	JMP StoreIndexedBank

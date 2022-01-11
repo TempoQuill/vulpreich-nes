@@ -124,10 +124,8 @@ Start:
 NMI:
 	PHP
 	PHA
-	TXA
-	PHA
-	TYA
-	PHA
+	PHX
+	PHY
 
 	JSR @Scroll
 	JSR @MapBuffer
@@ -142,10 +140,8 @@ NMI:
 	; special functions
 	LDA zNMIState
 
-	PLA
-	TAY
-	PLA
-	TAX
+	PLY
+	PLX
 	PLA
 	PLP
 	RTI

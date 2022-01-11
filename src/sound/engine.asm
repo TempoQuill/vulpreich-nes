@@ -7,10 +7,8 @@ _InitSound:
 ; clear all relevant hardware registers & ram
 	PHP
 	PHA
-	TXA
-	PHA
-	TYA
-	PHA
+	PHX
+	PHY
 	JSR MusicOff
 	JSR ClearChannels
 	; clear 0000-0027
@@ -31,10 +29,8 @@ _InitSound:
 	STA iChannelRAM + $100, X
 	BNE @ClearCRAMPart2
 	JSR MusicOn
-	PLA
-	TAY
-	PLA
-	TAX
+	PLY
+	PLX
 	PLA
 	PLP
 	RTS

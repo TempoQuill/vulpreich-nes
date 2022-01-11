@@ -3,6 +3,30 @@ MACRO dba bank, label
 	.dw label
 ENDM
 
+; push x
+MACRO PHX
+	TXA
+	PHA
+ENDM
+
+; push y
+MACRO PHY
+	TYA
+	PHA
+ENDM
+
+; pull x
+MACRO PLX
+	PLA
+	TAX
+ENDM
+
+; pull y
+MACRO PLY
+	PLA
+	TAY
+ENDM
+
 ; test single bit
 MACRO TSB bit
 	AND #1 << bit

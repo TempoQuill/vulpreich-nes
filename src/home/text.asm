@@ -88,20 +88,16 @@ GetName:
 	; preserve registers
 	PHP
 	PHA
-	TXA
-	PHA
-	TYA
-	PHA
+	PHX
+	PHY
 	JSH PRG_TextEngine, GetNamePointer
 	STA MMC5_PRGBankSwitch2, X
 
 	JSH PRG_TextEngine, CopyCurrentIndex
 
 	; restore all registers
-	PLA
-	TAY
-	PLA
-	TAX
+	PLY
+	PLX
 	PLA
 	PLP
 	; bank switch
