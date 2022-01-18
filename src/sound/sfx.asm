@@ -70,6 +70,42 @@ SFX_OtisVoice3: ; talking
 SFX_OtisVoice4: ; bummed
 	sfx_header 1, 5, SFX_OtisVoice4_DPCM
 
+SFX_DoorClick:
+	sfx_header 1, 4, SFX_DoorClick_Noise
+
+SFX_DoorShut:
+	sfx_header 1, 4, SFX_DoorShut_Noise
+
+SFX_DoorSlam:
+	sfx_header 1, 4, SFX_DoorSlam_Noise
+
+SFX_Sink:
+	sfx_header 1, 4, SFX_Sink_Noise
+
+SFX_DoorClick_Noise:
+	noise_note 7, 0, 0, 0, 12
+	noise_note 7, 0, 0, 0, 11
+	sound_ret
+
+SFX_DoorShut_Noise:
+	noise_note 0, 0, 0, 0, 12
+	noise_note 12, 0, 2, 0, 10
+	sound_ret
+
+SFX_DoorSlam_Noise:
+	noise_note 1, 0, 15, 0, 13
+	noise_note 1, 0, 15, 1, 13
+	noise_note 59, 0, 15, 0, 12
+	sound_ret
+
+SFX_Sink_Noise:
+	noise_note 2, 1, 7, 0, 1
+	noise_note 2, 1, 6, 0, 2
+	sound_jump_flag @ret
+	sound_jump SFX_Sink_Noise
+@ret:
+	sound_ret
+
 SFX_IggyVoice0_DPCM:
 	dpcm_note 31, PRG_DPCM3, $c000, $74
 	sound_ret

@@ -667,7 +667,7 @@ GeneralHandler:
 	; inc high byte if low byte rolls over
 	DEC zCurrentTrackRawPitch + 1
 
-; incidentally, pitch_inc_switch can stack with pitch_offset
+; incidentally, pitch_dec_switch can stack with pitch_offset
 ; for example, $f1 followed by $e6 $0001 would essentially mean $e6 $0002
 @CheckPitchInc_NoCarry:
 	DEC zCurrentTrackRawPitch
@@ -793,7 +793,7 @@ GeneralHandler:
 @EnvelopePattern_Set:
 	; store envelope during note
 	; this was unorthodox in Gameboy titles, but old hat on NES
-	; NES doesn't reset notes when updating the corresponding envelope
+	; NES doesn't reset current cycle on envelope update
 	ORA iChannelCycle, X
 	STA zCurrentTrackEnvelope
 	LDA iChannelNoteFlags, X

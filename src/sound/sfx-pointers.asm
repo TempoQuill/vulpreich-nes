@@ -23,3 +23,7 @@ SFX:
 	dba PRG_Audio,  SFX_IggyVoice4
 	dba PRG_Audio,  SFX_JuneVoice4
 	dba PRG_Audio,  SFX_OtisVoice4
+	dba PRG_Audio,  SFX_DoorClick
+	dba PRG_Audio,  SFX_DoorShut
+	dba PRG_Audio,  SFX_DoorSlam
+	dba PRG_Audio,  SFX_Sink
