@@ -22,8 +22,8 @@ ClearWindowData:
 	STA zAuxAddresses + 6
 	STY zAuxAddresses + 7
 	PLA
-	STD zAuxAddresses + 6, A
-	STD zAuxAddresses + 6, A
+	STD zAuxAddresses + 6
+	STD zAuxAddresses + 6
 	LDA zAuxAddresses + 6
 	STA cWindowStackPointer
 	LDA zAuxAddresses + 7

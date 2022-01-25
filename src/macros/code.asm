@@ -139,49 +139,25 @@ MACRO SCW mem
 ENDM
 
 ; load + decrement
-MACRO LDD mem, register
-	IF register = Y
-		LDY mem
-	ELSEIF register = X
-		LDX mem
-	ELSE ; A
-		LDA mem
-	ENDIF
+MACRO LDD mem
+	LDA mem
 	DEC mem
 ENDM
 
 ; load + increment
-MACRO LDI mem, register
-	IF register = Y
-		LDY mem
-	ELSEIF register = X
-		LDX mem
-	ELSE ; A
-		LDA mem
-	ENDIF
+MACRO LDI mem
+	LDA mem
 	INC mem
 ENDM
 
 ; store + decrement
-MACRO STD mem, register
-	IF register = Y
-		STY mem
-	ELSEIF register = X
-		STX mem
-	ELSE ; A
-		STA mem
-	ENDIF
+MACRO STD mem
+	STA mem
 	DEC mem
 ENDM
 
 ; store + increment
-MACRO STI mem, register
-	IF register = Y
-		STY mem
-	ELSEIF register = X
-		STX mem
-	ELSE ; A
-		STA mem
-	ENDIF
+MACRO STI mem
+	STA mem
 	INC mem
 ENDM

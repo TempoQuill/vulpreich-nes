@@ -101,9 +101,9 @@ SFX_DoorSlam_Noise:
 SFX_Sink_Noise:
 	noise_note 2, 1, 7, 0, 1
 	noise_note 2, 1, 6, 0, 2
-	sound_jump_flag @ret
+	sound_jump_flag SFX_Sink_Noise_ret
 	sound_jump SFX_Sink_Noise
-@ret:
+SFX_Sink_Noise_ret:
 	sound_ret
 
 SFX_IggyVoice0_DPCM:

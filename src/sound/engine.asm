@@ -196,7 +196,7 @@ _UpdateSound:
 	BCS @NextChannel ; > DPCM means go straight to the next channel
 	JMP @Loop
 @Done:
-	RTS
+	JMP TryMusic
 
 ; X = current channel, Y = pointer offset, A = pointer data
 UpdateChannels:
@@ -404,7 +404,7 @@ UpdateChannels:
 	LDA zHillLinearLength
 	STA TRI_LINEAR
 	LDA zCurrentTrackRawPitch
-	STA TRI_HO
+	STA TRI_LO
 	LDA zCurrentTrackRawPitch + 1
 	STA TRI_HI
 	RTS
@@ -467,6 +467,25 @@ UpdateChannels:
 @None:
 	RTS
 
+TryMusic:
+; severely truncated version of FadeMusic
+	; don't overwrite channel ID
+	PHX
+	; restart sound
+	JSR PreserveIDRestart
+	; get new song ID
+	LDA zMusicID
+	BEQ @Quit
+	CMP iChannelID, X
+	BEQ @Quit
+	; load new song
+	TAY
+	JSR _PlayMusic
+@Quit:
+	; cleanup
+	PLX
+	RTS
+
 LoadNote:
 	; wait for pitch slide to finish
 	LDA iChannelFlagSection2, X
@@ -487,11 +506,9 @@ LoadNote:
 	STA zRawPitchBackup + 1
 	; get direction of pitch slide
 	LDA iChannelSlideTarget, X
-	STA zRawPitchTargetBackup
 	SBC iChannelRawPitch, X
 	STA zPitchSlideDifference
 	LDA iChannelSlideTarget + 16, X
-	STA zRawPitchTargetBackup + 1
 	SBC iChannelRawPitch + 16, X
 	STA zPitchSlideDifference + 1
 	BCS @PitchSlide_Greater
@@ -697,11 +714,11 @@ GeneralHandler:
 	BEQ @Vibrato_Bend
 
 	DEC iChannelVibratoTimer, X
-	JMP @CheckEnvelopePattern
+	BCS @CheckEnvelopePattern
 
 @Vibrato_Subexit2:
 	DEC iChannelVibratoCounter, X
-	JMP @CheckEnvelopePattern
+	BCS @CheckEnvelopePattern
 
 @Vibrato_Bend:
 	; refresh counter
@@ -984,7 +1001,7 @@ HandleNoise:
 	BEQ @Quit
 
 	AND #$f
-	STI zDrumDelay, A ; adds one frame to depicted duration
+	STI zDrumDelay ; adds one frame to depicted duration
 
 	LDA (zDrumAddresses), Y
 	INC zDrumAddresses

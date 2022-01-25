@@ -9,24 +9,24 @@ Music_Journey_Pulse1:
 	tempo 160
 	duty_cycle 1
 	note_type 12, 0, 0
-@Mainloop:
+Music_Journey_Pulse1_Mainloop:
 	rest 16
-	sound_loop 8, @Mainloop
-@Loop1:
-	sound_call @Sub1
+	sound_loop 8, Music_Journey_Pulse1_Mainloop
+Music_Journey_Pulse1_Loop1:
+	sound_call Music_Journey_Pulse1_Sub1
 	rest 13
-	sound_loop 7, @Loop1
+	sound_loop 7, Music_Journey_Pulse1_Loop1
 	rest 16
 	rest 16
-@Loop2:
-	sound_call @Sub1
-	sound_call @Sub2
-	sound_loop 3, @Loop2
-	sound_call @Sub1
+Music_Journey_Pulse1_Loop2:
+	sound_call Music_Journey_Pulse1_Sub1
+	sound_call Music_Journey_Pulse1_Sub2
+	sound_loop 3, Music_Journey_Pulse1_Loop2
+	sound_call Music_Journey_Pulse1_Sub1
 	rest 13
-	sound_jump @Mainloop
+	sound_jump Music_Journey_Pulse1_Mainloop
 
-@Sub1:
+Music_Journey_Pulse1_Sub1:
 	set_mute_timer 5
 	vibrato 4, 7, 5
 	volume_envelope 1, 6
@@ -66,7 +66,7 @@ Music_Journey_Pulse1:
 	note G_, 1
 	sound_ret
 
-@Sub2:
+Music_Journey_Pulse1_Sub2:
 	set_mute_timer 5
 	vibrato 4, 7, 5
 	volume_envelope 1, 6
@@ -97,22 +97,22 @@ Music_Journey_Pulse1:
 Music_Journey_Pulse2:
 	duty_cycle 1
 	note_type 12, 0, 0
-@Mainloop:
+Music_Journey_Pulse2_Mainloop:
 	rest 16
 	rest 16
 	rest 16
 	rest 16
-@Loop1:
-	sound_call Music_Journey_Pulse1@Sub1
-	sound_call Music_Journey_Pulse1@Sub2
-	sound_loop 2, @Loop1
-@Loop2:
-	sound_call @Sub1
-	sound_call Music_Journey_Pulse1@Sub2
-	sound_loop 7, @Loop2
-	sound_call Music_Journey_Pulse1@Sub1
-	sound_call Music_Journey_Pulse1@Sub2
-@Loop3:
+Music_Journey_Pulse2_Loop1:
+	sound_call Music_Journey_Pulse1_Sub1
+	sound_call Music_Journey_Pulse1_Sub2
+	sound_loop 2, Music_Journey_Pulse2_Loop1
+Music_Journey_Pulse2_Loop2:
+	sound_call Music_Journey_Pulse2_Sub1
+	sound_call Music_Journey_Pulse1_Sub2
+	sound_loop 7, Music_Journey_Pulse2_Loop2
+	sound_call Music_Journey_Pulse1_Sub1
+	sound_call Music_Journey_Pulse1_Sub2
+Music_Journey_Pulse2_Loop3:
 	set_mute_timer 0
 	vibrato 10, 5, 4
 	volume_envelope 1, 3
@@ -139,12 +139,12 @@ Music_Journey_Pulse2:
 	note D_, 2
 	volume_envelope 1, 1
 	note D_, 2
-	sound_loop 3, @Loop3
-	sound_call @Sub1
-	sound_call Music_Journey_Pulse1@Sub2
-	sound_jump @Mainloop
+	sound_loop 3, Music_Journey_Pulse2_Loop3
+	sound_call Music_Journey_Pulse2_Sub1
+	sound_call Music_Journey_Pulse1_Sub2
+	sound_jump Music_Journey_Pulse2_Mainloop
 
-@Sub1:
+Music_Journey_Pulse2_Sub1:
 	set_mute_timer 7
 	vibrato 10, 5, 4
 	volume_envelope 1, 10
@@ -208,18 +208,18 @@ Music_Journey_Hill:
 Music_Journey_Noise:
 	toggle_drum 0
 	drum_speed 6
-@Mainloop:
-	sound_call @Sub1
-	sound_loop 16, @Mainloop
-@Loop1:
+Music_Journey_Noise_Mainloop:
+	sound_call Music_Journey_Noise_Sub1
+	sound_loop 16, Music_Journey_Noise_Mainloop
+Music_Journey_Noise_Loop1:
 	rest 16
-	sound_loop 8, @Loop1
-@Loop2:
-	sound_call @Sub1
-	sound_loop 8, @Loop2
-	sound_jump @Mainloop
+	sound_loop 8, Music_Journey_Noise_Loop1
+Music_Journey_Noise_Loop2:
+	sound_call Music_Journey_Noise_Sub1
+	sound_loop 8, Music_Journey_Noise_Loop2
+	sound_jump Music_Journey_Noise_Mainloop
 
-@Sub1:
+Music_Journey_Noise_Sub1:
 	drum_note 3, 2
 	drum_note 3, 2
 	drum_note 3, 2
@@ -241,26 +241,26 @@ Music_Journey_Noise:
 
 Music_Journey_DPCM:
 	drum_speed 6
-@Mainloop:
-	sound_call @Sub1
+Music_Journey_DPCM_Mainloop:
+	sound_call Music_Journey_DPCM_Sub1
 	drum_note 9, 2
-	sound_call @Sub1
+	sound_call Music_Journey_DPCM_Sub1
 	drum_note 9, 1
 	drum_note 9, 1
-	sound_loop 4, @Mainloop
-@Loop1:
+	sound_loop 4, Music_Journey_DPCM_Mainloop
+Music_Journey_DPCM_Loop1:
 	rest 16
-	sound_loop 8, @Loop1
-@Loop2:
-	sound_call @Sub1
+	sound_loop 8, Music_Journey_DPCM_Loop1
+Music_Journey_DPCM_Loop2:
+	sound_call Music_Journey_DPCM_Sub1
 	drum_note 9, 2
-	sound_call @Sub1
+	sound_call Music_Journey_DPCM_Sub1
 	drum_note 9, 1
 	drum_note 9, 1
-	sound_loop 2, @Loop2
-	sound_jump @Mainloop
+	sound_loop 2, Music_Journey_DPCM_Loop2
+	sound_jump Music_Journey_DPCM_Mainloop
 
-@Sub1:
+Music_Journey_DPCM_Sub1:
 	drum_note 11, 6
 	drum_note 11, 2
 	drum_note 9, 4

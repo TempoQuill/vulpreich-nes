@@ -60,12 +60,11 @@ PlayMusic:
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
 
-	STY zBackupY
-	LDY zBackupY
+	TYA ; does Y = 0?
 	BEQ @NoMusic
 
 	JSR _PlayMusic
-	JMP @Continue
+	BNE @Continue ; always branches
 
 @NoMusic:
 	JSR _InitSound

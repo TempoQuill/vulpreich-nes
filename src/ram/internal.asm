@@ -63,8 +63,6 @@ zAudioCommandPointer:
 	.dsb 2 ; 001c
 zRawPitchBackup:
 	.dsb 2
-; unused, stored but never read
-zRawPitchTargetBackup:
 	.dsb 2 ; 0020
 
 zPitchSlideDifference:

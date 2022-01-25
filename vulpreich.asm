@@ -24,6 +24,10 @@ ENDIF
 .include "src/ram/chip.asm"
 .ende
 
+.enum $6000
+.include "src/ram/cart.asm"
+.ende
+
 ; add each of the banks
 ; Vulpreich is built with the MMC5 in mind
 ; it maxes out all of the possible specs with this mapper.
@@ -38,7 +42,9 @@ IFNDEF NSF_FILE
 	; bank 00-02 starter banks
 	.base $8000
 	.include "src/start-0.asm"
-	.dsb (2 * $2000), $00
+	.pad $a000, $00
+	.pad $c000, $00
+	.pad $e000, $00
 ELSE
 	.include "src/home/nsf.asm"
 ENDIF

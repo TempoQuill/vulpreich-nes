@@ -45,9 +45,8 @@ _PrintText:
 ; Text Command Pointer = zAuxAddresses 2
 ; PPUADDR input = cNametableAddress
 	JSR GetTextByte
-	CMP #"@"
 	PHA
-	BCS @ReadCommand
+	BMI @ReadCommand
 	STA cTextBuffer, Y
 	INC cNametableAddress
 	BNE @CopyToPPU
@@ -64,7 +63,7 @@ _PrintText:
 
 @ReadCommand:
 	PLA
-	SBC #"@"
+	EOR #$80
 	ASL A ; only sets c if A ≥ $80 at this point
 	TAX
 	LDA @CommandTable, X
@@ -76,13 +75,12 @@ _PrintText:
 
 @CommandTable:
 ; text commands 50-cf
-; d0-ff are the same as 50-7f, except c = 1
-	.dw @TextEnd  ; 50 "@"
-	.dw @Next     ; 51
-	.dw @Para     ; 52
-	.dw @Line     ; 53
-	.dw @Continue ; 54
-	.dw @TextEnd  ; 55 done
+	.dw @TextEnd  ; 80 "@"
+	.dw @Next     ; 81
+	.dw @Para     ; 82
+	.dw @Line     ; 83
+	.dw @Continue ; 84
+	.dw @TextEnd  ; 85 done
 
 @Continue:
 ; move line 2 to line 1 and print on line 2

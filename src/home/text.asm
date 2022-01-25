@@ -105,6 +105,8 @@ GetName:
 
 NamesPointers:
 	dba PRG_Names0, ItemNames
+	dba PRG_Names0, CharacterFullNames
+	dba PRG_Names0, CharacterNames
 
 GetNthString:
 ; Return the address of the Ath string starting from (zAuxAddresses + 6)

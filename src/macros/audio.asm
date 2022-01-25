@@ -32,7 +32,7 @@ ENDM
 ; other channels have their own
 MACRO pulse_note note_length, rampflag, volumeramp, length, pitch
 	.db note_length
-	.db rampflag << 4 | volumeramp
+	.db (rampflag << 4) | volumeramp
 	.db <pitch, length << 3 | >pitch
 ENDM
 
@@ -44,12 +44,12 @@ ENDM
 
 MACRO noise_note length, rampflag, volumeramp, mode, pitch
 	.db length
-	.db rampflag << 4 | volumeramp
+	.db (rampflag << 4) | volumeramp
 	.db mode << 7     | pitch
 ENDM
 
 MACRO dpcm_note length, bank, addr, size
-	.db length, pitch
+	.db length, bank
 	.db (addr & %0011111111000000) >> 6
 	.db size
 ENDM
@@ -81,18 +81,18 @@ ENDM
 ; channel 1/2
 MACRO note_type length, rampflag, volumeramp
 	.db note_type_cmd, length ; d8
-	.db rampflag << 4 | volumeramp
+	.db (rampflag << 4) | volumeramp
 ENDM
 
 ; channel 3
 MACRO hill_type length, flag, linear
-	note_type length
+	.db note_type_cmd, length
 	.db flag << 7 | linear
 ENDM
 
 ; noise / DPCM
 MACRO drum_speed length
-	note_type length
+	.db note_type_cmd, length
 ENDM
 
 MACRO transpose octave, pitch
@@ -114,7 +114,7 @@ ENDM
 ; only valid on channels 1/2
 MACRO volume_envelope rampflag, volumeramp
 	.db volume_envelope_cmd ; dc
-	.db rampflag << 4 | volumeramp
+	.db (rampflag << 4) | volumeramp
 ENDM
 
 ; only valid on channels 3

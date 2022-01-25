@@ -1,33 +1,23 @@
 MACRO text_end
-	.db $50
+	.db $80
 ENDM
 
 MACRO next text
-	.db $51, text
+	.db $81, text
 ENDM
 
 MACRO para text
-	.db $52, text
+	.db $82, text
 ENDM
 
 MACRO line text
-	.db $53, text
+	.db $83, text
 ENDM
 
 MACRO cont text
-	.db $54, text
+	.db $84, text
 ENDM
 
 MACRO done
-	.db $55
-ENDM
-
-MACRO ascii text
-	IF text = " "
-		.db (text + 20)
-	ELSEIF text < "9"
-		.db (text - 48)
-	ELSE
-		.db (text + 31)
-	ENDIF
+	.db $85
 ENDM
