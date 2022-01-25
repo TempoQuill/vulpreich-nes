@@ -1,4 +1,4 @@
-.ignorenl
+ignorenl.
 .include "src/def/hardware.asm"
 .include "src/def/ppu.asm"
 .include "src/def/names.asm"

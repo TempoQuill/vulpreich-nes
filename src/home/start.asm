@@ -373,7 +373,7 @@ IRQ:
 .pad $fff1, $00
 UnreferencedTitle:
 ; title of the game, fff1
-	ascii "VULPREICH"
+	.db "VULPREICH"
 
 NESVectorTables:
 	.dw NMI   ; runs every frame

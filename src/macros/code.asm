@@ -39,7 +39,7 @@ ENDM
 
 ; reset single bit
 MACRO RSB bit
-	AND #$ff << (1 << bit)
+	AND #$ff ^ (1 << bit)
 ENDM
 
 ; jump subroutine home

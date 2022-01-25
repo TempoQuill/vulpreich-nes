@@ -1,2 +1,2 @@
-.include "src/music/title.asm"
+.include "src/music/titlescreen.asm"
 .include "src/music/journey.asm"

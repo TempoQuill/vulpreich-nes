@@ -100,7 +100,7 @@ _PrintText:
 	JSR WritePPUDataFromStringBuffer
 	JSR GetNameTableOffsetLine2
 	JSR GetPPUAddressFromNameTable
-	LDA #" "
+	LDA #$c ; " "
 	JSR WritePPUData
 	JSR GetNameTableOffsetLine2
 	JSR GetPPUAddressFromNameTable
@@ -129,18 +129,18 @@ _PrintText:
 	LDY #0
 	; use x to clear the text buffer
 	LDX #0
-	LDA #" "
+	LDA #$c ; " "
 @ParaLoop:
 	DEX
 	STA cTextBuffer, X
 	BNE @ParaLoop
 	JSR GetNameTableOffsetLine2
 	JSR GetPPUAddressFromNameTable
-	LDA #" "
+	LDA #$c ; " "
 	JSR WritePPUData
 	JSR GetNameTableOffsetLine1
 	JSR GetPPUAddressFromNameTable
-	LDA #" "
+	LDA #$c ; " "
 	JSR WritePPUData
 	JSR GetNameTableOffsetLine1
 	JSR GetPPUAddressFromNameTable
