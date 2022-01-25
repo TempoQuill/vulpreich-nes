@@ -27,3 +27,4 @@ SFX:
 	dba PRG_Audio,  SFX_DoorShut
 	dba PRG_Audio,  SFX_DoorSlam
 	dba PRG_Audio,  SFX_Sink
+	dba PRG_Audio,  SFX_ObjectiveComplete

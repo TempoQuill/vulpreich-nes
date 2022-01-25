@@ -82,6 +82,156 @@ SFX_DoorSlam:
 SFX_Sink:
 	sfx_header 1, 4, SFX_Sink_Noise
 
+SFX_ObjectiveComplete:
+	sfx_header 5, 1, SFX_ObjectiveComplete_Pulse1
+	sfx_subheader 2, SFX_ObjectiveComplete_Pulse2
+	sfx_subheader 3, SFX_ObjectiveComplete_Hill
+	sfx_subheader 4, SFX_ObjectiveComplete_Noise
+	sfx_subheader 5, SFX_ObjectiveComplete_DPCM
+
+SFX_ObjectiveComplete_Pulse1:
+	set_music
+	tempo 142
+	vibrato 10, 5, 4
+	set_mute_timer 3
+	note_type 6, 1, 10
+	rest 4
+	octave 3
+	note D_, 6
+	octave 2
+	note B_, 1
+	octave 3
+	note D_, 1
+	note G_, 4
+	duty_cycle 2
+	volume_envelope 1, 15
+	note B_, 4
+	note G_, 4
+	duty_cycle 0
+	volume_envelope 1, 10
+	note E_, 4
+	note C_, 4
+	octave 2
+	note B_, 4
+	duty_cycle 2
+	vibrato 4, 7, 5
+	set_mute_timer 15
+	volume_envelope 0, 9
+	note A_, 6
+	octave 3
+	note C_, 6
+	set_mute_timer 11
+	octave 2
+	note B_, 8
+	sound_ret
+
+SFX_ObjectiveComplete_Pulse2:
+	set_music
+	duty_cycle 1
+	vibrato 4, 7, 5
+	note_type 6, 0, 9
+	rest 4
+	octave 1
+	note G_, 8
+	rest 4
+	note B_, 4
+	octave 2
+	note C_, 8
+	rest 4
+	note C#, 4
+	duty_cycle 0
+	octave 3
+	note C_, 1
+	duty_cycle 1
+	octave 2
+	note D_, 3
+	rest 2
+	duty_cycle 0
+	octave 3
+	note D_, 1
+	duty_cycle 1
+	octave 1
+	note D_, 3
+	rest 2
+	duty_cycle 0
+	octave 3
+	note D_, 1
+	duty_cycle 1
+	octave 1
+	note D_, 2
+	rest 6
+	sound_ret
+
+SFX_ObjectiveComplete_Hill:
+	set_music
+	hill_type 8, 0, 15
+	octave 5
+	note D_, 1
+	note G_, 1
+	note B_, 1
+	hill_type 6, 0, 47
+	octave 6
+	note D_, 4
+	note C_, 4
+	octave 5
+	note B_, 4
+	linear_envelope 0, 15
+	octave 6
+	note C#, 1
+	linear_envelope 0, 39
+	note D_, 3
+	linear_envelope 0, 47
+	note C_, 4
+	octave 5
+	note B_, 4
+	note A_, 4
+	note G_, 4
+	note F#, 6
+	linear_envelope 0, 15
+	note G#, 1
+	linear_envelope 0, 47
+	note A_, 5
+	note G_, 8
+	sound_ret
+
+SFX_ObjectiveComplete_Noise:
+	set_music
+	sfx_toggle_drum 1
+	drum_speed 12
+	rest 2
+	drum_note 1, 2
+	drum_note 4, 2
+	drum_note 1, 2
+	drum_note 1, 2
+	drum_note 1, 2
+	drum_note 4, 2
+	drum_note 1, 2
+	drum_note 1, 2
+	drum_note 4, 3
+	drum_note 4, 3
+	drum_note 4, 4
+	sound_ret
+
+SFX_ObjectiveComplete_DPCM:
+	set_music
+	drum_speed 8
+	drum_note 4, 1
+	drum_note 4, 1
+	drum_note 4, 1
+	drum_speed 12
+	drum_note 9, 2
+	drum_note 6, 2
+	drum_note 4, 2
+	drum_note 9, 2
+	drum_note 9, 2
+	drum_note 6, 2
+	drum_note 4, 2
+	drum_note 9, 2
+	drum_note 4, 3
+	drum_note 4, 3
+	drum_note 4, 4
+	sound_ret
+
 SFX_DoorClick_Noise:
 	noise_note 7, 0, 0, 0, 12
 	noise_note 7, 0, 0, 0, 11
