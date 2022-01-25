@@ -105,3 +105,5 @@ IFNDEF NSF_FILE
 	.base $e000
 	.include "src/home.asm"
 ENDIF
+
+.dsb ($ff * $1000), $00
