@@ -106,4 +106,4 @@ IFNDEF NSF_FILE
 	.include "src/home.asm"
 ENDIF
 
-.dsb ($ff * $1000), $00
+.dsb ($100 * $1000), $00
