@@ -8,7 +8,7 @@ IFNDEF NSF_FILE
 	.include "header.asm"
 ELSE
 	.include "nsf-header.asm"
-ELSE
+ENDIF
 
 ; -----------------------------------------
 ; Add macros
