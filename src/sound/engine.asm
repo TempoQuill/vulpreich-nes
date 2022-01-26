@@ -792,11 +792,8 @@ GeneralHandler:
 	TXA
 	RSB SFX_CHANNEL
 	CMP #CHAN_2
-	BNE @EnvelopePattern_NotHill
-	; hill has no volume control on its own
-	RTS
+	BEQ @CheckMuteTimer ; hill has no volume control on its own
 
-@EnvelopePattern_NotHill:
 	; envelope group
 	JSR GetByteInEnvelopeGroup
 	BCC @EnvelopePattern_Set
