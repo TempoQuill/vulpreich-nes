@@ -9,7 +9,7 @@ Music_Journey_Pulse1:
 	tempo 160
 	duty_cycle 1
 	note_type 12, 0, 0
-Music_Journey_Pulse1_Mainloop:
+Music_Journey_Loop1_01:
 	; 1-01
 	rest 16
 	; 1-02
@@ -30,443 +30,56 @@ Music_Journey_Pulse1_Mainloop:
 	vibrato 4, 7, 5
 	volume_envelope 1, 6
 	; 1-09
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 3
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 1
-	note A_, 1
-	octave 2
-	note A_, 1
-	octave 3
-	note A_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
+	sound_call Music_Journey_Measure1_09
 	; 1-10
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	rest 13
+	sound_call Music_Journey_Measure1_10
 	; 1-11
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 3
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 1
-	note A_, 1
-	octave 2
-	note A_, 1
-	octave 3
-	note A_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
+	sound_call Music_Journey_Measure1_09
 	; 1-12
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	rest 13
+	sound_call Music_Journey_Measure1_10
 	; 1-13
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 3
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 1
-	note A_, 1
-	octave 2
-	note A_, 1
-	octave 3
-	note A_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
+	sound_call Music_Journey_Measure1_09
 	; 1-14
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	rest 13
+	sound_call Music_Journey_Measure1_10
 	; 1-15
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 3
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 1
-	note A_, 1
-	octave 2
-	note A_, 1
-	octave 3
-	note A_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
+	sound_call Music_Journey_Measure1_09
 	; 1-16
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	rest 13
+	sound_call Music_Journey_Measure1_10
 	; 1-17
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 3
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 1
-	note A_, 1
-	octave 2
-	note A_, 1
-	octave 3
-	note A_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
+	sound_call Music_Journey_Measure1_09
 	; 1-18
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	rest 13
+	sound_call Music_Journey_Measure1_10
 	; 1-19
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 3
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 1
-	note A_, 1
-	octave 2
-	note A_, 1
-	octave 3
-	note A_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
+	sound_call Music_Journey_Measure1_09
 	; 1-20
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	rest 13
+	sound_call Music_Journey_Measure1_10
 	; 1-21
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 3
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 1
-	note A_, 1
-	octave 2
-	note A_, 1
-	octave 3
-	note A_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
+	sound_call Music_Journey_Measure1_09
 	; 1-22
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	rest 13
+	sound_call Music_Journey_Measure1_10
 	; 1-23
 	rest 16
 	; 1-24
 	rest 16
 	; 1-25
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 3
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 1
-	note A_, 1
-	octave 2
-	note A_, 1
-	octave 3
-	note A_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
+	sound_call Music_Journey_Measure1_09
 	; 1-26
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 3
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
+	sound_call Music_Journey_Measure1_26
 	; 1-27
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 3
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 1
-	note A_, 1
-	octave 2
-	note A_, 1
-	octave 3
-	note A_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
+	sound_call Music_Journey_Measure1_09
 	; 1-28
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 3
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
+	sound_call Music_Journey_Measure1_26
 	; 1-29
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 3
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 1
-	note A_, 1
-	octave 2
-	note A_, 1
-	octave 3
-	note A_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
+	sound_call Music_Journey_Measure1_09
 	; 1-30
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 3
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
+	sound_call Music_Journey_Measure1_26
 	; 1-31
+	sound_call Music_Journey_Measure1_09
+	; 1-32
+	sound_call Music_Journey_Measure1_10
+	sound_jump Music_Journey_Loop1_01
+
+Music_Journey_Measure1_09:
 	octave 2
 	note D_, 1
 	octave 3
@@ -495,7 +108,9 @@ Music_Journey_Pulse1_Mainloop:
 	note C_, 1
 	octave 4
 	note C_, 1
-	; 1-32
+	sound_ret
+
+Music_Journey_Measure1_10:
 	octave 1
 	note G_, 1
 	octave 2
@@ -503,12 +118,43 @@ Music_Journey_Pulse1_Mainloop:
 	octave 3
 	note G_, 1
 	rest 13
-	sound_jump Music_Journey_Pulse1_Mainloop
+	sound_ret
+
+Music_Journey_Measure1_26:
+	octave 1
+	note G_, 1
+	octave 2
+	note G_, 1
+	octave 3
+	note G_, 1
+	octave 2
+	note G_, 3
+	octave 1
+	note G_, 1
+	octave 2
+	note G_, 1
+	octave 3
+	note G_, 1
+	octave 2
+	note G_, 1
+	octave 2
+	note C_, 1
+	octave 3
+	note C_, 1
+	octave 4
+	note C_, 1
+	octave 1
+	note G_, 1
+	octave 2
+	note G_, 1
+	octave 3
+	note G_, 1
+	sound_ret
 
 Music_Journey_Pulse2:
 	duty_cycle 1
 	note_type 12, 0, 0
-Music_Journey_Pulse2_Mainloop:
+Music_Journey_Loop2_01:
 	; 2-01
 	rest 16
 	; 2-02
@@ -521,526 +167,76 @@ Music_Journey_Pulse2_Mainloop:
 	vibrato 4, 7, 5
 	volume_envelope 1, 6
 	; 2-05
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 3
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 1
-	note A_, 1
-	octave 2
-	note A_, 1
-	octave 3
-	note A_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
+	sound_call Music_Journey_Measure1_09
 	; 2-06
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 3
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
+	sound_call Music_Journey_Measure1_26
 	; 2-07
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 3
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 1
-	note A_, 1
-	octave 2
-	note A_, 1
-	octave 3
-	note A_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
+	sound_call Music_Journey_Measure1_09
 	; 2-08
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 3
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
+	sound_call Music_Journey_Measure1_26
 	set_mute_timer 7
 	vibrato 10, 5, 4
 	; 2-09
-	volume_envelope 1, 10
-	note C_, 1
-	volume_envelope 1, 5
-	note C_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
-	volume_envelope 1, 10
-	note F_, 1
-	volume_envelope 1, 5
-	note F_, 1
-	volume_envelope 1, 10
-	note E_, 1
-	volume_envelope 1, 5
-	note E_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
-	volume_envelope 1, 10
-	note C_, 1
-	volume_envelope 1, 5
-	note C_, 1
-	volume_envelope 1, 3
-	note C_, 1
-	volume_envelope 1, 2
-	note C_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
+	sound_call Music_Journey_Measure2_09
 	; 2-10
-	volume_envelope 1, 3
-	note D_, 1
-	volume_envelope 1, 2
-	note D_, 1
-	volume_envelope 1, 1
-	note D_, 1
-	set_mute_timer 5
-	vibrato 4, 7, 5
-	volume_envelope 1, 6
-	octave 2
-	note G_, 3
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
+	sound_call Music_Journey_Measure2_10
 	set_mute_timer 7
 	vibrato 10, 5, 4
 	; 2-11
-	volume_envelope 1, 10
-	note C_, 1
-	volume_envelope 1, 5
-	note C_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
-	volume_envelope 1, 10
-	note F_, 1
-	volume_envelope 1, 5
-	note F_, 1
-	volume_envelope 1, 10
-	note E_, 1
-	volume_envelope 1, 5
-	note E_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
-	volume_envelope 1, 10
-	note C_, 1
-	volume_envelope 1, 5
-	note C_, 1
-	volume_envelope 1, 3
-	note C_, 1
-	volume_envelope 1, 2
-	note C_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
+	sound_call Music_Journey_Measure2_09
 	; 2-12
-	volume_envelope 1, 3
-	note D_, 1
-	volume_envelope 1, 2
-	note D_, 1
-	volume_envelope 1, 1
-	note D_, 1
-	set_mute_timer 5
-	vibrato 4, 7, 5
-	volume_envelope 1, 6
-	octave 2
-	note G_, 3
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
+	sound_call Music_Journey_Measure2_10
 	set_mute_timer 7
 	vibrato 10, 5, 4
 	; 2-13
-	volume_envelope 1, 10
-	note C_, 1
-	volume_envelope 1, 5
-	note C_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
-	volume_envelope 1, 10
-	note F_, 1
-	volume_envelope 1, 5
-	note F_, 1
-	volume_envelope 1, 10
-	note E_, 1
-	volume_envelope 1, 5
-	note E_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
-	volume_envelope 1, 10
-	note C_, 1
-	volume_envelope 1, 5
-	note C_, 1
-	volume_envelope 1, 3
-	note C_, 1
-	volume_envelope 1, 2
-	note C_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
+	sound_call Music_Journey_Measure2_09
 	; 2-14
-	volume_envelope 1, 3
-	note D_, 1
-	volume_envelope 1, 2
-	note D_, 1
-	volume_envelope 1, 1
-	note D_, 1
-	set_mute_timer 5
-	vibrato 4, 7, 5
-	volume_envelope 1, 6
-	octave 2
-	note G_, 3
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
+	sound_call Music_Journey_Measure2_10
 	set_mute_timer 7
 	vibrato 10, 5, 4
 	; 2-15
-	volume_envelope 1, 10
-	note C_, 1
-	volume_envelope 1, 5
-	note C_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
-	volume_envelope 1, 10
-	note F_, 1
-	volume_envelope 1, 5
-	note F_, 1
-	volume_envelope 1, 10
-	note E_, 1
-	volume_envelope 1, 5
-	note E_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
-	volume_envelope 1, 10
-	note C_, 1
-	volume_envelope 1, 5
-	note C_, 1
-	volume_envelope 1, 3
-	note C_, 1
-	volume_envelope 1, 2
-	note C_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
+	sound_call Music_Journey_Measure2_09
 	; 2-16
-	volume_envelope 1, 3
-	note D_, 1
-	volume_envelope 1, 2
-	note D_, 1
-	volume_envelope 1, 1
-	note D_, 1
-	set_mute_timer 5
-	vibrato 4, 7, 5
-	volume_envelope 1, 6
-	octave 2
-	note G_, 3
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
+	sound_call Music_Journey_Measure2_10
 	set_mute_timer 7
 	vibrato 10, 5, 4
 	; 2-17
-	volume_envelope 1, 10
-	note C_, 1
-	volume_envelope 1, 5
-	note C_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
-	volume_envelope 1, 10
-	note F_, 1
-	volume_envelope 1, 5
-	note F_, 1
-	volume_envelope 1, 10
-	note E_, 1
-	volume_envelope 1, 5
-	note E_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
-	volume_envelope 1, 10
-	note C_, 1
-	volume_envelope 1, 5
-	note C_, 1
-	volume_envelope 1, 3
-	note C_, 1
-	volume_envelope 1, 2
-	note C_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
+	sound_call Music_Journey_Measure2_09
 	; 2-18
-	volume_envelope 1, 3
-	note D_, 1
-	volume_envelope 1, 2
-	note D_, 1
-	volume_envelope 1, 1
-	note D_, 1
-	set_mute_timer 5
-	vibrato 4, 7, 5
-	volume_envelope 1, 6
-	octave 2
-	note G_, 3
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
+	sound_call Music_Journey_Measure2_10
 	set_mute_timer 7
 	vibrato 10, 5, 4
 	; 2-19
-	volume_envelope 1, 10
-	note C_, 1
-	volume_envelope 1, 5
-	note C_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
-	volume_envelope 1, 10
-	note F_, 1
-	volume_envelope 1, 5
-	note F_, 1
-	volume_envelope 1, 10
-	note E_, 1
-	volume_envelope 1, 5
-	note E_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
-	volume_envelope 1, 10
-	note C_, 1
-	volume_envelope 1, 5
-	note C_, 1
-	volume_envelope 1, 3
-	note C_, 1
-	volume_envelope 1, 2
-	note C_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
+	sound_call Music_Journey_Measure2_09
 	; 2-20
-	volume_envelope 1, 3
-	note D_, 1
-	volume_envelope 1, 2
-	note D_, 1
-	volume_envelope 1, 1
-	note D_, 1
-	set_mute_timer 5
-	vibrato 4, 7, 5
-	volume_envelope 1, 6
-	octave 2
-	note G_, 3
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
+	sound_call Music_Journey_Measure2_10
 	set_mute_timer 7
 	vibrato 10, 5, 4
 	; 2-21
+	sound_call Music_Journey_Measure2_09
+	; 2-22
+	sound_call Music_Journey_Measure2_10
+	; 2-23
+	sound_call Music_Journey_Measure1_09
+	; 2-24
+	sound_call Music_Journey_Measure1_26
+	set_mute_timer 0
+	vibrato 10, 5, 4
+	; 2-25
+	sound_call Music_Journey_Measure2_25_26
+	; 2-27
+	sound_call Music_Journey_Measure2_25_26
+	; 2-29
+	sound_call Music_Journey_Measure2_25_26
+	set_mute_timer 7
+	vibrato 10, 5, 4
+	; 2-31
+	sound_call Music_Journey_Measure2_09
+	; 2-32
+	sound_call Music_Journey_Measure2_10
+	sound_jump Music_Journey_Loop2_01
+
+Music_Journey_Measure2_09:
 	volume_envelope 1, 10
 	note C_, 1
 	volume_envelope 1, 5
@@ -1073,7 +269,9 @@ Music_Journey_Pulse2_Mainloop:
 	note D_, 1
 	volume_envelope 1, 5
 	note D_, 1
-	; 2-22
+	sound_ret
+
+Music_Journey_Measure2_10:
 	volume_envelope 1, 3
 	note D_, 1
 	volume_envelope 1, 2
@@ -1105,66 +303,9 @@ Music_Journey_Pulse2_Mainloop:
 	note G_, 1
 	octave 3
 	note G_, 1
-	; 2-23
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 3
-	octave 2
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 4
-	note D_, 1
-	octave 3
-	note D_, 1
-	octave 1
-	note A_, 1
-	octave 2
-	note A_, 1
-	octave 3
-	note A_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
-	; 2-24
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 3
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	set_mute_timer 0
-	vibrato 10, 5, 4
+	sound_ret
+
+Music_Journey_Measure2_25_26:
 	; 2-25
 	volume_envelope 1, 3
 	note D_, 3
@@ -1191,126 +332,7 @@ Music_Journey_Pulse2_Mainloop:
 	note D_, 2
 	volume_envelope 1, 1
 	note D_, 2
-	; 2-27
-	volume_envelope 1, 3
-	note D_, 3
-	volume_envelope 1, 5
-	note D_, 3
-	volume_envelope 1, 7
-	note D_, 3
-	volume_envelope 1, 9
-	note D_, 3
-	volume_envelope 1, 10
-	note D_, 6
-	; 2-28 - tie
-	volume_envelope 1, 7
-	note D_, 2
-	volume_envelope 1, 6
-	note D_, 2
-	volume_envelope 1, 5
-	note D_, 2
-	volume_envelope 1, 4
-	note D_, 2
-	volume_envelope 1, 3
-	note D_, 2
-	volume_envelope 1, 2
-	note D_, 2
-	volume_envelope 1, 1
-	note D_, 2
-	; 2-29
-	volume_envelope 1, 3
-	note D_, 3
-	volume_envelope 1, 5
-	note D_, 3
-	volume_envelope 1, 7
-	note D_, 3
-	volume_envelope 1, 9
-	note D_, 3
-	volume_envelope 1, 10
-	note D_, 6
-	; 2-30 - tie
-	volume_envelope 1, 7
-	note D_, 2
-	volume_envelope 1, 6
-	note D_, 2
-	volume_envelope 1, 5
-	note D_, 2
-	volume_envelope 1, 4
-	note D_, 2
-	volume_envelope 1, 3
-	note D_, 2
-	volume_envelope 1, 2
-	note D_, 2
-	volume_envelope 1, 1
-	note D_, 2
-	set_mute_timer 7
-	vibrato 10, 5, 4
-	; 2-31
-	volume_envelope 1, 10
-	note C_, 1
-	volume_envelope 1, 5
-	note C_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
-	volume_envelope 1, 10
-	note F_, 1
-	volume_envelope 1, 5
-	note F_, 1
-	volume_envelope 1, 10
-	note E_, 1
-	volume_envelope 1, 5
-	note E_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
-	volume_envelope 1, 10
-	note C_, 1
-	volume_envelope 1, 5
-	note C_, 1
-	volume_envelope 1, 3
-	note C_, 1
-	volume_envelope 1, 2
-	note C_, 1
-	volume_envelope 1, 10
-	note D_, 1
-	volume_envelope 1, 5
-	note D_, 1
-	; 2-32
-	volume_envelope 1, 3
-	note D_, 1
-	volume_envelope 1, 2
-	note D_, 1
-	volume_envelope 1, 1
-	note D_, 1
-	set_mute_timer 5
-	vibrato 4, 7, 5
-	volume_envelope 1, 6
-	octave 2
-	note G_, 3
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 2
-	note C_, 1
-	octave 3
-	note C_, 1
-	octave 4
-	note C_, 1
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	sound_jump Music_Journey_Pulse2_Mainloop
+	sound_ret
 
 Music_Journey_Hill:
 	hill_type 12, 0, 40
@@ -1335,295 +357,39 @@ Music_Journey_Hill:
 Music_Journey_Noise:
 	toggle_drum 0
 	drum_speed 6
-Music_Journey_Noise_Mainloop:
+Music_Journey_Loop4_01:
 	; 4-01
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-02
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-03
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-04
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-05
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-06
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-07
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-08
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-09
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-10
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-11
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-12
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-13
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-14
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-15
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-16
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-17
 	rest 16
 	rest 16
@@ -1649,132 +415,24 @@ Music_Journey_Noise_Mainloop:
 	rest 16
 	rest 16
 	; 4-25
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-26
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-27
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-28
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-29
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-30
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-31
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 1
-	drum_note 3, 1
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
-	drum_note 3, 2
+	sound_call Music_Journey_Measure4_01
 	; 4-32
+	sound_call Music_Journey_Measure4_01
+	sound_jump Music_Journey_Loop4_01
+
+Music_Journey_Measure4_01:
 	drum_note 3, 2
 	drum_note 3, 2
 	drum_note 3, 2
@@ -1792,175 +450,43 @@ Music_Journey_Noise_Mainloop:
 	drum_note 3, 2
 	drum_note 3, 2
 	drum_note 3, 2
-	sound_jump Music_Journey_Noise_Mainloop
+	sound_ret
 
 Music_Journey_DPCM:
 	drum_speed 6
-Music_Journey_DPCM_Mainloop:
+Music_Journey_Loop5_01:
 	; 5-01
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 8
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
+	sound_call Music_Journey_Measure5_01
 	; 5-02
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
+	sound_call Music_Journey_Measure5_02
 	; 5-03
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 8
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
+	sound_call Music_Journey_Measure5_01
 	; 5-04
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 1
-	drum_note 9, 1
+	sound_call Music_Journey_Measure5_04
 	; 5-05
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 8
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
+	sound_call Music_Journey_Measure5_01
 	; 5-06
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
+	sound_call Music_Journey_Measure5_02
 	; 5-07
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 8
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
+	sound_call Music_Journey_Measure5_01
 	; 5-08
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 1
-	drum_note 9, 1
+	sound_call Music_Journey_Measure5_04
 	; 5-09
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 8
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
+	sound_call Music_Journey_Measure5_01
 	; 5-10
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
+	sound_call Music_Journey_Measure5_02
 	; 5-11
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 8
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
+	sound_call Music_Journey_Measure5_01
 	; 5-12
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 1
-	drum_note 9, 1
+	sound_call Music_Journey_Measure5_04
 	; 5-13
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 8
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
+	sound_call Music_Journey_Measure5_01
 	; 5-14
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
+	sound_call Music_Journey_Measure5_02
 	; 5-15
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 8
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
+	sound_call Music_Journey_Measure5_01
 	; 5-16
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 1
-	drum_note 9, 1
+	sound_call Music_Journey_Measure5_04
 	; 5-17
 	rest 16
 	rest 16
@@ -1986,67 +512,24 @@ Music_Journey_DPCM_Mainloop:
 	rest 16
 	rest 16
 	; 5-25
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 8
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
+	sound_call Music_Journey_Measure5_01
 	; 5-26
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
+	sound_call Music_Journey_Measure5_02
 	; 5-27
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 8
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
+	sound_call Music_Journey_Measure5_01
 	; 5-28
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 1
-	drum_note 9, 1
+	sound_call Music_Journey_Measure5_04
 	; 5-29
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 8
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
+	sound_call Music_Journey_Measure5_01
 	; 5-30
-	drum_note 11, 6
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 11, 2
-	drum_note 9, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
-	drum_note 11, 4
-	drum_note 9, 2
+	sound_call Music_Journey_Measure5_02
 	; 5-31
+	sound_call Music_Journey_Measure5_01
+	; 5-32
+	sound_call Music_Journey_Measure5_04
+	sound_jump Music_Journey_Loop5_01
+
+Music_Journey_Measure5_01:
 	drum_note 11, 6
 	drum_note 11, 2
 	drum_note 9, 4
@@ -2055,7 +538,22 @@ Music_Journey_DPCM_Mainloop:
 	drum_note 9, 2
 	drum_note 11, 4
 	drum_note 9, 2
-	; 5-32
+	sound_ret
+
+Music_Journey_Measure5_02:
+	drum_note 11, 6
+	drum_note 11, 2
+	drum_note 9, 4
+	drum_note 11, 2
+	drum_note 9, 4
+	drum_note 9, 2
+	drum_note 11, 4
+	drum_note 9, 2
+	drum_note 11, 4
+	drum_note 9, 2
+	sound_ret
+
+Music_Journey_Measure5_04:
 	drum_note 11, 6
 	drum_note 11, 2
 	drum_note 9, 4
@@ -2067,4 +565,4 @@ Music_Journey_DPCM_Mainloop:
 	drum_note 11, 4
 	drum_note 9, 1
 	drum_note 9, 1
-	sound_jump Music_Journey_DPCM_Mainloop
+	sound_ret
