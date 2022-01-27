@@ -13,70 +13,45 @@ Music_Journey_Loop1_01:
 	; 1-01
 	rest 16
 	; 1-02
-	rest 16
-	; 1-03
-	rest 16
-	; 1-04
-	rest 16
-	; 1-05
-	rest 16
-	; 1-06
-	rest 16
-	; 1-07
-	rest 16
+	sound_loop 8, Music_Journey_Loop1_01
 	; 1-08
-	rest 16
 	set_mute_timer 5
 	vibrato 4, 7, 5
 	volume_envelope 1, 6
+Music_Journey_Loop1_09:
 	; 1-09
 	sound_call Music_Journey_Measure1_09
 	; 1-10
-	sound_call Music_Journey_Measure1_10
+	octave 1
+	note G_, 1
+	octave 2
+	note G_, 1
+	octave 3
+	note G_, 1
+	rest 13
 	; 1-11
-	sound_call Music_Journey_Measure1_09
-	; 1-12
-	sound_call Music_Journey_Measure1_10
-	; 1-13
-	sound_call Music_Journey_Measure1_09
-	; 1-14
-	sound_call Music_Journey_Measure1_10
-	; 1-15
-	sound_call Music_Journey_Measure1_09
-	; 1-16
-	sound_call Music_Journey_Measure1_10
-	; 1-17
-	sound_call Music_Journey_Measure1_09
-	; 1-18
-	sound_call Music_Journey_Measure1_10
-	; 1-19
-	sound_call Music_Journey_Measure1_09
-	; 1-20
-	sound_call Music_Journey_Measure1_10
-	; 1-21
-	sound_call Music_Journey_Measure1_09
-	; 1-22
-	sound_call Music_Journey_Measure1_10
+	sound_loop 7, Music_Journey_Loop1_09
 	; 1-23
 	rest 16
 	; 1-24
 	rest 16
+Music_Journey_Loop1_25:
 	; 1-25
 	sound_call Music_Journey_Measure1_09
 	; 1-26
 	sound_call Music_Journey_Measure1_26
 	; 1-27
-	sound_call Music_Journey_Measure1_09
-	; 1-28
-	sound_call Music_Journey_Measure1_26
-	; 1-29
-	sound_call Music_Journey_Measure1_09
-	; 1-30
-	sound_call Music_Journey_Measure1_26
+	sound_loop 3, Music_Journey_Loop1_25
 	; 1-31
 	sound_call Music_Journey_Measure1_09
 	; 1-32
-	sound_call Music_Journey_Measure1_10
+	octave 1
+	note G_, 1
+	octave 2
+	note G_, 1
+	octave 3
+	note G_, 1
+	rest 13
 	sound_jump Music_Journey_Loop1_01
 
 Music_Journey_Measure1_09:
@@ -108,16 +83,6 @@ Music_Journey_Measure1_09:
 	note C_, 1
 	octave 4
 	note C_, 1
-	sound_ret
-
-Music_Journey_Measure1_10:
-	octave 1
-	note G_, 1
-	octave 2
-	note G_, 1
-	octave 3
-	note G_, 1
-	rest 13
 	sound_ret
 
 Music_Journey_Measure1_26:
@@ -166,68 +131,59 @@ Music_Journey_Loop2_01:
 	set_mute_timer 5
 	vibrato 4, 7, 5
 	volume_envelope 1, 6
+Music_Journey_Loop2_05:
 	; 2-05
 	sound_call Music_Journey_Measure1_09
 	; 2-06
 	sound_call Music_Journey_Measure1_26
 	; 2-07
-	sound_call Music_Journey_Measure1_09
+	sound_loop 2, Music_Journey_Loop2_05
 	; 2-08
-	sound_call Music_Journey_Measure1_26
+Music_Journey_Loop2_09:
 	set_mute_timer 7
 	vibrato 10, 5, 4
 	; 2-09
 	sound_call Music_Journey_Measure2_09
 	; 2-10
 	sound_call Music_Journey_Measure2_10
-	set_mute_timer 7
-	vibrato 10, 5, 4
 	; 2-11
-	sound_call Music_Journey_Measure2_09
-	; 2-12
-	sound_call Music_Journey_Measure2_10
-	set_mute_timer 7
-	vibrato 10, 5, 4
-	; 2-13
-	sound_call Music_Journey_Measure2_09
-	; 2-14
-	sound_call Music_Journey_Measure2_10
-	set_mute_timer 7
-	vibrato 10, 5, 4
-	; 2-15
-	sound_call Music_Journey_Measure2_09
-	; 2-16
-	sound_call Music_Journey_Measure2_10
-	set_mute_timer 7
-	vibrato 10, 5, 4
-	; 2-17
-	sound_call Music_Journey_Measure2_09
-	; 2-18
-	sound_call Music_Journey_Measure2_10
-	set_mute_timer 7
-	vibrato 10, 5, 4
-	; 2-19
-	sound_call Music_Journey_Measure2_09
-	; 2-20
-	sound_call Music_Journey_Measure2_10
-	set_mute_timer 7
-	vibrato 10, 5, 4
-	; 2-21
-	sound_call Music_Journey_Measure2_09
-	; 2-22
-	sound_call Music_Journey_Measure2_10
+	sound_loop 7, Music_Journey_Loop2_09
 	; 2-23
 	sound_call Music_Journey_Measure1_09
 	; 2-24
 	sound_call Music_Journey_Measure1_26
 	set_mute_timer 0
 	vibrato 10, 5, 4
+Music_Journey_Loop2_25:
 	; 2-25
-	sound_call Music_Journey_Measure2_25_26
+	volume_envelope 1, 3
+	note D_, 3
+	volume_envelope 1, 5
+	note D_, 3
+	volume_envelope 1, 7
+	note D_, 3
+	volume_envelope 1, 9
+	note D_, 3
+	volume_envelope 1, 10
+	note D_, 6
+	; 2-26 - tie
+	volume_envelope 1, 7
+	note D_, 2
+	volume_envelope 1, 6
+	note D_, 2
+	volume_envelope 1, 5
+	note D_, 2
+	volume_envelope 1, 4
+	note D_, 2
+	volume_envelope 1, 3
+	note D_, 2
+	volume_envelope 1, 2
+	note D_, 2
+	volume_envelope 1, 1
+	note D_, 2
 	; 2-27
-	sound_call Music_Journey_Measure2_25_26
-	; 2-29
-	sound_call Music_Journey_Measure2_25_26
+	sound_loop 3, Music_Journey_Loop2_25
+	; 2-30
 	set_mute_timer 7
 	vibrato 10, 5, 4
 	; 2-31
@@ -305,35 +261,6 @@ Music_Journey_Measure2_10:
 	note G_, 1
 	sound_ret
 
-Music_Journey_Measure2_25_26:
-	; 2-25
-	volume_envelope 1, 3
-	note D_, 3
-	volume_envelope 1, 5
-	note D_, 3
-	volume_envelope 1, 7
-	note D_, 3
-	volume_envelope 1, 9
-	note D_, 3
-	volume_envelope 1, 10
-	note D_, 6
-	; 2-26 - tie
-	volume_envelope 1, 7
-	note D_, 2
-	volume_envelope 1, 6
-	note D_, 2
-	volume_envelope 1, 5
-	note D_, 2
-	volume_envelope 1, 4
-	note D_, 2
-	volume_envelope 1, 3
-	note D_, 2
-	volume_envelope 1, 2
-	note D_, 2
-	volume_envelope 1, 1
-	note D_, 2
-	sound_ret
-
 Music_Journey_Hill:
 	hill_type 12, 0, 40
 	; 3-01
@@ -360,76 +287,15 @@ Music_Journey_Noise:
 Music_Journey_Loop4_01:
 	; 4-01
 	sound_call Music_Journey_Measure4_01
-	; 4-02
-	sound_call Music_Journey_Measure4_01
-	; 4-03
-	sound_call Music_Journey_Measure4_01
-	; 4-04
-	sound_call Music_Journey_Measure4_01
-	; 4-05
-	sound_call Music_Journey_Measure4_01
-	; 4-06
-	sound_call Music_Journey_Measure4_01
-	; 4-07
-	sound_call Music_Journey_Measure4_01
-	; 4-08
-	sound_call Music_Journey_Measure4_01
 	; 4-09
 	sound_call Music_Journey_Measure4_01
-	; 4-10
-	sound_call Music_Journey_Measure4_01
-	; 4-11
-	sound_call Music_Journey_Measure4_01
-	; 4-12
-	sound_call Music_Journey_Measure4_01
-	; 4-13
-	sound_call Music_Journey_Measure4_01
-	; 4-14
-	sound_call Music_Journey_Measure4_01
-	; 4-15
-	sound_call Music_Journey_Measure4_01
-	; 4-16
-	sound_call Music_Journey_Measure4_01
+Music_Journey_Loop4_17:
 	; 4-17
 	rest 16
-	rest 16
-	; 4-18
-	rest 16
-	rest 16
-	; 4-19
-	rest 16
-	rest 16
-	; 4-20
-	rest 16
-	rest 16
-	; 4-21
-	rest 16
-	rest 16
-	; 4-22
-	rest 16
-	rest 16
-	; 4-23
-	rest 16
-	rest 16
-	; 4-24
-	rest 16
-	rest 16
+	sound_loop 16, Music_Journey_Loop4_17
 	; 4-25
 	sound_call Music_Journey_Measure4_01
-	; 4-26
-	sound_call Music_Journey_Measure4_01
-	; 4-27
-	sound_call Music_Journey_Measure4_01
-	; 4-28
-	sound_call Music_Journey_Measure4_01
-	; 4-29
-	sound_call Music_Journey_Measure4_01
-	; 4-30
-	sound_call Music_Journey_Measure4_01
-	; 4-31
-	sound_call Music_Journey_Measure4_01
 	; 4-32
-	sound_call Music_Journey_Measure4_01
 	sound_jump Music_Journey_Loop4_01
 
 Music_Journey_Measure4_01:
@@ -450,6 +316,7 @@ Music_Journey_Measure4_01:
 	drum_note 3, 2
 	drum_note 3, 2
 	drum_note 3, 2
+	sound_loop 8, Music_Journey_Measure4_01
 	sound_ret
 
 Music_Journey_DPCM:
@@ -460,73 +327,25 @@ Music_Journey_Loop5_01:
 	; 5-02
 	sound_call Music_Journey_Measure5_02
 	; 5-03
-	sound_call Music_Journey_Measure5_01
 	; 5-04
 	sound_call Music_Journey_Measure5_04
 	; 5-05
-	sound_call Music_Journey_Measure5_01
-	; 5-06
-	sound_call Music_Journey_Measure5_02
-	; 5-07
-	sound_call Music_Journey_Measure5_01
-	; 5-08
-	sound_call Music_Journey_Measure5_04
-	; 5-09
-	sound_call Music_Journey_Measure5_01
-	; 5-10
-	sound_call Music_Journey_Measure5_02
-	; 5-11
-	sound_call Music_Journey_Measure5_01
-	; 5-12
-	sound_call Music_Journey_Measure5_04
-	; 5-13
-	sound_call Music_Journey_Measure5_01
-	; 5-14
-	sound_call Music_Journey_Measure5_02
-	; 5-15
-	sound_call Music_Journey_Measure5_01
-	; 5-16
-	sound_call Music_Journey_Measure5_04
+	sound_loop 4, Music_Journey_Loop5_01
+Music_Journey_Loop5_17:
 	; 5-17
 	rest 16
-	rest 16
-	; 5-18
-	rest 16
-	rest 16
-	; 5-19
-	rest 16
-	rest 16
-	; 5-20
-	rest 16
-	rest 16
-	; 5-21
-	rest 16
-	rest 16
-	; 5-22
-	rest 16
-	rest 16
-	; 5-23
-	rest 16
-	rest 16
-	; 5-24
-	rest 16
-	rest 16
+	sound_loop 16, Music_Journey_Loop5_17
+Music_Journey_Loop5_25:
 	; 5-25
 	sound_call Music_Journey_Measure5_01
 	; 5-26
 	sound_call Music_Journey_Measure5_02
 	; 5-27
-	sound_call Music_Journey_Measure5_01
 	; 5-28
 	sound_call Music_Journey_Measure5_04
 	; 5-29
-	sound_call Music_Journey_Measure5_01
-	; 5-30
-	sound_call Music_Journey_Measure5_02
-	; 5-31
-	sound_call Music_Journey_Measure5_01
+	sound_loop 2, Music_Journey_Loop5_25
 	; 5-32
-	sound_call Music_Journey_Measure5_04
 	sound_jump Music_Journey_Loop5_01
 
 Music_Journey_Measure5_01:
@@ -551,7 +370,7 @@ Music_Journey_Measure5_02:
 	drum_note 9, 2
 	drum_note 11, 4
 	drum_note 9, 2
-	sound_ret
+	sound_jump Music_Journey_Measure5_01
 
 Music_Journey_Measure5_04:
 	drum_note 11, 6

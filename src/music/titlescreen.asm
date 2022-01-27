@@ -11,7 +11,7 @@ Music_TitleScreen_Pulse1:
 	note_type 12, 0, 1
 	; 1-00
 	rest 4
-Music_TitleScreen_Pulse1_Mainloop:
+Music_TitleScreen_Loop1_01:
 	volume_envelope 0, 1
 	; 1-01
 	sound_call Music_TitleScreen_Measure1_01
@@ -24,41 +24,15 @@ Music_TitleScreen_Pulse1_Mainloop:
 	; 1-04
 	sound_call Music_TitleScreen_Measure1_04
 	; 1-05
-	sound_call Music_TitleScreen_Measure1_01
-	; 1-06
-	transpose 1, 10
-	sound_call Music_TitleScreen_Measure1_01
-	; 1-07
-	sound_call Music_TitleScreen_Measure1_04
-	transpose 0, 0
-	; 1-08
-	sound_call Music_TitleScreen_Measure1_04
-	; 1-09
-	sound_call Music_TitleScreen_Measure1_01
-	; 1-10
-	transpose 1, 10
-	sound_call Music_TitleScreen_Measure1_01
-	; 1-11
-	sound_call Music_TitleScreen_Measure1_04
-	transpose 0, 0
-	; 1-12
-	sound_call Music_TitleScreen_Measure1_04
-	; 1-13
-	sound_call Music_TitleScreen_Measure1_01
-	; 1-14
-	transpose 1, 10
-	sound_call Music_TitleScreen_Measure1_01
-	; 1-15
-	sound_call Music_TitleScreen_Measure1_04
-	transpose 0, 0
-	; 1-16
-	sound_call Music_TitleScreen_Measure1_04
+	sound_loop 4, Music_TitleScreen_Loop1_01
+	; 1-16 - tie
 	volume_envelope 0, 15
 	; 1-17
 	octave 2
 	note G#, 16
 	; 1-18 - tie
 	volume_envelope 0, 1
+Music_TitleScreen_Loop1_19:
 	; 1-19
 	sound_call Music_TitleScreen_Measure1_01
 	; 1-20
@@ -70,47 +44,33 @@ Music_TitleScreen_Pulse1_Mainloop:
 	; 1-22
 	sound_call Music_TitleScreen_Measure1_04
 	; 1-23
-	sound_call Music_TitleScreen_Measure1_01
-	; 1-24
-	transpose 1, 10
-	sound_call Music_TitleScreen_Measure1_01
-	; 1-25
-	sound_call Music_TitleScreen_Measure1_04
-	transpose 0, 0
-	; 1-26
-	sound_call Music_TitleScreen_Measure1_04
-	; 1-27
-	sound_call Music_TitleScreen_Measure1_01
-	; 1-28
-	transpose 1, 10
-	sound_call Music_TitleScreen_Measure1_01
-	; 1-29
-	sound_call Music_TitleScreen_Measure1_04
-	transpose 0, 0
-	; 1-30
-	sound_call Music_TitleScreen_Measure1_04
-	; 1-31
-	sound_call Music_TitleScreen_Measure1_01
-	; 1-32
-	transpose 1, 10
-	sound_call Music_TitleScreen_Measure1_01
-	; 1-33
-	sound_call Music_TitleScreen_Measure1_04
-	transpose 0, 0
-	; 1-34
-	sound_call Music_TitleScreen_Measure1_04
+	sound_loop 4, Music_TitleScreen_Loop1_19
+	; 1-34 - tie
+Music_TitleScreen_Loop1_35:
 	; 1-35
-	sound_call Music_TitleScreen_Measure1_35
+	note C#, 1
+	note E_, 1
+	note A_, 1
+	note E_, 1
+	note C#, 1
+	note E_, 1
+	note A_, 1
+	note E_, 1
 	; 1-36
-	sound_call Music_TitleScreen_Measure1_36
+	octave 2
+	note B_, 1
+	octave 3
+	note E_, 1
+	note G#, 1
+	note E_, 1
+	octave 2
+	note B_, 1
+	octave 3
+	note E_, 1
+	note G#, 1
+	note E_, 1
 	; 1-37
-	sound_call Music_TitleScreen_Measure1_35
-	; 1-38
-	sound_call Music_TitleScreen_Measure1_36
-	; 1-39
-	sound_call Music_TitleScreen_Measure1_35
-	; 1-40
-	sound_call Music_TitleScreen_Measure1_36
+	sound_loop 3, Music_TitleScreen_Loop1_35
 	; 1-41
 	note C#, 1
 	note F#, 1
@@ -182,7 +142,7 @@ Music_TitleScreen_Pulse1_Mainloop:
 	; 1-51
 	note G#, 6
 	rest 2
-	sound_jump Music_TitleScreen_Pulse1_Mainloop
+	sound_jump Music_TitleScreen_Loop1_01
 
 Music_TitleScreen_Measure1_01:
 	octave 2
@@ -212,32 +172,6 @@ Music_TitleScreen_Measure1_04:
 	note F#, 1
 	sound_ret
 
-Music_TitleScreen_Measure1_35:
-	note C#, 1
-	note E_, 1
-	note A_, 1
-	note E_, 1
-	note C#, 1
-	note E_, 1
-	note A_, 1
-	note E_, 1
-	sound_ret
-
-Music_TitleScreen_Measure1_36:
-	octave 2
-	note B_, 1
-	octave 3
-	note E_, 1
-	note G#, 1
-	note E_, 1
-	octave 2
-	note B_, 1
-	octave 3
-	note E_, 1
-	note G#, 1
-	note E_, 1
-	sound_ret
-
 Music_TitleScreen_Pulse2:
 	duty_cycle 3
 	note_type 12, 0, 9
@@ -258,10 +192,36 @@ Music_TitleScreen_Loop2_01:
 	rest 16
 	; 2-08 - tie
 	vibrato 4, 7, 5
+Music_TitleScreen_Loop2_09:
 	; 2-09
-	sound_call Music_TitleScreen_Measure2_09_12
+	octave 2
+	note B_, 2
+	octave 3
+	note E_, 2
+	note G#, 2
+	note E_, 2
+	; 2-10
+	octave 2
+	note B_, 2
+	octave 3
+	note E_, 2
+	note F#, 2
+	note E_, 2
+	; 2-11
+	note C#, 2
+	note E_, 2
+	note A_, 2
+	note E_, 2
+	; 2-12
+	octave 2
+	note B_, 2
+	octave 3
+	note D#, 2
+	note F#, 2
+	note D#, 2
 	; 2-13
-	sound_call Music_TitleScreen_Measure2_09_12
+	sound_loop 2, Music_TitleScreen_Loop2_09
+	; 2-16 - tie
 	note_type 3, 0, 15
 	; 2-17
 	rest 1
@@ -281,7 +241,6 @@ Music_TitleScreen_Loop2_01:
 	octave 2
 	note B_, 3
 	rest 1
-	note_type 3, 1, 10
 	octave 2
 	note B_, 7
 	rest 1
@@ -451,36 +410,6 @@ Music_TitleScreen_Loop2_01:
 	rest 4
 	sound_jump Music_TitleScreen_Loop2_01
 
-
-Music_TitleScreen_Measure2_09_12:
-	; 2-09
-	octave 2
-	note B_, 2
-	octave 3
-	note E_, 2
-	note G#, 2
-	note E_, 2
-	; 2-10
-	octave 2
-	note B_, 2
-	octave 3
-	note E_, 2
-	note F#, 2
-	note E_, 2
-	; 2-11
-	note C#, 2
-	note E_, 2
-	note A_, 2
-	note E_, 2
-	; 2-12
-	octave 2
-	note B_, 2
-	octave 3
-	note D#, 2
-	note F#, 2
-	note D#, 2
-	sound_ret
-
 Music_TitleScreen_Measure2_20_24:
 	; 2-20
 	note F#, 5
@@ -535,37 +464,10 @@ Music_TitleScreen_Hill:
 Music_TitleScreen_Loop3_01:
 	linear_envelope 0, 35
 	; 3-01
-	sound_call Music_TitleScreen_Measure3_01
-	; 3-02
-	sound_call Music_TitleScreen_Measure3_02
-	; 3-03
-	sound_call Music_TitleScreen_Measure3_03
-	; 3-04
-	sound_call Music_TitleScreen_Measure3_04
+	sound_call Music_TitleScreen_Measure3_01_04
 	; 3-05
-	sound_call Music_TitleScreen_Measure3_01
-	; 3-06
-	sound_call Music_TitleScreen_Measure3_02
-	; 3-07
-	sound_call Music_TitleScreen_Measure3_03
-	; 3-08
-	sound_call Music_TitleScreen_Measure3_04
-	; 3-09
-	sound_call Music_TitleScreen_Measure3_01
-	; 3-10
-	sound_call Music_TitleScreen_Measure3_02
-	; 3-11
-	sound_call Music_TitleScreen_Measure3_03
-	; 3-12
-	sound_call Music_TitleScreen_Measure3_04
-	; 3-13
-	sound_call Music_TitleScreen_Measure3_01
-	; 3-14
-	sound_call Music_TitleScreen_Measure3_02
-	; 3-15
-	sound_call Music_TitleScreen_Measure3_03
-	; 3-16
-	sound_call Music_TitleScreen_Measure3_04
+	sound_loop 4, Music_TitleScreen_Loop3_01
+	; 3-16 - tie
 	linear_envelope 1, 1
 	; 3-17
 	octave 3
@@ -578,38 +480,11 @@ Music_TitleScreen_Loop3_01:
 	note E_, 15
 	rest 1
 	linear_envelope 0, 35
+Music_TitleScreen_Loop3_19:
 	; 3-19
-	sound_call Music_TitleScreen_Measure3_01
-	; 3-20
-	sound_call Music_TitleScreen_Measure3_02
-	; 3-21
-	sound_call Music_TitleScreen_Measure3_03
-	; 3-22
-	sound_call Music_TitleScreen_Measure3_04
+	sound_call Music_TitleScreen_Measure3_01_04
 	; 3-23
-	sound_call Music_TitleScreen_Measure3_01
-	; 3-24
-	sound_call Music_TitleScreen_Measure3_02
-	; 3-25
-	sound_call Music_TitleScreen_Measure3_03
-	; 3-26
-	sound_call Music_TitleScreen_Measure3_04
-	; 3-27
-	sound_call Music_TitleScreen_Measure3_01
-	; 3-28
-	sound_call Music_TitleScreen_Measure3_02
-	; 3-29
-	sound_call Music_TitleScreen_Measure3_03
-	; 3-30
-	sound_call Music_TitleScreen_Measure3_04
-	; 3-31
-	sound_call Music_TitleScreen_Measure3_01
-	; 3-32
-	sound_call Music_TitleScreen_Measure3_02
-	; 3-33
-	sound_call Music_TitleScreen_Measure3_03
-	; 3-34
-	sound_call Music_TitleScreen_Measure3_04
+	sound_loop 4, Music_TitleScreen_Loop3_19
 	; 3-35
 	octave 2
 	note A_, 4
@@ -703,7 +578,8 @@ Music_TitleScreen_Loop3_01:
 	rest 1
 	sound_jump Music_TitleScreen_Loop3_01
 
-Music_TitleScreen_Measure3_01:
+Music_TitleScreen_Measure3_01_04:
+	; 3-01
 	octave 3
 	note E_, 2
 	note E_, 2
@@ -713,9 +589,7 @@ Music_TitleScreen_Measure3_01:
 	note E_, 2
 	note E_, 2
 	note E_, 2
-	sound_ret
-
-Music_TitleScreen_Measure3_02:
+	; 3-02
 	note D_, 2
 	note D_, 2
 	note D_, 2
@@ -724,9 +598,7 @@ Music_TitleScreen_Measure3_02:
 	note D_, 2
 	note D_, 2
 	note D_, 2
-	sound_ret
-
-Music_TitleScreen_Measure3_03:
+	; 3-03
 	octave 2
 	note A_, 2
 	note A_, 2
@@ -736,9 +608,7 @@ Music_TitleScreen_Measure3_03:
 	note A_, 2
 	note A_, 2
 	note A_, 2
-	sound_ret
-
-Music_TitleScreen_Measure3_04:
+	; 3-04
 	note B_, 2
 	note B_, 2
 	note B_, 2
@@ -747,6 +617,7 @@ Music_TitleScreen_Measure3_04:
 	note B_, 2
 	note B_, 2
 	note B_, 2
+	; 3-05
 	sound_ret
 
 Music_TitleScreen_Noise:
@@ -757,64 +628,25 @@ Music_TitleScreen_Noise:
 Music_TitleScreen_Loop4_01:
 	; 4-01
 	sound_call Music_TitleScreen_Measure4_01
+Music_TitleScreen_Loop4_02:
 	; 4-02
 	sound_call Music_TitleScreen_Measure4_02
 	; 4-03
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-04
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-05
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-06
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-07
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-08
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-09
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-10
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-11
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-12
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-13
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-14
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-15
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-16
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-17
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-18
-	sound_call Music_TitleScreen_Measure4_02
+	sound_loop 17, Music_TitleScreen_Loop4_02
 	; 4-19
 	sound_call Music_TitleScreen_Measure4_01
+Music_TitleScreen_Loop4_20:
 	; 4-20
 	sound_call Music_TitleScreen_Measure4_02
 	; 4-21
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-22
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-23
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-24
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-25
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-26
-	sound_call Music_TitleScreen_Measure4_02
+	sound_loop 7, Music_TitleScreen_Loop4_20
 	; 4-27
 	sound_call Music_TitleScreen_Measure4_01
+Music_TitleScreen_Loop4_28:
 	; 4-28
 	sound_call Music_TitleScreen_Measure4_02
 	; 4-29
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-30
-	sound_call Music_TitleScreen_Measure4_02
+	sound_loop 3, Music_TitleScreen_Loop4_28
 	; 4-31
 	sound_call Music_TitleScreen_Measure4_01
 	; 4-32
@@ -828,12 +660,11 @@ Music_TitleScreen_Loop4_01:
 	drum_note 2, 2
 	; 4-35
 	sound_call Music_TitleScreen_Measure4_01
+Music_TitleScreen_Loop4_36:
 	; 4-36
 	sound_call Music_TitleScreen_Measure4_02
 	; 4-37
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-38
-	sound_call Music_TitleScreen_Measure4_02
+	sound_loop 3, Music_TitleScreen_Loop4_36
 	; 4-39
 	sound_call Music_TitleScreen_Measure4_01
 	; 4-40
@@ -849,12 +680,11 @@ Music_TitleScreen_Loop4_01:
 	drum_note 2, 8
 	; 4-44
 	sound_call Music_TitleScreen_Measure4_01
+Music_TitleScreen_Loop4_45:
 	; 4-45
 	sound_call Music_TitleScreen_Measure4_02
 	; 4-46
-	sound_call Music_TitleScreen_Measure4_02
-	; 4-47
-	sound_call Music_TitleScreen_Measure4_02
+	sound_loop 3, Music_TitleScreen_Loop4_45
 	; 4-48
 	sound_call Music_TitleScreen_Measure4_01
 	; 4-49
@@ -894,33 +724,26 @@ Music_TitleScreen_Loop5_01:
 	; 5-01
 	sound_call Music_TitleScreen_Measure5_01
 	; 5-02
-	sound_call Music_TitleScreen_Measure5_01
-	; 5-03
-	sound_call Music_TitleScreen_Measure5_01
+	sound_loop 3, Music_TitleScreen_Loop5_01
 	; 5-04
-	sound_call Music_TitleScreen_Measure5_04
 	; 5-05
-	sound_call Music_TitleScreen_Measure5_01
+	sound_call Music_TitleScreen_Measure5_04
 	; 5-06
-	sound_call Music_TitleScreen_Measure5_06
 	; 5-07
-	sound_call Music_TitleScreen_Measure5_01
+	sound_call Music_TitleScreen_Measure5_06
 	; 5-08
 	sound_call Music_TitleScreen_Measure5_08
+Music_TitleScreen_Loop5_09:
 	; 5-09
 	sound_call Music_TitleScreen_Measure5_01
 	; 5-10
-	sound_call Music_TitleScreen_Measure5_01
-	; 5-11
-	sound_call Music_TitleScreen_Measure5_01
+	sound_loop 3, Music_TitleScreen_Loop5_09
 	; 5-12
-	sound_call Music_TitleScreen_Measure5_04
 	; 5-13
-	sound_call Music_TitleScreen_Measure5_01
+	sound_call Music_TitleScreen_Measure5_04
 	; 5-14
-	sound_call Music_TitleScreen_Measure5_06
 	; 5-15
-	sound_call Music_TitleScreen_Measure5_01
+	sound_call Music_TitleScreen_Measure5_06
 	; 5-16
 	sound_call Music_TitleScreen_Measure5_08
 	; 5-17
@@ -930,52 +753,43 @@ Music_TitleScreen_Loop5_01:
 	drum_note 10, 10
 	drum_note 10, 2
 	drum_note 1, 4
+Music_TitleScreen_Loop5_19:
 	; 5-19
 	sound_call Music_TitleScreen_Measure5_01
 	; 5-20
-	sound_call Music_TitleScreen_Measure5_01
-	; 5-21
-	sound_call Music_TitleScreen_Measure5_01
+	sound_loop 3, Music_TitleScreen_Loop5_19
 	; 5-22
-	sound_call Music_TitleScreen_Measure5_04
 	; 5-23
-	sound_call Music_TitleScreen_Measure5_01
+	sound_call Music_TitleScreen_Measure5_04
 	; 5-24
-	sound_call Music_TitleScreen_Measure5_06
 	; 5-25
-	sound_call Music_TitleScreen_Measure5_01
+	sound_call Music_TitleScreen_Measure5_06
 	; 5-26
 	sound_call Music_TitleScreen_Measure5_08
+Music_TitleScreen_Loop5_27:
 	; 5-27
 	sound_call Music_TitleScreen_Measure5_01
 	; 5-28
-	sound_call Music_TitleScreen_Measure5_01
-	; 5-29
-	sound_call Music_TitleScreen_Measure5_01
+	sound_loop 3, Music_TitleScreen_Loop5_27
 	; 5-30
-	sound_call Music_TitleScreen_Measure5_30
 	; 5-31
-	sound_call Music_TitleScreen_Measure5_01
+	sound_call Music_TitleScreen_Measure5_30
 	; 5-32
-	sound_call Music_TitleScreen_Measure5_06
 	; 5-33
-	sound_call Music_TitleScreen_Measure5_01
+	sound_call Music_TitleScreen_Measure5_06
 	; 5-34
 	sound_call Music_TitleScreen_Measure5_34
+Music_TitleScreen_Loop5_35:
 	; 5-35
 	sound_call Music_TitleScreen_Measure5_01
 	; 5-36
-	sound_call Music_TitleScreen_Measure5_01
-	; 5-37
-	sound_call Music_TitleScreen_Measure5_01
+	sound_loop 3, Music_TitleScreen_Loop5_35
 	; 5-38
-	sound_call Music_TitleScreen_Measure5_30
 	; 5-39
-	sound_call Music_TitleScreen_Measure5_01
+	sound_call Music_TitleScreen_Measure5_30
 	; 5-40
-	sound_call Music_TitleScreen_Measure5_06
 	; 5-41
-	sound_call Music_TitleScreen_Measure5_01
+	sound_call Music_TitleScreen_Measure5_06
 	; 5-42
 	sound_call Music_TitleScreen_Measure5_34
 	; 5-43
@@ -987,20 +801,17 @@ Music_TitleScreen_Loop5_01:
 	drum_note 1, 2
 	drum_note 1, 1
 	drum_note 1, 1
+Music_TitleScreen_Loop5_44:
 	; 5-44
 	sound_call Music_TitleScreen_Measure5_01
 	; 5-45
-	sound_call Music_TitleScreen_Measure5_01
-	; 5-46
-	sound_call Music_TitleScreen_Measure5_01
+	sound_loop 3, Music_TitleScreen_Loop5_44
 	; 5-47
-	sound_call Music_TitleScreen_Measure5_30
 	; 5-48
-	sound_call Music_TitleScreen_Measure5_01
+	sound_call Music_TitleScreen_Measure5_30
 	; 5-49
-	sound_call Music_TitleScreen_Measure5_06
 	; 5-50
-	sound_call Music_TitleScreen_Measure5_01
+	sound_call Music_TitleScreen_Measure5_06
 	; 5-51
 	sound_call Music_TitleScreen_Measure5_34
 	sound_jump Music_TitleScreen_Loop5_01
@@ -1020,7 +831,7 @@ Music_TitleScreen_Measure5_04:
 	drum_note 10, 2
 	drum_note 1, 2
 	drum_note 1, 2
-	sound_ret
+	sound_jump Music_TitleScreen_Measure5_01
 
 Music_TitleScreen_Measure5_06:
 	drum_note 10, 4
@@ -1029,7 +840,7 @@ Music_TitleScreen_Measure5_06:
 	drum_note 10, 2
 	drum_note 1, 2
 	drum_note 10, 2
-	sound_ret
+	sound_jump Music_TitleScreen_Measure5_01
 
 Music_TitleScreen_Measure5_08:
 	drum_note 10, 4
@@ -1049,7 +860,7 @@ Music_TitleScreen_Measure5_30:
 	drum_note 1, 1
 	drum_note 1, 2
 	drum_note 1, 2
-	sound_ret
+	sound_jump Music_TitleScreen_Measure5_01
 
 Music_TitleScreen_Measure5_34:
 	drum_note 1, 2
