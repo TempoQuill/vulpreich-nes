@@ -1,6 +1,5 @@
 MACRO dba bank, label
-	.db bank
-	.dw label
+	.db bank, <label, >label
 ENDM
 
 ; push x
