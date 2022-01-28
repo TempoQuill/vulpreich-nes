@@ -1,13 +1,11 @@
 ; header is split into 3 macros due to assembler limitations
 ; sound effects have equivalent macros
 MACRO music_header total, channel, label
-	.db (total - 1) << 5 | channel - 1
-	.dw label
+	.db ((total - 1) << 5 | channel - 1), <label, >label
 ENDM
 
 MACRO music_subheader channel, label
-	.db channel - 1
-	.dw label
+	.db channel - 1, <label, >label
 ENDM
 
 MACRO music_leftover channel
@@ -15,13 +13,11 @@ MACRO music_leftover channel
 ENDM
 
 MACRO sfx_header total, channel, label
-	.db (total - 1) << 5 | channel + 7
-	.dw label
+	.db ((total - 1) << 5 | channel + 7), <label, >label
 ENDM
 
 MACRO sfx_subheader channel, label
-	.db channel + 7
-	.dw label
+	.db channel + 7, <label, >label
 ENDM
 
 MACRO sfx_leftover channel
@@ -31,34 +27,24 @@ ENDM
 ; sound effect note, 1/2 share the same macro
 ; other channels have their own
 MACRO pulse_note note_length, rampflag, volumeramp, length, pitch
-	.db note_length
-	.db (rampflag << 4) | volumeramp
-	.db <pitch, length << 3 | >pitch
+	.db note_length, rampflag << 4 | volumeramp, <pitch, length << 3 | >pitch
 ENDM
 
 MACRO hill_note note_length, flag, linear, length, pitch
-	.db note_length
-	.db flag << 7 | linear
-	.db <pitch, length << 3 | >pitch
+	.db note_length, flag << 7 | linear, <pitch, length << 3 | >pitch
 ENDM
 
 MACRO noise_note length, rampflag, volumeramp, mode, pitch
-	.db length
-	.db (rampflag << 4) | volumeramp
-	.db mode << 7     | pitch
+	.db length, rampflag << 4 | volumeramp, mode << 7 | pitch
 ENDM
 
 MACRO dpcm_note length, bank, addr, size
-	.db length, bank
-	.db (addr & %0011111111000000) >> 6
-	.db size
+	.db length, bank, (addr & %0011111111000000) >> 6, size
 ENDM
 
 ; used for drum kits
 MACRO dpcm_entry bank, pitch, addr, size
-	.db bank, pitch
-	.db (addr & %0011111111000000) >> 6
-	.db size
+	.db bank, pitch, (addr & %0011111111000000) >> 6, size
 ENDM
 
 MACRO rest length
@@ -71,7 +57,7 @@ ENDM
 
 ; noise / DPCM
 MACRO drum_note id, length
-	note id, length
+	.db id << 4 | length - 1
 ENDM
 
 MACRO octave value
@@ -80,14 +66,12 @@ ENDM
 
 ; channel 1/2
 MACRO note_type length, rampflag, volumeramp
-	.db note_type_cmd, length ; d8
-	.db (rampflag << 4) | volumeramp
+	.db note_type_cmd, length, rampflag << 4 | volumeramp
 ENDM
 
 ; channel 3
 MACRO hill_type length, flag, linear
-	.db note_type_cmd, length
-	.db flag << 7 | linear
+	.db note_type_cmd, length, flag << 7 | linear
 ENDM
 
 ; noise / DPCM
@@ -96,8 +80,7 @@ MACRO drum_speed length
 ENDM
 
 MACRO transpose octave, pitch
-	.db transpose_cmd ; d9
-	.db octave << 4 | pitch
+	.db transpose_cmd, octave << 4 | pitch
 ENDM
 
 ; value / 256 = speed
@@ -113,26 +96,22 @@ ENDM
 
 ; only valid on channels 1/2
 MACRO volume_envelope rampflag, volumeramp
-	.db volume_envelope_cmd ; dc
-	.db (rampflag << 4) | volumeramp
+	.db volume_envelope_cmd, (rampflag << 4) | volumeramp
 ENDM
 
 ; only valid on channels 3
 MACRO linear_envelope flag, linear
-	.db volume_envelope_cmd ; dc
-	.db flag << 7 | linear
+	.db volume_envelope_cmd, flag << 7 | linear
 ENDM
 
 ; only valid on channels 1/2
 MACRO pitch_sweep enable, period, direction, depth
-	.db pitch_sweep_cmd ; dd
-	.db enable << 7 | period << 4 | direction << 3 | depth
+	.db pitch_sweep_cmd, enable << 7 | period << 4 | direction << 3 | depth
 ENDM
 
 ; only valid on channels 1/2
 MACRO duty_cycle_pattern cycle1, cycle2, cycle3, cycle4
-	.db duty_cycle_pattern_cmd ; de
-	.db cycle1 << 6 | cycle2 << 4 | cycle3 << 2 | cycle4
+	.db duty_cycle_pattern_cmd, cycle1 << 6 | cycle2 << 4 | cycle3 << 2 | cycle4
 ENDM
 
 ; switch between data reading modes
@@ -142,17 +121,14 @@ ENDM
 
 ; implemented for channels 1-3
 MACRO pitch_slide tail, octave, pitch
-	.db pitch_slide_cmd, tail ; e0
-	.db (8 - octave) << 4 | pitch
+	.db pitch_slide_cmd, tail, (8 - octave) << 4 | pitch
 ENDM
 
 MACRO vibrato preamble, depth, length
-	.db vibrato_cmd, preamble ; e1
-	.db depth << 4 | length
+	.db vibrato_cmd, preamble, depth << 4 | length
 ENDM
 
 ; only works in Ray and Vulpreich
-; erroniously documented in Ray, which may be fixed later on
 MACRO set_mute_timer delay
 	.db set_mute_timer_cmd, delay ; e2
 ENDM
@@ -196,8 +172,7 @@ MACRO tempo_relative offset
 ENDM
 
 MACRO restart_channel address
-	.db restart_channel_cmd ; ea
-	.dw address
+	.db restart_channel_cmd, <address, >address
 ENDM
 
 ; two bytes on GB, converted to one on NES due to index limitations
@@ -215,8 +190,7 @@ ENDM
 
 ; uses exclusive flags in zAudioCommandFlags
 MACRO sound_jump_flag address
-	.db sound_jump_flag_cmd ; ee
-	.dw address
+	.db sound_jump_flag_cmd, <address, >address
 ENDM
 
 ; stereo
@@ -274,24 +248,20 @@ MACRO set_condition condition
 ENDM
 
 MACRO sound_jump_if condition, address
-	.db sound_jump_if_cmd, condition ; fb
-	.dw address
+	.db sound_jump_if_cmd, condition, <address, >address
 ENDM
 
 ; renders "sound_loop 0" obsolete
 MACRO sound_jump address
-	.db sound_jump_cmd ; fc
-	.dw address
+	.db sound_jump_cmd, <address, >address
 ENDM
 
 MACRO sound_loop counter, address
-	.db sound_loop_cmd, counter ; fd
-	.dw address
+	.db sound_loop_cmd, counter, <address, >address
 ENDM
 
 MACRO sound_call address
-	.db sound_call_cmd ; fe
-	.dw address
+	.db sound_call_cmd, <address, >address
 ENDM
 
 MACRO sound_ret
