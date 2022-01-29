@@ -64,7 +64,7 @@ IFNDEF NSF_FILE
 
 	; bank 06 - text engine
 	.base $8000
-	.include "src/text.asm"
+	.include "src/gfx.asm"
 	.pad $a000, $00
 
 	; bank 07 - names
