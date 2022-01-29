@@ -1,3 +1,3 @@
 
-.incbin "chr/title.chr"
+.incbin "src/chr/title.chr"
 .dsb ($ff * $1000), $00
