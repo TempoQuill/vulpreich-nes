@@ -9,3 +9,6 @@ ScreenUpdateBuffer_EpisodeSelect = $01
 ScreenUpdateBuffer_PublicDomainLayout = $02
 ScreenUpdateBuffer_TitleScreen = $03
 ScreenUpdateBuffer_Credits = $04
+
+PAL_FADE_DIR_F = $6
+PAL_FADE_F = $7

@@ -59,5 +59,15 @@ IntroSequence:
 	STA zAuxAddresses + 6
 	LDA #PRG_Start0
 	STA zTextBank
-	JSR PrintText
+	JSR InstantPrint
+	LDA #<IntroPals
+	STA zPalPointer
+	LDA #>IntroPals
+	STA zPalPointer + 1
+	LDA iPals
+	ORA #1 << PAL_FADE_F
+	STA iPals
 	JMP IntroSequence
+
+IntroPals:
+.incbin "src/chr/title.pal"

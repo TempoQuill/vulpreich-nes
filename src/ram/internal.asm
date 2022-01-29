@@ -153,11 +153,9 @@ zCurrentCardBalanceBCD:
 	.dsb 7
 zDecimalPlaceBuffer:
 	.dsb 16 ; 0070
-zStringBuffer:
-	.dsb $20 ; 0080
-	.dsb $20 ; 00a0
-	.dsb $20 ; 00c0
-	.dsb $20 ; 00e0
+zPalPointer:
+	.dsb 2 ; 0080
+	.dsb $7e ; 0082
 
 ; section: STACK
 iStack:
@@ -250,6 +248,11 @@ iPals:
 	.dsb 16 ; 04c0
 iNSFBanks:
 	.dsb $8
-	.dsb $228 ; 04d8 - 06ff
+	.dsb $1a8 ; 04da - 067f
+iStringBuffer:
+	.dsb $20
+	.dsb $20
+	.dsb $20
+	.dsb $20
 iVirtualOAM:
 	.dsb $100 ; 0700 - 07ff

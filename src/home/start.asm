@@ -181,13 +181,15 @@ NMI:
 	BEQ @PalettesQuit
 	CMP #4
 	BEQ @PalettesQuit
+	JSR FadePalettes
 	LDA #$3f ; palette RAM hi
 	STA PPUADDR
 	LDA #$0 ; palette RAM lo
 	STA PPUADDR
 	TAX
 @PalettesLoop:
-	LDA iPals, x
+	LDA iPals, X
+	AND #$3f
 	STA PPUDATA
 	INX
 	CPX #$20

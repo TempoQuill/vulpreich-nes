@@ -1,8 +1,18 @@
-PrintText:
+InstantPrint:
 	SEC
 	; get index according to upper digits of location
 	; load bank into corresponding window
+	JSH PRG_TextEngine, _InstantPrint
+	JMP UpdatePRG
+
+PrintText:
+	SEC
 	JSH PRG_TextEngine, _PrintText
+	JMP UpdatePRG
+
+FadePalettes:
+	SEC
+	JSH PRG_TextEngine, _FadePalettes
 	JMP UpdatePRG
 
 GetTextByte:
@@ -33,7 +43,7 @@ ReadPPUData:
 	DEX
 	DEC zBackupX
 	LDA PPUDATA
-	STA zStringBuffer + $60, X
+	STA iStringBuffer + $60, X
 	LDX zBackupX
 	BNE @Loop
 	RTS
@@ -56,7 +66,7 @@ WritePPUDataFromStringBuffer:
 @Loop:
 	DEX
 	DEC zBackupX
-	LDA zStringBuffer + $60, X
+	LDA iStringBuffer + $60, X
 	STA PPUDATA
 	INC cNametableAddress
 	LDX zBackupX
@@ -84,7 +94,7 @@ GetNameTableOffsetLine2:
 	RTS
 
 GetName:
-; Return name cCurrentIndex from name list cObjectType in zStringBuffer.
+; Return name cCurrentIndex from name list cObjectType in iStringBuffer.
 	; preserve registers
 	PHP
 	PHA
