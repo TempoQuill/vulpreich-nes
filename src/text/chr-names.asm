@@ -1,27 +1,27 @@
 CharacterFullNames:
-	.db "Iggy Reich@"
-	.db "Junior Fey@"
-	.db "James Raren@"
-	.db "James Raren@"
-	.db "Phillip Reich@"
-	.db "Dilan Fey@"
-	.db "Lila Fey@"
-	.db "Gary Raren@"
-	.db "Sydney Esced@"
-	.db "INCIDENTAL-LINE@"
-	.db "RECEPTIONIST-1@"
-	.db "VETERENARIAN-1@"
+	.db "Iggy Reich", $80
+	.db "Junior Fey", $80
+	.db "James Raren", $80
+	.db "James Raren", $80
+	.db "Phillip Reich", $80
+	.db "Dilan Fey", $80
+	.db "Lila Fey", $80
+	.db "Gary Raren", $80
+	.db "Sydney Esced", $80
+	.db "INCIDENTAL-LINE", $80
+	.db "RECEPTIONIST-1", $80
+	.db "VETERENARIAN-1", $80
 
 CharacterNames:
-	.db "Iggy@"
-	.db "June@"
-	.db "Jim@"
-	.db "Otis@"
-	.db "Phil@"
-	.db "Dill@"
-	.db "Lila@"
-	.db "Gary@"
-	.db "Sydney@"
-	.db "INC.C1@"
-	.db "REC.01@"
-	.db "VET.01@"
+	.db "Iggy", $80
+	.db "June", $80
+	.db "Jim", $80
+	.db "Otis", $80
+	.db "Phil", $80
+	.db "Dill", $80
+	.db "Lila", $80
+	.db "Gary", $80
+	.db "Sydney", $80
+	.db "INC.C1", $80
+	.db "REC.01", $80
+	.db "VET.01", $80

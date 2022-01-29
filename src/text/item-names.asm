@@ -1,3 +1,3 @@
 ItemNames:
-	.db "?@"
-	.db "debit card@"
+	.db "?", $80
+	.db "debit card", $80

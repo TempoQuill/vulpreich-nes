@@ -88,7 +88,7 @@ _InstantPrint:
 
 @CommandTable:
 ; text commands 80-ff
-	.dw @TextEnd  ; 80 "@"
+	.dw @TextEnd  ; 80
 	.dw @Next     ; 81
 	.dw @Para     ; 82
 	.dw @Line     ; 83
@@ -211,7 +211,7 @@ _PrintText:
 
 @CommandTable:
 ; text commands 80-ff
-	.dw @TextEnd  ; 80 "@"
+	.dw @TextEnd  ; 80
 	.dw @Next     ; 81
 	.dw @Para     ; 82
 	.dw @Line     ; 83

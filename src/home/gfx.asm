@@ -136,7 +136,7 @@ GetNthString:
 	BEQ @Next
 	INC zAuxAddresses + 7
 @Next:
-	CMP #"@"
+	CMP #$80
 	BNE @Loop
 	; loop if Y dec doesn't set z
 	DEY
