@@ -182,6 +182,7 @@ NMI:
 	CMP #4
 	BEQ @PalettesQuit
 	JSR FadePalettes
+	JSR UpdateGFXAttributes
 	LDA #$3f ; palette RAM hi
 	STA PPUADDR
 	LDA #$0 ; palette RAM lo

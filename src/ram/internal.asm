@@ -248,7 +248,9 @@ iPals:
 	.dsb 16 ; 04c0
 iNSFBanks:
 	.dsb $8
-	.dsb $1a8 ; 04da - 067f
+	.dsb $168 ; 04da - 067f
+iPalAttributes:
+	.dsb $40
 iStringBuffer:
 	.dsb $20
 	.dsb $20

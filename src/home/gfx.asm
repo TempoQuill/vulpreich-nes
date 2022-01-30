@@ -2,17 +2,22 @@ InstantPrint:
 	SEC
 	; get index according to upper digits of location
 	; load bank into corresponding window
-	JSH PRG_TextEngine, _InstantPrint
+	JSH PRG_GFXEngine, _InstantPrint
 	JMP UpdatePRG
 
 PrintText:
 	SEC
-	JSH PRG_TextEngine, _PrintText
+	JSH PRG_GFXEngine, _PrintText
 	JMP UpdatePRG
 
 FadePalettes:
 	SEC
-	JSH PRG_TextEngine, _FadePalettes
+	JSH PRG_GFXEngine, _FadePalettes
+	JMP UpdatePRG
+
+UpdateGFXAttributes:
+	SEC
+	JSH PRG_GFXEngine, _UpdateGFXAttributes
 	JMP UpdatePRG
 
 GetTextByte:
@@ -100,10 +105,10 @@ GetName:
 	PHA
 	PHX
 	PHY
-	JSH PRG_TextEngine, GetNamePointer
+	JSH PRG_GFXEngine, GetNamePointer
 	STA MMC5_PRGBankSwitch2, X
 
-	JSH PRG_TextEngine, CopyCurrentIndex
+	JSH PRG_GFXEngine, CopyCurrentIndex
 
 	; restore all registers
 	PLY

@@ -24,7 +24,7 @@ ELSE
   PRG_Home = $00
 ENDIF
 
-PRG_TextEngine = $86
+PRG_GFXEngine = $86
 PRG_Names0 = $87
 
 RAM_Scratch = $00
