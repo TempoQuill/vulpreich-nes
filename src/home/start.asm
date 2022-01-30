@@ -194,7 +194,7 @@ NMI:
 	INX
 	CPX #$20
 	BCC @PalettesLoop
-	JSR UpdateGFXAttributes
+	JMP UpdateGFXAttributes
 @PalettesQuit:
 	RTS
 
