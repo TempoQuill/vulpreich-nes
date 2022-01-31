@@ -22,6 +22,10 @@ CHAN_9 = 9
 CHAN_A = 10
 CHAN_B = 11
 CHAN_C = 12
+SFX_CHANNEL = 3
+CHANNEL_BIT_MASK = $f
+CHANNEL_TOTAL_MASK = $e0
+CHANNEL_RAM_STEP_LENGTH = $10
 
 SOUND_CHANNEL_ON       = 0
 SOUND_SUBROUTINE       = 1
@@ -53,8 +57,6 @@ NOTE_REST             = 5
 NOTE_VIBRATO_OVERRIDE = 6
 NOTE_DELTA_OVERRIDE   = 7
 
-SFX_CHANNEL = 3
-
 ; zAudioCommandFlags
 SOUND_EVENT      = 0
 SFX_PRIORITY     = 1
@@ -64,6 +66,15 @@ RCOND_PULSE_1    = 4
 RCOND_PULSE_2    = 5
 RCOND_HILL       = 6
 RCOND_NOISE_DPCM = 7
+
+ENVELOPE_MASK = $3f
+CYCLE_MASK = $c0
+SOUND_LENGTH_F = 3
+SOUND_RAMP_F = 4
+SOUND_VOLUME_LOOP_F = 5
+
+SOUND_DPCM_LOOP_F = 4
+DPCM_PITCH_MASK = $f
 
 FIRST_SOUND_COMMAND = $d0
 
@@ -90,7 +101,7 @@ restart_channel_cmd       = $ea
 new_song_cmd              = $eb
 sfx_priority_on_cmd       = $ec
 sfx_priority_off_cmd      = $ed
-sound_jump_flag_cmd        = $ee
+sound_jump_flag_cmd       = $ee
 sfx_toggle_drum_cmd       = $f0
 pitch_dec_switch_cmd      = $f1
 frame_swap_cmd            = $f2
@@ -102,3 +113,6 @@ sound_jump_cmd            = $fc
 sound_loop_cmd            = $fd
 sound_call_cmd            = $fe
 sound_ret_cmd             = $ff
+
+env_loop_cmd = $fe
+env_ret_cmd  = $ff

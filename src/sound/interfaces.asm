@@ -159,7 +159,7 @@ WaitSFX:
 	RTS
 
 SkipMusic:
-	AND #$ff
+	TAB
 	BNE @Update
 	RTS
 @Update:

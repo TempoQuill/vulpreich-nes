@@ -110,7 +110,7 @@ _InstantPrint:
 	JSR WritePPUDataFromStringBuffer
 	JSR GetNameTableOffsetLine2
 	JSR GetPPUAddressFromNameTable
-	LDA #$c ; " "
+	LDA #$20 ; spacebar
 	JSR WritePPUData
 	JSR GetNameTableOffsetLine2
 	JSR GetPPUAddressFromNameTable
@@ -139,18 +139,18 @@ _InstantPrint:
 	LDY #0
 	; use x to clear the text buffer
 	LDX #0
-	LDA #$c ; " "
+	LDA #$20 ; spacebar
 @ParaLoop:
 	DEX
 	STA cTextBuffer, X
 	BNE @ParaLoop
 	JSR GetNameTableOffsetLine2
 	JSR GetPPUAddressFromNameTable
-	LDA #$c ; " "
+	LDA #$20 ; spacebar
 	JSR WritePPUData
 	JSR GetNameTableOffsetLine1
 	JSR GetPPUAddressFromNameTable
-	LDA #$c ; " "
+	LDA #$20 ; spacebar
 	JSR WritePPUData
 	JSR GetNameTableOffsetLine1
 	JSR GetPPUAddressFromNameTable
@@ -233,7 +233,7 @@ _PrintText:
 	JSR WritePPUDataFromStringBuffer
 	JSR GetNameTableOffsetLine2
 	JSR GetPPUAddressFromNameTable
-	LDA #$c ; " "
+	LDA #$20 ; spacebar
 	JSR WritePPUData
 	JSR GetNameTableOffsetLine2
 	JSR GetPPUAddressFromNameTable
@@ -262,18 +262,18 @@ _PrintText:
 	LDY #0
 	; use x to clear the text buffer
 	LDX #0
-	LDA #$c ; " "
+	LDA #$20 ; spacebar
 @ParaLoop:
 	DEX
 	STA cTextBuffer, X
 	BNE @ParaLoop
 	JSR GetNameTableOffsetLine2
 	JSR GetPPUAddressFromNameTable
-	LDA #$c ; " "
+	LDA #$20 ; spacebar
 	JSR WritePPUData
 	JSR GetNameTableOffsetLine1
 	JSR GetPPUAddressFromNameTable
-	LDA #$c ; " "
+	LDA #$20 ; spacebar
 	JSR WritePPUData
 	JSR GetNameTableOffsetLine1
 	JSR GetPPUAddressFromNameTable
@@ -390,7 +390,6 @@ _UpdateGFXAttributes:
 	LDA #>NAMETABLE_ATTRIBUTE_3
 	STA PPUADDR
 	LDA #<NAMETABLE_ATTRIBUTE_3
-	JMP ApplyGFXAttributes
 
 ApplyGFXAttributes:
 	STA PPUADDR

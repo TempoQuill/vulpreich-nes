@@ -1,6 +1,6 @@
 SimpleMultiply:
 ; multiply zFactorBuffer * a
-	AND #$ff
+	TAB
 	BEQ @Quit
 @Loop:
 	CLC

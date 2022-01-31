@@ -27,9 +27,14 @@ ENDIF
 PRG_GFXEngine = $86
 PRG_Names0 = $87
 
+PROGRAM_ROM_F = 7
+
 RAM_Scratch = $00
 RAM_PrimaryPlayFile = $01
 RAM_BackupPlayFile = $02
 
 SAVE_CHECK_VALUE_1 = 99
 SAVE_CHECK_VALUE_2 = 127
+
+WINDOW_MASK = $6000
+WINDOW_SIZE = $2000

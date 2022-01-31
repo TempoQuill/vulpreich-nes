@@ -12,7 +12,7 @@ ClearWindowData:
 	LDY #>c2DMenuCursorInitY
 	JSR @bytefill
 
-	LDA #0
+	LDA #RAM_Scratch
 	STA zRAMBank
 	STA MMC5_PRGBankSwitch1
 
@@ -123,12 +123,12 @@ GetWindowIndex:
 ; input -  A - $80-$df
 ; output - X - PRG window X
 	LDX #0
-	AND #$60
+	AND #>WINDOW_MASK
 	SEC
 	BEQ @Quit
 @Loop:
 	INX
-	SBC #$20
+	SBC #>WINDOW_SIZE
 	BNE @Loop
 @Quit:
 	RTS

@@ -79,21 +79,21 @@ WritePPUDataFromStringBuffer:
 	RTS
 
 GetNameTableOffsetLine1:
-	LDA #0
+	LDA #<NAMETABLE_MAP_0
 	CLC
 	ADC #<TEXT_COORD_1
 	STA cNametableAddress
-	LDA #$20
+	LDA #>NAMETABLE_MAP_0
 	ADC #>TEXT_COORD_1
 	STA cNametableAddress + 1
 	RTS
 
 GetNameTableOffsetLine2:
-	LDA #0
+	LDA #<NAMETABLE_MAP_0
 	CLC
 	ADC #<TEXT_COORD_2
 	STA cNametableAddress
-	LDA #$20
+	LDA #>NAMETABLE_MAP_0
 	ADC #>TEXT_COORD_2
 	STA cNametableAddress + 1
 	RTS
@@ -141,7 +141,7 @@ GetNthString:
 	BEQ @Next
 	INC zAuxAddresses + 7
 @Next:
-	CMP #$80
+	CMP #text_end_cmd
 	BNE @Loop
 	; loop if Y dec doesn't set z
 	DEY

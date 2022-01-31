@@ -160,3 +160,8 @@ MACRO STI mem
 	STA mem
 	INC mem
 ENDM
+
+; test all bits
+MACRO TAB
+	AND #$ff
+ENDM

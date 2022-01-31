@@ -18,3 +18,19 @@ NAMETABLE_ATTRIBUTE_0 = $23c0
 NAMETABLE_ATTRIBUTE_1 = $27c0
 NAMETABLE_ATTRIBUTE_2 = $2bc0
 NAMETABLE_ATTRIBUTE_3 = $2fc0
+
+NAMETABLE_MAP_0 = $2000
+NAMETABLE_MAP_1 = $2400
+NAMETABLE_MAP_2 = $2800
+NAMETABLE_MAP_3 = $2c00
+PALETTE_RAM = $3f00
+PALETTE_RAM_SPAN = $20
+
+COLOR_INDEX = $3f
+
+text_end_cmd  = $80
+text_next_cmd = $81
+text_para_cmd = $82
+text_line_cmd = $83
+text_cont_cmd = $84
+text_done_cmd = $85

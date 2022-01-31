@@ -288,7 +288,7 @@ UpdateChannels:
 
 @Pulse1_Rest:
 	LDY #CHAN_0 << 2
-	LDA #$30
+	LDA #1 << SOUND_VOLUME_LOOP_F | 1 << SOUND_RAMP_F
 	JMP ClearChannel
 
 @Pulse1_NoiseSampling:
@@ -352,7 +352,7 @@ UpdateChannels:
 	
 @Pulse2_Rest:
 	LDY #CHAN_1 << 2
-	LDA #$30
+	LDA #1 << SOUND_VOLUME_LOOP_F | 1 << SOUND_RAMP_F
 	JMP ClearChannel
 
 @Pulse2_NoiseSampling:
@@ -397,7 +397,7 @@ UpdateChannels:
 
 @Hill_Rest:
 	LDY #CHAN_2 << 2
-	LDA #$0
+	LDA #0
 	JMP ClearChannel
 
 @Hill_NoiseSampling:
@@ -422,7 +422,7 @@ UpdateChannels:
 
 @Noise_Rest:
 	LDY #CHAN_3 << 2
-	LDA #$30
+	LDA #1 << SOUND_VOLUME_LOOP_F | 1 << SOUND_RAMP_F
 	JMP ClearChannel
 
 @Noise_NoiseSampling:
@@ -430,7 +430,7 @@ UpdateChannels:
 	STA NOISE_ENV
 	LDA zCurrentTrackRawPitch
 	STA NOISE_LO
-	LDA #$8
+	LDA #1 << SOUND_LENGTH_F
 	STA NOISE_HI
 	RTS
 
@@ -452,7 +452,7 @@ UpdateChannels:
 	STA zMixer
 	STA SND_CHN
 	LDY #CHAN_4 << 2
-	LDA #$0
+	LDA #0
 	JMP ClearChannel
 
 @DPCM_DeltaNoiseSamplingOverrides:
@@ -600,13 +600,13 @@ GeneralHandler:
 	BEQ @CheckRelativePitch
 
 	LDA zCurrentTrackEnvelope
-	AND #$3f
+	AND #ENVELOPE_MASK
 	STA zCurrentTrackEnvelope
 	LDA iChannelCyclePattern, X
 	ROR A
 	ROR A
 	STA iChannelCyclePattern, X
-	AND #$c0
+	AND #CYCLE_MASK
 	ORA zCurrentTrackEnvelope
 	STA zCurrentTrackEnvelope
 
@@ -963,7 +963,7 @@ HandleNoise:
 @Next:
 	; exclusive to NES - percussion uses two channels: Noise and DPCM
 	LDA zDrumChannel
-	ORA #$8
+	ORA #1 << CHAN_3
 	STA zDrumChannel
 
 	LDA zDrumDelay
@@ -1026,7 +1026,7 @@ HandleNoise:
 
 @Quit:
 	LDA zDrumChannel
-	EOR #$8
+	EOR #1 << CHAN_3
 	STA zDrumChannel
 	RTS
 
@@ -1046,7 +1046,7 @@ HandleDPCM: ; NES only
 
 @Next:
 	LDA zDrumChannel
-	ORA #$10
+	ORA #1 << CHAN_4
 	STA zDrumChannel
 
 ; sample struct:
@@ -1070,7 +1070,7 @@ HandleDPCM: ; NES only
 @SkipCarry1:
 	STA zDPCMSampleBank
 IFNDEF NSF_FILE
-	ORA #$80                ; ensures bank # points to ROM
+	ORA #1 << PROGRAM_ROM_F ; ensures bank # points to ROM
 	STA MMC5_PRGBankSwitch4 ; c000-dfff address range
 ELSE ; nsf file is 3 byte larger
 	STA $5ffc ; c000-cfff
@@ -1085,7 +1085,7 @@ ENDIF
 	INC zDrumAddresses + 3
 
 @SkipCarry2:
-	AND #$1f
+	AND #1 << SOUND_DPCM_LOOP_F | DPCM_PITCH_MASK
 	STA zDPCMSamplePitch
 
 	LDA (zDrumAddresses + 2), Y
@@ -1117,7 +1117,7 @@ ENDIF
 
 @Quit:
 	LDA zDrumChannel
-	EOR #$10
+	EOR #1 << CHAN_4
 	STA zDrumChannel
 
 	LDA zMixer
@@ -1271,7 +1271,7 @@ ParseDPCM:
 	JSR GetMusicByte
 	STA zDPCMSampleBank
 
-	LDA #$0f ; always highest pitch
+	LDA #DPCM_PITCH_MASK ; always highest pitch
 	STA zDPCMSamplePitch
 
 	JSR GetMusicByte
@@ -1282,12 +1282,12 @@ ParseDPCM:
 
 	LDA zDPCMSampleBank
 IFNDEF NSF_FILE
-	ORA #$80
-	STA MMC5_PRGBankSwitch4
+	ORA #1 << PROGRAM_ROM_F ; keep ROM flag on
+	STA MMC5_PRGBankSwitch4 ; c000-dfff
 ELSE
-	STA $5ffc
+	STA $5ffc ; c000-cfff
 	ADC #0
-	STA $5ffd
+	STA $5ffd ; d000-dfff
 ENDIF
 	RTS
 
@@ -1308,7 +1308,7 @@ ParseSoundEffect:
 
 	; update volume envelope from next param
 	JSR GetMusicByte
-	AND #$3f
+	AND #ENVELOPE_MASK
 	STA iChannelEnvelope, X
 	BPL @GetRawPitch
 @Hill:
@@ -1346,7 +1346,7 @@ GetByteInEnvelopeGroup:
 
 	; check for ff/fe
 	LDA (zCurrentEnvelopeGroupAddress), Y
-	CMP #$fe
+	CMP #env_loop_cmd
 	BNE @Next
 
 	; reset offset when reading fe
@@ -1576,7 +1576,7 @@ Music_PitchIncSwitch: ; command f1
 	SSB SOUND_PITCH_INC_SWITCH
 	STA iChannelFlagSection1, X
 	LDA iChannelPitchIncrementation, X
-	EOR #$1
+	EOR #1
 	STA iChannelPitchIncrementation, X
 	RTS
 
@@ -2215,7 +2215,7 @@ GetPitch:
 
 @OK:
 	TYA
-	ORA #$8 ; make sure the note is on
+	ORA #1 << SOUND_LENGTH_F ; make sure the note is on
 	TAY
 	TXA
 	LDX zBackupX
@@ -2389,7 +2389,7 @@ _PlayMusic:
 	STA zAuxAddresses + 1
 	JSR ThreeByteAudioPointer
 	JSR LoadMusicByte ; store first byte of music header in a
-	AND #$e0 ; get channel total
+	AND #CHANNEL_TOTAL_MASK ; get channel total
 	HTL A
 	LSR A
 	ADC #1
@@ -2424,7 +2424,7 @@ _PlaySFX:
 	BCS @Ch9
 
 	LDY #CHAN_0 << 2 ; turn it off
-	LDA #$30
+	LDA #1 << SOUND_VOLUME_LOOP_F | 1 << SOUND_RAMP_F
 	JSR ClearChannel
 	STA zSweep1
 
@@ -2434,7 +2434,7 @@ _PlaySFX:
 	BCS @ChA
 
 	LDY #CHAN_1 << 2 ; turn it off
-	LDA #$30
+	LDA #1 << SOUND_VOLUME_LOOP_F | 1 << SOUND_RAMP_F
 	JSR ClearChannel
 	STA zSweep2
 
@@ -2444,7 +2444,7 @@ _PlaySFX:
 	BCS @ChB
 
 	LDY #CHAN_2 << 2 ; turn it off
-	LDA #$0
+	LDA #0
 	JSR ClearChannel
 
 @ChB:
@@ -2453,7 +2453,7 @@ _PlaySFX:
 	BCS @ChC
 
 	LDY #CHAN_3 << 2 ; turn it off
-	LDA #$30
+	LDA #1 << SOUND_VOLUME_LOOP_F | 1 << SOUND_RAMP_F
 	JSR ClearChannel
 
 @ChC:
@@ -2462,7 +2462,7 @@ _PlaySFX:
 	BCS @ChannelsCleared
 
 	LDY #CHAN_4 << 2 ; turn it off
-	LDA #$0
+	LDA #0
 	JSR ClearChannel
 
 @ChannelsCleared:
@@ -2477,7 +2477,7 @@ _PlaySFX:
 	STA zAuxAddresses + 1
 	JSR ThreeByteAudioPointer
 	JSR LoadMusicByte ; store first byte of music header in a
-	AND #$e0 ; get channel total
+	AND #CHANNEL_TOTAL_MASK ; get channel total
 	HTL A
 	LSR A
 	ADC #1
@@ -2510,7 +2510,7 @@ LoadChannel:
 	INC zAuxAddresses + 1
 @NoCarry1:
 	STA zBackupA
-	AND #$f ; bit 0-3 (current channel)
+	AND #CHANNEL_BIT_MASK ; bit 0-3 (current channel)
 	STA zCurrentChannel
 	TAY
 	LDX zCurrentChannel
@@ -2530,7 +2530,7 @@ LoadChannel:
 	STA iChannelRAM, Y
 	STA iChannelRAM + $100, Y
 	TYA
-	ADC #$10
+	ADC #CHANNEL_RAM_STEP_LENGTH
 	BCC @Loop1
 	CLC
 
@@ -2539,7 +2539,7 @@ LoadChannel:
 	LDA #0
 	STA iChannelRAM + $200, Y
 	TYA
-	ADC #$10
+	ADC #CHANNEL_RAM_STEP_LENGTH
 	CMP #<iChannelRAMEnd
 	BCC @Loop2
 	; set tempo to default ($100)
@@ -2587,15 +2587,15 @@ ClearChannels:
 	LDA #0
 	STA SND_CHN
 	TAY
-	LDA #$30
+	LDA #1 << SOUND_VOLUME_LOOP_F | 1 << SOUND_RAMP_F
 	JSR ClearChannel
 	LDY #CHAN_1 << 2
-	LDA #$30
+	LDA #1 << SOUND_VOLUME_LOOP_F | 1 << SOUND_RAMP_F
 	JSR ClearChannel
 	LDY #CHAN_2 << 2
 	JSR ClearChannel
 	LDY #CHAN_3 << 2
-	LDA #$30
+	LDA #1 << SOUND_VOLUME_LOOP_F | 1 << SOUND_RAMP_F
 	JSR ClearChannel
 	LDY #CHAN_4 << 2
 

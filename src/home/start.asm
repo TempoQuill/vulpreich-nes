@@ -11,9 +11,8 @@ UpdatePRG:
 
 UpdateCHR:
 ; This updates all the needed registers.
-; 1024K only modes 0 and 1 can access the entire ROM with base registers
-; 512K modes 0, 1 and 2 can access the entire ROM with base registers
-; 256K all 4 modes 0-3 can access the entire ROM with base registers
+; we're in mode 1, so we can switch tilesets in as needed
+; 4K is the perfect balance between speed and flexibility
 	LDA zCHRWindow0
 	STA MMC5_CHRBankSwitch4 ; 0000-0fff
 
@@ -25,9 +24,9 @@ UpdateCHR:
 
 ResetPPUAddress:
 	LDA PPUSTATUS
-	LDA #$3F
+	LDA #>PALETTE_RAM
 	STA PPUADDR
-	LDA #$00
+	LDA #<PALETTE_RAM
 	STA PPUADDR
 	STA PPUADDR
 	STA PPUADDR
@@ -47,7 +46,7 @@ UpdateJoypads:
 	CPY zInputBottleNeck
 	BNE @DoubleCheck
 
-	LDX #$01
+	LDX #1
 
 @Loop:
 	LDA zInputBottleNeck, X ; Update the press/held values
@@ -66,12 +65,12 @@ UpdateJoypads:
 ; Reads joypad pressed input
 ;
 ReadJoypads:
-	LDX #$01
+	LDX #1
 	STX JOY1
 	DEX
 	STX JOY1
 
-	LDX #$08
+	LDX #8
 @Loop:
 	LDA JOY1
 	LSR A
@@ -87,7 +86,7 @@ ReadJoypads:
 	RTS
 
 Start:
-	LDA #$00
+	LDA #0
 	STA PPUMASK
 ; PPUCtrl_Base2000
 ; PPUCtrl_WriteHorizontal
@@ -183,17 +182,17 @@ NMI:
 	CMP #4
 	BEQ @PalettesQuit
 	JSR FadePalettes
-	LDA #$3f ; palette RAM hi
+	LDA #>PALETTE_RAM
 	STA PPUADDR
-	LDA #$0 ; palette RAM lo
+	LDA #<PALETTE_RAM
 	STA PPUADDR
 	TAX
 @PalettesLoop:
 	LDA iPals, X
-	AND #$3f
+	AND #COLOR_INDEX
 	STA PPUDATA
 	INX
-	CPX #$20
+	CPX #PALETTE_RAM_SPAN
 	BCC @PalettesLoop
 	JMP UpdateGFXAttributes
 @PalettesQuit:
@@ -269,12 +268,12 @@ RESET:
 	LDA #%01010000
 	STA MMC5_NametableMapping
 
-	LDA #$0
+	LDA #RAM_Scratch
 	STA zRAMBank
 	STA MMC5_CHRBankSwitchUpper
 
 	; MMC5 Pulse channels
-	LDA #$0f
+	LDA #1 << CHAN_3 | 1 << CHAN_2 | 1 << CHAN_1 | 1 << CHAN_0
 	STA MMC5_SND_CHN
 
 	LDA #PRG_Start0
@@ -297,7 +296,7 @@ RESET:
 ; PPUCtrl_NMIDisabled
 	LDA #$00
 	STA PPUCTRL
-	LDX #$FF ; Reset stack pointer
+	LDX #<iStackTop ; Reset stack pointer
 	TXS
 
 @VBlankLoop:

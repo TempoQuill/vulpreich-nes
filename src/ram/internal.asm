@@ -160,8 +160,9 @@ zPalPointer:
 ; section: STACK
 iStack:
 iStackBottom:
-	.dsb $100
+	.dsb $ff
 iStackTop:
+	.dsb 1
 
 ; section: AUDIO RAM (channels) 0200 - 04bf
 ; each entry is spread across 16 bytes
