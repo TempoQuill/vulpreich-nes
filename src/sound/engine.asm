@@ -1128,7 +1128,6 @@ ENDIF
 	LDA iChannelNoteFlags, X
 	AND #$ff ^ (1 << NOTE_DELTA_OVERRIDE | 1 << NOTE_NOISE_SAMPLING)
 	STA iChannelNoteFlags, X
-	STA SND_CHN
 	RTS
 
 ParseMusic:
