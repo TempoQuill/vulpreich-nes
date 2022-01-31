@@ -62,44 +62,45 @@ zChannelFunctionPointer:
 zAudioCommandPointer:
 	.dsb 2 ; 001c
 zRawPitchBackup:
-	.dsb 2
 	.dsb 2 ; 0020
 
 zPitchSlideDifference:
 	.dsb 2
 zVibratoBackup:
-	.dsb 1 ; 0024
+	.dsb 1
 zCurrentEnvelopeGroupOffset:
 	.dsb 1
 zCurrentEnvelopeGroupAddress:
-	.dsb 2
+	.dsb 2 ; 0024
 zAudioRAMEnd:
+
+; section: Hardware Assistive RAM
+; backup registers, banks, addresses, and buffers
+zNMIState:
+	.dsb 1
+zNMIOccurred:
+	.dsb 1
 ; section: miscellaneous
-zSaveFileExists:
-	.dsb 1 ; 0028
+zTableOffset:
+	.dsb 2 ; 0028
 zTextBank:
 	.dsb 1
 zCurrentTextByte:
-	.dsb 1
-zNMIState:
 	.dsb 1
 zCHRWindow0:
 	.dsb 1 ; 002c
 zCHRWindow1:
 	.dsb 1
-zTableOffset:
-	.dsb 2
-
-; section: Hardware Assistive RAM
-; backup registers, banks, addresses, and buffers
-
+zSaveFileExists:
+	.dsb 1
+	.dsb 1
 zBackupA:
 	.dsb 1 ; 0030
 zBackupX:
 	.dsb 1
 zBackupY:
 	.dsb 1
-zRAMBank: ; MMC5 backups, also it's the zero page equivalent!
+zRAMBank: ; MMC5 backups, and b/c this is ZP, this is optimal speed
 	.dsb 1
 zWindow1:
 	.dsb 1 ; 0034
@@ -136,14 +137,12 @@ zPPUMaskMirror:
 	.dsb 1
 zPPUStatusMirror:
 	.dsb 1
+zStringXOffset:
 	.dsb 1
-zPaletteIndex:
-	.dsb 8 ; 0058
 zPPUScrollXMirror:
-	.dsb 1 ; 0060
+	.dsb 1 ; 0058
 zPPUScrollYMirror:
 	.dsb 1
-zStringXOffset:
 	.dsb 1
 zCurrentCardBalance:
 	.dsb 3
@@ -152,7 +151,8 @@ zCurrentPrice:
 zCurrentCardBalanceBCD:
 	.dsb 7
 zDecimalPlaceBuffer:
-	.dsb 16 ; 0070
+	.dsb 16 ; 0068
+	.dsb 8 ; 0078
 zPalPointer:
 	.dsb 2 ; 0080
 	.dsb $7e ; 0082

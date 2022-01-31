@@ -50,7 +50,14 @@ GameInit:
 	JSR TryLoadSaveData
 	JMP IntroSequence
 
+IntroPals:
+.incbin "src/chr/title.pal"
+
 IntroSequence:
+	JSR InspiredScreen
+	JMP IntroSequence
+
+InspiredScreen:
 	LDA #0
 	STA zStringXOffset
 	LDA #>BeginningText
@@ -67,7 +74,4 @@ IntroSequence:
 	LDA iPals
 	ORA #1 << PAL_FADE_F
 	STA iPals
-	JMP IntroSequence
-
-IntroPals:
-.incbin "src/chr/title.pal"
+	RTS

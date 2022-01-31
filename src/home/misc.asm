@@ -165,3 +165,10 @@ ByteFill:
 	BNE @Loop
 @Quit:
 	RTS
+
+DelayFrame_s_:
+	STA zNMIOccurred
+@Halt:
+	LDA zNMIOccurred
+	BNE @Halt
+	RTS

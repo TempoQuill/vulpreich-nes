@@ -1,11 +1,10 @@
 _InitPals:
 	LDA #15
 	TAX
-	INX
-@Loop:
 	STA iPals, X
-	BEQ @Quit
+@Loop:
 	DEX
+	STA iPals, X
 	BNE @Loop
 @Quit:
 	RTS

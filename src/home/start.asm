@@ -139,6 +139,7 @@ NMI:
 
 	; special functions
 	LDA zNMIState
+	DEC zNMIOccurred
 
 	PLY
 	PLX
