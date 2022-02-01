@@ -284,6 +284,14 @@ RESET:
 	LDA #1 << CHAN_3 | 1 << CHAN_2 | 1 << CHAN_1 | 1 << CHAN_0
 	STA MMC5_SND_CHN
 
+	LDA #0
+	STA MMC5_CHRBankSwitch4
+	STA zCHRWindow0
+	LDA #1
+	STA MMC5_CHRBankSwitch8
+	STA MMC5_CHRBankSwitch12
+	STA zCHRWindow1
+
 	LDA #PRG_Start0
 	STA MMC5_PRGBankSwitch2
 	STA zWindow1
@@ -326,6 +334,7 @@ RESET:
 	STA MMC5_NametableMapping
 	INX
 	JSR InitSound
+	LDA #0
 @Loop:
 	; clear RAM
 	DEX
