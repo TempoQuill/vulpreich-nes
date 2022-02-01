@@ -3,8 +3,6 @@ InitSound:
 	PHA
 	PHX
 	PHY
-	LDA MMC5_PRGBankSwitch2
-	STA zWindow1
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
 	JSR _InitSound
@@ -20,8 +18,6 @@ UpdateSound:
 	PHA
 	PHX
 	PHY
-	LDA MMC5_PRGBankSwitch2
-	STA zWindow1
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
 	JSR _UpdateSound
@@ -55,8 +51,6 @@ PlayMusic:
 	PHA
 	PHX
 	PHY
-	LDA MMC5_PRGBankSwitch2
-	STA zWindow1
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
 
@@ -82,8 +76,6 @@ PlayMusic2:
 	PHA
 	PHX
 	PHY
-	LDA MMC5_PRGBankSwitch2
-	STA zWindow1
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
 
@@ -116,8 +108,6 @@ PlaySFX:
 	BCS @Done
 
 @Play:
-	LDA MMC5_PRGBankSwitch2
-	STA zWindow1
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
 

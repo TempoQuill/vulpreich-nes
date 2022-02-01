@@ -286,12 +286,16 @@ RESET:
 
 	LDA #PRG_Start0
 	STA MMC5_PRGBankSwitch2
+	STA zWindow1
 	LDA #PRG_Start1
 	STA MMC5_PRGBankSwitch3
+	STA zWindow2
 	LDA #PRG_Start2
 	STA MMC5_PRGBankSwitch4
+	STA zWindow3
 	LDA #PRG_Home
 	STA MMC5_PRGBankSwitch5
+	STA zWindow4
 
 	SEI
 	CLD
@@ -321,19 +325,10 @@ RESET:
 	LDA #MMC5_VMirror
 	STA MMC5_NametableMapping
 	INX
-	LDA MMC5_PRGBankSwitch2
-	STA zWindow1
-	LDA MMC5_PRGBankSwitch3
-	STA zWindow2
-	LDA MMC5_PRGBankSwitch4
-	STA zWindow3
-	LDA MMC5_PRGBankSwitch5
-	STA zWindow4
 	JSR InitSound
 @Loop:
 	; clear RAM
 	DEX
-	STA $0, X ; internal RAM
 	STA $400, X
 	STA $500, X
 	STA $600, X
@@ -375,14 +370,6 @@ RESET:
 	STA $7e00, X
 	STA $7f00, X
 	BNE @Loop
-	LDA MMC5_PRGBankSwitch2
-	STA zWindow1
-	LDA MMC5_PRGBankSwitch3
-	STA zWindow2
-	LDA MMC5_PRGBankSwitch4
-	STA zWindow3
-	LDA MMC5_PRGBankSwitch5
-	STA zWindow4
 	JMP Start
 
 IRQ:
