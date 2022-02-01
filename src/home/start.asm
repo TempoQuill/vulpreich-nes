@@ -44,7 +44,8 @@ UpdateJoypads:
 	LDY zInputBottleNeck, X
 	JSR ReadJoypads
 
-	CPY zInputBottleNeck, X
+	TYA
+	CMP zInputBottleNeck, X
 	BNE @DoubleCheckInput0
 
 	INX
@@ -54,7 +55,8 @@ UpdateJoypads:
 	LDY zInputBottleNeck, X
 	JSR ReadJoypads
 
-	CPY zInputBottleNeck, X
+	TYA
+	CMP zInputBottleNeck, X
 	BNE @DoubleCheckInput1
 
 @Loop:
