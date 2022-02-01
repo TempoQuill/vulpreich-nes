@@ -1,0 +1,7 @@
+20-7d	ascii characters (letters, numbers and some punctuation)
+80	end the text
+81	next line
+82	insert a new paragraph
+83	second line
+84	copy line 2 to line 1 and continue
+85	we finished printing

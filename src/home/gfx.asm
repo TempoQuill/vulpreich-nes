@@ -1,4 +1,5 @@
 InstantPrint:
+; print all text as instructed
 	SEC
 	; get index according to upper digits of location
 	; load bank into corresponding window
@@ -6,18 +7,33 @@ InstantPrint:
 	JMP UpdatePRG
 
 PrintText:
+; print text one character at a time
 	SEC
 	JSH PRG_GFXEngine, _PrintText
 	JMP UpdatePRG
 
 FadePalettes:
+; fade in and fade out the palettes on screen
 	SEC
 	JSH PRG_GFXEngine, _FadePalettes
 	JMP UpdatePRG
 
 UpdateGFXAttributes:
+; update / apply current graphical attributes
 	SEC
 	JSH PRG_GFXEngine, _UpdateGFXAttributes
+	JMP UpdatePRG
+
+InitPals:
+; initialize palettes
+	SEC
+	JSH PRG_GFXEngine, _InitPals
+	JMP UpdatePRG
+
+InitNameTable:
+; initialize nametables
+	SEC
+	JSH PRG_GFXEngine, _InitNameTable
 	JMP UpdatePRG
 
 GetTextByte:
@@ -27,9 +43,8 @@ GetTextByte:
 	JSR StoreIndexedBank
 	LDA (zAuxAddresses + 6), Y
 	STA zCurrentTextByte
-	PHA
 	JSR UpdatePRG
-	PLA
+	LDA zCurrentTextByte
 	RTS
 
 GetPPUAddressFromNameTable:

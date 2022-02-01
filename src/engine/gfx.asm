@@ -9,6 +9,21 @@ _InitPals:
 @Quit:
 	RTS
 
+_InitNameTable:
+	LDA #>NAMETABLE_MAP_0
+	STA PPUADDR
+	LDA #<NAMETABLE_MAP_0
+	STA PPUADDR
+	LDY #>((NAMETABLE_MAP_1 - NAMETABLE_MAP_0) * 4) + 1
+	LDX #<((NAMETABLE_MAP_1 - NAMETABLE_MAP_0) * 4)
+@Loop:
+	DEX
+	STA PPUDATA
+	BNE @Loop
+	DEY
+	BNE @Loop
+	RTS
+
 GetNamePointer:
 	; turn cObjectType into index Y
 	LDA cObjectType
@@ -393,9 +408,10 @@ _UpdateGFXAttributes:
 
 ApplyGFXAttributes:
 	STA PPUADDR
+@Loop:
 	LDA iPalAttributes, X
 	STA PPUDATA
 	INX
 	CPX #GFX_ATTRIBUTE_SIZE
-	BCC ApplyGFXAttributes
+	BCC @Loop
 	RTS
