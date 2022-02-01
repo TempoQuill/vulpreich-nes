@@ -143,6 +143,7 @@ zPPUScrollXMirror:
 	.dsb 1 ; 0058
 zPPUScrollYMirror:
 	.dsb 1
+zTitleScreenOption:
 	.dsb 1
 zCurrentCardBalance:
 	.dsb 3
@@ -155,7 +156,9 @@ zDecimalPlaceBuffer:
 	.dsb 8 ; 0078
 zPalPointer:
 	.dsb 2 ; 0080
-	.dsb $7e ; 0082
+zIntroPointer:
+	.dsb 2
+	.dsb $7c ; 0084
 
 ; section: STACK
 iStack:

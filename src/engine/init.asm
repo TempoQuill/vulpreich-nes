@@ -55,7 +55,29 @@ IntroPals:
 
 IntroSequence:
 	JSR InspiredScreen
-	JMP IntroSequence
+	JSR TitleScreen
+	LDA zPPUCtrlMirror
+	RSB PPU_OBJECT_RESOLUTION ; 8x8
+	STA zPPUCtrlMirror
+	STA PPUCTRL
+	LDA zTitleScreenOption
+	CMP #NUM_TITLESCREENOPTION
+	BCC @Begin
+	LDA #TITLESCREENOPTION_MAIN_MENU
+@Begin:
+	ASL A
+	TAY
+	LDA @DW, Y
+	STA zIntroPointer
+	INY
+	LDA @DW, Y
+	STA zIntroPointer + 1
+	JMP (zIntroPointer)
+
+@DW
+	.dw IntroSequence
+	.dw IntroSequence
+	.dw IntroSequence
 
 InspiredScreen:
 	LDA #0
@@ -72,6 +94,16 @@ InspiredScreen:
 	LDA #>IntroPals
 	STA zPalPointer + 1
 	LDA iPals
-	ORA #1 << PAL_FADE_F
+	SSB PAL_FADE_F
 	STA iPals
+	SSB PAL_FADE_DIR_F
+	JSR DelayFrame_s_
+	LDA iPals
+	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
+	STA iPals
+	JMP DelayFrame_s_
+
+TitleScreen:
+	LDY #MUSIC_TITLE
+	JSR PlayMusic
 	RTS

@@ -167,6 +167,7 @@ ByteFill:
 	RTS
 
 DelayFrame_s_:
+; stop for A frames
 	STA zNMIOccurred
 @Halt:
 	LDA zNMIOccurred

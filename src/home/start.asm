@@ -35,18 +35,27 @@ ResetPPUAddress:
 ; Updates joypad press/held values
 ;
 UpdateJoypads:
+	LDX #0
 	JSR ReadJoypads
 
-@DoubleCheck:
+@DoubleCheckInput0:
 	; Work around DPCM sample bug,
 	; where some spurious inputs are read
-	LDY zInputBottleNeck
+	LDY zInputBottleNeck, X
 	JSR ReadJoypads
 
-	CPY zInputBottleNeck
-	BNE @DoubleCheck
+	CPY zInputBottleNeck, X
+	BNE @DoubleCheckInput0
 
-	LDX #1
+	INX
+	JSR ReadJoypads
+
+@DoubleCheckInput1:
+	LDY zInputBottleNeck, X
+	JSR ReadJoypads
+
+	CPY zInputBottleNeck, X
+	BNE @DoubleCheckInput1
 
 @Loop:
 	LDA zInputBottleNeck, X ; Update the press/held values
@@ -65,24 +74,17 @@ UpdateJoypads:
 ; Reads joypad pressed input
 ;
 ReadJoypads:
-	LDX #1
-	STX JOY1
-	DEX
-	STX JOY1
-
-	LDX #8
+	LDA #1
+	STA JOY1, X
+	STA zInputBottleNeck, X
+	LSR A
+	STA JOY1, X
 @Loop:
-	LDA JOY1
+	LDA JOY1, X
 	LSR A
 	; Read standard controller data
-	ROL zInputBottleNeck
-
-	LDA JOY2
-	LSR A
-	ROL zInputBottleNeck + 1 ; player 2
-	DEX
-	BNE @Loop
-
+	ROL zInputBottleNeck, X
+	BCC @Loop
 	RTS
 
 Start:
@@ -90,11 +92,11 @@ Start:
 	STA PPUMASK
 ; PPUCtrl_Base2000
 ; PPUCtrl_WriteHorizontal
-; PPUCtrl_Sprite0000
-; PPUCtrl_Background1000
-; PPUCtrl_SpriteSize8x16
+; PPUCtrl_Sprite1000
+; PPUCtrl_Background0000
+; PPUCtrl_SpriteSize8x8
 ; PPUCtrl_NMIDisabled
-	LDA #$30
+	SSB PPU_BACKGROUND_TABLE
 	STA PPUCTRL
 	STA zPPUCtrlMirror
 	LDY #MUSIC_NONE
@@ -137,8 +139,12 @@ NMI:
 	JSR UpdateSound
 
 	; special functions
-	LDA zNMIState
+	LDA zNMIOccurred
+	BEQ @DoNotAdjust
+
 	DEC zNMIOccurred
+@DoNotAdjust:
+	LDA zNMIState
 
 	PLY
 	PLX
@@ -292,10 +298,10 @@ RESET:
 ; PPUCtrl_Sprite0000
 ; PPUCtrl_Background0000
 ; PPUCtrl_SpriteSize8x8
-; PPUCtrl_Background0000
 ; PPUCtrl_NMIDisabled
-	LDA #$00
+	LDA #0
 	STA PPUCTRL
+	STA zPPUCtrlMirror
 	LDX #<iStackTop ; Reset stack pointer
 	TXS
 
