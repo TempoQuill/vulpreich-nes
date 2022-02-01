@@ -7,8 +7,8 @@
 	.db "NES", $1a ; NES + end of file command
 	.db $40 ; 1 megabyte of PRG data
 	.db $80 ; 1 megabyte of CHR data
-	.db MMC5 & %00001111 << 4 | IGNORE_MIRRORING | BATTERY_RAM
-	.db MMC5 & %11110000      | NES_2_0
+	.db MMC5 & $0f << 4 | IGNORE_MIRRORING | BATTERY_RAM
+	.db MMC5 & $f0      | NES_2_0
 	.db 0, 0 ; unused
 	.db $0b ; 128 kilobytes of PRG RAM
 	.db 0
