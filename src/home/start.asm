@@ -98,7 +98,7 @@ Start:
 ; PPUCtrl_Background0000
 ; PPUCtrl_SpriteSize8x8
 ; PPUCtrl_NMIDisabled
-	SSB PPU_BACKGROUND_TABLE
+	SSB PPU_OBJECT_TABLE
 	STA PPUCTRL
 	STA zPPUCtrlMirror
 	LDY #MUSIC_NONE
