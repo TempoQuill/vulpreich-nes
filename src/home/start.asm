@@ -321,6 +321,14 @@ RESET:
 	LDA #MMC5_VMirror
 	STA MMC5_NametableMapping
 	INX
+	LDA MMC5_PRGBankSwitch2
+	STA zWindow1
+	LDA MMC5_PRGBankSwitch3
+	STA zWindow2
+	LDA MMC5_PRGBankSwitch4
+	STA zWindow3
+	LDA MMC5_PRGBankSwitch5
+	STA zWindow4
 	JSR InitSound
 @Loop:
 	; clear RAM
