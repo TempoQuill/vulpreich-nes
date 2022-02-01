@@ -10,7 +10,7 @@
 	.db (MMC5 & $0f) * 16 | IGNORE_MIRRORING | BATTERY_RAM
 	.db (MMC5 & $f0)      | NES_2_0
 	.db 0, 0 ; unused
-	.db $0b ; 128 kilobytes of PRG RAM
+	.db $bb ; 128 kilobytes of PRG RAM
 	.db 0
 	.db 0 ; NTSC
 	.db 0, 0, 0 ; unused
