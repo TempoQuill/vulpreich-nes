@@ -138,6 +138,7 @@ StoreIndexedBank:
 ; store bank A into bank window X
 	STA cCurrentROMBank
 	STA MMC5_PRGBankSwitch2, X
+	STA zCurrentWindow, X
 	RTS
 
 CopyBytes:

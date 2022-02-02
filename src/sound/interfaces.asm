@@ -5,6 +5,7 @@ InitSound:
 	PHY
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
+	STA zCurrentWindow
 	JSR _InitSound
 	JSR UpdatePRG
 	PLY
@@ -20,6 +21,7 @@ UpdateSound:
 	PHY
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
+	STA zCurrentWindow
 	JSR _UpdateSound
 	JSR UpdatePRG
 	PLY
@@ -53,6 +55,7 @@ PlayMusic:
 	PHY
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
+	STA zCurrentWindow
 
 	TYA ; does Y = 0?
 	BEQ @NoMusic
@@ -78,6 +81,7 @@ PlayMusic2:
 	PHY
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
+	STA zCurrentWindow
 
 	STY zBackupY
 	LDY #0
@@ -110,6 +114,7 @@ PlaySFX:
 @Play:
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
+	STA zCurrentWindow
 
 	STY zCurrentSFX
 	JSR _PlaySFX
