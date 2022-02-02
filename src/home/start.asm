@@ -92,6 +92,8 @@ ReadJoypads:
 Start:
 	LDA #0
 	STA PPUMASK
+	LDY #MUSIC_NONE
+	JSR PlayMusic
 ; PPUCtrl_Base2000
 ; PPUCtrl_WriteHorizontal
 ; PPUCtrl_Sprite1000
@@ -99,10 +101,11 @@ Start:
 ; PPUCtrl_SpriteSize8x8
 ; PPUCtrl_NMIEnabled
 	ORA #1 << PPU_NMI | 1 << PPU_OBJECT_TABLE
-	STA PPUCTRL
 	STA zPPUCtrlMirror
-	LDY #MUSIC_NONE
-	JSR PlayMusic
+	STA PPUCTRL
+	; wait one vblank to init main loop
+	LDA #1
+	JSR DelayFrame_s_
 	JMP GameInit
 
 BackupPRG:
@@ -374,7 +377,8 @@ RESET:
 	STA MMC5_NametableMapping
 	INX
 	JSR InitSound
-	LDA #0
+	; audio interfaces preserve all registers
+	TXA
 @Loop:
 	; clear RAM
 	DEX
@@ -427,6 +431,7 @@ IRQ:
 .pad $fff1, $00
 UnreferencedTitle:
 ; title of the game, fff1
+; it was common practice in old games to write the name at the end of PRG ROM.
 	.db "VULPREICH"
 
 NESVectorTables:
