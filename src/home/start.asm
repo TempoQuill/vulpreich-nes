@@ -104,6 +104,31 @@ Start:
 	LDY #MUSIC_NONE
 	JSR PlayMusic
 	JMP GameInit
+
+BackupPRG:
+	LDX #4
+@Loop:
+	DEX
+	LDA zWindow1, X
+	STA zBackupWindow, X
+	LDA zCurrentWindow, X
+	STA zWindow1, X
+	TXA
+	BNE @Loop
+	RTS
+
+RestorePRG:
+	LDX #4
+@Loop:
+	DEX
+	LDA zWindow1, X
+	STA zCurrentWindow, X
+	LDA zBackupWindow, X
+	STA zWindow1, X
+	TXA
+	BNE @Loop
+	RTS
+
 ;
 ; Public NMI: where dreams come true!
 ;
@@ -129,6 +154,7 @@ NMI:
 	PHA
 	PHX
 	PHY
+	JSR BackupPRG
 	LDA zNMIState
 	CMP #2
 	BEQ @JustSound
@@ -142,6 +168,7 @@ NMI:
 	BEQ @DoNotAdjust
 	DEC zNMIOccurred
 @DoNotAdjust:
+	JSR RestorePRG
 	PLY
 	PLX
 	PLA

@@ -158,7 +158,11 @@ zPalPointer:
 	.dsb 2 ; 0080
 zIntroPointer:
 	.dsb 2
-	.dsb $7c ; 0084
+zCurrentWindow:
+	.dsb 4 ; 0084
+zBackupWindow:
+	.dsb 4 ; 0088
+	.dsb $74 ; 008c
 
 ; section: STACK
 iStack:
