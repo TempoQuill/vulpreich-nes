@@ -45,6 +45,7 @@ FarJump:
 	JSR GetWindowIndex
 	LDA cCurrentROMBank
 	STA zWindow1, X
+	STA zCurrentWindow, X
 	JMP UpdatePRG
 
 FarCall:

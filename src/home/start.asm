@@ -331,15 +331,19 @@ RESET:
 	LDA #PRG_Start0
 	STA MMC5_PRGBankSwitch2
 	STA zWindow1
+	STA zCurrentWindow
 	LDA #PRG_Start1
 	STA MMC5_PRGBankSwitch3
 	STA zWindow2
+	STA zCurrentWindow + 1
 	LDA #PRG_Start2
 	STA MMC5_PRGBankSwitch4
 	STA zWindow3
+	STA zCurrentWindow + 2
 	LDA #PRG_Home
 	STA MMC5_PRGBankSwitch5
 	STA zWindow4
+	STA zCurrentWindow + 3
 
 	SEI
 	CLD

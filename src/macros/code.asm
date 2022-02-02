@@ -56,6 +56,7 @@ MACRO JPH bank, memory
 	JSR GetWindowIndex
 	LDA #bank
 	STA zWindow1, X
+	STA zCurrentWindow, X
 	JSR UpdatePRG
 	JMP memory
 ENDM
