@@ -97,8 +97,8 @@ Start:
 ; PPUCtrl_Sprite1000
 ; PPUCtrl_Background0000
 ; PPUCtrl_SpriteSize8x8
-; PPUCtrl_NMIDisabled
-	SSB PPU_OBJECT_TABLE
+; PPUCtrl_NMIEnabled
+	ORA #1 << PPU_NMI | 1 << PPU_OBJECT_TABLE
 	STA PPUCTRL
 	STA zPPUCtrlMirror
 	LDY #MUSIC_NONE
