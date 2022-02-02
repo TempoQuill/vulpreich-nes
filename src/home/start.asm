@@ -129,7 +129,44 @@ NMI:
 	PHA
 	PHX
 	PHY
+	LDA zNMIState
+	CMP #2
+	BEQ @JustSound
+	ASL A
+	TAY
+	JSR @GeneratePointers
+@JustSound:
+	JSR UpdateSound
+	; special functions
+	LDA zNMIOccurred
+	BEQ @DoNotAdjust
+	DEC zNMIOccurred
+@DoNotAdjust:
+	PLY
+	PLX
+	PLA
+	PLP
+	RTI
 
+@GeneratePointers:
+	LDA @Pointers, Y
+	STA zAuxAddresses + 3
+	INY
+	LDA @Pointers, Y
+	STA zAuxAddresses + 4
+	JMP (zAuxAddresses + 3)
+
+@Pointers:
+	.dw @State0
+	.dw @State1
+	.dw @State0 ; unused
+	.dw @State3
+	.dw @State4
+	.dw @State5
+	.dw @State0
+	.dw @State0
+
+@State0:
 	JSR @Scroll
 	JSR @MapBuffer
 	JSR @Palettes
@@ -137,29 +174,38 @@ NMI:
 	JSR @Map
 	JSR @Tiles
 	JSR @OAM
-	JSR @JoyPad
-	JSR UpdateSound
+	JMP @JoyPad
 
-	; special functions
-	LDA zNMIOccurred
-	BEQ @DoNotAdjust
+@State1:
+	JSR @Scroll
+	JSR @Palettes
+	JSR @Map
+	JSR @Tiles
+	JSR @OAM
+	JMP @JoyPad
 
-	DEC zNMIOccurred
-@DoNotAdjust:
-	LDA zNMIState
+@State3:
+	JSR @Scroll
+	JSR @Palettes
+	JSR @Map
+	JSR @Tiles
+	JMP @OAM
 
-	PLY
-	PLX
-	PLA
-	PLP
-	RTI
+@State4:
+	JSR @Map
+	JSR @Tiles
+	JSR @OAM
+	JMP @JoyPad
+
+@State5:
+	JSR @Scroll
+	JSR @Palettes
+	JSR @Map
+	JSR @Tiles
+	JMP @JoyPad
 
 @Scroll:
 	LDA zNMIState
-	CMP #2
-	BEQ @ScrollQuit
-	CMP #4
-	BEQ @ScrollQuit
 	CMP #5
 	BNE @ScrollNormal
 	LDA zPPUScrollXMirror
@@ -172,23 +218,13 @@ NMI:
 	STA PPUSCROLL
 	LDA zPPUScrollYMirror
 	STA PPUSCROLL
-	BNE @ScrollQuit
 @ScrollQuit:
 	RTS
 
 @MapBuffer:
-	LDA zNMIState
-	BNE @MapBufferQuit
-	RTS
-@MapBufferQuit:
 	RTS
 
 @Palettes:
-	LDA zNMIState
-	CMP #2
-	BEQ @PalettesQuit
-	CMP #4
-	BEQ @PalettesQuit
 	JSR FadePalettes
 	LDA #>PALETTE_RAM
 	STA PPUADDR
@@ -207,48 +243,21 @@ NMI:
 	RTS
 
 @DMA:
-	LDA zNMIState
-	BNE @DMAQuit
 	LDA #>iVirtualOAM
 	STA OAM_DMA
-@DMAQuit:
 	RTS
 
 @Map:
-	LDA zNMIState
-	CMP #2
-	BEQ @MapQuit
-	RTS
-@MapQuit:
 	RTS
 
 @Tiles:
-	LDA zNMIState
-	CMP #2
-	BEQ @TilesQuit
-	RTS
-@TilesQuit:
 	RTS
 
 @OAM:
-	LDA zNMIState
-	CMP #2
-	BEQ @OAMQuit
-	CMP #5
-	BEQ @OAMQuit
-	RTS
-@OAMQuit:
 	RTS
 
 @JoyPad:
-	LDA zNMIState
-	CMP #2
-	BEQ @JoyPadQuit
-	CMP #3
-	BEQ @JoyPadQuit
-	JSR UpdateJoypads
-@JoyPadQuit:
-	RTS
+	JMP UpdateJoypads
 
 ;
 ; Public RESET
