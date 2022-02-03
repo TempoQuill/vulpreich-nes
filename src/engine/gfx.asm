@@ -110,26 +110,7 @@ _InstantPrint:
 	.dw @TextEnd  ; 85 done
 
 @Continue:
-; move line 2 to line 1 and print on line 2
-	JSR GetNameTableOffsetLine2
-	SEC
-	LDA cNametableAddress
-	SBC #$40
-	STA zAuxAddresses + 2
-	LDA cNametableAddress + 1
-	SBC #0
-	STA zAuxAddresses + 3
-	JSR GetPPUAddressFromNameTable
-	JSR ReadPPUData
-	JSR GetNameTableOffsetLine1
-	JSR WritePPUDataFromStringBuffer
-	JSR GetNameTableOffsetLine2
-	JSR GetPPUAddressFromNameTable
-	LDA #$20 ; spacebar
-	JSR WritePPUData
-	JSR GetNameTableOffsetLine2
-	JSR GetPPUAddressFromNameTable
-	INY
+; only valid when printing one character at a time
 	JMP _InstantPrint
 
 @Line:
@@ -140,35 +121,7 @@ _InstantPrint:
 	JMP _InstantPrint
 
 @Para:
-; start new paragraph
-; effectively extends text beyond 256 bytes per string
-	; zipper Y with (zAuxAddresses + 6)
-	TYA
-	CLC
-	ADC zAuxAddresses + 6
-	STA zAuxAddresses + 6
-	LDA #0
-	ADC zAuxAddresses + 7
-	STA zAuxAddresses + 7
-	; clear y
-	LDY #0
-	; use x to clear the text buffer
-	LDX #0
-	LDA #$20 ; spacebar
-@ParaLoop:
-	DEX
-	STA cTextBuffer, X
-	BNE @ParaLoop
-	JSR GetNameTableOffsetLine2
-	JSR GetPPUAddressFromNameTable
-	LDA #$20 ; spacebar
-	JSR WritePPUData
-	JSR GetNameTableOffsetLine1
-	JSR GetPPUAddressFromNameTable
-	LDA #$20 ; spacebar
-	JSR WritePPUData
-	JSR GetNameTableOffsetLine1
-	JSR GetPPUAddressFromNameTable
+; only valid when printing one character at a time
 	JMP _InstantPrint
 
 @TextEnd:
@@ -319,6 +272,8 @@ _PrintText:
 _FadePalettes:
 ; fade palletes out/in
 ; used for title screen
+; iPals initial byte contains two bitwise commands
+; 6 (o) = fade direction, 7 (s) = fade power
 	LDA iPals
 	BIT iPals
 	BMI @Fading
@@ -326,18 +281,27 @@ _FadePalettes:
 
 @Fading:
 	BVC @In
-	LDX #0
-@Loop:
+	; zPalFade timer is 4-bit (0-15)
+	LDA zPalFade
+	AND #PALETTE_FADE_SPEED_MASK
+	BNE @Dec
+	; zPalFadePlacement is 2-bit (0-3)
+	LDX zPalFadePlacement
+	DEX
+	; ready colors
 	LDA iPals, X
 	PHA
 	LDA iPals + 4, X
 	PHA
 	LDA iPals + 8, X
 	PHA
-	LDA iPals + 12, X
-	INX
-	CPX #4
+	LDY iPals + 12, X
+	TXA
+	; does x = 0? Skip if so.
 	BEQ @Final
+	; else, let's apply the colors
+	INX
+	TYA
 	STA iPals + 12, X
 	PLA
 	STA iPals + 8, X
@@ -345,44 +309,83 @@ _FadePalettes:
 	STA iPals + 4, X
 	PLA
 	STA iPals, X
-	BCC @Loop
+	; cleanup
+	DEC zPalFadePlacement
+	LDA zPalFadeSpeed
+	STA zPalFade
+	RTS
+@Dec:
+	; dec timer if we got here
+	DEC zPalFade
+	RTS
 
 @Final:
+	; skip color application
 	PLA
 	PLA
 	PLA
+	; clear fade direction flag (we're fading in now)
 	LDA iPals
+	RSB PAL_FADE_DIR_F
+	PHA
+	AND #COLOR_INDEX
+	LDX #NUM_PALETTES
 @FinalLoop:
+	; clear palettes
 	DEX
 	STA iPals + 12, X
 	STA iPals + 8, X
 	STA iPals + 4, X
 	STA iPals, X
 	BNE @FinalLoop
-	RSB PAL_FADE_DIR_F
+	PLA
+	STA iPals
+	LDA #PALETTE_FADE_PLACEMENT_MASK
+	STA zPalFadePlacement
 	RTS
 
 @In:
-	LDA #0
+	; check timer
+	LDA zPalFade
+	AND #PALETTE_FADE_SPEED_MASK
+	BNE @InDec
+	; formulate offset
+	LDA zPalFadePlacement
+	EOR #PALETTE_FADE_PLACEMENT_MASK
+	ADC #0
 	TAY
-@Search:
-	LDA iPals, Y
-	INY
-	CMP iPals, Y
-	BNE @Search
-
+	STA zPalFadeOffset
+	; get a byte directed by pointer
 	LDA (zPalPointer), Y
+	LDY #PALETTE_FADE_PLACEMENT_MASK
+@InLoop:
+	; apply to palette
 	STA iPals, Y
-	INY
-	CPY #4
-	BCC @Search
-	CPY #8
-	BCC @Search
-	CPY #12
-	BCC @Search
-	CPY #16
-	BCC @Search
+	DEY
+	; does y < zPalFadeOffset?
+	CPY zPalFadeOffset
+	BEQ @InSubExit
+	BCS @InLoop
+@InSubExit:
+	; application done
+	LDA zPalFadeSpeed
+	STA zPalFade
+	; are we done?
+	LDA zPalFadePlacement
+	BEQ @InFinal
+	DEC zPalFadePlacement
+	RTS
+@InDec:
+	; dec timer if we got here
+	DEC zPalFade
+	RTS
+
+@InFinal:
+	; we're done
+	; do cleanup
+	LDA iPals
 	RSB PAL_FADE_F
+	STA iPals
 	RTS
 
 _UpdateGFXAttributes:

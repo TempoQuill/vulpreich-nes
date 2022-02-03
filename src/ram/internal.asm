@@ -131,13 +131,13 @@ zInputBottleNeck:
 	.dsb 2 ; 0050
 zInputCurrentState:
 	.dsb 2
-zPPUCtrlMirror:
+zStringXOffset:
 	.dsb 1 ; 0054
+zPPUCtrlMirror:
+	.dsb 1
 zPPUMaskMirror:
 	.dsb 1
 zPPUStatusMirror:
-	.dsb 1
-zStringXOffset:
 	.dsb 1
 zPPUScrollXMirror:
 	.dsb 1 ; 0058
@@ -153,7 +153,18 @@ zCurrentCardBalanceBCD:
 	.dsb 7
 zDecimalPlaceBuffer:
 	.dsb 16 ; 0068
-	.dsb 8 ; 0078
+zPalFadePlacement:
+	.dsb 1 ; 0078
+zPalFadeSpeed:
+	.dsb 1
+zPalFadeOffset:
+	.dsb 1
+zPalFade:
+	.dsb 1
+	.dsb 1 ; 007c
+	.dsb 1
+	.dsb 1
+	.dsb 1
 zPalPointer:
 	.dsb 2 ; 0080
 zIntroPointer:
