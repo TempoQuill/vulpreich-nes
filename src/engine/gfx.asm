@@ -58,10 +58,10 @@ CopyCurrentIndex:
 
 	; copy ITEM_NAME_LENGTH bytes to string buffer
 	LDY #ITEM_NAME_LENGTH + 1
-	LDA #iStringBuffer
+	LDA #<iStringBuffer
 	STA zAuxAddresses + 2
 	STA cCurrentRAMAddress
-	LDA #0
+	LDA #>iStringBuffer
 	STA zAuxAddresses + 3
 	STA cCurrentRAMAddress + 1
 	JMP CopyBytes

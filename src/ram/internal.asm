@@ -305,12 +305,14 @@ iChannelRAMEnd:
 iPals:
 	.dsb 16 ; 04c0
 iNSFBanks:
-	.dsb $8
-	.dsb $168 ; 04da - 067f
+	.dsb $8 ; 04d0
+	.dsb $28 ; 04d8
+	.dsb $100 ; 0500
+	.dsb $40 ; 0600
 iPalAttributes:
-	.dsb $40
+	.dsb $40 ; 0640
 iStringBuffer:
-	.dsb $20
+	.dsb $20 ; 0680
 	.dsb $20
 	.dsb $20
 	.dsb $20
