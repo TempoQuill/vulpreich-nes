@@ -71,11 +71,11 @@ IntroSequence:
 	ASL A
 	TAY
 	LDA @DW, Y
-	STA zIntroPointer
+	STA zAuxAddresses + 6
 	INY
 	LDA @DW, Y
-	STA zIntroPointer + 1
-	JMP (zIntroPointer)
+	STA zAuxAddresses + 7
+	JMP (zAuxAddresses + 6)
 
 @DW
 	.dw IntroSequence

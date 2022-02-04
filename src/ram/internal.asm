@@ -57,21 +57,17 @@ zAudioCommandFlags:
 zCurrentSFX:
 	.dsb 1
 
-zChannelFunctionPointer:
-	.dsb 2
-zAudioCommandPointer:
-	.dsb 2 ; 001c
 zRawPitchBackup:
-	.dsb 2 ; 0020
-
-zPitchSlideDifference:
 	.dsb 2
+zPitchSlideDifference:
+	.dsb 2 ; 001c
 zVibratoBackup:
 	.dsb 1
+
 zCurrentEnvelopeGroupOffset:
 	.dsb 1
 zCurrentEnvelopeGroupAddress:
-	.dsb 2 ; 0024
+	.dsb 2 ; 0020
 zAudioRAMEnd:
 
 ; section: Hardware Assistive RAM
@@ -80,36 +76,32 @@ zNMIState:
 	.dsb 1
 zNMIOccurred:
 	.dsb 1
-; section: miscellaneous
-zTableOffset:
-	.dsb 2 ; 0028
-zTextBank:
-	.dsb 1
-zCurrentTextByte:
-	.dsb 1
 zCHRWindow0:
-	.dsb 1 ; 002c
+	.dsb 1 ; 0024
 zCHRWindow1:
 	.dsb 1
-zSaveFileExists:
-	.dsb 1
-	.dsb 1
 zBackupA:
-	.dsb 1 ; 0030
+	.dsb 1
 zBackupX:
 	.dsb 1
 zBackupY:
-	.dsb 1
+	.dsb 1 ; 0028
+zTableOffset:
+	.dsb 2
 zRAMBank: ; MMC5 backups, and b/c this is ZP, this is optimal speed
 	.dsb 1
 zWindow1:
-	.dsb 1 ; 0034
+	.dsb 1 ; 002c
 zWindow2:
 	.dsb 1
 zWindow3:
 	.dsb 1
 zWindow4:
 	.dsb 1
+zCurrentWindow:
+	.dsb 4 ; 0030
+zBackupWindow:
+	.dsb 4 ; 0034
 
 zAuxAddresses: ; back up 4 at a time
 ; 0: audio
@@ -117,7 +109,6 @@ zAuxAddresses: ; back up 4 at a time
 ; 2: vblank
 ; 3: everything else
 	.dsb 8 ; 0038
-
 zFactorBuffer:
 	.dsb 4 ; 0040
 zDividerBuffer:
@@ -126,54 +117,102 @@ zAddendBuffer:
 	.dsb 4 ; 0048
 zDifferentialBuffer:
 	.dsb 4 ; 004c
-
 zInputBottleNeck:
 	.dsb 2 ; 0050
 zInputCurrentState:
 	.dsb 2
-zStringXOffset:
-	.dsb 1 ; 0054
 zPPUCtrlMirror:
-	.dsb 1
+	.dsb 1 ; 0054
 zPPUMaskMirror:
 	.dsb 1
 zPPUStatusMirror:
 	.dsb 1
 zPPUScrollXMirror:
-	.dsb 1 ; 0058
+	.dsb 1
 zPPUScrollYMirror:
+	.dsb 1 ; 0058
+zStringXOffset:
 	.dsb 1
-zTitleScreenOption:
-	.dsb 1
-zCurrentCardBalance:
-	.dsb 3
-zCurrentPrice:
-	.dsb 3
-zCurrentCardBalanceBCD:
-	.dsb 7
-zDecimalPlaceBuffer:
-	.dsb 16 ; 0068
-zPalFadePlacement:
-	.dsb 1 ; 0078
-zPalFadeSpeed:
-	.dsb 1
+zPalPointer:
+	.dsb 2
+zPalFade:
+	.dsb 1 ; 005c
 zPalFadeOffset:
 	.dsb 1
-zPalFade:
+zPalFadeSpeed:
+	.dsb 1
+zPalFadePlacement:
+	.dsb 1
+; section: miscellaneous
+zTitleScreenOption:
+	.dsb 1 ; 0060
+zCurrentTextByte:
+	.dsb 1
+zSaveFileExists:
+	.dsb 1
+zTextBank:
+	.dsb 1
+	.dsb 1 ; 0064
+	.dsb 1
+	.dsb 1
+	.dsb 1
+	.dsb 1 ; 0068
+	.dsb 1
+	.dsb 1
+	.dsb 1
+	.dsb 1 ; 006c
+	.dsb 1
+	.dsb 1
+	.dsb 1
+	.dsb 1 ; 0070
+	.dsb 1
+	.dsb 1
+	.dsb 1
+	.dsb 1 ; 0074
+	.dsb 1
+	.dsb 1
+	.dsb 1
+	.dsb 1 ; 0078
+	.dsb 1
+	.dsb 1
 	.dsb 1
 	.dsb 1 ; 007c
 	.dsb 1
 	.dsb 1
 	.dsb 1
-zPalPointer:
 	.dsb 2 ; 0080
-zIntroPointer:
 	.dsb 2
-zCurrentWindow:
 	.dsb 4 ; 0084
-zBackupWindow:
 	.dsb 4 ; 0088
-	.dsb $74 ; 008c
+	.dsb 4 ; 008c
+	.dsb 4 ; 0090
+	.dsb 4 ; 0094
+	.dsb 4 ; 0098
+	.dsb 4 ; 009c
+	.dsb 4 ; 00a0
+	.dsb 4 ; 00a4
+	.dsb 4 ; 00a8
+	.dsb 4 ; 00ac
+	.dsb 4 ; 00b0
+	.dsb 4 ; 00b4
+	.dsb 4 ; 00b8
+	.dsb 4 ; 00bc
+	.dsb 4 ; 00c0
+	.dsb 4 ; 00c4
+	.dsb 4 ; 00c8
+	.dsb 4 ; 00cc
+	.dsb 4 ; 00d0
+	.dsb 4 ; 00d4
+	.dsb 4 ; 00d8
+	.dsb 4 ; 00dc
+	.dsb 4 ; 00e0
+	.dsb 4 ; 00e4
+	.dsb 4 ; 00e8
+	.dsb 4 ; 00ec
+	.dsb 4 ; 00f0
+	.dsb 4 ; 00f4
+	.dsb 4 ; 00f8
+	.dsb 4 ; 00fc
 
 ; section: STACK
 iStack:

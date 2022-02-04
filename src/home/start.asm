@@ -180,11 +180,11 @@ NMI:
 
 @GeneratePointers:
 	LDA @Pointers, Y
-	STA zAuxAddresses + 3
+	STA zAuxAddresses + 2
 	INY
 	LDA @Pointers, Y
-	STA zAuxAddresses + 4
-	JMP (zAuxAddresses + 3)
+	STA zAuxAddresses + 3
+	JMP (zAuxAddresses + 2)
 
 @Pointers:
 	.dw @State0

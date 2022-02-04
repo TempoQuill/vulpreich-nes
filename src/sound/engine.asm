@@ -204,11 +204,11 @@ UpdateChannels:
 	ASL A
 	TAY
 	LDA @FunctionPointers, Y
-	STA zChannelFunctionPointer
+	STA zAuxAddresses
 	INY
 	LDA @FunctionPointers, Y
-	STA zChannelFunctionPointer + 1
-	JMP (zChannelFunctionPointer)
+	STA zAuxAddresses + 1
+	JMP (zAuxAddresses)
 
 @FunctionPointers:
 ; music channels
@@ -1335,7 +1335,8 @@ GetByteInEnvelopeGroup:
 	; get pointer
 	LDA EnvelopeGroups, Y
 	STA zCurrentEnvelopeGroupAddress
-	LDA EnvelopeGroups + 1, Y
+	INY
+	LDA EnvelopeGroups, Y
 	STA zCurrentEnvelopeGroupAddress + 1
 
 	; store the offset in ZP RAM
@@ -1417,7 +1418,8 @@ GetDrumSample:
 	TAY
 	LDA SampleKits, Y
 	STA zDrumAddresses + 2
-	LDA SampleKits + 1, Y
+	INY
+	LDA SampleKits, Y
 	STA zDrumAddresses + 3
 	; get note
 	LDA zCurrentMusicByte
@@ -1453,7 +1455,8 @@ GetDrumSample:
 	TAY
 	LDA DrumKits, Y
 	STA zDrumAddresses
-	LDA DrumKits + 1, Y
+	INY
+	LDA DrumKits, Y
 	STA zDrumAddresses + 1
 	; get note
 	LDA zCurrentMusicByte
@@ -1488,11 +1491,12 @@ ParseMusicCommand:
 	TAY
 	; seek command pointer
 	LDA MusicCommands, Y
-	STA zAudioCommandPointer
-	LDA MusicCommands + 1, Y
-	STA zAudioCommandPointer + 1
+	STA zAuxAddresses
+	INY
+	LDA MusicCommands, Y
+	STA zAuxAddresses + 1
 	; jump to the new pointer
-	JMP (zAudioCommandPointer)
+	JMP (zAuxAddresses)
 
 MusicCommands:
 ; entries correspond to audio constants (see src/def/sound.asm)
@@ -2192,7 +2196,8 @@ GetPitch:
 	LDA NoteTable, Y
 	STX zBackupX
 	TAX
-	LDA NoteTable + 1, Y
+	INY
+	LDA NoteTable, Y
 	TAY
 	PLA ; retrieve octave
 
