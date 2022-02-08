@@ -116,6 +116,7 @@ BackupPRG:
 	STA zBackupWindow, X
 	LDA zCurrentWindow, X
 	STA zWindow1, X
+	STA MMC5_PRGBankSwitch2, X
 	TXA
 	BNE @Loop
 	RTS
@@ -128,6 +129,7 @@ RestorePRG:
 	STA zCurrentWindow, X
 	LDA zBackupWindow, X
 	STA zWindow1, X
+	STA MMC5_PRGBankSwitch2, X
 	TXA
 	BNE @Loop
 	RTS
