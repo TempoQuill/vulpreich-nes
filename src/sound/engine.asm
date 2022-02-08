@@ -2424,7 +2424,6 @@ ClearChannels:
 	LDY #CHAN_2 << 2
 	JSR ClearHillDPCM
 	LDY #CHAN_3 << 2
-	LDA #1 << SOUND_VOLUME_LOOP_F | 1 << SOUND_RAMP_F
 	JSR ClearNoise
 	LDY #CHAN_4 << 2
 
