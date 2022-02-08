@@ -153,3 +153,12 @@ MMC5_Multiplier2 = $5206
 
 MMC5_ExpansionRAMStart = $5c00
 MMC5_ExpansionRAMEnd = $5fff
+
+NSF_PRGBank0 = $5ff8
+NSF_PRGBank1 = $5ff9
+NSF_PRGBank2 = $5ffa
+NSF_PRGBank3 = $5ffb
+NSF_PRGBank4 = $5ffc
+NSF_PRGBank5 = $5ffd
+NSF_PRGBank6 = $5ffe
+NSF_PRGBank7 = $5fff

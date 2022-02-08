@@ -53,7 +53,7 @@ UpdatePRG:
 	LDX #5
 @Loop:
 	LDA iNSFBanks, X
-	STA $5ff8, X ; bank register
+	STA NSF_PRGBank0, X ; bank register
 	DEX
 	CPX #$ff
 	BCC @loop
