@@ -1,15 +1,22 @@
-InstantPrint:
-; print all text as instructed
+StoreText:
+; store all text as instructed
 	SEC
 	; get index according to upper digits of location
 	; load bank into corresponding window
-	JSH PRG_GFXEngine, _InstantPrint
+	JSH PRG_GFXEngine, _StoreText
 	JMP UpdatePRG
 
 PrintText:
 ; print text one character at a time
+	LDY #0
 	SEC
+	LDA zTextOffset
+	BNE @DoPrint
+	LDA zTextOffset + 1
+	BEQ @Done
+@DoPrint:
 	JSH PRG_GFXEngine, _PrintText
+@Done:
 	JMP UpdatePRG
 
 FadePalettes:
@@ -31,17 +38,17 @@ InitPals:
 	JMP UpdatePRG
 
 InitNameTable:
-; initialize nametables
+; initialize nametables + attributes
 	SEC
 	JSH PRG_GFXEngine, _InitNameTable
 	JMP UpdatePRG
 
 GetTextByte:
-	LDA zAuxAddresses + 7
+	LDA zCurrentTextAddress + 1
 	JSR GetWindowIndex
 	LDA zTextBank
 	JSR StoreIndexedBank
-	LDA (zAuxAddresses + 6), Y
+	LDA (zCurrentTextAddress), Y
 	STA zCurrentTextByte
 	JSR UpdatePRG
 	LDA zCurrentTextByte

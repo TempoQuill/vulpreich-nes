@@ -96,7 +96,7 @@ InspiredScreen:
 	STA cNametableAddress
 	LDA #>(NAMETABLE_MAP_0 + $140)
 	STA cNametableAddress + 1
-	JSR InstantPrint
+	JSR StoreText
 	LDA #<IntroPals
 	STA zPalPointer
 	LDA #>IntroPals
@@ -150,7 +150,7 @@ TitleScreen:
 	STA cNametableAddress
 	LDA #>(NAMETABLE_MAP_0 + $140)
 	STA cNametableAddress + 1
-	JSR InstantPrint
+	JSR StoreText
 	LDA #>StartText
 	STA zAuxAddresses + 7
 	LDA #<StartText
@@ -159,7 +159,7 @@ TitleScreen:
 	STA cNametableAddress
 	LDA #>(NAMETABLE_MAP_0 + $2a0)
 	STA cNametableAddress + 1
-	JSR InstantPrint
+	JSR StoreText
 	LDA #>ReleaseInfo
 	STA zAuxAddresses + 7
 	LDA #<ReleaseInfo
@@ -168,7 +168,7 @@ TitleScreen:
 	STA cNametableAddress
 	LDA #>(NAMETABLE_MAP_0 + $340)
 	STA cNametableAddress + 1
-	JSR InstantPrint
+	JSR StoreText
 	LDY #MUSIC_TITLE
 	JSR PlayMusic
 	; fade in

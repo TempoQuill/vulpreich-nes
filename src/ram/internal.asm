@@ -152,8 +152,9 @@ zSaveFileExists:
 	.dsb 1
 zTextBank:
 	.dsb 1
-	.dsb 1 ; 0064
-	.dsb 1
+zCurrentTextAddress:
+	.dsb 2 ; 0064
+zTextOffset:
 	.dsb 1
 	.dsb 1
 	.dsb 1 ; 0068
@@ -304,17 +305,16 @@ iChannelRAMEnd:
 ; section: groups
 iPals:
 	.dsb 16 ; 04c0
+	.dsb 16 ; 04d0
 iNSFBanks:
-	.dsb $8 ; 04d0
-	.dsb $28 ; 04d8
-	.dsb $100 ; 0500
-	.dsb $40 ; 0600
+	.dsb 8 ; 04e0
+	.dsb $18 ; 04e8
 iPalAttributes:
-	.dsb $40 ; 0640
+	.dsb $40 ; 0500
+	.dsb $40 ; 0540
+	.dsb $40 ; 0580
+	.dsb $40 ; 05c0
 iStringBuffer:
-	.dsb $20 ; 0680
-	.dsb $20
-	.dsb $20
-	.dsb $20
+	.dsb $100 ; 0600
 iVirtualOAM:
 	.dsb $100 ; 0700 - 07ff

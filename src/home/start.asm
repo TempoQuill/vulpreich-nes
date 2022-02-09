@@ -94,6 +94,8 @@ Start:
 	STA PPUMASK
 	LDY #MUSIC_NONE
 	JSR PlayMusic
+	LDA #NMI_SOUND
+	STA zNMIState
 ; PPUCtrl_Base2000
 ; PPUCtrl_WriteHorizontal
 ; PPUCtrl_Sprite1000

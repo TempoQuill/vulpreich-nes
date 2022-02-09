@@ -10,18 +10,32 @@ _InitPals:
 	RTS
 
 _InitNameTable:
+; clear a nametable including attributes
+	LDA PPUSTATUS
+	; turn off NMI
+	LDA zPPUCtrlMirror
+	RSB PPU_NMI
+	STA zPPUCtrlMirror
+	STA PPUCTRL
+	; set up address
 	LDA #>NAMETABLE_MAP_0
 	STA PPUADDR
 	LDA #<NAMETABLE_MAP_0
-	STA PPUADDR
-	LDY #>((NAMETABLE_MAP_1 - NAMETABLE_MAP_0) * 4) + 1
-	LDX #<((NAMETABLE_MAP_1 - NAMETABLE_MAP_0) * 4)
+	STA PPUADDR ; happens to be the empty tile we need
+	LDY #>(NAMETABLE_AREA * 4) + 1
+	LDX #<(NAMETABLE_AREA * 4) + 1
+	; write for $400 bytes
 @Loop:
 	DEX
 	STA PPUDATA
 	BNE @Loop
 	DEY
 	BNE @Loop
+	; restore NMI
+	LDA zPPUCtrlMirror
+	SSB PPU_NMI
+	STA zPPUCtrlMirror
+	STA PPUCTRL
 	RTS
 
 GetNamePointer:
@@ -66,91 +80,37 @@ CopyCurrentIndex:
 	STA cCurrentRAMAddress + 1
 	JMP CopyBytes
 
-_InstantPrint:
-; Current character = (zAuxAddresses + 6) + Y
-; Text Command Pointer = zAuxAddresses 2
-; PPUADDR input = cNametableAddress
-	JSR _InitPals
-	JSR GetTextByte
-	PHA
-	BMI @GetCommand
-	STA cTextBuffer, Y
-	INC cNametableAddress
-	BNE @CopyToPPU
-	INC cNametableAddress + 1
-@CopyToPPU:
-	LDA cNametableAddress + 1
-	STA PPUADDR
-	LDA cNametableAddress
-	STA PPUADDR
-	PLA
-	STA PPUDATA
-	INY
-	JMP _InstantPrint
-
-@GetCommand:
-	PLA
-	EOR #$80 ; discard sign
-	ASL A ; only sets c if A ≥ $80 at this point (it won't be)
-	TAX
-	LDA @CommandTable, X
-	STA zAuxAddresses + 2
-	INX
-	LDA @CommandTable, X
-	STA zAuxAddresses + 3
-	JMP (zAuxAddresses + 2)
-
-@CommandTable:
-; text commands 80-ff
-	.dw @TextEnd  ; 80
-	.dw @Next     ; 81
-	.dw @Para     ; 82
-	.dw @Line     ; 83
-	.dw @Continue ; 84
-	.dw @TextEnd  ; 85 done
-
-@Continue:
-; only valid when printing one character at a time
-	JMP _InstantPrint
-
-@Line:
-; print at textbox line 2
-	JSR GetNameTableOffsetLine2
-	JSR GetPPUAddressFromNameTable
-	INY
-	JMP _InstantPrint
-
-@Para:
-; only valid when printing one character at a time
-	JMP _InstantPrint
-
-@TextEnd:
-; terminate printing routine
+_StoreText:
+	LDY #0
+	STY zTextOffset
+	LDA zAuxAddresses + 6
+	STA zCurrentTextAddress
+	LDA zAuxAddresses + 7
+	STA zCurrentTextAddress + 1
+@Loop:
+	LDA (zCurrentTextAddress), Y
+	CMP #text_end_cmd
+	BEQ @Done
+	INC zTextOffset
+	BNE @NoCarry
+	INC zTextOffset + 1
+@NoCarry:
+	INC zCurrentTextAddress
+	BNE @Loop
+	INC zCurrentTextAddress + 1
+	BNE @Loop
+@Done:
+	LDA zAuxAddresses + 6
+	STA zCurrentTextAddress
+	LDA zAuxAddresses + 7
+	STA zCurrentTextAddress + 1
 	RTS
 
-@Next:
-; print at next line, offset by zStringXOffset
-	INC cNametableAddress
-	LDA cNametableAddress
-	BEQ @NextByte
-	AND #$3f
-	BEQ @NextWrite
-	JMP @Next
-@NextByte:
-	INC cNametableAddress + 1
-@NextWrite:
-	LDA cNametableAddress + 1
-	STA PPUADDR
-	LDA cNametableAddress
-	ADC zStringXOffset
-	STA PPUADDR
-	JMP _InstantPrint
-
 _PrintText:
+	LDA PPUSTATUS
 	JSR GetTextByte
 	PHA
 	BMI @GetCommand
-	STA cTextBuffer, Y
 	INC cNametableAddress
 	BNE @CopyToPPU
 	INC cNametableAddress + 1
@@ -161,7 +121,10 @@ _PrintText:
 	STA PPUADDR
 	PLA
 	STA PPUDATA
-	INY
+	DEC zTextOffset
+	BNE @NoCarry
+	DEC zTextOffset + 1
+@NoCarry:
 	RTS
 
 @GetCommand:

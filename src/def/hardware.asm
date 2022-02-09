@@ -162,3 +162,10 @@ NSF_PRGBank4 = $5ffc
 NSF_PRGBank5 = $5ffd
 NSF_PRGBank6 = $5ffe
 NSF_PRGBank7 = $5fff
+
+NMI_NORMAL = 0
+NMI_SOLID = 1
+NMI_SOUND = 2
+NMI_LIQUID = 3
+NMI_GAS = 4
+NMI_PLASMA = 5

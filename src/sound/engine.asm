@@ -1007,8 +1007,8 @@ HandleDPCM: ; NES only
 
 	LDA (zDrumAddresses + 2), Y
 	INC zDrumAddresses + 2
-	BNE @SkipCarry1
 
+	BNE @SkipCarry1
 	INC zDrumAddresses + 3
 
 @SkipCarry1:
