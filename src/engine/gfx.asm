@@ -100,11 +100,13 @@ _StoreText:
 	INC zCurrentTextAddress + 1
 	BNE @Loop
 @Done:
+	LDX #0
 	LDA zAuxAddresses + 6
 	STA zCurrentTextAddress
 	LDA zAuxAddresses + 7
 	STA zCurrentTextAddress + 1
-	RTS
+	LDA zTextBank
+	JMP StoreIndexedBank
 
 _PrintText:
 	LDA PPUSTATUS

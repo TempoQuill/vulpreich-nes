@@ -50,6 +50,8 @@ GetTextByte:
 	JSR StoreIndexedBank
 	LDA (zCurrentTextAddress), Y
 	STA zCurrentTextByte
+	LDA #GFX_Engine
+	STA zWindow1
 	JSR UpdatePRG
 	LDA zCurrentTextByte
 	RTS
