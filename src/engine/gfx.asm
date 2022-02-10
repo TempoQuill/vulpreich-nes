@@ -88,7 +88,7 @@ _StoreText:
 	LDA zAuxAddresses + 7
 	STA zCurrentTextAddress + 1
 @Loop:
-	LDA (zCurrentTextAddress), Y
+	JSR GetTextByte
 	CMP #text_end_cmd
 	BEQ @Done
 	INC zTextOffset

@@ -111,7 +111,7 @@ InspiredScreen:
 	LDA iPals
 	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
 	STA iPals
-	RSB PAL_FADE_DIR_F ; wait $8f frames (2.38 seconds)
+	RSB PAL_FADE_DIR_F ; wait $cf frames (2.38 seconds)
 	JMP DelayFrame_s_
 
 TitleScreen:
@@ -146,6 +146,8 @@ TitleScreen:
 	STA zAuxAddresses + 7
 	LDA #<StarringText
 	STA zAuxAddresses + 6
+	LDA #PRG_Start0
+	STA zTextBank
 	LDA #<(NAMETABLE_MAP_0 + $140)
 	STA cNametableAddress
 	LDA #>(NAMETABLE_MAP_0 + $140)
@@ -155,6 +157,8 @@ TitleScreen:
 	STA zAuxAddresses + 7
 	LDA #<StartText
 	STA zAuxAddresses + 6
+	LDA #PRG_Start0
+	STA zTextBank
 	LDA #<(NAMETABLE_MAP_0 + $2a0)
 	STA cNametableAddress
 	LDA #>(NAMETABLE_MAP_0 + $2a0)
@@ -164,6 +168,8 @@ TitleScreen:
 	STA zAuxAddresses + 7
 	LDA #<ReleaseInfo
 	STA zAuxAddresses + 6
+	LDA #PRG_Start0
+	STA zTextBank
 	LDA #<(NAMETABLE_MAP_0 + $340)
 	STA cNametableAddress
 	LDA #>(NAMETABLE_MAP_0 + $340)
@@ -252,7 +258,8 @@ Intro_CheckInput:
 	ASL A
 	ASL A
 	BCS @Up_Down
-	BMI @Up_Down
+	ASL A
+	BCS @Up_Down
 	RTS
 @Up_Down:
 	INY
