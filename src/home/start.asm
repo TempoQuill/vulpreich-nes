@@ -108,7 +108,7 @@ Start:
 	JSR DelayFrame_s_
 	JMP GameInit
 
-SincToCurrentWindow:
+SyncToCurrentWindow:
 	LDX #3
 @Loop:
 	DEX
