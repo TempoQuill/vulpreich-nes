@@ -189,8 +189,9 @@ _UpdateSound:
 	INC zCurrentChannel
 	CPX #CHAN_C + 1
 	BCS @Done
+	TXA
 	RSB SFX_CHANNEL
-	CPX #CHAN_4 + 1
+	CMP #CHAN_4 + 1
 	BCS @NextChannel ; zCurrentChannel > DPCM means go straight to the next channel
 	JMP @Loop
 
