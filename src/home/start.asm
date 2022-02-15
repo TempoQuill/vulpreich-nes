@@ -5,8 +5,6 @@ UpdatePRG:
 	STA MMC5_PRGBankSwitch3
 	LDA zWindow3
 	STA MMC5_PRGBankSwitch4
-	LDA zWindow4
-	STA MMC5_PRGBankSwitch5
 	RTS
 
 UpdateCHR:
@@ -110,8 +108,19 @@ Start:
 	JSR DelayFrame_s_
 	JMP GameInit
 
+SincToCurrentWindow:
+	LDX #3
+@Loop:
+	DEX
+	LDA zCurrentWindow, X
+	STA zWindow1, X
+	STA MMC5_PRGBankSwitch2, X
+	TXA
+	BNE @Loop
+	RTS
+
 BackupPRG:
-	LDX #4
+	LDX #3
 @Loop:
 	DEX
 	LDA zWindow1, X
@@ -124,7 +133,7 @@ BackupPRG:
 	RTS
 
 RestorePRG:
-	LDX #4
+	LDX #3
 @Loop:
 	DEX
 	LDA zWindow1, X

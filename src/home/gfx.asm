@@ -4,7 +4,7 @@ StoreText:
 	; get index according to upper digits of location
 	; load bank into corresponding window
 	JSH PRG_GFXEngine, _StoreText
-	JMP UpdatePRG
+	JMP RestorePRG
 
 PrintText:
 ; print text one character at a time
