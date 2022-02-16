@@ -20,9 +20,12 @@ UpdateCHR:
 
 	RTS
 
+; this unreferenced subroutine was commonplace in 80's NES games
+; it's a bit superfluous though
+; just write the address to the PPU as you see here to the location you want
 ResetPPUAddress:
 	LDA PPUSTATUS
-	LDA #>PALETTE_RAM
+	LDA #>PALETTE_RAM ; hi then lo
 	STA PPUADDR
 	LDA #<PALETTE_RAM
 	STA PPUADDR
@@ -38,7 +41,7 @@ UpdateJoypads:
 
 @DoubleCheckInput0:
 	; Work around DPCM sample bug,
-	; where some spurious inputs are read
+	; where some inputs get forged
 	LDY zInputBottleNeck, X
 	JSR ReadJoypads
 
@@ -92,6 +95,8 @@ Start:
 	STA PPUMASK
 	LDY #MUSIC_NONE
 	JSR PlayMusic
+	; we won't be ready for graphical updates
+	; if we update anything now, it has to be only sound
 	LDA #NMI_SOUND
 	STA zNMIState
 ; PPUCtrl_Base2000
@@ -155,35 +160,34 @@ RestorePRG:
 ; It also runs the audio engine, allowing music to play continuously no matter
 ; how busy the rest of the game happens to be.
 ;
-; 0: scroll
-; 1: map buffer
-; 2: palettes
-; 3: dma
-; 4: map
-; 5: tiles
-; 6: oam
-; 7: joypad
-; 8: sound
-; 9: additional stuff
+; in VulpReich, the NMI can take on 6 (technically 8) unique states.
+; Functionality in these states range from disabling everything but sound and
+; basic NMI operation to ignoring inputs, sprites or scrolling
 NMI:
+	; preserve all registers
 	PHP
 	PHA
 	PHX
 	PHY
+	; save the PRG
+	; heavy bank switching might take place
 	JSR BackupPRG
+	; look for NMI_SOUND, else generate a pointer offset
 	LDA zNMIState
-	CMP #2
+	CMP #NMI_SOUND
 	BEQ @JustSound
 	ASL A
 	TAY
 	JSR @GeneratePointers
 @JustSound:
+	; advance sound by one frame
 	JSR UpdateSound
-	; special functions
-	LDA zNMIOccurred
+	; check for an NMI timer (4.25 seconds maximum)
+	LDA zNMITimer
 	BEQ @DoNotAdjust
-	DEC zNMIOccurred
+	DEC zNMITimer
 @DoNotAdjust:
+	; cleanup
 	JSR RestorePRG
 	PLY
 	PLX
@@ -206,10 +210,11 @@ NMI:
 	.dw @State3
 	.dw @State4
 	.dw @State5
-	.dw @State0
-	.dw @State0
+	.dw @State0 ; just in case
+	.dw @State0 ; just in case
 
 @State0:
+; normal NMI
 	JSR @Scroll
 	JSR @MapBuffer
 	JSR @Palettes
@@ -220,6 +225,8 @@ NMI:
 	JMP @JoyPad
 
 @State1:
+; solid
+; disable DMA
 	JSR @Scroll
 	JSR @Palettes
 	JSR @Map
@@ -228,6 +235,8 @@ NMI:
 	JMP @JoyPad
 
 @State3:
+; liquid
+; disable joypad
 	JSR @Scroll
 	JSR @Palettes
 	JSR @Map
@@ -235,12 +244,16 @@ NMI:
 	JMP @OAM
 
 @State4:
+; gas
+; disable scrolling
 	JSR @Map
 	JSR @Tiles
 	JSR @OAM
 	JMP @JoyPad
 
 @State5:
+; plasma
+; disable sprites
 	JSR @Scroll
 	JSR @Palettes
 	JSR @Map
@@ -294,7 +307,7 @@ NMI:
 	RTS
 
 @Tiles:
-	RTS
+	JMP UpdateBackground
 
 @OAM:
 	RTS
@@ -360,6 +373,7 @@ RESET:
 	STA MMC5_PRGBankSwitch5
 	STA zWindow4
 	STA zCurrentWindow + 3
+	STA zBackupWindow + 3
 
 	SEI
 	CLD

@@ -1,4 +1,5 @@
 _InitPals:
+; clear palette RAM
 	LDA #15
 	TAX
 	STA iPals, X
@@ -81,6 +82,7 @@ CopyCurrentIndex:
 	JMP CopyBytes
 
 _StoreText:
+	; initialize offset / addresses
 	LDY #0
 	STY zTextOffset
 	LDA zAuxAddresses + 6
@@ -88,6 +90,7 @@ _StoreText:
 	LDA zAuxAddresses + 7
 	STA zCurrentTextAddress + 1
 @Loop:
+	; sift and add to offset until text_end_cmd is encountered
 	JSR GetTextByte
 	CMP #text_end_cmd
 	BEQ @Done
@@ -100,28 +103,39 @@ _StoreText:
 	INC zCurrentTextAddress + 1
 	BNE @Loop
 @Done:
+	; just load window index 0
 	LDX #0
+	; revert zCurrentTextAddress to its state before the loop
 	LDA zAuxAddresses + 6
 	STA zCurrentTextAddress
 	LDA zAuxAddresses + 7
 	STA zCurrentTextAddress + 1
+	; we should return to the bank we came from when we're done
 	LDA zTextBank
 	JMP StoreIndexedBank
 
 _PrintText:
+; print a letter once per frame
+	; read status
 	LDA PPUSTATUS
+	; parse a byte
 	JSR GetTextByte
-	PHA
+	PHA ; save the byte
+	; branch if a command was encountered
+	; we'll be back here to get another byte in that case
+	; UNLESS $80 or $85 was encountered, we exit from there
 	BMI @GetCommand
+	; increment address
 	INC cNametableAddress
 	BNE @CopyToPPU
 	INC cNametableAddress + 1
 @CopyToPPU:
+	; update PPU address
 	LDA cNametableAddress + 1
 	STA PPUADDR
 	LDA cNametableAddress
 	STA PPUADDR
-	PLA
+	PLA ; place the character
 	STA PPUDATA
 	DEC zTextOffset
 	BNE @NoCarry
@@ -130,7 +144,8 @@ _PrintText:
 	RTS
 
 @GetCommand:
-	PLA
+; generate a pointer offset to branch to
+	PLA ; we need the byte here
 	EOR #$80 ; discard sign
 	ASL A ; only sets c if A ≥ $80 at this point (it won't be)
 	TAX
@@ -182,7 +197,6 @@ _PrintText:
 
 @Para:
 ; start new paragraph
-; effectively extends text beyond 256 bytes per string
 	; zipper Y with (zAuxAddresses + 6)
 	TYA
 	CLC
@@ -237,11 +251,11 @@ _PrintText:
 _FadePalettes:
 ; fade palletes out/in
 ; used for title screen
-; iPals initial byte contains two bitwise commands
-; 6 (o) = fade direction, 7 (s) = fade power
+	; iPals initial byte contains two bitwise commands
+	; 6 (o) = fade direction, 7 (s) = fade power
 	LDA iPals
 	BIT iPals
-	BMI @Fading
+	BMI @Fading ; only branch if power is on
 	RTS
 
 @Fading:
@@ -292,7 +306,7 @@ _FadePalettes:
 	; clear fade direction flag (we're fading in now)
 	LDA iPals
 	RSB PAL_FADE_DIR_F
-	PHA
+	PHA ; save this for later
 	AND #COLOR_INDEX
 	LDX #NUM_PALETTES
 @FinalLoop:
@@ -303,8 +317,10 @@ _FadePalettes:
 	STA iPals + 4, X
 	STA iPals, X
 	BNE @FinalLoop
+	; apply the flags
 	PLA
 	STA iPals
+	; reset placement byte
 	LDA #PALETTE_FADE_PLACEMENT_MASK
 	STA zPalFadePlacement
 	RTS
@@ -353,7 +369,43 @@ _FadePalettes:
 	STA iPals
 	RTS
 
+_UpdateBackground:
+; apply the current background map chosen
+	; apply background address
+	LDY zCurrentTileNametableAddress + 1
+	STY PPUADDR
+	LDY zCurrentTileNametableAddress
+	STY PPUADDR
+	; y needs to be constant
+	LDY #0
+@Loop:
+	; start writing
+	LDA (zCurrentTileAddress), Y
+	TAX
+	JSR @Inc
+	STX PPUDATA
+	BNE @Loop
+	RTS
+
+@Inc:
+; increment tilemap
+	INC zCurrentTileAddress
+	BNE @Dec
+	INC zCurrentTileAddress + 1
+@Dec:
+; decrement offset
+	DEC zTileOffset
+	BNE @Done
+	DEC zTileOffset + 1
+@Done:
+; compound bitfields to return the state of zero
+; no bits active, zero flag is set
+	LDA zTileOffset
+	ORA zTileOffset + 1
+	RTS
+
 _UpdateGFXAttributes:
+; apply attributes for all nametables
 	LDX #0
 	LDA #>NAMETABLE_ATTRIBUTE_0
 	STA PPUADDR

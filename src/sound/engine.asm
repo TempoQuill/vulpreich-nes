@@ -1,4 +1,4 @@
-; The entire sound engine. Uses 00-27 in ZP RAM and 0200-04bf in internal RAM.
+; The entire sound engine. Uses 00-21 in ZP RAM and 0200-04bf in internal RAM.
 
 ; Interfaces are in bank 7f.
 
@@ -11,7 +11,7 @@ _InitSound:
 	PHY
 	JSR MusicOff
 	JSR ClearChannels
-	; clear 0000-0027
+	; clear 0000-0022
 	LDX #zAudioRAMEnd
 @ClearZP:
 	DEX
@@ -239,7 +239,7 @@ UpdateChannels:
 	.dw @DPCM
 	; $b0bd - PRG ROM - in window 1
 	; $4802 - Mapper area
-	; $0829 - ZP RAM mirrored
+	; $0829 - ZP RAM mirrored - zTableOffset
 
 @Pulse1:
 	LDA iChannelNoteFlags, X

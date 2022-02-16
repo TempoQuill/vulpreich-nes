@@ -96,11 +96,16 @@ InspiredScreen:
 	STA cNametableAddress
 	LDA #>(NAMETABLE_MAP_0 + $140)
 	STA cNametableAddress + 1
+	; store the palette address
 	JSR StoreText
 	LDA #<IntroPals
 	STA zPalPointer
 	LDA #>IntroPals
 	STA zPalPointer + 1
+	; we can enable graphical updates now
+	; inputs are barred though for the time being
+	LDA #NMI_LIQUID
+	STA zNMIState
 	; fade in palettes
 	LDA iPals
 	SSB PAL_FADE_F

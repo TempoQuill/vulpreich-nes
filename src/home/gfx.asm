@@ -1,5 +1,6 @@
 StoreText:
 ; store all text as instructed
+; unlike the subs below, we aren't in an NMI, so we can't update conventionally
 	SEC
 	; get index according to upper digits of location
 	; load bank into corresponding window
@@ -31,6 +32,11 @@ UpdateGFXAttributes:
 	JSH PRG_GFXEngine, _UpdateGFXAttributes
 	JMP UpdatePRG
 
+UpdateBackground:
+	SEC
+	JSH PRG_GFXEngine, _UpdateBackground
+	JMP UpdatePRG
+
 InitPals:
 ; initialize palettes
 	SEC
@@ -44,6 +50,7 @@ InitNameTable:
 	JMP UpdatePRG
 
 GetTextByte:
+; snatch a byte from zCurrentTextAddress in zTextBank
 	LDA zCurrentTextAddress + 1
 	JSR GetWindowIndex
 	LDA zTextBank
@@ -52,7 +59,7 @@ GetTextByte:
 	STA zCurrentTextByte
 	LDA #PRG_GFXEngine
 	STA zWindow1
-	JSR UpdatePRG
+	JSR UpdatePRG ; restore old bank
 	LDA zCurrentTextByte
 	RTS
 

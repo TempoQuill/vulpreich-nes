@@ -6,7 +6,7 @@ $82	c000-dfff	- start bank, eligable for dpcm
 $83	8000-9fff	- audio engine
 $84	a000-bfff	- music
 $86	8000-9fff	- text engine
-$87	c000-dfff	- name list
+$87	a000-bfff	- name list
 $f9	c000-dfff	- dpcm data of common sound effects
 $fa	c000-dfff	- dpcm data of mostly voices
 $fb	c000-dfff	- dpcm data of voices

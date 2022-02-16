@@ -1,7 +1,7 @@
 00-0f	1	rest
-00-ff	4	DPCM entry (bank, pitch, address, length)
 00-cf	4 / 3	sound effect note
 10-cf	1	music note
+80-ff	4	DPCM entry (bank, pitch, address, length)
 d0-d7	1	octave
 d8	3 / 2	note initialization
 d9	2	transposition

@@ -82,6 +82,11 @@ NOISE_ENV = $400c ; 0-3: volume/sweep speed* 4: volume sweep Flag 5: counter fla
 NOISE_LO = $400e  ; 0-3: pitch               7: period loop flag
 NOISE_HI = $400f  ; 3-7: length load
 
+; there are a few hardware bugs with the DPCM to beware of
+; firstly, sample playback can clobber JOY1 with forged inputs, most NES title work around this
+; secondly, writes to SND_CHN may replay the sample currently playing, a retrigger if you will
+; thirdly, a byte gets added to the total size of the currently playing sample
+;	so a sample with a size of $20 reads $201 bytes of data
 DPCM_ENV = $4010    ; 0-3: pitch 6: loop flag 7: IRQ flag
 DPCM_DELTA = $4011  ; 0-6: delta counter
 DPCM_OFFSET = $4012 ; 0-7: (offset - $c000) / $40
@@ -89,7 +94,6 @@ DPCM_SIZE = $4013   ; 0-7: (size - 1) / $10
 
 OAM_DMA = $4014   ; CPU memory page $XX00 - $XXFF
 
-; BUG: DPCM samples retrigger when poked
 SND_CHN = $4015   ; master APU register: each bit is the corresponding channel power flag, 5-7 are not used
 
 JOY1 = $4016

@@ -29,12 +29,12 @@ ENDIF
 .ende
 
 ; add each of the banks
-; Vulpreich is built with the MMC5 in mind
+; VulpReich is built with the MMC5 in mind
 ; it maxes out all of the possible specs with this mapper.
 ; 8000-dfff - general purpose ROM
 ; 8000-9fff - almost always instruction data
 ; a000-bfff - sometimes read-ready data, sometimes instruction data
-; c000-dfff - always read-ready data, sometimes DPCM data
+; c000-dfff - always DPCM data
 ; e000-fff9 - home base, here lies only the most essential
 ;             instruction data (mapper data, math, NMI, interfaces, etc.)
 
@@ -44,7 +44,7 @@ IFNDEF NSF_FILE
 	.include "src/start-0.asm"
 	.pad $a000, $00
 	.pad $c000, $00
-	.pad $e000, $00
+	.pad $e000, $00 ; needs to be blank
 ELSE
 	.include "src/home/nsf.asm"
 ENDIF
@@ -68,7 +68,7 @@ IFNDEF NSF_FILE
 	.pad $a000, $00
 
 	; bank 07 - names
-	.base $c000
+	.base $a000
 	.include "src/names-0.asm"
 	.pad $e000, $00
 

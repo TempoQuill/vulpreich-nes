@@ -74,7 +74,7 @@ zAudioRAMEnd:
 ; backup registers, banks, addresses, and buffers
 zNMIState:
 	.dsb 1
-zNMIOccurred:
+zNMITimer:
 	.dsb 1
 zCHRWindow0:
 	.dsb 1 ; 0024
@@ -155,14 +155,13 @@ zTextBank:
 zCurrentTextAddress:
 	.dsb 2 ; 0064
 zTextOffset:
-	.dsb 1
-	.dsb 1
-	.dsb 1 ; 0068
-	.dsb 1
-	.dsb 1
-	.dsb 1
-	.dsb 1 ; 006c
-	.dsb 1
+	.dsb 2
+zCurrentTileAddress:
+	.dsb 2 ; 0068
+zTileOffset:
+	.dsb 2
+zCurrentTileNametableAddress:
+	.dsb 2 ; 006c
 	.dsb 1
 	.dsb 1
 	.dsb 1 ; 0070

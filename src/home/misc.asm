@@ -166,8 +166,8 @@ ByteFill:
 
 DelayFrame_s_:
 ; stop for A frames
-	STA zNMIOccurred
+	STA zNMITimer
 @Halt:
-	LDA zNMIOccurred
+	LDA zNMITimer
 	BNE @Halt
 	RTS
