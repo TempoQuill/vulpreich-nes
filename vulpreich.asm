@@ -70,7 +70,7 @@ IFNDEF NSF_FILE
 	; bank 07 - names
 	.base $a000
 	.include "src/names-0.asm"
-	.pad $e000, $00
+	.pad $c000, $00
 
 	; bank 08-78 - unused (for now)
 	.dsb (($f8 - PRG_Names0) * $2000), $00
