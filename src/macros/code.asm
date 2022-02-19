@@ -42,6 +42,8 @@ MACRO RSB bit
 ENDM
 
 ; jump subroutine home
+; access different memory than currently available
+; only used in Home ROM
 MACRO JSH bank, memory
 	LDA #>memory
 	JSR GetWindowIndex
@@ -62,11 +64,13 @@ MACRO JPH bank, memory
 ENDM
 
 ; jump subroutine far
+; unlike JSH and JPH, JSF and JPF are used in active windows
+; therefore we need an auxiliary sub in Home ROM to access the code for us
 MACRO JSF bank, memory
 	LDA #bank
 	LDX #<memory
 	LDY #>memory
-	JSR FarCall
+	JSR FarCallJump
 ENDM
 
 ; jump far
@@ -74,7 +78,7 @@ MACRO JPF bank, memory
 	LDA #bank
 	LDX #<memory
 	LDY #>memory
-	JMP FarCall
+	JMP FarCallJump
 ENDM
 
 ; low to high nybble

@@ -1,9 +1,9 @@
 StoreText:
-; store all text as instructed
-; unlike the subs below, we aren't in an NMI, so we can't update conventionally
+; store all text as instructed: unlike the subs below, we aren't in an NMI
+; so we can't use the conventional update when returning
 	SEC
-	; get index according to upper digits of location
-	; load bank into corresponding window
+	; JSH means we are accessing a subroutine in a different bank
+	; since we're already home, we can just bankswitch normally
 	JSH PRG_GFXEngine, _StoreText
 	JMP SyncToCurrentWindow
 
@@ -11,11 +11,12 @@ PrintText:
 ; print text one character at a time
 	LDY #0
 	SEC
+	; check for active byte queue
 	LDA zTextOffset
-	BNE @DoPrint
-	LDA zTextOffset + 1
+	ORA zTextOffset + 1
 	BEQ @Done
 @DoPrint:
+	; we have text to print now
 	JSH PRG_GFXEngine, _PrintText
 @Done:
 	JMP UpdatePRG

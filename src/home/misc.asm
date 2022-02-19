@@ -1,3 +1,6 @@
+; general purpose code:
+;  NMI typically only has access to PRG related subs, and not even all of them
+
 ClearWindowData:
 	LDA #<cWindowStackPointer
 	LDY #>cWindowStackPointer
@@ -36,7 +39,9 @@ ClearWindowData:
 	LDY #$10
 	JMP ByteFill
 
-FarJump:
+UnreferencedFarJump:
+; jump to a subroutine according to A:YX
+	STA cCurrentROMBank
 	STX zBackupX
 	PHX
 	STY zBackupY
@@ -47,21 +52,30 @@ FarJump:
 	STA zCurrentWindow, X
 	JMP UpdatePRG
 
-FarCall:
+FarCallJump:
+; access a subroutine according to A:YX
+	; save PRG # for later
 	STA cCurrentROMBank
-	JSR @jump
-	JMP UpdatePRG
+	JSR @Store
+	; we're typically not in an NMI here
+	JMP SyncToCurrentWindow
 
-@jump:
-	STX zBackupX
-	PHX
+@Store:
+	; push address to stack
 	STY zBackupY
 	PHY
+	STX zBackupX
+	PHX
+	; index based on Y
+	TYA
 	JSR GetWindowIndex
+	; grab/store PRG #
 	LDA cCurrentROMBank
 	JMP StoreIndexedBank
 
 FourBytePointers:
+; entry  - y
+; offset - zTableOffset
 	LDA #0
 	STA zTableOffset + 1
 	TYA
@@ -90,6 +104,8 @@ ThreeBytePointers:
 	RTS
 
 JumpTable:
+; general purpose jumptable
+; jumps to addres AY
 	ADC zTableOffset
 	PHA
 	TYA
@@ -112,7 +128,7 @@ HideSprites:
 
 ClearOAM:
 	LDA #0
-	LDX #0
+	TAX
 @Loop:
 	DEX
 	STA iVirtualOAM, X
