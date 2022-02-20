@@ -1,6 +1,7 @@
 @echo off
 
 echo Assembling...
+if NSF_FILE neq 1 goto nsffail
 tools\asm6f.exe vulpreich.asm -n -c -L %* bin\vulpreich.nsf > bin\assembler.log
 if %ERRORLEVEL% neq 0 goto buildfail
 move /y vulpreich-nsf.lst bin > nul
@@ -14,6 +15,11 @@ echo Yours:
 certutil -hashfile bin\vulpreich.nsf SHA256 | findstr /V ":"
 
 
+goto end
+
+:nsffail
+echo The configuration is off.  Uncomment it if you
+echo wish to build this way.
 goto end
 
 :buildfail

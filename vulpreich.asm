@@ -4,11 +4,7 @@
 .include "src/def.asm"
 .ende
 
-IFNDEF NSF_FILE
-	.include "header.asm"
-ELSE
-	.include "nsf-header.asm"
-ENDIF
+.include "header.asm"
 
 ; -----------------------------------------
 ; Add macros
