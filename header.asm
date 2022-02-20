@@ -18,10 +18,10 @@ IFNDEF NSF_FILE
 ELSE
 	.db "NESM", $1a ; handshake
 	.db $1 ; version
-	IFNDEF SFX
-		.db $2 ; songs
-	ELSE
+	IFDEF NSF_SFX
 		.db $1d ; sfx
+	ELSE
+		.db $2 ; songs
 	ENDIF
 	.db $1 ; starting song
 	.dw LOAD

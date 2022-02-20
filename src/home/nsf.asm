@@ -4,11 +4,11 @@ INIT:
 	PHA
 	JSR _InitSound
 	PLY
-IFNDEF SFX
+IFDEF NSF_SFX
+	JMP _PlaySFX
+ELSE
 	INY
 	JMP _PlayMusic
-ELSE
-	JMP _PlaySFX
 ENDIF
 
 PLAY:
