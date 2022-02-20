@@ -102,6 +102,7 @@ ENDIF
 IFNDEF NSF_FILE
 	.base $e000
 	.include "src/home.asm"
+
+	.include "src/chr.asm"
 ENDIF
 
-.include "src/chr.asm"
