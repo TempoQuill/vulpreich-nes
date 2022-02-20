@@ -58,3 +58,7 @@ UpdatePRG_Loop:
 	CPX #$ff
 	BCC UpdatePRG_Loop
 	RTS
+
+.pad $f000, 0
+
+	.dsb $1000, 0
