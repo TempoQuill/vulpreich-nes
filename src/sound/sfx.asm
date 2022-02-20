@@ -164,7 +164,7 @@ SFX_ObjectiveComplete_Pulse2:
 
 SFX_ObjectiveComplete_Hill:
 	set_music
-	hill_type 8, 0, 15
+	hill_type 8, 0, 19
 	octave 5
 	note D_, 1
 	note G_, 1

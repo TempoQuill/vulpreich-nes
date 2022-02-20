@@ -1,17 +1,21 @@
 
 	.db "NESM", $1a ; handshake
 	.db $1 ; version
+IFNDEF SFX
 	.db $2 ; songs
+ELSE
+	.db $1d ; sfx
+ENDIF
 	.db $1 ; starting song
 	.dw LOAD
 	.dw INIT
 	.dw PLAY
 	.db "VULPREICH"
-	.pad $2e, $00
+	.dsb 23, 0
 	.db "TEMPO QUILL"
-	.pad $4e, $00
-	.db "2022 Free use active postsale"
-	.pad $6e, $00
+	.dsb 21, 0
+	.db "2022 Free to use when sales end"
+	.db 0
 	.dw $411a ; NTSC
 	.db PRG_Audio, PRG_Audio + 1, PRG_Music0, PRG_Music0 + 1, PRG_DPCM0, PRG_DPCM0 + 1, PRG_Home, PRG_Home + 7
 	.dw $4e20 ; PAL, unused

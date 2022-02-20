@@ -189,6 +189,7 @@ MACRO sfx_priority_off
 ENDM
 
 ; uses exclusive flags in zAudioCommandFlags
+; used when playing the sink sound effect
 MACRO sound_jump_flag address
 	.db sound_jump_flag_cmd, <address, >address
 ENDM
