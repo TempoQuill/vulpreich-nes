@@ -1,18 +1,6 @@
 @echo off
 
 echo Assembling...
-if NSF_FILE neq 1 goto normal
-tools\asm6f.exe vulpreich.asm -n -c -L %* bin\vulpreich.nsf > bin\assembler.log
-if %ERRORLEVEL% neq 0 goto buildfail
-move /y vulpreich-nsf.lst bin > nul
-move /y vulpreich-nsf.cdl bin > nul
-echo Done.
-echo.
-
-
-goto end
-
-:normal
 tools\asm6f.exe vulpreich.asm -n -c -L %* bin\vulpreich.nes > bin\assembler.log
 if %ERRORLEVEL% neq 0 goto buildfail
 move /y vulpreich.lst bin > nul
