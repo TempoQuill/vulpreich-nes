@@ -51,10 +51,10 @@ StoreIndexedBank:
 
 UpdatePRG:
 	LDX #5
-@Loop:
+UpdatePRG_Loop:
 	LDA iNSFBanks, X
 	STA NSF_PRGBank0, X ; bank register
 	DEX
 	CPX #$ff
-	BCC @loop
+	BCC UpdatePRG_Loop
 	RTS
