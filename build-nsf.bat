@@ -1,7 +1,7 @@
 @echo off
 
 echo Assembling...
-if NSF_FILE neq 1 goto nsffail
+if NSF_FILE == 0 goto nsffail
 tools\asm6f.exe vulpreich.asm -n -c -L %* bin\vulpreich.nsf > bin\assembler.log
 if %ERRORLEVEL% neq 0 goto buildfail
 move /y vulpreich-nsf.lst bin > nul
