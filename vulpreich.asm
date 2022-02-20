@@ -1,7 +1,8 @@
 ; -----------------------------------------
+.include "config.asm"
+
 ; Add definitions
 .enum $0000
-.include "config.asm"
 .include "src/def.asm"
 .ende
 
