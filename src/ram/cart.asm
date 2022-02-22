@@ -14,7 +14,9 @@ sCheckValue1:
 	.dsb 1 ; 6000
 sCheckValue2:
 	.dsb 1
-	.dsb $1ffe
+sEpisodeEvents:
+	.dsb $1a
+	.dsb $1fe4
 ; RAM_BackupPlayFile
 .base $6000
 sBackupPlayerData:
@@ -22,5 +24,7 @@ sBackupCheckValue1:
 	.dsb 1 ; 6000
 sBackupCheckValue2:
 	.dsb 1
-	.dsb $1ffe
+sBackupEpisodeEvents:
+	.dsb $1a
+	.dsb $1fe4
 	.dsb (13 * $2000)

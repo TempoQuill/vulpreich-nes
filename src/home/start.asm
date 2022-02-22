@@ -77,23 +77,34 @@ UpdateJoypads:
 ; Reads joypad pressed input
 ;
 ReadJoypads:
+	; send a jolt to the controller
 	LDA #1
 	STA JOY1, X
+	; send the same jolt to the bottleneck to set C at the end
 	STA zInputBottleNeck, X
+	; 1 >> 1 = 0, C is not needed right now
 	LSR A
 	STA JOY1, X
 @Loop:
+	; Read standard controller data
 	LDA JOY1, X
 	LSR A
-	; Read standard controller data
+	; are we done?
 	ROL zInputBottleNeck, X
 	BCC @Loop
+	; we're done
+	; make inputs readable to the game
+	LDA zInputBottleNeck, X
+	FAB
+	STA zInputBottleNeck, X
 	RTS
 
 Start:
+	; our game's configuration is now initialized
+	; make sure track 0 is playing
 	LDA #0
 	STA PPUMASK
-	LDY #MUSIC_NONE
+	TAY ; MUSIC_NONE
 	JSR PlayMusic
 	; we won't be ready for graphical updates
 	; if we update anything now, it has to be only sound
@@ -114,7 +125,7 @@ Start:
 	JMP GameInit
 
 SyncToCurrentWindow:
-	LDX #3
+	LDX #NUM_FLEXIBLE_PRG
 @Loop:
 	DEX
 	LDA zCurrentWindow, X
@@ -125,7 +136,7 @@ SyncToCurrentWindow:
 	RTS
 
 BackupPRG:
-	LDX #3
+	LDX #NUM_FLEXIBLE_PRG
 @Loop:
 	DEX
 	LDA zWindow1, X
@@ -138,7 +149,7 @@ BackupPRG:
 	RTS
 
 RestorePRG:
-	LDX #3
+	LDX #NUM_FLEXIBLE_PRG
 @Loop:
 	DEX
 	LDA zWindow1, X

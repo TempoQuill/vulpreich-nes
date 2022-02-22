@@ -170,3 +170,8 @@ ENDM
 MACRO TAB
 	AND #$ff
 ENDM
+
+; flip all bits
+MACRO FAB
+	EOR #$ff
+ENDM
