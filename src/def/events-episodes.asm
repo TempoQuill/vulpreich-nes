@@ -1,18 +1,33 @@
-EVENT_GET_SIDNEYS_PACK          = $00
-EVENT_VET_FIRST_TRIP            = $01
-EVENT_FIRST_BATH                = $02
+; Reich Fox
+EVENT_GET_SIDNEYS_PACK = $00
+EVENT_VET_FIRST_TRIP   = $01
+EVENT_FIRST_BATH       = $02
 
-EVENT_FIRST_WALK                = $00
-EVENT_MEET_JUNE                 = $01
-EVENT_FIRST_VISIT_WITH_JUNE     = $02
-EVENT_ADOPT_JUNE                = $03
-EVENT_FIRST_PLAYDATE_WITH_JUNE  = $04
+; The June Cuddles
+EVENT_FIRST_WALK               = $00
+EVENT_MEET_JUNE                = $01
+EVENT_FIRST_VISIT_WITH_JUNE    = $02
+EVENT_ADOPT_JUNE               = $03
+EVENT_FIRST_PLAYDATE_WITH_JUNE = $04
 
+; Ever n'Otis
 EVENT_FIRST_BREAKFAST_DISTURBED = $00
 EVENT_MEET_OTIS                 = $01
 EVENT_WAIT_FOR_OTIS             = $02
 EVENT_READ_EXPRESSION_WRONG     = $03
 EVENT_ALL_THREE_MEET            = $04
+
+LOC_FRIDIA      = $00
+LOC_VIRGINIA    = $01
+LOC_HOME        = $02
+LOC_JUNES       = $03
+LOC_OTIS        = $04
+LOC_PET_STORE   = $05
+LOC_PIZZA_PLACE = $06
+LOC_VET         = $07
+LOC_BLOCK       = $08
+LOC_PARK        = $09
+LOC_COURT       = $0a
 
 EPISODE_REICH_FOX                     = $00
 EPISODE_THE_JUNE_CUDDLES              = $01
