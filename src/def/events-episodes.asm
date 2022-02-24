@@ -1,4 +1,4 @@
-EVENT_GET_SYDNEYS_PACK          = $00
+EVENT_GET_SIDNEYS_PACK          = $00
 EVENT_VET_FIRST_TRIP            = $01
 EVENT_FIRST_BATH                = $02
 

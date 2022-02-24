@@ -17,7 +17,9 @@ cCurrentRAMAddress:
 	.dsb 2 ; 5c10
 cCurrentROMBank:
 	.dsb 1
-	.dsb $29d
+cNameLength:
+	.dsb 1
+	.dsb $29c
 cWindowStackPointer:
 	.dsb 2 ; 5eb0
 	.dsb 14

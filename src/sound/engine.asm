@@ -401,7 +401,6 @@ UpdateChannels:
 	RSB CHAN_2 ; turn off hill
 	STA zMixer
 	LDY #CHAN_2 << 2
-	LDA #0
 	JMP ClearHillDPCM
 
 @Hill_NoiseSampling:
@@ -427,7 +426,6 @@ UpdateChannels:
 	RSB CHAN_3 ; turn off noise
 	STA zMixer
 	LDY #CHAN_3 << 2
-	LDA #1 << SOUND_VOLUME_LOOP_F | 1 << SOUND_RAMP_F
 	JMP ClearNoise
 
 @Noise_NoiseSampling:
@@ -454,7 +452,6 @@ UpdateChannels:
 	RSB CHAN_4 ; turn off DPCM
 	STA zMixer
 	LDY #CHAN_4 << 2
-	LDA #0
 	JMP ClearHillDPCM
 
 @DPCM_DeltaNoiseSamplingOverrides:

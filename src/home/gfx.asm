@@ -3,7 +3,7 @@ StoreText:
 ; so we can't use the conventional update when returning
 	SEC
 	; JSH means we are accessing a subroutine in a different bank
-	; since we're already home, we can just bankswitch normally
+	; since we're already home, we can just bankswitch from here
 	JSH PRG_GFXEngine, _StoreText
 	JMP SyncToCurrentWindow
 
@@ -148,17 +148,24 @@ GetName:
 	PLA
 	PLP
 	; bank switch
-	JMP UpdatePRG
+	JMP SyncToCurrentWindow
 
 NamesPointers:
 	dba PRG_Names0, ItemNames
 	dba PRG_Names0, CharacterFullNames
 	dba PRG_Names0, CharacterNames
+	dba PRG_Names0, LocationNames
+	dba PRG_Names0, EpisodeNames ; do not use
 
 GetNthString:
 ; Return the address of the Ath string starting from (zAuxAddresses + 6)
 	; return if A - 1 = 0
 	BEQ @Quit
+	PHA
+	LDA cObjectType
+	CMP #EPISODE_NAMES
+	BEQ @Episode
+	PLA
 	; preserve X and Y
 	STY zBackupY
 	STX zBackupX
@@ -183,3 +190,7 @@ GetNthString:
 	LDY zBackupY
 @Quit:
 	RTS
+
+@Episode:
+	PLA
+	JMP GetEpisodeName

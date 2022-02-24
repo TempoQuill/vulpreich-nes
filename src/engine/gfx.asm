@@ -42,9 +42,14 @@ _InitNameTable:
 GetNamePointer:
 	; turn cObjectType into index Y
 	LDA cObjectType
-	CLC
-	SBC #0
+	SBC #1
 	STA zBackupA
+	TAY
+	LDA NameLengths, Y
+	STA cNameLength
+	CPY #EPISODE_NAMES - 1
+	BEQ @Quit
+	TYA
 	LSR A
 	ADC zBackupA
 	TAY
@@ -62,17 +67,26 @@ GetNamePointer:
 	; bank
 	DEY
 	LDA NamesPointers, Y
+@Quit:
 	RTS
+
+NameLengths:
+	.db ITEM_NAME_LENGTH
+	.db CHR_FULL_NAME_LENGTH
+	.db CHR_NAME_LENGTH
+	.db LOC_NAME_LENGTH
+	.db TEXT_BOX_WIDTH
 
 CopyCurrentIndex:
 	; get current index number
+	; c = 1 at this point
 	LDA cCurrentIndex
-	CLC
-	SBC #0
+	SBC #1
 	JSR GetNthString
 
 	; copy ITEM_NAME_LENGTH bytes to string buffer
-	LDY #ITEM_NAME_LENGTH + 1
+	LDY #cNameLength
+	INY
 	LDA #<iStringBuffer
 	STA zAuxAddresses + 2
 	STA cCurrentRAMAddress
@@ -82,9 +96,17 @@ CopyCurrentIndex:
 	JMP CopyBytes
 
 _StoreText:
+; load zTextOffset bytes to print
+; input
+;	zAuxAddresses + 6
+;	zTextBank
+; output
+;	zTextOffset
+;	zCurrentTextAddress
 	; initialize offset / addresses
 	LDY #0
 	STY zTextOffset
+	STY zTextOffset + 1
 	LDA zAuxAddresses + 6
 	STA zCurrentTextAddress
 	LDA zAuxAddresses + 7
@@ -103,13 +125,12 @@ _StoreText:
 	INC zCurrentTextAddress + 1
 	BNE @Loop
 @Done:
-	; just load window index 0
-	LDX #0
 	; revert zCurrentTextAddress to its state before the loop
 	LDA zAuxAddresses + 6
 	STA zCurrentTextAddress
 	LDA zAuxAddresses + 7
 	STA zCurrentTextAddress + 1
+	JSR GetWindowIndex
 	; we should return to the bank we came from when we're done
 	LDA zTextBank
 	JMP StoreIndexedBank
@@ -435,3 +456,56 @@ ApplyGFXAttributes:
 	CPX #GFX_ATTRIBUTE_SIZE
 	BCC @Loop
 	RTS
+
+GetEpisodeName:
+	LDA #PRG_Names0
+	STA zTextBank
+	LDA cCurrentIndex
+	ASL A
+	TAY
+	LDA EpisodeNamePointers, Y
+	STA zCurrentTextAddress
+	INY
+	LDA EpisodeNamePointers, Y
+	STA zCurrentTextAddress + 1
+	LDY #0
+@Loop:
+	JSR GetTextByte
+	CMP #text_end_cmd
+	BEQ @Quit
+	CMP #text_done_cmd
+	BEQ @Quit
+	STA iStringBuffer, Y
+	INY
+	BCC @Loop
+@Quit:
+	RTS
+
+EpisodeNamePointers:
+	.dw VR_101
+	.dw VR_102
+	.dw VR_103
+	.dw VR_104
+	.dw VR_105
+	.dw VR_106
+	.dw VR_107
+	.dw VR_108
+	.dw VR_109
+	.dw VR_110
+	.dw VR_111
+	.dw VR_112
+	.dw VR_113
+	.dw VR_114
+	.dw VR_115
+	.dw VR_116
+	.dw VR_117
+	.dw VR_118
+	.dw VR_119
+	.dw VR_120
+	.dw VR_121
+	.dw VR_122
+	.dw VR_123
+	.dw VR_124
+	.dw VR_125
+	.dw VR_126
+	.dw VR_127
