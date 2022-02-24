@@ -259,8 +259,8 @@ Intro_CheckInput:
 	ASL A
 	BCS @B
 	ASL A
-	BCS @A_Start
 	ASL A
+	BCS @A_Start
 	ASL A
 	BCS @Up_Down
 	ASL A
