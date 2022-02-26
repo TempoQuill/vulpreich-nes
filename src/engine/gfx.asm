@@ -84,7 +84,7 @@ CopyCurrentIndex:
 	SBC #1
 	JSR GetNthString
 
-	; copy ITEM_NAME_LENGTH bytes to string buffer
+	; copy cNameLength bytes to string buffer
 	LDY #cNameLength
 	INY
 	LDA #<iStringBuffer

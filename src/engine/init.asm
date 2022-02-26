@@ -129,12 +129,10 @@ TitleScreen:
 	STA PPUADDR
 	LDA #<NAMETABLE_MAP_0
 	STA PPUADDR
-	LDA LogoData, Y
+	LDA #<LogoData
 	STA zAuxAddresses + 6
-	INY
-	LDA LogoData, Y
+	LDA #>LogoData
 	STA zAuxAddresses + 7
-	DEY
 @Loop1:
 	LDA (zAuxAddresses + 6), Y
 	STA PPUDATA
