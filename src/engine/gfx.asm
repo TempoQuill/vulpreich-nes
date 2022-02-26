@@ -98,6 +98,7 @@ CopyCurrentIndex:
 _StoreText:
 ; load zTextOffset bytes to print
 ; input
+;	X
 ;	zAuxAddresses + 6
 ;	zTextBank
 ; output
@@ -105,12 +106,12 @@ _StoreText:
 ;	zCurrentTextAddress
 	; initialize offset / addresses
 	LDY #0
-	STY zTextOffset
-	STY zTextOffset + 1
+	STY zTextOffset, X
+	STY zTextOffset + 1, X
 	LDA zAuxAddresses + 6
-	STA zCurrentTextAddress
+	STA zCurrentTextAddress, X
 	LDA zAuxAddresses + 7
-	STA zCurrentTextAddress + 1
+	STA zCurrentTextAddress + 1, X
 @Loop:
 	; sift and add to offset until text_end_cmd is encountered
 	JSR GetTextByte
@@ -120,16 +121,16 @@ _StoreText:
 	BNE @NoCarry
 	INC zTextOffset + 1
 @NoCarry:
-	INC zCurrentTextAddress
+	INC zCurrentTextAddress, X
 	BNE @Loop
-	INC zCurrentTextAddress + 1
+	INC zCurrentTextAddress + 1, X
 	BNE @Loop
 @Done:
 	; revert zCurrentTextAddress to its state before the loop
 	LDA zAuxAddresses + 6
-	STA zCurrentTextAddress
+	STA zCurrentTextAddress, X
 	LDA zAuxAddresses + 7
-	STA zCurrentTextAddress + 1
+	STA zCurrentTextAddress + 1, X
 	JSR GetWindowIndex
 	; we should return to the bank we came from when we're done
 	LDA zTextBank
@@ -158,6 +159,42 @@ _PrintText:
 	STA PPUADDR
 	PLA ; place the character
 	STA PPUDATA
+	LDX #0
+	LDA zTextOffset, X
+	INX
+	ORA zTextOffset, X
+	BNE @Dec
+	INX
+	LDA zTextOffset, X
+	ORA zTextOffset + 1, X
+	BEQ @NoCarry
+	LDY #0
+	LDA zTextOffset, X
+	STA zTextOffset, Y
+	LDA zCurrentTextAddress, X
+	LDA zCurrentTextAddress, Y
+	INY
+	INX
+	LDA zTextOffset, X
+	STA zTextOffset, Y
+	LDA zCurrentTextAddress, X
+	LDA zCurrentTextAddress, Y
+	INY
+	INX
+	LDA zTextOffset, X
+	ORA zTextOffset + 1, X
+	BEQ @NoCarry
+	LDA zTextOffset, X
+	STA zTextOffset, Y
+	LDA zCurrentTextAddress, X
+	LDA zCurrentTextAddress, Y
+	INY
+	INX
+	LDA zTextOffset, X
+	STA zTextOffset, Y
+	LDA zCurrentTextAddress, X
+	LDA zCurrentTextAddress, Y
+@Dec:
 	DEC zTextOffset
 	BNE @NoCarry
 	DEC zTextOffset + 1

@@ -154,22 +154,18 @@ zTextBank:
 	.dsb 1
 zCurrentTextAddress:
 	.dsb 2 ; 0064
+	.dsb 2
+	.dsb 2 ; 0068
 zTextOffset:
 	.dsb 2
+	.dsb 2 ; 006c
+	.dsb 2
 zCurrentTileAddress:
-	.dsb 2 ; 0068
+	.dsb 2 ; 0070
 zTileOffset:
 	.dsb 2
 zCurrentTileNametableAddress:
-	.dsb 2 ; 006c
-	.dsb 1
-	.dsb 1
-	.dsb 1 ; 0070
-	.dsb 1
-	.dsb 1
-	.dsb 1
-	.dsb 1 ; 0074
-	.dsb 1
+	.dsb 2 ; 0074
 	.dsb 1
 	.dsb 1
 	.dsb 1 ; 0078

@@ -96,8 +96,9 @@ InspiredScreen:
 	STA cNametableAddress
 	LDA #>(NAMETABLE_MAP_0 + $140)
 	STA cNametableAddress + 1
-	; store the palette address
+	LDX #0
 	JSR StoreText
+	; store the palette address
 	LDA #<IntroPals
 	STA zPalPointer
 	LDA #>IntroPals
@@ -126,25 +127,17 @@ TitleScreen:
 	; set up nametable and text
 	LDY #0
 	LDA #>NAMETABLE_MAP_0
-	STA PPUADDR
+	STA zCurrentTileNametableAddress
 	LDA #<NAMETABLE_MAP_0
-	STA PPUADDR
+	STA zCurrentTileNametableAddress
 	LDA #<LogoData
-	STA zAuxAddresses + 6
+	STA zCurrentTileAddress
 	LDA #>LogoData
-	STA zAuxAddresses + 7
-@Loop1:
-	LDA (zAuxAddresses + 6), Y
-	STA PPUDATA
-	INY
-	BNE @Loop1
-	INC zAuxAddresses + 7
-@Loop2:
-	LDA (zAuxAddresses + 6), Y
-	STA PPUDATA
-	INY
-	CPY #11 ; effective length of data is $10b
-	BCC @Loop2
+	STA zCurrentTileAddress
+	LDA #11
+	STA zTileOffset
+	LDA #1
+	STA zTileOffset + 1
 	LDA #>StarringText
 	STA zAuxAddresses + 7
 	LDA #<StarringText
@@ -155,6 +148,7 @@ TitleScreen:
 	STA cNametableAddress
 	LDA #>(NAMETABLE_MAP_0 + $140)
 	STA cNametableAddress + 1
+	LDX #0
 	JSR StoreText
 	LDA #>StartText
 	STA zAuxAddresses + 7
@@ -166,6 +160,7 @@ TitleScreen:
 	STA cNametableAddress
 	LDA #>(NAMETABLE_MAP_0 + $2a0)
 	STA cNametableAddress + 1
+	LDX #2
 	JSR StoreText
 	LDA #>ReleaseInfo
 	STA zAuxAddresses + 7
@@ -177,6 +172,7 @@ TitleScreen:
 	STA cNametableAddress
 	LDA #>(NAMETABLE_MAP_0 + $340)
 	STA cNametableAddress + 1
+	LDX #4
 	JSR StoreText
 	LDY #MUSIC_TITLE
 	JSR PlayMusic

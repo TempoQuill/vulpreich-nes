@@ -34,6 +34,8 @@ UpdateGFXAttributes:
 	JMP UpdatePRG
 
 UpdateBackground:
+; write to bg. zCurrentTileNametableAddress according to zCurrentTileAddress
+; update for zTileOffset bytes
 	SEC
 	JSH PRG_GFXEngine, _UpdateBackground
 	JMP UpdatePRG
