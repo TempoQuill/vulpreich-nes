@@ -23,7 +23,6 @@ PrintText:
 
 FadePalettes:
 ; fade in and fade out the palettes on screen
-	SEC
 	JSH PRG_GFXEngine, _FadePalettes
 	JMP UpdatePRG
 
