@@ -58,7 +58,9 @@ IntroSequence:
 	JSR TitleScreen
 	LDA #1
 	JSR DelayFrame_s_
+@Loop:
 	JSR RunTitleScreen
+	BCS @Loop
 	LDA zPPUCtrlMirror
 	RSB PPU_OBJECT_RESOLUTION ; 8x8
 	STA zPPUCtrlMirror
@@ -121,6 +123,9 @@ InspiredScreen:
 	JMP DelayFrame_s_
 
 TitleScreen:
+	; disable video for now
+	LDA #NMI_SOUND
+	STA zNMIState
 	LDY #MUSIC_NONE
 	JSR PlayMusic
 	JSR InitNameTable
@@ -176,6 +181,9 @@ TitleScreen:
 	JSR StoreText
 	LDY #MUSIC_TITLE
 	JSR PlayMusic
+	; enable everything now
+	LDA #NMI_NORMAL
+	STA zNMIState
 	; fade in
 	LDA iPals
 	SSB PAL_FADE_F
@@ -183,6 +191,47 @@ TitleScreen:
 	RTS
 
 RunTitleScreen:
+	LDA zJumpTableIndex
+	BMI @Done
+	ASL A
+	STA zTableOffset
+	LDA zTableOffset + 1
+	ADC #0
+	STA zTableOffset + 1
+	LDY #<@DW
+	LDA #>@DW
+	JMP JumpTable
+@Done:
+	SEC
+	RTS
+
+@DW:
+	.dw TitleScreenTimer
+	.dw TitleScreenMain
+	.dw TitleScreenEnd
+
+TitleScreenTimer:
+	; next scene
+	INC zJumpTableIndex
+	; set timer for $1000 frames (about 1:08)
+	LDA #0
+	STA zTitleScreenTimer
+	LDA #$10
+	STA zTitleScreenTimer + 1
+	CLC
+	RTS
+
+TitleScreenMain:
+	; has our timer concluded?
+	LDA zTitleScreenTimer
+	ORA zTitleScreenTimer + 1
+	BEQ @End
+	; it's still a non-zero
+	LDA zTitleScreenTimer
+	BNE @Skip
+	DEC zTitleScreenTimer + 1
+@Skip:
+	DEC zTitleScreenTimer
 	; check for controller 1 input
 	JSR Intro_CheckInput
 	BCC @Quit
@@ -193,6 +242,14 @@ RunTitleScreen:
 	STA zAuxAddresses + 7
 	JMP (zAuxAddresses + 6)
 @Quit:
+	CLC
+	RTS
+
+@End:
+	INC zJumpTableIndex
+	STA zMusicID
+	INC zTitleScreenTimer
+	CLC
 	RTS
 
 @DW:
@@ -217,6 +274,7 @@ RunTitleScreen:
 	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
 	STA iPals
 	RSB PAL_FADE_DIR_F ; wait $8f frames (2.38 seconds)
+	SEC
 	JMP DelayFrame_s_
 
 @CheckSelect:
@@ -225,6 +283,7 @@ RunTitleScreen:
 	BEQ @Normal
 	LDA #TITLESCREENOPTION_DELETE_SAVE_FILE
 	STA zTitleScreenOption
+	SEC
 	RTS
 
 @Press_B:
@@ -236,11 +295,31 @@ RunTitleScreen:
 	STA iPals
 	RSB PAL_FADE_DIR_F ; wait $8f frames (2.38 seconds)
 	JSR DelayFrame_s_
+	SEC
 	RTS
 
 @Press_Up_Down:
 	LDY #SFX_CURSOR_1
 	JSR PlaySFX
+	CLC
+	RTS
+
+TitleScreenEnd:
+; Wait until the music is queued
+	INC zTitleScreenTimer
+	LDA iChannelID
+	BEQ @Continue
+	CLC
+	RTS
+
+@Continue:
+	LDA #TITLESCREENOPTION_RESTART
+	STA zTitleScreenSelectedOption
+	; return to the inspired screen
+	LDA zJumpTableIndex
+	SSB 7
+	STA zJumpTableIndex
+	CLC
 	RTS
 
 Intro_CheckInput:

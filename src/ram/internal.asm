@@ -146,9 +146,9 @@ zPalFadePlacement:
 ; section: miscellaneous
 zTitleScreenOption:
 	.dsb 1 ; 0060
-zCurrentTextByte:
+zTitleScreenSelectedOption:
 	.dsb 1
-zSaveFileExists:
+zCurrentTextByte:
 	.dsb 1
 zTextBank:
 	.dsb 1
@@ -166,10 +166,12 @@ zTileOffset:
 	.dsb 2
 zCurrentTileNametableAddress:
 	.dsb 2 ; 0074
+zJumpTableIndex:
 	.dsb 1
 	.dsb 1
-	.dsb 1 ; 0078
-	.dsb 1
+zTitleScreenTimer:
+	.dsb 2 ; 0078
+zSaveFileExists:
 	.dsb 1
 	.dsb 1
 	.dsb 1 ; 007c
