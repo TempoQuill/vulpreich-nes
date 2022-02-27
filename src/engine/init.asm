@@ -134,7 +134,7 @@ TitleScreen:
 	LDA #>NAMETABLE_MAP_0
 	STA zCurrentTileNametableAddress
 	LDA #<NAMETABLE_MAP_0
-	STA zCurrentTileNametableAddress
+	STA zCurrentTileNametableAddress + 1
 	LDA #<LogoData
 	STA zCurrentTileAddress
 	LDA #>LogoData
