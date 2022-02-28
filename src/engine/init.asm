@@ -101,11 +101,15 @@ InspiredScreen:
 	STA cNametableAddress + 1
 	LDX #0
 	JSR StoreText
-	; store the palette address
-	LDA #<IntroPals
-	STA zPalPointer
-	LDA #>IntroPals
-	STA zPalPointer + 1
+	; store the palette data
+	LDX #15
+	STX zPalFade
+@PalLoop:
+	LDA IntroPals, X
+	STA iCurrentPals, X
+	STA iPals, X
+	DEX
+	BNE @PalLoop
 	; we can enable graphical updates now
 	; inputs are barred though for the time being
 	LDA #NMI_LIQUID

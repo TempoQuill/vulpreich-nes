@@ -302,6 +302,7 @@ iChannelRAMEnd:
 ; section: groups
 iPals:
 	.dsb 16 ; 04c0
+iCurrentPals:
 	.dsb 16 ; 04d0
 iNSFBanks:
 	.dsb 8 ; 04e0

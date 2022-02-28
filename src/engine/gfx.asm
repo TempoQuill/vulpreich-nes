@@ -395,7 +395,7 @@ _FadePalettes:
 	TAY
 	STA zPalFadeOffset
 	; get a byte directed by pointer
-	LDA (zPalPointer), Y
+	LDA iCurrentPals, Y
 	LDY #PALETTE_FADE_PLACEMENT_MASK
 @InLoop:
 	; apply to palette
@@ -422,6 +422,9 @@ _FadePalettes:
 @InFinal:
 	; we're done
 	; do cleanup
+	; reset placement byte
+	LDA #PALETTE_FADE_PLACEMENT_MASK
+	STA zPalFadePlacement
 	LDA iPals
 	RSB PAL_FADE_F
 	STA iPals
