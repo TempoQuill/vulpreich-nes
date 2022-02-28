@@ -86,6 +86,7 @@ IntroSequence:
 
 InspiredScreen:
 	JSR InitNameTable
+	JSR InitPals
 	LDA #0
 	STA zStringXOffset
 	LDA #>BeginningText
@@ -119,7 +120,7 @@ InspiredScreen:
 	LDA iPals
 	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
 	STA iPals
-	RSB PAL_FADE_DIR_F ; wait $cf frames (2.38 seconds)
+	RSB PAL_FADE_DIR_F ; wait $8f frames (2.38 seconds)
 	JMP DelayFrame_s_
 
 TitleScreen:
