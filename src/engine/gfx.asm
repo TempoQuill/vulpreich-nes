@@ -143,8 +143,6 @@ InstantPrint:
 	STA PPUADDR
 	LDA cNametableAddress
 	STA PPUADDR
-	LDA zTextOffset
-	BEQ @Advanced
 @Loop:
 	; parse a byte
 	JSR GetTextByte
