@@ -145,37 +145,7 @@ InstantPrint:
 	STA PPUADDR
 @Loop:
 	; parse a byte
-	JSR GetTextByte
-	BMI @Command
-	STA PPUDATA
-	BCS @Loop ; always branches thanks to GetWindowIndex
-@Done:
-	LDX #4
-	LDY #2
-	LDA zTextOffset, X
-	ORA zTextOffset + 1, X
-	BNE @Transfer
-	LDA zTextOffset, Y
-	ORA zTextOffset + 1, Y
-	BEQ @Quit
-	BNE @Transfer2
-@Transfer:
-	LDA zTextOffset, X
-	STA zTextOffset, Y
-	LDA zTextOffset + 1, X
-	STA zTextOffset + 1, Y
-	LDA zTextOffset
-@Transfer2:
-	LDA zTextOffset, Y
-	STA zTextOffset
-	LDA zTextOffset + 1, Y
-	STA zTextOffset + 1
-	ORA zTextOffset
-	BNE @Loop
-@Quit:
-	RTS
-
-@Command:
+	JSR DisplayTextRow
 	ASL A
 	TAY
 	LDA @DW, Y
@@ -290,8 +260,12 @@ _PrintText:
 	BMI @GetCommand
 	; increment address
 	INC cNametableAddress
-	BNE @CopyToPPU
+	BNE @SkipCarry
 	INC cNametableAddress + 1
+@SkipCarry:
+	INC zCurrentTextAddress
+	BNE @CopyToPPU
+	INC zCurrentTextAddress + 1
 @CopyToPPU:
 	; update PPU address
 	LDA cNametableAddress + 1

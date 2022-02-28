@@ -90,18 +90,20 @@ zTableOffset:
 	.dsb 2
 zRAMBank: ; MMC5 backups, and b/c this is ZP, this is optimal speed
 	.dsb 1
+; despite 4 switchable banks, only two real windows are needed
+; zWindow1 - 8000-9fff, zWindow2 - a000-bfff
+; c000-dfff is the DPCM area, and e000-fff9 is home ROM
 zWindow1:
 	.dsb 1 ; 002c
 zWindow2:
 	.dsb 1
-zWindow3:
-	.dsb 1
-zWindow4:
-	.dsb 1
 zCurrentWindow:
-	.dsb 4 ; 0030
+	.dsb 2
 zBackupWindow:
-	.dsb 4 ; 0034
+	.dsb 2 ; 0030
+	.dsb 2
+	.dsb 2 ; 0034
+	.dsb 2
 
 zAuxAddresses: ; back up 4 at a time
 ; 0: audio

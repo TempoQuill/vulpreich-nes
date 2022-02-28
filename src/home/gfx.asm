@@ -66,6 +66,28 @@ GetTextByte:
 	LDA zCurrentTextByte
 	RTS
 
+DisplayTextRow:
+	LDA zCurrentTextAddress + 1
+	JSR GetWindowIndex
+	LDA zTextBank
+	JSR StoreIndexedBank
+@Loop:
+	LDA (zCurrentTextAddress), Y
+	BMI @Command
+	INC zCurrentTextAddress
+	BNE @SkipCarry
+	INC zCurrentTextAddress + 1
+@SkipCarry:
+	STA PPUDATA
+	BNE @Loop
+@Command:
+	STA zCurrentTextByte
+	LDA #PRG_GFXEngine
+	STA zWindow1
+	JSR UpdatePRG ; restore old bank
+	LDA zCurrentTextByte
+	RTS
+
 GetPPUAddressFromNameTable:
 ; store the nametable pointer through PPU
 	LDA cNametableAddress + 1
