@@ -1,7 +1,6 @@
 StoreText:
 ; store all text as instructed: unlike the subs below, we aren't in an NMI
 ; so we can't use the conventional update when returning
-	SEC
 	; JSH means we are accessing a subroutine in a different bank
 	; since we're already home, we can just bankswitch from here
 	JSH PRG_GFXEngine, _StoreText
@@ -10,7 +9,6 @@ StoreText:
 PrintText:
 ; print text one character at a time
 	LDY #0
-	SEC
 	; check for active byte queue
 	LDA zTextOffset
 	ORA zTextOffset + 1
@@ -28,26 +26,22 @@ FadePalettes:
 
 UpdateGFXAttributes:
 ; update / apply current graphical attributes
-	SEC
 	JSH PRG_GFXEngine, _UpdateGFXAttributes
 	JMP UpdatePRG
 
 UpdateBackground:
 ; write to bg. zCurrentTileNametableAddress according to zCurrentTileAddress
 ; update for zTileOffset bytes
-	SEC
 	JSH PRG_GFXEngine, _UpdateBackground
 	JMP UpdatePRG
 
 InitPals:
 ; initialize palettes
-	SEC
 	JSH PRG_GFXEngine, _InitPals
 	JMP UpdatePRG
 
 InitNameTable:
 ; initialize nametables + attributes
-	SEC
 	JSH PRG_GFXEngine, _InitNameTable
 	JMP UpdatePRG
 
