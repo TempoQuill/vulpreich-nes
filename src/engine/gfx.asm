@@ -430,6 +430,9 @@ _FadePalettes:
 _UpdateBackground:
 ; apply the current background map chosen
 	; apply background address
+	LDA zCurrentTileAddress
+	ORA zCurrentTileAddress + 1
+	BEQ @Quit
 	LDY zCurrentTileNametableAddress + 1
 	STY PPUADDR
 	LDY zCurrentTileNametableAddress
@@ -443,6 +446,7 @@ _UpdateBackground:
 	JSR @Inc
 	STX PPUDATA
 	BNE @Loop
+@Quit:
 	RTS
 
 @Inc:
