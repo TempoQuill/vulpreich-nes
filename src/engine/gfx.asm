@@ -98,12 +98,12 @@ CopyCurrentIndex:
 _StoreText:
 ; load zTextOffset bytes to print
 ; input
-;	X
-;	zAuxAddresses + 6
-;	zTextBank
+;	X                 - offset #
+;	zAuxAddresses + 6 - base address
+;	zTextBank         - base bank
 ; output
-;	zTextOffset
-;	zCurrentTextAddress
+;	zTextOffset         - text size
+;	zCurrentTextAddress - output address
 	; initialize offset / addresses
 	LDY #0
 	STY zTextOffset, X
@@ -135,6 +135,163 @@ _StoreText:
 	; we should return to the bank we came from when we're done
 	LDA zTextBank
 	JMP StoreIndexedBank
+
+InstantPrint:
+; print all text at once
+	LDA PPUSTATUS
+	LDA cNametableAddress + 1
+	STA PPUADDR
+	LDA cNametableAddress
+	STA PPUADDR
+	LDA zTextOffset
+	BEQ @Advanced
+@Loop:
+	; parse a byte
+	JSR GetTextByte
+	BMI @Command
+	STA PPUDATA
+	DEC zTextOffset
+	BNE @Loop
+@Advanced:
+	JSR GetTextByte
+	BMI @Command
+	STA PPUDATA
+	LDA zTextOffset + 1
+	BEQ @Done
+	DEC zTextOffset
+	DEC zTextOffset + 1
+	BCS @Loop ; always branches thanks to GetWindowIndex
+@Done:
+	LDX #4
+	LDY #2
+	LDA zTableOffset, X
+	ORA zTableOffset + 1, X
+	BNE @Transfer
+	LDA zTableOffset, Y
+	ORA zTableOffset + 1, Y
+	BEQ @Quit
+	BNE @Transfer2
+@Transfer:
+	LDA zTableOffset, X
+	STA zTableOffset, Y
+	LDA zTableOffset + 1, X
+	STA zTableOffset + 1, Y
+@Transfer2:
+	LDA zTableOffset, Y
+	STA zTableOffset
+	LDA zTableOffset + 1, Y
+	STA zTableOffset + 1
+	ORA zTableOffset
+	BNE @Loop
+@Quit:
+	RTS
+
+@Command:
+	ASL A
+	TAY
+	LDA zTextOffset
+	BNE @CommandSimpleDec
+	DEC zTextOffset + 1
+@CommandSimpleDec:
+	DEC zTextOffset
+	LDA @DW, Y
+	STA zAuxAddresses + 2
+	INY
+	LDA @DW, Y
+	STA zAuxAddresses + 3
+	JMP (zAuxAddresses + 2)
+
+@DW:
+; text commands 80-ff
+	.dw @TextEnd  ; 80
+	.dw @Next     ; 81
+	.dw @Para     ; 82
+	.dw @Line     ; 83
+	.dw @Continue ; 84
+	.dw @TextEnd  ; 85 done
+
+@Continue:
+; move line 2 to line 1 and print on line 2
+	JSR GetNameTableOffsetLine2
+	SEC
+	LDA cNametableAddress
+	SBC #$40
+	STA zAuxAddresses + 2
+	LDA cNametableAddress + 1
+	SBC #0
+	STA zAuxAddresses + 3
+	JSR GetPPUAddressFromNameTable
+	JSR ReadPPUData
+	JSR GetNameTableOffsetLine1
+	JSR WritePPUDataFromStringBuffer
+	JSR GetNameTableOffsetLine2
+	JSR GetPPUAddressFromNameTable
+	LDA #$20 ; spacebar
+	JSR WritePPUData
+	JSR GetNameTableOffsetLine2
+	JSR GetPPUAddressFromNameTable
+	INY
+	JMP @Loop
+
+@Line:
+; print at textbox line 2
+	JSR GetNameTableOffsetLine2
+	JSR GetPPUAddressFromNameTable
+	INY
+	JMP @Loop
+
+@Para:
+; start new paragraph
+	; zipper Y with (zAuxAddresses + 6)
+	TYA
+	CLC
+	ADC zAuxAddresses + 6
+	STA zAuxAddresses + 6
+	LDA #0
+	ADC zAuxAddresses + 7
+	STA zAuxAddresses + 7
+	; clear y
+	LDY #0
+	; use x to clear the text buffer
+	LDX #0
+	LDA #$20 ; spacebar
+@ParaLoop:
+	DEX
+	STA cTextBuffer, X
+	BNE @ParaLoop
+	JSR GetNameTableOffsetLine2
+	JSR GetPPUAddressFromNameTable
+	LDA #$20 ; spacebar
+	JSR WritePPUData
+	JSR GetNameTableOffsetLine1
+	JSR GetPPUAddressFromNameTable
+	LDA #$20 ; spacebar
+	JSR WritePPUData
+	JSR GetNameTableOffsetLine1
+	JSR GetPPUAddressFromNameTable
+	JMP @Loop
+
+@TextEnd:
+; terminate printing routine
+	RTS
+
+@Next:
+; print at next line, offset by zStringXOffset
+	INC cNametableAddress
+	LDA cNametableAddress
+	BEQ @NextByte
+	AND #$3f
+	BEQ @NextWrite
+	JMP @Next
+@NextByte:
+	INC cNametableAddress + 1
+@NextWrite:
+	LDA cNametableAddress + 1
+	STA PPUADDR
+	LDA cNametableAddress
+	ADC zStringXOffset
+	STA PPUADDR
+	JMP @Loop
 
 _PrintText:
 ; print a letter once per frame

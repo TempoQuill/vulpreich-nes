@@ -318,6 +318,7 @@ NMI:
 	RTS
 
 @Tiles:
+	JSR PrintText
 	JMP UpdateBackground
 
 @OAM:

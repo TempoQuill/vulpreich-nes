@@ -173,6 +173,7 @@ zTitleScreenTimer:
 	.dsb 2 ; 0078
 zSaveFileExists:
 	.dsb 1
+zTextSpeed:
 	.dsb 1
 	.dsb 1 ; 007c
 	.dsb 1

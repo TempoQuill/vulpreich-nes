@@ -15,8 +15,14 @@ PrintText:
 	BEQ @Done
 @DoPrint:
 	; we have text to print now
+	; which way? CHR by CHR or instant?
+	LDA zTextSpeed
+	BEQ @Instant
 	JSH PRG_GFXEngine, _PrintText
 @Done:
+	JMP UpdatePRG
+@Instant:
+	JSH PRG_GFXEngine, InstantPrint
 	JMP UpdatePRG
 
 FadePalettes:
@@ -36,6 +42,7 @@ UpdateBackground:
 	JMP UpdatePRG
 
 InitPals:
+; despite not being in an NMI, conventional PRG updates apparently work here
 ; initialize palettes
 	JSH PRG_GFXEngine, _InitPals
 	JMP UpdatePRG
