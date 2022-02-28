@@ -150,38 +150,29 @@ InstantPrint:
 	JSR GetTextByte
 	BMI @Command
 	STA PPUDATA
-	DEC zTextOffset
-	BNE @Loop
-@Advanced:
-	JSR GetTextByte
-	BMI @Command
-	STA PPUDATA
-	LDA zTextOffset + 1
-	BEQ @Done
-	DEC zTextOffset
-	DEC zTextOffset + 1
 	BCS @Loop ; always branches thanks to GetWindowIndex
 @Done:
 	LDX #4
 	LDY #2
-	LDA zTableOffset, X
-	ORA zTableOffset + 1, X
+	LDA zTextOffset, X
+	ORA zTextOffset + 1, X
 	BNE @Transfer
-	LDA zTableOffset, Y
-	ORA zTableOffset + 1, Y
+	LDA zTextOffset, Y
+	ORA zTextOffset + 1, Y
 	BEQ @Quit
 	BNE @Transfer2
 @Transfer:
-	LDA zTableOffset, X
-	STA zTableOffset, Y
-	LDA zTableOffset + 1, X
-	STA zTableOffset + 1, Y
+	LDA zTextOffset, X
+	STA zTextOffset, Y
+	LDA zTextOffset + 1, X
+	STA zTextOffset + 1, Y
+	LDA zTextOffset
 @Transfer2:
-	LDA zTableOffset, Y
-	STA zTableOffset
-	LDA zTableOffset + 1, Y
-	STA zTableOffset + 1
-	ORA zTableOffset
+	LDA zTextOffset, Y
+	STA zTextOffset
+	LDA zTextOffset + 1, Y
+	STA zTextOffset + 1
+	ORA zTextOffset
 	BNE @Loop
 @Quit:
 	RTS
@@ -189,11 +180,6 @@ InstantPrint:
 @Command:
 	ASL A
 	TAY
-	LDA zTextOffset
-	BNE @CommandSimpleDec
-	DEC zTextOffset + 1
-@CommandSimpleDec:
-	DEC zTextOffset
 	LDA @DW, Y
 	STA zAuxAddresses + 2
 	INY
@@ -316,46 +302,6 @@ _PrintText:
 	STA PPUADDR
 	PLA ; place the character
 	STA PPUDATA
-	LDX #0
-	LDA zTextOffset, X
-	INX
-	ORA zTextOffset, X
-	BNE @Dec
-	INX
-	LDA zTextOffset, X
-	ORA zTextOffset + 1, X
-	BEQ @NoCarry
-	LDY #0
-	LDA zTextOffset, X
-	STA zTextOffset, Y
-	LDA zCurrentTextAddress, X
-	LDA zCurrentTextAddress, Y
-	INY
-	INX
-	LDA zTextOffset, X
-	STA zTextOffset, Y
-	LDA zCurrentTextAddress, X
-	LDA zCurrentTextAddress, Y
-	INY
-	INX
-	LDA zTextOffset, X
-	ORA zTextOffset + 1, X
-	BEQ @NoCarry
-	LDA zTextOffset, X
-	STA zTextOffset, Y
-	LDA zCurrentTextAddress, X
-	LDA zCurrentTextAddress, Y
-	INY
-	INX
-	LDA zTextOffset, X
-	STA zTextOffset, Y
-	LDA zCurrentTextAddress, X
-	LDA zCurrentTextAddress, Y
-@Dec:
-	DEC zTextOffset
-	BNE @NoCarry
-	DEC zTextOffset + 1
-@NoCarry:
 	RTS
 
 @GetCommand:
