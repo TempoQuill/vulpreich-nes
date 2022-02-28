@@ -1,10 +1,10 @@
 UpdatePRG:
+; update the two available windows
+; window 3 uses DPCM, and window 4 is Home ROM
 	LDA zWindow1
 	STA MMC5_PRGBankSwitch2
 	LDA zWindow2
 	STA MMC5_PRGBankSwitch3
-	LDA zWindow3
-	STA MMC5_PRGBankSwitch4
 	RTS
 
 UpdateCHR:
