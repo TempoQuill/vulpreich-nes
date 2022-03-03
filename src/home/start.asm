@@ -174,7 +174,11 @@ RestorePRG:
 ; in VulpReich, the NMI can take on 6 (technically 8) unique states.
 ; Functionality in these states range from disabling everything but sound and
 ; basic NMI operation to ignoring inputs, sprites or scrolling
+<<<<<<< HEAD
 NMI:
+=======
+NMI:NMI:
+>>>>>>> 90f7a03e3ff52312507df28673043c009ad93275
 	PHP
 	PHA
 	PHX
