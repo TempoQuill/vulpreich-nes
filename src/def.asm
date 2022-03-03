@@ -2,6 +2,7 @@
 .include "src/def/ppu.asm"
 .include "src/def/names.asm"
 .include "src/def/prg.asm"
+.include "src/def/chr.asm"
 .include "src/def/sound.asm"
 .include "src/def/sfx.asm"
 .include "src/def/music.asm"
