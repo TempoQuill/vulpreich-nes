@@ -226,106 +226,154 @@ NMI:
 
 @State0:
 ; normal NMI
-	JSR @Scroll
-	JSR @MapBuffer
-	JSR @Palettes
-	JSR @DMA
-	JSR @Map
-	JSR @Tiles
-	JSR @OAM
-	JMP @JoyPad
-
-@State1:
-; solid
-; disable DMA
-	JSR @Scroll
-	JSR @Palettes
-	JSR @Map
-	JSR @Tiles
-	JSR @OAM
-	JMP @JoyPad
-
-@State3:
-; liquid
-; disable joypad
-	JSR @Scroll
-	JSR @Palettes
-	JSR @Map
-	JSR @Tiles
-	JMP @OAM
-
-@State4:
-; gas
-; disable scrolling
-	JSR @Map
-	JSR @Tiles
-	JSR @OAM
-	JMP @JoyPad
-
-@State5:
-; plasma
-; disable sprites
-	JSR @Scroll
-	JSR @Palettes
-	JSR @Map
-	JSR @Tiles
-	JMP @JoyPad
-
-@Scroll:
-	LDA zNMIState
-	CMP #5
-	BNE @ScrollNormal
-	LDA zPPUScrollXMirror
-	STA PPUSCROLL
-	LDA #0
-	STA PPUSCROLL
-	BEQ @ScrollQuit
-@ScrollNormal:
+	; scroll (normal)
 	LDA zPPUScrollXMirror
 	STA PPUSCROLL
 	LDA zPPUScrollYMirror
 	STA PPUSCROLL
-@ScrollQuit:
-	RTS
-
-@MapBuffer:
-	RTS
-
-@Palettes:
+	; map buffer
+	JSR @MapBuffer
+	; palettes
 	JSR FadePalettes
 	LDA #>PALETTE_RAM
 	STA PPUADDR
 	LDA #<PALETTE_RAM
 	STA PPUADDR
 	TAX
-@PalettesLoop:
+@PalettesLoopNormal:
 	LDA iPals, X
 	AND #COLOR_INDEX
 	STA PPUDATA
 	INX
 	CPX #PALETTE_RAM_SPAN
-	BCC @PalettesLoop
-	JMP UpdateGFXAttributes
-@PalettesQuit:
-	RTS
-
-@DMA:
+	BCC @PalettesLoopNormal
+	JSR UpdateGFXAttributes
+	; DMA
 	LDA #>iVirtualOAM
 	STA OAM_DMA
+	; Map
+	JSR @Map
+	; tiles
+	JSR PrintText
+	JSR UpdateBackground
+	; OAM
+	JSR @OAM
+	JMP UpdateJoypads
+
+@State1:
+; solid
+; disable DMA
+	; scroll (normal)
+	LDA zPPUScrollXMirror
+	STA PPUSCROLL
+	LDA zPPUScrollYMirror
+	STA PPUSCROLL
+	; palettes
+	JSR FadePalettes
+	LDA #>PALETTE_RAM
+	STA PPUADDR
+	LDA #<PALETTE_RAM
+	STA PPUADDR
+	TAX
+@PalettesLoopSolid:
+	LDA iPals, X
+	AND #COLOR_INDEX
+	STA PPUDATA
+	INX
+	LDA iPals, X
+	AND #COLOR_INDEX
+	STA PPUDATA
+	INX
+	CPX #PALETTE_RAM_SPAN
+	BCC @PalettesLoopSolid
+	JSR UpdateGFXAttributes
+	; Map
+	JSR @Map
+	; tiles
+	JSR PrintText
+	JSR UpdateBackground
+	JSR @OAM
+	JMP UpdateJoypads
+
+@State3:
+; liquid
+; disable joypad
+	; scroll (normal)
+	LDA zPPUScrollXMirror
+	STA PPUSCROLL
+	LDA zPPUScrollYMirror
+	STA PPUSCROLL
+	; palettes
+	JSR FadePalettes
+	LDA #>PALETTE_RAM
+	STA PPUADDR
+	LDA #<PALETTE_RAM
+	STA PPUADDR
+	TAX
+@PalettesLoopLiquid:
+	LDA iPals, X
+	AND #COLOR_INDEX
+	STA PPUDATA
+	INX
+	CPX #PALETTE_RAM_SPAN
+	BCC @PalettesLoopLiquid
+	JSR UpdateGFXAttributes
+	; Map
+	JSR @Map
+	; tiles
+	JSR PrintText
+	JSR UpdateBackground
+	JMP @OAM
+
+@State4:
+; gas
+; disable scrolling
+	; Map
+	JSR @Map
+	; tiles
+	JSR PrintText
+	JSR UpdateBackground
+	JSR @OAM
+	JMP UpdateJoypads
+
+@State5:
+; plasma
+; disable sprites
+	; scroll (plasma)
+	LDA zPPUScrollXMirror
+	STA PPUSCROLL
+	LDA #0
+	STA PPUSCROLL
+	; palettes
+	JSR FadePalettes
+	LDA #>PALETTE_RAM
+	STA PPUADDR
+	LDA #<PALETTE_RAM
+	STA PPUADDR
+	TAX
+@PalettesLoopPlasma:
+	LDA iPals, X
+	AND #COLOR_INDEX
+	STA PPUDATA
+	INX
+	CPX #PALETTE_RAM_SPAN
+	BCC @PalettesLoopPlasma
+	JSR UpdateGFXAttributes
+	; Map
+	JSR @Map
+	; tiles
+	JSR PrintText
+	JSR UpdateBackground
+	JMP UpdateJoypads
+
+@MapBuffer:
 	RTS
 
 @Map:
 	RTS
 
-@Tiles:
-	JSR PrintText
-	JMP UpdateBackground
-
 @OAM:
 	RTS
-
-@JoyPad:
-	JMP UpdateJoypads
 
 ;
 ; Public RESET
@@ -341,7 +389,7 @@ RESET:
 	LDA #1 ; 4K mode (try not to use $5130)
 	STA MMC5_CHRMode
 
-	; Enable PRG RAM writing
+	; PRG RAM handshake
 	; Enable writable MMC5 exclusive RAM
 	LDA #2
 	STA MMC5_PRGRAMProtect1
@@ -353,22 +401,26 @@ RESET:
 	LDA #%01010000
 	STA MMC5_NametableMapping
 
+	; setup RAM
 	LDA #RAM_Scratch
 	STA zRAMBank
+	; upper CHR bits go unused
 	STA MMC5_CHRBankSwitchUpper
 
 	; MMC5 Pulse channels
 	LDA #1 << CHAN_3 | 1 << CHAN_2 | 1 << CHAN_1 | 1 << CHAN_0
 	STA MMC5_SND_CHN
 
-	LDA #0
+	; select the first two CHR banks
+	LDA #CHR_TitleBG
 	STA MMC5_CHRBankSwitch4
 	STA zCHRWindow0
-	LDA #1
+	LDA #CHR_TitleOBJ
 	STA MMC5_CHRBankSwitch8
 	STA MMC5_CHRBankSwitch12
 	STA zCHRWindow1
 
+	; select the starter PRG banks
 	LDA #PRG_Start0
 	STA MMC5_PRGBankSwitch2
 	STA zWindow1
@@ -377,19 +429,16 @@ RESET:
 	STA MMC5_PRGBankSwitch3
 	STA zWindow2
 	STA zCurrentWindow + 1
+	; PRG_Start2 needs to be empty due to DPCM
 	LDA #PRG_Start2
 	STA MMC5_PRGBankSwitch4
+	; Home ROM
 	LDA #PRG_Home
 	STA MMC5_PRGBankSwitch5
 
 	SEI
 	CLD
-; PPUCtrl_Base2000
-; PPUCtrl_WriteHorizontal
-; PPUCtrl_Sprite0000
-; PPUCtrl_Background0000
-; PPUCtrl_SpriteSize8x8
-; PPUCtrl_NMIDisabled
+; Nametable base 0, Horizontal writing, OBJ base 0, BG base 0, 8x8 OBJs, no NMI
 	LDA #0
 	STA PPUCTRL
 	STA zPPUCtrlMirror
@@ -409,9 +458,9 @@ RESET:
 
 	LDA #MMC5_VMirror
 	STA MMC5_NametableMapping
-	INX
 	JSR InitSound
 	; audio interfaces preserve all registers
+	INX
 	TXA
 @Loop:
 	; clear RAM

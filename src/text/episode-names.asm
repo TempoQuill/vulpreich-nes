@@ -9,7 +9,7 @@ VR_102:
 	text_end
 
 VR_103:
-	.db "Ever nOtis"
+	.db "Ever \Otis"
 	text_end
 
 VR_104:
