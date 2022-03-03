@@ -175,64 +175,40 @@ RestorePRG:
 ; Functionality in these states range from disabling everything but sound and
 ; basic NMI operation to ignoring inputs, sprites or scrolling
 NMI:
-	; preserve all registers
 	PHP
 	PHA
 	PHX
 	PHY
-	; save the PRG
-	; heavy bank switching might take place
-	JSR BackupPRG
+	; cleanup
+	JSR RestorePRG
 	; look for NMI_SOUND, else generate a pointer offset
 	LDA zNMIState
 	CMP #NMI_SOUND
 	BEQ @JustSound
-	ASL A
-	TAY
-	JSR @GeneratePointers
-@JustSound:
-	; advance sound by one frame
-	JSR UpdateSound
-	; check for an NMI timer (4.25 seconds maximum)
-	LDA zNMITimer
-	BEQ @DoNotAdjust
-	DEC zNMITimer
-@DoNotAdjust:
-	; cleanup
-	JSR RestorePRG
-	PLY
-	PLX
-	PLA
-	PLP
-	RTI
-
-@GeneratePointers:
-	LDA @Pointers, Y
-	STA zAuxAddresses + 2
-	INY
-	LDA @Pointers, Y
-	STA zAuxAddresses + 3
-	JMP (zAuxAddresses + 2)
-
-@Pointers:
-	.dw @State0
-	.dw @State1
-	.dw @State0 ; unused
-	.dw @State3
-	.dw @State4
-	.dw @State5
-	.dw @State0 ; just in case
-	.dw @State0 ; just in case
-
-@State0:
-; normal NMI
+	CMP #NMI_GAS
+	BEQ @MapBufferMain
+	BCS @ScrollPlasma
 	; scroll (normal)
 	LDA zPPUScrollXMirror
 	STA PPUSCROLL
 	LDA zPPUScrollYMirror
 	STA PPUSCROLL
+	BCC @MapBufferMain
+@ScrollPlasma:
+	; scroll (plasma)
+	LDA zPPUScrollXMirror
+	STA PPUSCROLL
+	LDA #0
+	STA PPUSCROLL
+@MapBufferMain:
+	LDA zNMIState
+	BNE @Palettes
 	; map buffer
 	JSR @MapBuffer
+@Palettes:
+	LDA zNMIState
+	CMP #NMI_GAS
+	BEQ @DMA
 	; palettes
 	JSR FadePalettes
 	LDA #>PALETTE_RAM
@@ -248,123 +224,42 @@ NMI:
 	CPX #PALETTE_RAM_SPAN
 	BCC @PalettesLoopNormal
 	JSR UpdateGFXAttributes
+@DMA:
+	LDA zNMIState
+	BNE @MapMain
 	; DMA
 	LDA #>iVirtualOAM
 	STA OAM_DMA
+@MapMain:
 	; Map
 	JSR @Map
 	; tiles
 	JSR PrintText
 	JSR UpdateBackground
+	LDA zNMIState
+	BNE @Joy
 	; OAM
 	JSR @OAM
-	JMP UpdateJoypads
-
-@State1:
-; solid
-; disable DMA
-	; scroll (normal)
-	LDA zPPUScrollXMirror
-	STA PPUSCROLL
-	LDA zPPUScrollYMirror
-	STA PPUSCROLL
-	; palettes
-	JSR FadePalettes
-	LDA #>PALETTE_RAM
-	STA PPUADDR
-	LDA #<PALETTE_RAM
-	STA PPUADDR
-	TAX
-@PalettesLoopSolid:
-	LDA iPals, X
-	AND #COLOR_INDEX
-	STA PPUDATA
-	INX
-	LDA iPals, X
-	AND #COLOR_INDEX
-	STA PPUDATA
-	INX
-	CPX #PALETTE_RAM_SPAN
-	BCC @PalettesLoopSolid
-	JSR UpdateGFXAttributes
-	; Map
-	JSR @Map
-	; tiles
-	JSR PrintText
-	JSR UpdateBackground
-	JSR @OAM
-	JMP UpdateJoypads
-
-@State3:
-; liquid
-; disable joypad
-	; scroll (normal)
-	LDA zPPUScrollXMirror
-	STA PPUSCROLL
-	LDA zPPUScrollYMirror
-	STA PPUSCROLL
-	; palettes
-	JSR FadePalettes
-	LDA #>PALETTE_RAM
-	STA PPUADDR
-	LDA #<PALETTE_RAM
-	STA PPUADDR
-	TAX
-@PalettesLoopLiquid:
-	LDA iPals, X
-	AND #COLOR_INDEX
-	STA PPUDATA
-	INX
-	CPX #PALETTE_RAM_SPAN
-	BCC @PalettesLoopLiquid
-	JSR UpdateGFXAttributes
-	; Map
-	JSR @Map
-	; tiles
-	JSR PrintText
-	JSR UpdateBackground
-	JMP @OAM
-
-@State4:
-; gas
-; disable scrolling
-	; Map
-	JSR @Map
-	; tiles
-	JSR PrintText
-	JSR UpdateBackground
-	JSR @OAM
-	JMP UpdateJoypads
-
-@State5:
-; plasma
-; disable sprites
-	; scroll (plasma)
-	LDA zPPUScrollXMirror
-	STA PPUSCROLL
-	LDA #0
-	STA PPUSCROLL
-	; palettes
-	JSR FadePalettes
-	LDA #>PALETTE_RAM
-	STA PPUADDR
-	LDA #<PALETTE_RAM
-	STA PPUADDR
-	TAX
-@PalettesLoopPlasma:
-	LDA iPals, X
-	AND #COLOR_INDEX
-	STA PPUDATA
-	INX
-	CPX #PALETTE_RAM_SPAN
-	BCC @PalettesLoopPlasma
-	JSR UpdateGFXAttributes
-	; Map
-	JSR @Map
-	; tiles
-	JSR PrintText
-	JSR UpdateBackground
-	JMP UpdateJoypads
+@Joy:
+	CMP #NMI_LIQUID
+	BEQ @JustSound
+	JSR UpdateJoypads
+@JustSound:
+	; advance sound by one frame
+	JSR UpdateSound
+	; check for an NMI timer (4.25 seconds maximum)
+	LDA zNMITimer
+	BEQ @DoNotAdjust
+	DEC zNMITimer
+@DoNotAdjust:
+	; save the PRG
+	; heavy bank switching might take place
+	JSR BackupPRG
+	PLY
+	PLX
+	PLA
+	PLP
+	RTI
 
 @MapBuffer:
 	RTS
