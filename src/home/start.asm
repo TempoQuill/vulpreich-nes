@@ -125,40 +125,12 @@ Start:
 	JMP GameInit
 
 SyncToCurrentWindow:
-	LDX #NUM_FLEXIBLE_PRG
-@Loop:
-	DEX
-	LDA zCurrentWindow, X
-	STA zWindow1, X
-	STA MMC5_PRGBankSwitch2, X
-	TXA
-	BNE @Loop
-	RTS
-
-BackupPRG:
-	LDX #NUM_FLEXIBLE_PRG
-@Loop:
-	DEX
-	LDA zWindow1, X
-	STA zBackupWindow, X
-	LDA zCurrentWindow, X
-	STA zWindow1, X
-	STA MMC5_PRGBankSwitch2, X
-	TXA
-	BNE @Loop
-	RTS
-
-RestorePRG:
-	LDX #NUM_FLEXIBLE_PRG
-@Loop:
-	DEX
-	LDA zWindow1, X
-	STA zCurrentWindow, X
-	LDA zBackupWindow, X
-	STA zWindow1, X
-	STA MMC5_PRGBankSwitch2, X
-	TXA
-	BNE @Loop
+	LDA zCurrentWindow + 1
+	STA zWindow2
+	STA MMC5_PRGBankSwitch3
+	LDA zCurrentWindow
+	STA zWindow1
+	STA MMC5_PRGBankSwitch2 
 	RTS
 
 ;
@@ -181,7 +153,16 @@ NMI:
 	PHY
 	; save the PRG
 	; heavy bank switching might take place
-	JSR BackupPRG
+	LDA zWindow2
+	STA zBackupWindow + 1
+	LDA zWindow1
+	STA zBackupWindow
+	LDA zCurrentWindow + 1
+	STA zWindow2
+	STA MMC5_PRGBankSwitch3
+	LDA zCurrentWindow
+	STA zWindow1
+	STA MMC5_PRGBankSwitch2
 	; look for NMI_SOUND, else generate a pointer offset
 	LDA zNMIState
 	CMP #NMI_SOUND
@@ -190,33 +171,32 @@ NMI:
 	BEQ @MapBufferMain
 	BCS @ScrollPlasma
 	; scroll (normal)
-	LDA zPPUScrollXMirror
-	STA PPUSCROLL
-	LDA zPPUScrollYMirror
-	STA PPUSCROLL
+	LDX zPPUScrollXMirror
+	STX PPUSCROLL
+	LDX zPPUScrollYMirror
+	STX PPUSCROLL
 	BCC @MapBufferMain
 @ScrollPlasma:
 	; scroll (plasma)
-	LDA zPPUScrollXMirror
-	STA PPUSCROLL
-	LDA #0
-	STA PPUSCROLL
+	LDX zPPUScrollXMirror
+	STX PPUSCROLL
+	LDX #0
+	STX PPUSCROLL
 @MapBufferMain:
-	LDA zNMIState
+	TAX
 	BNE @Palettes
 	; map buffer
 	JSR @MapBuffer
 @Palettes:
-	LDA zNMIState
 	CMP #NMI_GAS
 	BEQ @DMA
 	; palettes
+	PHA
 	JSR FadePalettes
-	LDA #>PALETTE_RAM
-	STA PPUADDR
-	LDA #<PALETTE_RAM
-	STA PPUADDR
-	TAX
+	LDX #>PALETTE_RAM
+	STX PPUADDR
+	LDX #<PALETTE_RAM
+	STX PPUADDR
 @PalettesLoopNormal:
 	LDA iPals, X
 	AND #COLOR_INDEX
@@ -225,19 +205,25 @@ NMI:
 	CPX #PALETTE_RAM_SPAN
 	BCC @PalettesLoopNormal
 	JSR UpdateGFXAttributes
-@DMA:
-	LDA zNMIState
+	; dma shortcut
+	PLA
+	BEQ @DMAUpdate
 	BNE @MapMain
+@DMA:
+	TAX
+	BNE @MapMain
+@DMAUpdate:
 	; DMA
-	LDA #>iVirtualOAM
-	STA OAM_DMA
+	LDX #>iVirtualOAM
+	STX OAM_DMA
 @MapMain:
 	; Map
 	JSR @Map
 	; tiles
+	PHA
 	JSR PrintText
 	JSR UpdateBackground
-	LDA zNMIState
+	PLA
 	BNE @Joy
 	; OAM
 	JSR @OAM
@@ -254,7 +240,16 @@ NMI:
 	DEC zNMITimer
 @DoNotAdjust:
 	; cleanup
-	JSR RestorePRG
+	LDA zWindow2
+	STA zCurrentWindow + 1
+	LDA zWindow1
+	STA zCurrentWindow
+	LDA zBackupWindow + 1
+	STA zWindow2
+	STA MMC5_PRGBankSwitch3
+	LDA zBackupWindow
+	STA zWindow1
+	STA MMC5_PRGBankSwitch2
 	PLY
 	PLX
 	PLA

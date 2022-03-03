@@ -144,7 +144,7 @@ InstantPrint:
 	LDA cNametableAddress
 	STA PPUADDR
 @Loop:
-	; parse a byte
+	; parse until a command is read
 	JSR DisplayTextRow
 	ASL A
 	TAY
