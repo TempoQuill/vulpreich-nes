@@ -74,11 +74,10 @@ DisplayTextRow:
 @Loop:
 	LDA (zCurrentTextAddress), Y
 	BMI @Command
-	INC zCurrentTextAddress
-	BNE @SkipCarry
-	INC zCurrentTextAddress + 1
-@SkipCarry:
 	STA PPUDATA
+	INC zCurrentTextAddress
+	BNE @Loop
+	INC zCurrentTextAddress + 1
 	BNE @Loop
 @Command:
 	STA zCurrentTextByte
