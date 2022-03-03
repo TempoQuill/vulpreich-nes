@@ -194,26 +194,10 @@ zTextSpeed:
 	.dsb 4 ; 00a4
 	.dsb 4 ; 00a8
 	.dsb 4 ; 00ac
-	.dsb 4 ; 00b0
-	.dsb 4 ; 00b4
-	.dsb 4 ; 00b8
-	.dsb 4 ; 00bc
-	.dsb 4 ; 00c0
-	.dsb 4 ; 00c4
-	.dsb 4 ; 00c8
-	.dsb 4 ; 00cc
-	.dsb 4 ; 00d0
-	.dsb 4 ; 00d4
-	.dsb 4 ; 00d8
-	.dsb 4 ; 00dc
-	.dsb 4 ; 00e0
-	.dsb 4 ; 00e4
-	.dsb 4 ; 00e8
-	.dsb 4 ; 00ec
-	.dsb 4 ; 00f0
-	.dsb 4 ; 00f4
-	.dsb 4 ; 00f8
-	.dsb 4 ; 00fc
+zPals:
+	.dsb 16 ; 00bc
+zPalAttributes:
+	.dsb 64 ; 00c0
 
 ; section: STACK
 iStack:
@@ -303,14 +287,12 @@ iChannelNoteLength:
 	.dsb 16
 iChannelRAMEnd:
 ; section: groups
-iPals:
 	.dsb 16 ; 04c0
 iCurrentPals:
 	.dsb 16 ; 04d0
 iNSFBanks:
 	.dsb 8 ; 04e0
 	.dsb $18 ; 04e8
-iPalAttributes:
 	.dsb $40 ; 0500
 	.dsb $40 ; 0540
 	.dsb $40 ; 0580

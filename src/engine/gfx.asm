@@ -2,10 +2,10 @@ _InitPals:
 ; clear palette RAM
 	LDA #15
 	TAX
-	STA iPals, X
+	STA zPals, X
 @Loop:
 	DEX
-	STA iPals, X
+	STA zPals, X
 	BNE @Loop
 @Quit:
 	RTS
@@ -384,10 +384,10 @@ _PrintText:
 _FadePalettes:
 ; fade palletes out/in
 ; used for title screen
-	; iPals initial byte contains two bitwise commands
+	; zPals initial byte contains two bitwise commands
 	; 6 (o) = fade direction, 7 (s) = fade power
-	LDA iPals
-	BIT iPals
+	LDA zPals
+	BIT zPals
 	BMI @Fading ; only branch if power is on
 	RTS
 
@@ -401,26 +401,26 @@ _FadePalettes:
 	LDX zPalFadePlacement
 	DEX
 	; ready colors
-	LDA iPals, X
+	LDA zPals, X
 	PHA
-	LDA iPals + 4, X
+	LDA zPals + 4, X
 	PHA
-	LDA iPals + 8, X
+	LDA zPals + 8, X
 	PHA
-	LDY iPals + 12, X
+	LDY zPals + 12, X
 	TXA
 	; does x = 0? Skip if so.
 	BEQ @Final
 	; else, let's apply the colors
 	INX
 	TYA
-	STA iPals + 12, X
+	STA zPals + 12, X
 	PLA
-	STA iPals + 8, X
+	STA zPals + 8, X
 	PLA
-	STA iPals + 4, X
+	STA zPals + 4, X
 	PLA
-	STA iPals, X
+	STA zPals, X
 	; cleanup
 	DEC zPalFadePlacement
 	LDA zPalFadeSpeed
@@ -437,7 +437,7 @@ _FadePalettes:
 	PLA
 	PLA
 	; clear fade direction flag (we're fading in now)
-	LDA iPals
+	LDA zPals
 	RSB PAL_FADE_DIR_F
 	PHA ; save this for later
 	AND #COLOR_INDEX
@@ -445,14 +445,14 @@ _FadePalettes:
 @FinalLoop:
 	; clear palettes
 	DEX
-	STA iPals + 12, X
-	STA iPals + 8, X
-	STA iPals + 4, X
-	STA iPals, X
+	STA zPals + 12, X
+	STA zPals + 8, X
+	STA zPals + 4, X
+	STA zPals, X
 	BNE @FinalLoop
 	; apply the flags
 	PLA
-	STA iPals
+	STA zPals
 	; reset placement byte
 	LDA #PALETTE_FADE_PLACEMENT_MASK
 	STA zPalFadePlacement
@@ -474,7 +474,7 @@ _FadePalettes:
 	LDY #PALETTE_FADE_PLACEMENT_MASK
 @InLoop:
 	; apply to palette
-	STA iPals, Y
+	STA zPals, Y
 	DEY
 	; does y < zPalFadeOffset?
 	CPY zPalFadeOffset
@@ -500,9 +500,9 @@ _FadePalettes:
 	; reset placement byte
 	LDA #PALETTE_FADE_PLACEMENT_MASK
 	STA zPalFadePlacement
-	LDA iPals
+	LDA zPals
 	RSB PAL_FADE_F
-	STA iPals
+	STA zPals
 	RTS
 
 _UpdateBackground:
@@ -554,7 +554,7 @@ _UpdateGFXAttributes:
 	LDA #<NAMETABLE_ATTRIBUTE_0
 	STA PPUADDR
 @Loop:
-	LDA iPalAttributes, X
+	LDA zPalAttributes, X
 	STA PPUDATA
 	INX
 	CPX #GFX_ATTRIBUTE_SIZE

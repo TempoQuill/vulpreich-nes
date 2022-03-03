@@ -197,9 +197,12 @@ NMI:
 	STX PPUADDR
 	LDX #<PALETTE_RAM
 	STX PPUADDR
-@PalettesLoopNormal:
-	LDA iPals, X
+	LDA zPals
 	AND #COLOR_INDEX
+	STA PPUDATA
+	INX
+@PalettesLoopNormal:
+	LDA zPals, X
 	STA PPUDATA
 	INX
 	CPX #PALETTE_RAM_SPAN

@@ -107,7 +107,7 @@ InspiredScreen:
 @PalLoop:
 	LDA IntroPals, X
 	STA iCurrentPals, X
-	STA iPals, X
+	STA zPals, X
 	DEX
 	BNE @PalLoop
 	; we can enable graphical updates now
@@ -115,15 +115,15 @@ InspiredScreen:
 	LDA #NMI_LIQUID
 	STA zNMIState
 	; fade in palettes
-	LDA iPals
+	LDA zPals
 	SSB PAL_FADE_F
-	STA iPals
+	STA zPals
 	SSB PAL_FADE_DIR_F ; wait $cf frames (3.45 seconds)
 	JSR DelayFrame_s_
 	; fade out palettes
-	LDA iPals
+	LDA zPals
 	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
-	STA iPals
+	STA zPals
 	RSB PAL_FADE_DIR_F ; wait $8f frames (2.38 seconds)
 	JMP DelayFrame_s_
 
@@ -190,9 +190,9 @@ TitleScreen:
 	LDA #NMI_NORMAL
 	STA zNMIState
 	; fade in
-	LDA iPals
+	LDA zPals
 	SSB PAL_FADE_F
-	STA iPals
+	STA zPals
 	RTS
 
 RunTitleScreen:
@@ -275,9 +275,9 @@ TitleScreenMain:
 	LDY #SFX_SELECT_1
 	JSR PlaySFX
 	; fade out palettes
-	LDA iPals
+	LDA zPals
 	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
-	STA iPals
+	STA zPals
 	RSB PAL_FADE_DIR_F ; wait $8f frames (2.38 seconds)
 	SEC
 	JMP DelayFrame_s_
@@ -295,9 +295,9 @@ TitleScreenMain:
 	LDY #MUSIC_NONE
 	JSR PlayMusic
 	JSR ClearOAM
-	LDA iPals
+	LDA zPals
 	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
-	STA iPals
+	STA zPals
 	RSB PAL_FADE_DIR_F ; wait $8f frames (2.38 seconds)
 	JSR DelayFrame_s_
 	SEC
