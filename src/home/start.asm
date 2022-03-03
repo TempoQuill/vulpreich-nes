@@ -179,8 +179,9 @@ NMI:
 	PHA
 	PHX
 	PHY
-	; cleanup
-	JSR RestorePRG
+	; save the PRG
+	; heavy bank switching might take place
+	JSR BackupPRG
 	; look for NMI_SOUND, else generate a pointer offset
 	LDA zNMIState
 	CMP #NMI_SOUND
@@ -252,9 +253,8 @@ NMI:
 	BEQ @DoNotAdjust
 	DEC zNMITimer
 @DoNotAdjust:
-	; save the PRG
-	; heavy bank switching might take place
-	JSR BackupPRG
+	; cleanup
+	JSR RestorePRG
 	PLY
 	PLX
 	PLA
