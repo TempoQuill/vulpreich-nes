@@ -147,6 +147,10 @@ InstantPrint:
 @Loop:
 	; parse until a command is read
 	JSR DisplayTextRow
+	INC zCurrentTextAddress
+	BNE @SkipCarry
+	INC zCurrentTextAddress + 1
+@SkipCarry:
 	TAX
 	DEX
 	BPL @End
