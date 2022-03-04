@@ -138,7 +138,6 @@ _StoreText:
 
 InstantPrint:
 ; print all text at once
-	LDA PPUSTATUS
 	LDA cNametableAddress + 1
 	STA PPUADDR
 	LDA cNametableAddress
@@ -146,106 +145,42 @@ InstantPrint:
 @Loop:
 	; parse until a command is read
 	JSR DisplayTextRow
-	ASL A
-	TAY
-	LDA @DW, Y
-	STA zAuxAddresses + 2
-	INY
-	LDA @DW, Y
-	STA zAuxAddresses + 3
-	JMP (zAuxAddresses + 2)
-
-@DW:
-; text commands 80-ff
-	.dw @TextEnd  ; 80
-	.dw @Next     ; 81
-	.dw @Para     ; 82
-	.dw @Line     ; 83
-	.dw @Continue ; 84
-	.dw @TextEnd  ; 85 done
-
-@Continue:
-; move line 2 to line 1 and print on line 2
-	JSR GetNameTableOffsetLine2
-	SEC
-	LDA cNametableAddress
-	SBC #$40
-	STA zAuxAddresses + 2
-	LDA cNametableAddress + 1
-	SBC #0
-	STA zAuxAddresses + 3
-	JSR GetPPUAddressFromNameTable
-	JSR ReadPPUData
-	JSR GetNameTableOffsetLine1
-	JSR WritePPUDataFromStringBuffer
-	JSR GetNameTableOffsetLine2
-	JSR GetPPUAddressFromNameTable
-	LDA #$20 ; spacebar
-	JSR WritePPUData
-	JSR GetNameTableOffsetLine2
-	JSR GetPPUAddressFromNameTable
-	INY
-	JMP @Loop
-
-@Line:
-; print at textbox line 2
-	JSR GetNameTableOffsetLine2
-	JSR GetPPUAddressFromNameTable
-	INY
-	JMP @Loop
-
-@Para:
-; start new paragraph
-	; zipper Y with (zAuxAddresses + 6)
-	TYA
-	CLC
-	ADC zAuxAddresses + 6
-	STA zAuxAddresses + 6
-	LDA #0
-	ADC zAuxAddresses + 7
-	STA zAuxAddresses + 7
-	; clear y
-	LDY #0
-	; use x to clear the text buffer
-	LDX #0
-	LDA #$20 ; spacebar
-@ParaLoop:
+	LDA PPUSTATUS
+	BPL @End
+	TAX
 	DEX
-	STA cTextBuffer, X
-	BNE @ParaLoop
-	JSR GetNameTableOffsetLine2
-	JSR GetPPUAddressFromNameTable
-	LDA #$20 ; spacebar
-	JSR WritePPUData
-	JSR GetNameTableOffsetLine1
-	JSR GetPPUAddressFromNameTable
-	LDA #$20 ; spacebar
-	JSR WritePPUData
-	JSR GetNameTableOffsetLine1
-	JSR GetPPUAddressFromNameTable
-	JMP @Loop
+	BPL @End
+	DEX
+	BPL @Next
 
-@TextEnd:
-; terminate printing routine
+@End:
 	RTS
 
 @Next:
-; print at next line, offset by zStringXOffset
-	INC cNametableAddress
+	LDA PPUSTATUS
+	BPL @End
 	LDA cNametableAddress
-	BEQ @NextByte
-	AND #$3f
-	BEQ @NextWrite
-	JMP @Next
-@NextByte:
-	INC cNametableAddress + 1
+	AND #$c0
+	ASL A
+	ROL A
+	ROL A
+	TAX
+	INX ; next vertically even tile
+	TXA
+	LDX cNametableAddress + 1
+	LSR A
+	ROR A
+	ROR A
+	BCS @NextWrite
+	CLC
+	INX
 @NextWrite:
-	LDA cNametableAddress + 1
-	STA PPUADDR
-	LDA cNametableAddress
 	ADC zStringXOffset
+	STX cNametableAddress + 1
+	STA cNametableAddress
+	STX PPUADDR
 	STA PPUADDR
-	JMP @Loop
+	BCC @Loop
 
 _PrintText:
 ; print a letter once per frame
@@ -365,19 +300,26 @@ _PrintText:
 
 @Next:
 ; print at next line, offset by zStringXOffset
-	INC cNametableAddress
 	LDA cNametableAddress
-	BEQ @NextByte
-	AND #$3f
-	BEQ @NextWrite
-	JMP @Next
-@NextByte:
-	INC cNametableAddress + 1
+	AND #$c0
+	ASL A
+	ROL A
+	ROL A
+	TAX
+	INX ; next vertically even tile
+	TXA
+	LDX cNametableAddress + 1
+	LSR A
+	ROR A
+	ROR A
+	BNE @NextWrite
+	CLC
+	INX
 @NextWrite:
-	LDA cNametableAddress + 1
-	STA PPUADDR
-	LDA cNametableAddress
 	ADC zStringXOffset
+	STX cNametableAddress + 1
+	STA cNametableAddress
+	STX PPUADDR
 	STA PPUADDR
 	JMP _PrintText
 
