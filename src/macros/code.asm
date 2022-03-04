@@ -48,7 +48,8 @@ MACRO JSH bank, memory
 	LDA #>memory
 	JSR GetWindowIndex
 	LDA #bank
-	JSR StoreIndexedBank
+	STA MMC5_PRGBankSwitch2, X
+	STA zCurrentWindow, X
 	JSR memory
 ENDM
 

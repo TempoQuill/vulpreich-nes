@@ -38,7 +38,8 @@ _LoadMusicByte:
 	STA zAuxAddresses + 1
 	JSR GetWindowIndex
 	LDA iChannelBank, Y
-	JSR StoreIndexedBank
+	STA MMC5_PRGBankSwitch2, X
+	STA zCurrentWindow, X
 	LDA iChannelAddress, Y
 	STA zAuxAddresses
 	LDY #0

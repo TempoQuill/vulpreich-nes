@@ -57,7 +57,8 @@ GetTextByte:
 	LDA zCurrentTextAddress + 1
 	JSR GetWindowIndex
 	LDA zTextBank
-	JSR StoreIndexedBank
+	STA MMC5_PRGBankSwitch2, X
+	STA zCurrentWindow, X
 	LDA (zCurrentTextAddress), Y
 	STA zCurrentTextByte
 	LDA #PRG_GFXEngine
@@ -70,7 +71,8 @@ DisplayTextRow:
 	LDA zCurrentTextAddress + 1
 	JSR GetWindowIndex
 	LDA zTextBank
-	JSR StoreIndexedBank
+	STA MMC5_PRGBankSwitch2, X
+	STA zCurrentWindow, X
 @Loop:
 	LDA (zCurrentTextAddress), Y
 	BMI @Command

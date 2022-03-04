@@ -22,7 +22,10 @@ _LoadMusicByte:
 	STA zAuxAddresses + 1
 	JSR GetWindowIndex
 	LDA iChannelBank, Y
-	JSR StoreIndexedBank
+	STA iNSFBanks, X
+	INX
+	ADC #1
+	STA iNSFBanks, X
 	LDA iChannelAddress, Y
 	STA zAuxAddresses
 	LDY #0
@@ -40,13 +43,6 @@ GetWindowIndex:
 	LSR A
 	LSR A
 	TAX
-	RTS
-
-StoreIndexedBank:
-	STA iNSFBanks, X
-	INX
-	ADC #1
-	STA iNSFBanks, X
 	RTS
 
 UpdatePRG:

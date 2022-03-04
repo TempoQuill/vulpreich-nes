@@ -71,7 +71,9 @@ FarCallJump:
 	JSR GetWindowIndex
 	; grab/store PRG #
 	LDA cCurrentROMBank
-	JMP StoreIndexedBank
+	STA MMC5_PRGBankSwitch2, X
+	STA zCurrentWindow, X
+	RTS
 
 FourBytePointers:
 ; entry  - y
@@ -151,7 +153,7 @@ GetWindowIndex:
 
 StoreIndexedBank:
 ; store bank A into bank window X
-	STA cCurrentROMBank
+; we only come here if we aren't already home
 	STA MMC5_PRGBankSwitch2, X
 	STA zCurrentWindow, X
 	RTS
