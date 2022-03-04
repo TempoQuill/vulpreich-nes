@@ -195,7 +195,7 @@ zTextSpeed:
 	.dsb 4 ; 00a8
 	.dsb 4 ; 00ac
 zPals:
-	.dsb 16 ; 00bc
+	.dsb 16 ; 00b0
 zPalAttributes:
 	.dsb 64 ; 00c0
 

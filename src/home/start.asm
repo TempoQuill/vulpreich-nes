@@ -159,10 +159,8 @@ NMI:
 	STA zBackupWindow
 	LDA zCurrentWindow + 1
 	STA zWindow2
-	STA MMC5_PRGBankSwitch3
 	LDA zCurrentWindow
 	STA zWindow1
-	STA MMC5_PRGBankSwitch2
 	; look for NMI_SOUND, else generate a pointer offset
 	LDA zNMIState
 	CMP #NMI_SOUND
@@ -193,20 +191,7 @@ NMI:
 	; palettes
 	PHA
 	JSR FadePalettes
-	LDX #>PALETTE_RAM
-	STX PPUADDR
-	LDX #<PALETTE_RAM
-	STX PPUADDR
-	LDA zPals
-	AND #COLOR_INDEX
-	STA PPUDATA
-	INX
-@PalettesLoopNormal:
-	LDA zPals, X
-	STA PPUDATA
-	INX
-	CPX #PALETTE_RAM_SPAN
-	BCC @PalettesLoopNormal
+	JSR @ApplyPalette
 	JSR UpdateGFXAttributes
 	; dma shortcut
 	PLA
@@ -266,6 +251,46 @@ NMI:
 	RTS
 
 @OAM:
+	RTS
+
+@ApplyPalette:
+	LDX #>PALETTE_RAM
+	STX PPUADDR
+	LDX #<PALETTE_RAM
+	STX PPUADDR
+	LDA zPals
+	AND #COLOR_INDEX
+	STA PPUDATA
+	LDA zPals + 1
+	STA PPUDATA
+	LDA zPals + 2
+	STA PPUDATA
+	LDA zPals + 3
+	STA PPUDATA
+	LDA zPals + 4
+	STA PPUDATA
+	LDA zPals + 5
+	STA PPUDATA
+	LDA zPals + 6
+	STA PPUDATA
+	LDA zPals + 7
+	STA PPUDATA
+	LDA zPals + 8
+	STA PPUDATA
+	LDA zPals + 9
+	STA PPUDATA
+	LDA zPals + 10
+	STA PPUDATA
+	LDA zPals + 11
+	STA PPUDATA
+	LDA zPals + 12
+	STA PPUDATA
+	LDA zPals + 13
+	STA PPUDATA
+	LDA zPals + 14
+	STA PPUDATA
+	LDA zPals + 15
+	STA PPUDATA
 	RTS
 
 ;

@@ -27,8 +27,12 @@ PrintText:
 
 FadePalettes:
 ; fade in and fade out the palettes on screen
+	LDA PPUSTATUS
+	BPL @Quit
 	JSH PRG_GFXEngine, _FadePalettes
 	JMP UpdatePRG
+@Quit:
+	RTS
 
 UpdateGFXAttributes:
 ; update / apply current graphical attributes
@@ -38,8 +42,12 @@ UpdateGFXAttributes:
 UpdateBackground:
 ; write to bg. zCurrentTileNametableAddress according to zCurrentTileAddress
 ; update for zTileOffset bytes
+	LDA PPUSTATUS
+	BPL @Quit
 	JSH PRG_GFXEngine, _UpdateBackground
 	JMP UpdatePRG
+@Quit:
+	RTS
 
 InitPals:
 ; despite not being in an NMI, conventional PRG updates apparently work here

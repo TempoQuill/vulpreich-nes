@@ -145,7 +145,7 @@ InstantPrint:
 @Loop:
 	; parse until a command is read
 	JSR DisplayTextRow
-	LDA PPUSTATUS
+	LDX PPUSTATUS
 	BPL @End
 	TAX
 	DEX
@@ -449,6 +449,9 @@ _FadePalettes:
 
 _UpdateBackground:
 ; apply the current background map chosen
+	; can't update without vblank
+	LDA PPUSTATUS
+	BPL @Quit
 	; apply background address
 	LDA zCurrentTileAddress
 	ORA zCurrentTileAddress + 1
@@ -488,9 +491,8 @@ _UpdateBackground:
 
 _UpdateGFXAttributes:
 ; apply attributes for all nametables
-	LDX #0
+	LDX #GFX_ATTRIBUTE_SIZE
 	LDA cNametableAddress + 1
-	AND #>NAMETABLE_ATTRIBUTE_3
 	ORA #>NAMETABLE_ATTRIBUTE_0
 	STA PPUADDR
 	LDA #<NAMETABLE_ATTRIBUTE_0
@@ -498,9 +500,8 @@ _UpdateGFXAttributes:
 @Loop:
 	LDA zPalAttributes, X
 	STA PPUDATA
-	INX
-	CPX #GFX_ATTRIBUTE_SIZE
-	BCC @Loop
+	DEX
+	BNE @Loop
 	RTS
 
 GetEpisodeName:
