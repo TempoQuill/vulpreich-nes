@@ -170,7 +170,7 @@ InstantPrint:
 	LSR A
 	ROR A
 	ROR A
-	BCS @NextWrite
+	BCC @NextWrite
 	CLC
 	INX
 @NextWrite:
