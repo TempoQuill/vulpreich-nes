@@ -12,7 +12,6 @@ _InitPals:
 
 _InitNameTable:
 ; clear a nametable including attributes
-	LDA PPUSTATUS
 	; turn off NMI
 	LDA zPPUCtrlMirror
 	RSB PPU_NMI
@@ -138,6 +137,9 @@ _StoreText:
 
 InstantPrint:
 ; print all text at once
+	; read the status
+	LDA PPUSTATUS
+	; update address
 	LDA cNametableAddress + 1
 	STA PPUADDR
 	LDA cNametableAddress
@@ -145,8 +147,6 @@ InstantPrint:
 @Loop:
 	; parse until a command is read
 	JSR DisplayTextRow
-	LDX PPUSTATUS
-	BPL @End
 	TAX
 	DEX
 	BPL @End
@@ -157,8 +157,7 @@ InstantPrint:
 	RTS
 
 @Next:
-	LDA PPUSTATUS
-	BPL @End
+	; raise to the nearest multiple of 64
 	LDA cNametableAddress
 	AND #$c0
 	ASL A
@@ -176,6 +175,7 @@ InstantPrint:
 	INX
 @NextWrite:
 	ADC zStringXOffset
+	; update address
 	STX cNametableAddress + 1
 	STA cNametableAddress
 	STX PPUADDR
@@ -451,7 +451,6 @@ _UpdateBackground:
 ; apply the current background map chosen
 	; can't update without vblank
 	LDA PPUSTATUS
-	BPL @Quit
 	; apply background address
 	LDA zCurrentTileAddress
 	ORA zCurrentTileAddress + 1
