@@ -161,7 +161,7 @@ NMI:
 	STA zWindow2
 	LDA zCurrentWindow
 	STA zWindow1
-	; look for NMI_SOUND, else generate a pointer offset
+	; look for NMI_SOUND, else go through the passes
 	LDA zNMIState
 	CMP #NMI_SOUND
 	BEQ @JustSound
@@ -189,12 +189,11 @@ NMI:
 	CMP #NMI_GAS
 	BEQ @DMA
 	; palettes
-	PHA
 	JSR FadePalettes
 	JSR @ApplyPalette
 	JSR UpdateGFXAttributes
 	; dma shortcut
-	PLA
+	LDA zNMIState
 	BEQ @DMAUpdate
 	BNE @MapMain
 @DMA:
@@ -208,10 +207,9 @@ NMI:
 	; Map
 	JSR @Map
 	; tiles
-	PHA
 	JSR PrintText
 	JSR UpdateBackground
-	PLA
+	LDA zNMIState
 	BNE @Joy
 	; OAM
 	JSR @OAM
