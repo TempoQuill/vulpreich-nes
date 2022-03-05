@@ -453,12 +453,11 @@ _FadePalettes:
 
 _UpdateBackground:
 ; apply the current background map chosen
-	; can't update without vblank
 	LDA PPUSTATUS
+	; are we pointing to PRG?
+	LDA zCurrentTileAddress + 1
+	BPL @Quit ; PRG never branches
 	; apply background address
-	LDA zCurrentTileAddress
-	ORA zCurrentTileAddress + 1
-	BEQ @Quit
 	LDY zCurrentTileNametableAddress + 1
 	STY PPUADDR
 	LDY zCurrentTileNametableAddress
@@ -501,9 +500,12 @@ _UpdateGFXAttributes:
 	LDA #<NAMETABLE_ATTRIBUTE_0
 	STA PPUADDR
 @Loop:
-	LDA zPalAttributes, X
-	STA PPUDATA
+	LDA zPalAttributes - 1, X
 	DEX
+	STA PPUDATA
+	LDA zPalAttributes - 1, X
+	DEX
+	STA PPUDATA
 	BNE @Loop
 	RTS
 

@@ -134,7 +134,8 @@ SyncToCurrentWindow:
 	RTS
 
 ;
-; Public NMI: where dreams come true!
+; NMI - this is the first of three labels that need constant accessibility
+;	RESET is the starting point of the ROM, and IRQ runs mid-frame
 ;
 ; The NMI runs every frame during vertical blanking and is responsible for
 ; tasks that should occur on each frame of gameplay, such as drawing tiles and
@@ -143,8 +144,8 @@ SyncToCurrentWindow:
 ; It also runs the audio engine, allowing music to play continuously no matter
 ; how busy the rest of the game happens to be.
 ;
-; in VulpReich, the NMI can take on 6 (technically 8) unique states.
-; Functionality in these states range from disabling everything but sound and
+; in VulpReich, the NMI can take on 6 unique states.
+; Functionality these states range from disabling everything but sound and
 ; basic NMI operation to ignoring inputs, sprites or scrolling
 NMI:
 	PHP
