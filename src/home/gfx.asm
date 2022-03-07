@@ -12,23 +12,196 @@ PrintText:
 	; check for active byte queue
 	LDA zTextOffset
 	ORA zTextOffset + 1
-	BEQ @Done
+	BNE @DoPrint
+	RTS
 @DoPrint:
 	; we have text to print now
 	; which way? CHR by CHR or instant?
 	LDA zTextSpeed
 	BEQ @Instant
 	JSH PRG_GFXEngine, _PrintText
-@Done:
 	JMP UpdatePRG
+
 @Instant:
-	JSH PRG_GFXEngine, InstantPrint
-	JMP UpdatePRG
+	; read the status
+	LDA PPUSTATUS
+	; update address
+	LDA cNametableAddress + 1
+	STA PPUADDR
+	LDA cNametableAddress
+	STA PPUADDR
+@Loop:
+	; parse until a command is read
+	LDA (zCurrentTextAddress), Y
+	BMI @Command
+	STA PPUDATA
+	INC zCurrentTextAddress
+	BNE @Loop
+	INC zCurrentTextAddress + 1
+	BNE @Loop
+@Command:
+	STA zCurrentTextByte
+	INC zCurrentTextAddress
+	BNE @SkipCarry
+	INC zCurrentTextAddress + 1
+@SkipCarry:
+	TAX
+	DEX
+	BPL @End
+	DEX
+	BPL @Next
+
+@End:
+	RTS
+
+@Next:
+	; raise to the nearest multiple of 64
+	LDA cNametableAddress
+	AND #$c0
+	ASL A
+	ROL A
+	ROL A
+	TAX
+	INX ; next vertically even tile
+	TXA
+	LDX cNametableAddress + 1
+	LSR A
+	ROR A
+	ROR A
+	BCC @NextWrite
+	CLC
+	INX
+@NextWrite:
+	ADC zStringXOffset
+	; update address
+	STX cNametableAddress + 1
+	STA cNametableAddress
+	STX PPUADDR
+	STA PPUADDR
+	BCC @Loop
 
 FadePalettes:
 ; fade in and fade out the palettes on screen
-	JSH PRG_GFXEngine, _FadePalettes
-	JMP UpdatePRG
+	; zPals initial byte contains two bitwise commands
+	; 6 (o) = fade direction, 7 (s) = fade power
+	LDA zPals
+	BIT zPals
+	BMI @Fading ; only branch if power is on
+	RTS
+
+@Fading:
+	BVC @In
+	; zPalFade timer is 4-bit (0-15)
+	LDA zPalFade
+	AND #PALETTE_FADE_SPEED_MASK
+	BNE @Dec
+	; zPalFadePlacement is 2-bit (0-3)
+	LDX zPalFadePlacement
+	DEX
+	; ready colors
+	LDA zPals, X
+	PHA
+	LDA zPals + 4, X
+	PHA
+	LDA zPals + 8, X
+	PHA
+	LDY zPals + 12, X
+	TXA
+	; does x = 0? Skip if so.
+	BEQ @Final
+	; else, let's apply the colors
+	INX
+	TYA
+	STA zPals + 12, X
+	PLA
+	STA zPals + 8, X
+	PLA
+	STA zPals + 4, X
+	PLA
+	STA zPals, X
+	; cleanup
+	DEC zPalFadePlacement
+	LDA zPalFadeSpeed
+	STA zPalFade
+	RTS
+@Dec:
+	; dec timer if we got here
+	DEC zPalFade
+	RTS
+
+@Final:
+	; skip color application
+	PLA
+	PLA
+	PLA
+	; clear fade direction flag (we're fading in now)
+	LDA zPals
+	RSB PAL_FADE_DIR_F
+	PHA ; save this for later
+	AND #COLOR_INDEX
+	LDX #NUM_PALETTES
+@FinalLoop:
+	; clear palettes
+	DEX
+	STA zPals + 12, X
+	STA zPals + 8, X
+	STA zPals + 4, X
+	STA zPals, X
+	BNE @FinalLoop
+	; apply the flags
+	PLA
+	STA zPals
+	; reset placement byte
+	LDA #PALETTE_FADE_PLACEMENT_MASK
+	STA zPalFadePlacement
+	RTS
+
+@In:
+	; check timer
+	LDA zPalFade
+	AND #PALETTE_FADE_SPEED_MASK
+	BNE @InDec
+	; formulate offset
+	LDA zPalFadePlacement
+	EOR #PALETTE_FADE_PLACEMENT_MASK
+	ADC #0
+	TAY
+	STA zPalFadeOffset
+	; get a byte directed by pointer
+	LDA iCurrentPals, Y
+	LDY #PALETTE_FADE_PLACEMENT_MASK
+@InLoop:
+	; apply to palette
+	STA zPals, Y
+	DEY
+	; does y < zPalFadeOffset?
+	CPY zPalFadeOffset
+	BEQ @InSubExit
+	BCS @InLoop
+@InSubExit:
+	; application done
+	LDA zPalFadeSpeed
+	STA zPalFade
+	; are we done?
+	LDA zPalFadePlacement
+	BEQ @InFinal
+	DEC zPalFadePlacement
+	RTS
+@InDec:
+	; dec timer if we got here
+	DEC zPalFade
+	RTS
+
+@InFinal:
+	; we're done
+	; do cleanup
+	; reset placement byte
+	LDA #PALETTE_FADE_PLACEMENT_MASK
+	STA zPalFadePlacement
+	LDA zPals
+	RSB PAL_FADE_F
+	STA zPals
+	RTS
 
 UpdateGFXAttributes:
 ; update / apply current graphical attributes
@@ -51,8 +224,43 @@ UpdateGFXAttributes:
 UpdateBackground:
 ; write to bg. zCurrentTileNametableAddress according to zCurrentTileAddress
 ; update for zTileOffset bytes
-	JSH PRG_GFXEngine, _UpdateBackground
-	JMP UpdatePRG
+	LDA PPUSTATUS
+	; are we pointing to PRG?
+	LDA zCurrentTileAddress + 1
+	BPL @Quit ; PRG never branches
+	; apply background address
+	LDY zCurrentTileNametableAddress + 1
+	STY PPUADDR
+	LDY zCurrentTileNametableAddress
+	STY PPUADDR
+	; y needs to be constant
+	LDY #0
+@Loop:
+	; start writing
+	LDA (zCurrentTileAddress), Y
+	TAX
+	JSR @Inc
+	STX PPUDATA
+	BNE @Loop
+@Quit:
+	RTS
+
+@Inc:
+; increment tilemap
+	INC zCurrentTileAddress
+	BNE @Dec
+	INC zCurrentTileAddress + 1
+@Dec:
+; decrement offset
+	DEC zTileOffset
+	BNE @Done
+	DEC zTileOffset + 1
+@Done:
+; compound bitfields to return the state of zero
+; no bits active, zero flag is set
+	LDA zTileOffset
+	ORA zTileOffset + 1
+	RTS
 
 InitPals:
 ; despite not being in an NMI, conventional PRG updates apparently work here
@@ -73,28 +281,6 @@ GetTextByte:
 	STA MMC5_PRGBankSwitch2, X
 	STA zCurrentWindow, X
 	LDA (zCurrentTextAddress), Y
-	STA zCurrentTextByte
-	LDA #PRG_GFXEngine
-	STA zWindow1
-	JSR UpdatePRG ; restore old bank
-	LDA zCurrentTextByte
-	RTS
-
-DisplayTextRow:
-	LDA zCurrentTextAddress + 1
-	JSR GetWindowIndex
-	LDA zTextBank
-	STA MMC5_PRGBankSwitch2, X
-	STA zCurrentWindow, X
-@Loop:
-	LDA (zCurrentTextAddress), Y
-	BMI @Command
-	STA PPUDATA
-	INC zCurrentTextAddress
-	BNE @Loop
-	INC zCurrentTextAddress + 1
-	BNE @Loop
-@Command:
 	STA zCurrentTextByte
 	LDA #PRG_GFXEngine
 	STA zWindow1
