@@ -491,24 +491,6 @@ _UpdateBackground:
 	ORA zTileOffset + 1
 	RTS
 
-_UpdateGFXAttributes:
-; apply attributes for all nametables
-	LDX #GFX_ATTRIBUTE_SIZE
-	LDA cNametableAddress + 1
-	ORA #>NAMETABLE_ATTRIBUTE_0
-	STA PPUADDR
-	LDA #<NAMETABLE_ATTRIBUTE_0
-	STA PPUADDR
-@Loop:
-	LDA zPalAttributes - 1, X
-	DEX
-	STA PPUDATA
-	LDA zPalAttributes - 1, X
-	DEX
-	STA PPUDATA
-	BNE @Loop
-	RTS
-
 GetEpisodeName:
 	LDA #PRG_Names0
 	STA zTextBank

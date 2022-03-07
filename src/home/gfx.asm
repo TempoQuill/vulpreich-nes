@@ -32,8 +32,21 @@ FadePalettes:
 
 UpdateGFXAttributes:
 ; update / apply current graphical attributes
-	JSH PRG_GFXEngine, _UpdateGFXAttributes
-	JMP UpdatePRG
+	LDX #GFX_ATTRIBUTE_SIZE
+	LDA cNametableAddress + 1
+	ORA #>NAMETABLE_ATTRIBUTE_0
+	STA PPUADDR
+	LDA #<NAMETABLE_ATTRIBUTE_0
+	STA PPUADDR
+@Loop:
+	LDA zPalAttributes - 1, X
+	DEX
+	STA PPUDATA
+	LDA zPalAttributes - 1, X
+	DEX
+	STA PPUDATA
+	BNE @Loop
+	RTS
 
 UpdateBackground:
 ; write to bg. zCurrentTileNametableAddress according to zCurrentTileAddress
