@@ -52,6 +52,10 @@ PrintText:
 	BPL @Next
 
 @End:
+	; do some cleanup
+	LDA #0
+	STA zTextOffset
+	STA zTextOffset + 1
 	RTS
 
 @Next:
