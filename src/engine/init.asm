@@ -134,8 +134,8 @@ TitleScreen:
 	LDY #MUSIC_NONE
 	JSR PlayMusic
 	JSR InitNameTable
+	JSR InitPals
 	; set up nametable and text
-	LDY #0
 	LDA #>NAMETABLE_MAP_0
 	STA zCurrentTileNametableAddress
 	LDA #<NAMETABLE_MAP_0
@@ -196,6 +196,28 @@ TitleScreen:
 	RTS
 
 RunTitleScreen:
+	LDA zTextOffset
+	ORA zTextOffset + 1
+	BNE @DoNotAdjust
+	LDY zTextOffset + 2
+	TYA
+	ORA zTextOffset + 3
+	BNE @Adjust
+	LDA zTextOffset + 4
+	ORA zTextOffset + 5
+	BEQ @DoNotAdjust
+@Adjust:
+	LDA zTextOffset + 3
+	STY zTextOffset
+	STA zTextOffset + 1
+	LDY zTextOffset + 4
+	LDA zTextOffset + 5
+	STY zTextOffset + 2
+	STA zTextOffset + 3
+	LDA #0
+	STA zTextOffset + 4
+	STA zTextOffset + 5
+@DoNotAdjust:
 	LDA zJumpTableIndex
 	BMI @Done
 	ASL A
@@ -247,7 +269,6 @@ TitleScreenMain:
 	STA zAuxAddresses + 7
 	JMP (zAuxAddresses + 6)
 @Quit:
-	CLC
 	RTS
 
 @End:
