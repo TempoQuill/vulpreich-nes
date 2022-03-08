@@ -98,46 +98,45 @@ FadePalettes:
 	; zPalFade timer is 4-bit (0-15)
 	LDA zPalFade
 	AND #PALETTE_FADE_SPEED_MASK
-	BNE @Dec
+	BEQ @Act
+	; dec timer if we got here
+	DEC zPalFade
+	RTS
+@Act:
 	; zPalFadePlacement is 2-bit (0-3)
-	LDX zPalFadePlacement
-	DEX
-	; ready colors
-	LDA zPals, X
-	PHA
-	LDA zPals + 4, X
-	PHA
-	LDA zPals + 8, X
-	PHA
-	LDY zPals + 12, X
-	TXA
-	; does x = 0? Skip if so.
+	LDY #0
+	LDA zPalFadePlacement
+	AND #PALETTE_FADE_PLACEMENT_MASK
+	TAX
 	BEQ @Final
-	; else, let's apply the colors
-	INX
-	TYA
-	STA zPals + 12, X
-	PLA
-	STA zPals + 8, X
-	PLA
-	STA zPals + 4, X
-	PLA
-	STA zPals, X
+	DEX
+	BEQ @AppLoop
+	INY
+	DEX
+	BEQ @AppLoop
+	INY
+@AppLoop:
+	JSR @Apply
+	DEY
+	BPL @AppLoop
 	; cleanup
 	DEC zPalFadePlacement
 	LDA zPalFadeSpeed
 	STA zPalFade
 	RTS
-@Dec:
-	; dec timer if we got here
-	DEC zPalFade
+
+@Apply:
+	LDA zPals, Y
+	STA zPals + 1, Y
+	LDA zPals + 4, Y
+	STA zPals + 5, Y
+	LDA zPals + 8, Y
+	STA zPals + 9, Y
+	LDA zPals + 12, Y
+	STA zPals + 13, Y
 	RTS
 
 @Final:
-	; skip color application
-	PLA
-	PLA
-	PLA
 	; clear fade direction flag (we're fading in now)
 	LDA zPals
 	RSB PAL_FADE_DIR_F
