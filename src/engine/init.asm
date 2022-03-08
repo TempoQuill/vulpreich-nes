@@ -187,11 +187,13 @@ TitleScreen:
 	LDA zPPUCtrlMirror
 	RSB PPU_NMI
 	STA zPPUCtrlMirror
+	STA PPUCTRL
 	LDY #MUSIC_TITLE
 	JSR PlayMusic
 	LDA zPPUCtrlMirror
 	SSB PPU_NMI
 	STA zPPUCtrlMirror
+	STA PPUCTRL
 	; enable everything now
 	LDA #NMI_NORMAL
 	STA zNMIState
