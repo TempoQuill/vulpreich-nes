@@ -168,7 +168,7 @@ FadePalettes:
 	; dec timer if we got here
 	DEC zPalFade
 	RTS
-@InAct
+@InAct:
 	; reset counter
 	LDA zPalFadeSpeed
 	STA zPalFade
