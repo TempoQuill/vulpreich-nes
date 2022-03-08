@@ -104,17 +104,9 @@ FadePalettes:
 	RTS
 @Act:
 	; zPalFadePlacement is 2-bit (0-3)
-	LDY #0
 	LDA zPalFadePlacement
-	AND #PALETTE_FADE_PLACEMENT_MASK
-	TAX
 	BEQ @Final
-	DEX
-	BEQ @AppLoop
-	INY
-	DEX
-	BEQ @AppLoop
-	INY
+	LDY #2
 @AppLoop:
 	JSR @Apply
 	DEY
