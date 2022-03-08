@@ -2121,10 +2121,10 @@ SetNoteDuration:
 @Loop:
 	; halve a
 	ROR A
+	STA zBackupA
 	; is there a remainder?
 	BCC @Skip
 	; add it to the result
-	STA zBackupA
 	LDA zFactorBuffer
 	ADC zFactorBuffer + 2
 	STA zFactorBuffer + 2
