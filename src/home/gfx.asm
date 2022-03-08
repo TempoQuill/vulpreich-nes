@@ -164,7 +164,11 @@ FadePalettes:
 	; check timer
 	LDA zPalFade
 	AND #PALETTE_FADE_SPEED_MASK
-	BNE @InDec
+	BEQ @InAct
+	; dec timer if we got here
+	DEC zPalFade
+	RTS
+@InAct
 	; reset counter
 	LDA zPalFadeSpeed
 	STA zPalFade
@@ -236,11 +240,6 @@ FadePalettes:
 	STA zPals + 8, Y
 	LDA iCurrentPals + 12, Y
 	STA zPals + 12, Y
-	RTS
-
-@InDec:
-	; dec timer if we got here
-	DEC zPalFade
 	RTS
 
 UpdateGFXAttributes:
