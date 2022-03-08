@@ -2138,7 +2138,7 @@ SetNoteDuration:
 	RTS
 
 SetGlobalTempo:
-	PHA
+	STA zBackupA
 	; are we dealing with music or sfx?
 	TXA
 	TSB SFX_CHANNEL
@@ -2156,6 +2156,7 @@ SetGlobalTempo:
 	BEQ @End
 
 @SFXChannel:
+	STX zBackupX
 	LDX #8
 	JSR Tempo
 	INX
@@ -2168,7 +2169,6 @@ SetGlobalTempo:
 	JSR Tempo
 @End:
 	LDX zCurrentChannel ; restore current channel
-	PLA
 	RTS
 
 Tempo:
