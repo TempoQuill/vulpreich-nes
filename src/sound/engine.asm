@@ -473,7 +473,7 @@ TryMusic:
 	; get new song ID
 	LDA zMusicID
 	BEQ @Quit
-	CMP iChannelID, X
+	CMP iChannelID
 	BEQ @Quit
 	; restart sound
 	JSR PreserveIDRestart
