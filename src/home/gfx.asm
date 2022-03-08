@@ -181,7 +181,7 @@ FadePalettes:
 	; does y < zPalFadeOffset?
 	CPY zPalFadeOffset
 	BEQ @InSubExit
-	BCS @InLoop
+	BCC @InLoop
 @InSubExit:
 	; application done
 	LDA zPalFadeSpeed
@@ -247,6 +247,8 @@ UpdateBackground:
 	STX PPUDATA
 	BNE @Loop
 @Quit:
+	STY PPUADDR
+	STY PPUADDR
 	RTS
 
 @Inc:
