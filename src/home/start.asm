@@ -166,21 +166,6 @@ NMI:
 	LDA zNMIState
 	CMP #NMI_SOUND
 	BEQ @JustSound
-	CMP #NMI_GAS
-	BEQ @MapBufferMain
-	BCS @ScrollPlasma
-	; scroll (normal)
-	LDX zPPUScrollXMirror
-	STX PPUSCROLL
-	LDX zPPUScrollYMirror
-	STX PPUSCROLL
-	BCC @MapBufferMain
-@ScrollPlasma:
-	; scroll (plasma)
-	LDX zPPUScrollXMirror
-	STX PPUSCROLL
-	LDX #0
-	STX PPUSCROLL
 @MapBufferMain:
 	TAX
 	BNE @Palettes
@@ -210,6 +195,23 @@ NMI:
 	; tiles
 	JSR PrintText
 	JSR UpdateBackground
+	; scroll
+	CMP #NMI_GAS
+	BEQ @OAMCheck
+	BCS @ScrollPlasma
+	; scroll (normal)
+	LDX zPPUScrollXMirror
+	STX PPUSCROLL
+	LDX zPPUScrollYMirror
+	STX PPUSCROLL
+	BCC @MapBufferMain
+@ScrollPlasma:
+	; scroll (plasma)
+	LDX zPPUScrollXMirror
+	STX PPUSCROLL
+	LDX #0
+	STX PPUSCROLL
+@OAMCheck:
 	LDA zNMIState
 	BNE @Joy
 	; OAM

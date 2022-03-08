@@ -107,7 +107,6 @@ InspiredScreen:
 @PalLoop:
 	LDA IntroPals, X
 	STA iCurrentPals, X
-	STA zPals, X
 	DEX
 	BNE @PalLoop
 	; we can enable graphical updates now
