@@ -184,8 +184,14 @@ TitleScreen:
 	STA cNametableAddress + 1
 	LDX #4
 	JSR StoreText
+	LDA zPPUCtrlMirror
+	RSB PPU_NMI
+	STA zPPUCtrlMirror
 	LDY #MUSIC_TITLE
 	JSR PlayMusic
+	LDA zPPUCtrlMirror
+	SSB PPU_NMI
+	STA zPPUCtrlMirror
 	; enable everything now
 	LDA #NMI_NORMAL
 	STA zNMIState
