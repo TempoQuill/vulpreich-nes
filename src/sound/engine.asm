@@ -214,11 +214,11 @@ UpdateChannels:
 	ASL A
 	TAY
 	LDA @FunctionPointers, Y
-	STA zAuxAddresses
+	STA zAuxAddresses + 2
 	INY
 	LDA @FunctionPointers, Y
-	STA zAuxAddresses + 1
-	JMP (zAuxAddresses)
+	STA zAuxAddresses + 3
+	JMP (zAuxAddresses + 2)
 
 @FunctionPointers:
 ; music channels
@@ -1378,12 +1378,12 @@ ParseMusicCommand:
 	TAY
 	; seek command pointer
 	LDA MusicCommands, Y
-	STA zAuxAddresses
+	STA zAuxAddresses + 2
 	INY
 	LDA MusicCommands, Y
-	STA zAuxAddresses + 1
+	STA zAuxAddresses + 3
 	; jump to the new pointer
-	JMP (zAuxAddresses)
+	JMP (zAuxAddresses + 2)
 
 MusicCommands:
 ; entries correspond to audio constants (see src/def/sound.asm)
