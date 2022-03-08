@@ -2125,6 +2125,7 @@ SetNoteDuration:
 	TAY
 	; is there a remainder?
 	BCC @Skip
+	CLC
 	; add it to the result
 	LDA zFactorBuffer
 	ADC zFactorBuffer + 2
