@@ -2023,10 +2023,16 @@ GetMusicByte:
 ; advances to next byte in music data
 ; input: X = current channel
 ; output: C = 1
+	LDA iChannelAddress, X
+	STA zAuxAddresses
+	LDA iChannelAddress + 16, X
+	STA zAuxAddresses + 1
 	JSR _LoadMusicByte ; home ROM
 	INC zAuxAddresses
+	INC iChannelAddress, X
 	BNE @Quit
 	INC zAuxAddresses + 1
+	INC iChannelAddress + 16, X
 @Quit:
 	LDY zBackupY
 	LDA zCurrentMusicByte
