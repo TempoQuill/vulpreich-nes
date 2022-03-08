@@ -1796,6 +1796,7 @@ Music_CyclePattern: ; command de
 	STA iChannelFlagSection2, X
 	; cycle sequence
 	JSR GetMusicByte
+	CLC
 	ROR A
 	ROR A
 	ROR A
@@ -1892,6 +1893,7 @@ Music_Cycle: ; command db
 ; cycle
 ; params: 1
 	JSR GetMusicByte
+	CLC
 	ROR A
 	ROR A
 	ROR A
