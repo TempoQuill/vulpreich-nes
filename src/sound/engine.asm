@@ -1799,6 +1799,7 @@ Music_CyclePattern: ; command de
 	CLC
 	ROR A
 	ROR A
+	ROR A
 	STA iChannelCyclePattern, X
 	; update duty cycle
 	AND #$c0 ; only uses top 2 bits
@@ -1893,6 +1894,7 @@ Music_Cycle: ; command db
 ; params: 1
 	JSR GetMusicByte
 	CLC
+	ROR A
 	ROR A
 	ROR A
 	STA iChannelCycle, X
