@@ -1798,7 +1798,6 @@ Music_CyclePattern: ; command de
 	JSR GetMusicByte
 	ROR A
 	ROR A
-	ROR A
 	STA iChannelCyclePattern, X
 	; update duty cycle
 	AND #$c0 ; only uses top 2 bits
@@ -1892,7 +1891,6 @@ Music_Cycle: ; command db
 ; cycle
 ; params: 1
 	JSR GetMusicByte
-	ROR A
 	ROR A
 	ROR A
 	STA iChannelCycle, X
