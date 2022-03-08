@@ -175,7 +175,6 @@ NMI:
 	CMP #NMI_GAS
 	BEQ @DMA
 	; palettes
-	JSR FadePalettes
 	JSR @ApplyPalette
 	JSR UpdateGFXAttributes
 	; dma shortcut
@@ -213,9 +212,15 @@ NMI:
 	STX PPUSCROLL
 @OAMCheck:
 	LDA zNMIState
-	BNE @Joy
+	BNE @PaletteFade
 	; OAM
 	JSR @OAM
+@PaletteFade:
+	CMP #NMI_GAS
+	BEQ @Joy
+	PHA
+	JSR FadePalettes
+	PLA
 @Joy:
 	CMP #NMI_LIQUID
 	BEQ @JustSound
@@ -261,6 +266,7 @@ NMI:
 	STX PPUADDR
 	LDA zPals
 	AND #COLOR_INDEX
+	TAX
 	STA PPUDATA
 	LDA zPals + 1
 	STA PPUDATA
@@ -268,24 +274,21 @@ NMI:
 	STA PPUDATA
 	LDA zPals + 3
 	STA PPUDATA
-	LDA zPals + 4
-	STA PPUDATA
+	STX PPUDATA
 	LDA zPals + 5
 	STA PPUDATA
 	LDA zPals + 6
 	STA PPUDATA
 	LDA zPals + 7
 	STA PPUDATA
-	LDA zPals + 8
-	STA PPUDATA
+	STX PPUDATA
 	LDA zPals + 9
 	STA PPUDATA
 	LDA zPals + 10
 	STA PPUDATA
 	LDA zPals + 11
 	STA PPUDATA
-	LDA zPals + 12
-	STA PPUDATA
+	STX PPUDATA
 	LDA zPals + 13
 	STA PPUDATA
 	LDA zPals + 14

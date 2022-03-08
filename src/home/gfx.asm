@@ -164,39 +164,16 @@ FadePalettes:
 	; check timer
 	LDA zPalFade
 	AND #PALETTE_FADE_SPEED_MASK
-	BNE @InDec
-	; formulate offset
+	BNE @IncDec
+	; choose what to do
 	LDA zPalFadePlacement
-	EOR #PALETTE_FADE_PLACEMENT_MASK
-	ADC #0
+	AND #PALETTE_FADE_PLACEMENT_MASK
 	TAY
-	STA zPalFadeOffset
-	; get a byte directed by pointer
-	LDA iCurrentPals, Y
-	LDY #PALETTE_FADE_PLACEMENT_MASK
-@InLoop:
-	; apply to palette
-	STA zPals, Y
+	BEQ @Zero
 	DEY
-	; does y < zPalFadeOffset?
-	CPY zPalFadeOffset
-	BEQ @InSubExit
-	BCC @InLoop
-@InSubExit:
-	; application done
-	LDA zPalFadeSpeed
-	STA zPalFade
-	; are we done?
-	LDA zPalFadePlacement
-	BEQ @InFinal
-	DEC zPalFadePlacement
-	RTS
-@InDec:
-	; dec timer if we got here
-	DEC zPalFade
-	RTS
-
-@InFinal:
+	BEQ @One
+	DEY
+	BEQ @Two
 	; we're done
 	; do cleanup
 	; reset placement byte
@@ -205,6 +182,35 @@ FadePalettes:
 	LDA zPals
 	RSB PAL_FADE_F
 	STA zPals
+	RTS
+
+@Zero:
+	INC zPalFadePlacement
+	INY
+	LDA iCurrentPals, Y
+	STA zPals, Y
+	STA zPals + 1, Y
+	STA zPals + 2, Y
+	RTS
+
+@One:
+	INC zPalFadePlacement
+	LDY zPalFadePlacement
+	LDA iCurrentPals, Y
+	STA zPals, Y
+	STA zPals + 1, Y
+	RTS
+
+@Two:
+	INC zPalFadePlacement
+	LDY zPalFadePlacement
+	LDA iCurrentPals, Y
+	STA zPals, Y
+	RTS
+
+@InDec:
+	; dec timer if we got here
+	DEC zPalFade
 	RTS
 
 UpdateGFXAttributes:
