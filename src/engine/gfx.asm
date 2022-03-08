@@ -22,8 +22,8 @@ _InitNameTable:
 	STA PPUADDR
 	LDA #<NAMETABLE_MAP_0
 	STA PPUADDR ; happens to be the empty tile we need
-	LDY #>(NAMETABLE_AREA * 4) + 1
-	LDX #<(NAMETABLE_AREA * 4) + 1
+	LDY #>NAMETABLE_AREA
+	LDX #<NAMETABLE_AREA + 1
 	; write for $400 bytes
 @Loop:
 	DEX
