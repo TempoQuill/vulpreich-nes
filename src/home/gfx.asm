@@ -130,6 +130,8 @@ FadePalettes:
 
 @Final:
 	; clear fade direction flag (we're fading in now)
+	LDA zPalFadeSpeed
+	STA zPalFade
 	LDA zPals
 	RSB PAL_FADE_DIR_F
 	PHA ; save this for later
