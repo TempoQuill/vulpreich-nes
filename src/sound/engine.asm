@@ -470,13 +470,13 @@ TryMusic:
 ; severely truncated version of FadeMusic
 	; don't overwrite channel ID
 	PHX
-	; restart sound
-	JSR PreserveIDRestart
 	; get new song ID
 	LDA zMusicID
 	BEQ @Quit
 	CMP iChannelID, X
 	BEQ @Quit
+	; restart sound
+	JSR PreserveIDRestart
 	; load new song
 	TAY
 	JSR _PlayMusic
