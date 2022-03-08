@@ -2093,20 +2093,21 @@ SetNoteDuration:
 	; multiply NoteLength by delay units
 	STY zFactorBuffer + 2 ; just multiply
 	JSR @Multiply
+	LDA zFactorBuffer + 2
 	; store Tempo in zFactorBuffer
-	LDA iChannelTempo, X
-	STA zFactorBuffer
-	LDA iChannelTempo + 16, X
-	STA zFactorBuffer + 1
-	; add workflow to the next result
-	LDA iChannelNoteFlow, X
+	LDY iChannelTempo, X
+	STY zFactorBuffer
+	LDY iChannelTempo + 16, X
+	STY zFactorBuffer + 1
+	; add high byte to the next result
+	LDY iChannelNoteDuration + 16, X
 	STY zFactorBuffer + 2
 	; multiply Tempo by last result (iChannelNoteLength * LOW(delay))
 	JSR @Multiply
 	; copy result to zFactorBuffer offset 2
 	LDA zFactorBuffer + 2
-	; store result in iChannelNoteFlow
-	STA iChannelNoteFlow, X
+	; store result in iChannelNoteDuration + 16
+	STA iChannelNoteDuration + 16, X
 	LDA zFactorBuffer + 3
 	; store result in NoteDuration
 	STA iChannelNoteDuration, X
@@ -2120,8 +2121,8 @@ SetNoteDuration:
 	STY zFactorBuffer + 3
 @Loop:
 	; halve a
-	ROR A
-	STA zBackupA
+	LSR A
+	TAY
 	; is there a remainder?
 	BCC @Skip
 	; add it to the result
@@ -2132,10 +2133,10 @@ SetNoteDuration:
 	ADC zFactorBuffer + 3
 	STA zFactorBuffer + 3
 @Skip:
-	ROL zFactorBuffer
+	ASL zFactorBuffer
 	ROL zFactorBuffer + 1
 	; are we done?
-	LDA zBackupA
+	TYA
 	BNE @Loop
 	RTS
 
@@ -2183,7 +2184,7 @@ Tempo:
 	STA iChannelTempo + 16, X
 	; clear workflow
 	LDA #0
-	STA iChannelNoteFlow, X
+	STA iChannelNoteDuration + 16, X
 	RTS
 
 StartChannel:

@@ -244,9 +244,7 @@ iChannelOctave:
 iChannelTransposition:
 	.dsb 16
 iChannelNoteDuration:
-	.dsb 16 ; 0340
-iChannelNoteFlow:
-	.dsb 16
+	.dsb 32 ; 0340
 iChannelPitchIncrementation:
 	.dsb 16
 iChannelLoopCounter:
