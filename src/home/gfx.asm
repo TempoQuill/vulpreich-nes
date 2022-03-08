@@ -164,7 +164,7 @@ FadePalettes:
 	; check timer
 	LDA zPalFade
 	AND #PALETTE_FADE_SPEED_MASK
-	BNE @IncDec
+	BNE @InDec
 	; choose what to do
 	LDA zPalFadePlacement
 	AND #PALETTE_FADE_PLACEMENT_MASK
