@@ -2358,6 +2358,8 @@ LoadChannel:
 	STA zCurrentChannel
 	TAY
 	LDX zCurrentChannel
+	LDA zMusicID
+	STA iChannelID, X
 	LDA iChannelFlagSection1, X
 	RSB SOUND_CHANNEL_ON ; channel off
 	STA iChannelFlagSection1, X
