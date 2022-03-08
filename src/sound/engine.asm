@@ -2022,10 +2022,8 @@ GetMusicByte:
 ; input: X = current channel
 ; output: C = 1
 	JSR _LoadMusicByte ; home ROM
-	INC iChannelAddress, X
 	INC zAuxAddresses
 	BNE @Quit
-	INC iChannelAddress + 16, X
 	INC zAuxAddresses + 1
 @Quit:
 	LDY zBackupY
@@ -2240,8 +2238,10 @@ _PlayMusic:
 	JSR ThreeByteAudioPointer
 	JSR LoadMusicByte ; store first byte of music header in a
 	AND #CHANNEL_TOTAL_MASK ; get channel total
-	HTL A
-	LSR A
+	ASL A
+	ROL A
+	ROL A
+	ROL A
 	ADC #1
 	SEC
 @Loop:

@@ -34,18 +34,16 @@ _LoadMusicByte:
 	STX zBackupX
 	STY zBackupY
 	LDY zBackupX
-	LDA iChannelAddress + 16, X
-	STA zAuxAddresses + 1
+	LDA zAuxAddresses + 1
 	JSR GetWindowIndex
-	LDA iChannelBank, Y
+	LDA zMusicBank
 	STA MMC5_PRGBankSwitch2, X
 	STA zCurrentWindow, X
-	LDA iChannelAddress, Y
-	STA zAuxAddresses
 	LDY #0
 	LDA (zAuxAddresses), Y
 	STA zCurrentMusicByte
-	JSR UpdatePRG ; restore old bank
+	LDA zWindow1, X
+	STA MMC5_PRGBankSwitch2, X
 	LDX zBackupX
 	RTS
 
