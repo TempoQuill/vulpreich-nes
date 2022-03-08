@@ -204,7 +204,7 @@ NMI:
 	STX PPUSCROLL
 	LDX zPPUScrollYMirror
 	STX PPUSCROLL
-	BCC @MapBufferMain
+	BCC @OAMCheck
 @ScrollPlasma:
 	; scroll (plasma)
 	LDX zPPUScrollXMirror
