@@ -104,6 +104,7 @@ InspiredScreen:
 	; store the palette data
 	LDX #15
 	STX zPalFade
+	STX zPalFadeSpeed
 @PalLoop:
 	LDA IntroPals, X
 	STA iCurrentPals, X

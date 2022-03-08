@@ -165,6 +165,9 @@ FadePalettes:
 	LDA zPalFade
 	AND #PALETTE_FADE_SPEED_MASK
 	BNE @InDec
+	; reset counter
+	LDA zPalFadeSpeed
+	STA zPalFade
 	; choose what to do
 	LDA zPalFadePlacement
 	AND #PALETTE_FADE_PLACEMENT_MASK
@@ -191,6 +194,18 @@ FadePalettes:
 	STA zPals, Y
 	STA zPals + 1, Y
 	STA zPals + 2, Y
+	LDA iCurrentPals + 4, Y
+	STA zPals + 4, Y
+	STA zPals + 5, Y
+	STA zPals + 6, Y
+	LDA iCurrentPals + 8, Y
+	STA zPals + 8, Y
+	STA zPals + 9, Y
+	STA zPals + 10, Y
+	LDA iCurrentPals + 12, Y
+	STA zPals + 12, Y
+	STA zPals + 13, Y
+	STA zPals + 14, Y
 	RTS
 
 @One:
@@ -199,6 +214,15 @@ FadePalettes:
 	LDA iCurrentPals, Y
 	STA zPals, Y
 	STA zPals + 1, Y
+	LDA iCurrentPals + 4, Y
+	STA zPals + 4, Y
+	STA zPals + 5, Y
+	LDA iCurrentPals + 8, Y
+	STA zPals + 8, Y
+	STA zPals + 9, Y
+	LDA iCurrentPals + 12, Y
+	STA zPals + 12, Y
+	STA zPals + 13, Y
 	RTS
 
 @Two:
@@ -206,6 +230,12 @@ FadePalettes:
 	LDY zPalFadePlacement
 	LDA iCurrentPals, Y
 	STA zPals, Y
+	LDA iCurrentPals + 4, Y
+	STA zPals + 4, Y
+	LDA iCurrentPals + 8, Y
+	STA zPals + 8, Y
+	LDA iCurrentPals + 12, Y
+	STA zPals + 12, Y
 	RTS
 
 @InDec:
