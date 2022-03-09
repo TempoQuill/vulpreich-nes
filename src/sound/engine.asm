@@ -2174,6 +2174,19 @@ StartChannel:
 	LDA iChannelFlagSection1, X
 	SSB SOUND_CHANNEL_ON ; turn channel on
 	STA iChannelFlagSection1, X
+	TXA
+	EOR #CHAN_8 - 1
+	TAY
+	INY
+	LDA #0
+	SEC
+@Loop1:
+	ROL A
+	DEY
+	BEQ @Loop
+	ORA zMixer
+	STA zMixer
+	LDX zBackupX
 	RTS
 
 GenerateTrackOffset:
@@ -2221,6 +2234,8 @@ _PlayMusic:
 	ADC zAuxAddresses + 1
 	STA zAuxAddresses + 1
 	JSR ThreeByteAudioPointer
+	LDA #0
+	STA zMixer
 	JSR LoadMusicByte ; store first byte of music header in a
 	AND #CHANNEL_TOTAL_MASK ; get channel total
 	ASL A
