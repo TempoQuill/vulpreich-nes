@@ -112,10 +112,9 @@ JumpTable:
 	LDY zBackupY
 	BNE @Normal
 	SBC #0
-	BMI @Prepare
+	CLC
 @Normal:
 	DEY
-@Prepare:
 	ADC zTableOffset
 	PHA
 	TYA
