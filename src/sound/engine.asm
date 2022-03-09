@@ -1517,9 +1517,11 @@ Music_Call: ; command fe
 	STA iChannelBackupAddress1 + 16, X
 	; get pointer from next 2 bytes
 	JSR GetMusicByte
-	STA iChannelAddress, X
+	PHA
 	JSR GetMusicByte
 	STA iChannelAddress + 16, X
+	PLA
+	STA iChannelAddress, X
 	; set subroutine flag
 	LDA iChannelFlagSection1, X
 	SSB SOUND_SUBROUTINE
@@ -1531,9 +1533,11 @@ Music_Jump: ; command fc
 ; parameters: ll hh ; pointer
 	; get pointer from next 2 bytes
 	JSR GetMusicByte
-	STA iChannelAddress, X
+	PHA
 	JSR GetMusicByte
 	STA iChannelAddress + 16, X
+	PLA
+	STA iChannelAddress, X
 	RTS
 
 Music_Loop: ; command fd
@@ -1566,9 +1570,11 @@ Music_Loop: ; command fd
 	; get pointer
 	JSR GetMusicByte
 	; load new pointer into iChannelAddress
-	STA iChannelAddress, X
+	PHA
 	JSR GetMusicByte
 	STA iChannelAddress + 16, X
+	PLA
+	STA iChannelAddress, X
 	RTS
 
 @EndLoop:
@@ -1627,9 +1633,11 @@ Music_JumpIf: ; command fb
 	; get pointer
 	JSR GetMusicByte
 	; update pointer in iChannelAddress
-	STA iChannelAddress, X
+	PHA
 	JSR GetMusicByte
 	STA iChannelAddress + 16, X
+	PLA
+	STA iChannelAddress, X
 	RTS
 
 Music_JumpFlag: ; command ee
@@ -1663,9 +1671,11 @@ Music_JumpFlag: ; command ee
 	EOR @Masks, Y
 	STA zAudioCommandFlags
 	JSR GetMusicByte
-	STA iChannelAddress, X
+	PHA
 	JSR GetMusicByte
 	STA iChannelAddress + 16, X
+	PLA
+	STA iChannelAddress, X
 	RTS
 
 @Masks:
