@@ -297,7 +297,6 @@ UpdateChannels:
 
 @Pulse2:
 	LDA iChannelNoteFlags, X
-	PHA
 	TSB NOTE_PITCH_SWEEP
 	BEQ @Pulse2_NoSweep
 	LDA zSweep2
