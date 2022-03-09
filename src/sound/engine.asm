@@ -2243,14 +2243,13 @@ _PlayMusic:
 	ROL A
 	ROL A
 	ADC #1
-	SEC
 @Loop:
 ; start playing channels
 	PHA
 	JSR LoadChannel
 	JSR StartChannel
 	PLA
-	SBC #1
+	SBC #0
 	BNE @Loop
 	STA zDrumAddresses
 	STA zDrumAddresses + 1
