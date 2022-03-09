@@ -253,7 +253,7 @@ TitleScreenTimer:
 	STA zTitleScreenTimer
 	LDA #$10
 	STA zTitleScreenTimer + 1
-	CLC
+	SEC
 	RTS
 
 TitleScreenMain:
@@ -277,6 +277,7 @@ TitleScreenMain:
 	STA zAuxAddresses + 7
 	JMP (zAuxAddresses + 6)
 @Quit:
+	SEC
 	RTS
 
 @End:
@@ -293,7 +294,7 @@ TitleScreenMain:
 
 @Press_A_Start:
 	LDA zInputBottleNeck
-	AND #1 << START_BUTTON
+	TSB START_BUTTON
 	BNE @CheckSelect
 @Normal:
 	LDA #TITLESCREENOPTION_MAIN_MENU
@@ -308,7 +309,7 @@ TitleScreenMain:
 	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
 	STA zPals
 	RSB PAL_FADE_DIR_F ; wait $8f frames (2.38 seconds)
-	SEC
+	CLC
 	JMP DelayFrame_s_
 
 @CheckSelect:
@@ -317,7 +318,7 @@ TitleScreenMain:
 	BEQ @Normal
 	LDA #TITLESCREENOPTION_DELETE_SAVE_FILE
 	STA zTitleScreenOption
-	SEC
+	CLC
 	RTS
 
 @Press_B:
@@ -329,7 +330,7 @@ TitleScreenMain:
 	STA zPals
 	RSB PAL_FADE_DIR_F ; wait $8f frames (2.38 seconds)
 	JSR DelayFrame_s_
-	SEC
+	CLC
 	RTS
 
 @Press_Up_Down:
