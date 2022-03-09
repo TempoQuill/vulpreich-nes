@@ -229,13 +229,13 @@ RunTitleScreen:
 	LDA zJumpTableIndex
 	BMI @Done
 	ASL A
-	STA zTableOffset
-	LDA zTableOffset + 1
-	ADC #0
-	STA zTableOffset + 1
-	LDY #<@DW
-	LDA #>@DW
-	JMP JumpTable
+	TAY
+	LDA @DW, Y
+	STA zAuxAddresses + 2
+	INY
+	LDA @DW, Y
+	STA zAuxAddresses + 3
+	JMP (zAuxAddresses + 2)
 @Done:
 	SEC
 	RTS
