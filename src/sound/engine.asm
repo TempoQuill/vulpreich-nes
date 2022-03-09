@@ -2183,7 +2183,7 @@ StartChannel:
 @Loop:
 	ROL A
 	DEY
-	BEQ @Loop
+	BNE @Loop
 	ORA zMixer
 	STA zMixer
 	LDX zBackupX
