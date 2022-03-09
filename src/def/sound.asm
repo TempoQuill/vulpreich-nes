@@ -34,7 +34,7 @@ SOUND_LOOPING          = 2
 SOUND_READING_MODE     = 3
 SOUND_NOISE            = 4
 SOUND_PITCH_INC_SWITCH = 6
-SOUND_DPCM             = 7
+SOUND_DPCM             = 7 ; nes only
 
 SOUND_VIBRATO        = 0
 SOUND_PITCH_SLIDE    = 1
@@ -56,7 +56,7 @@ NOTE_PITCH_SWEEP      = 3
 NOTE_NOISE_SAMPLING   = 4
 NOTE_REST             = 5
 NOTE_VIBRATO_OVERRIDE = 6
-NOTE_DELTA_OVERRIDE   = 7
+NOTE_DELTA_OVERRIDE   = 7 ; nes only
 
 ; zAudioCommandFlags
 SOUND_EVENT      = 0

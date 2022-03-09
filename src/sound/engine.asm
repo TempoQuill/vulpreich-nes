@@ -191,8 +191,14 @@ _UpdateSound:
 	BCS @Done
 	TXA
 	RSB SFX_CHANNEL
-	CMP #CHAN_4 + 1
+	CMP #CHAN_4
+	BEQ @Flag
 	BCS @NextChannel ; zCurrentChannel > DPCM means go straight to the next channel
+	JMP @Loop
+@Flag:
+	LDA iChannelFlagSection1, X
+	SSB SOUND_DPCM
+	STA iChannelFlagSection1, X
 	JMP @Loop
 
 @Done:
@@ -243,65 +249,50 @@ UpdateChannels:
 
 @Pulse1:
 	LDA iChannelNoteFlags, X
-	PHA
 	TSB NOTE_PITCH_SWEEP
 	BEQ @Pulse1_NoSweep
 	LDA zSweep1
 	STA SQ1_SWEEP
 @Pulse1_NoSweep:
-	PLA
-	ASL A ; delta (DPCM only)
-	BMI @Pulse1_VibratoOverride
-	ASL A ; vibrato
-	BMI @Pulse1_Rest
-	ASL A ; rest
-	BMI @Pulse1_NoiseSampling
-	ASL A ; sampling
-	ASL A ; sweep (already covered)
-	BMI @Pulse1_EnvOverride
-	ASL A ; env
-	ASL A ; pitch
-	; cycle
-	BCC @Pulse1_CheckCycleOverride
+	LDA iChannelNoteFlags, X
+	TSB NOTE_REST ; check for rest
+	BEQ @Pulse1_Sampling
 
-@Pulse1_PitchOverride:
-	PHA
-	LDA zCurrentTrackRawPitch
-	STA SQ1_LO
-	LDA zCurrentTrackRawPitch + 1
-	STA SQ1_HI
-	PLA
-@Pulse1_CheckCycleOverride:
-	BMI @Pulse1_CycleOverride
-	RTS
-
-@Pulse1_EnvOverride:
-@Pulse1_CycleOverride:
-	LDA zCurrentTrackEnvelope
-	STA SQ1_ENV
-	RTS
-
-@Pulse1_VibratoOverride:
-	LDA zCurrentTrackEnvelope
-	STA SQ1_ENV
-	LDA zCurrentTrackRawPitch
-	STA SQ1_LO
-	RTS
-
-@Pulse1_Rest:
 	LDA zMixer
 	RSB CHAN_0 ; turn off square 1
 	STA zMixer
 	LDY #CHAN_0 << 2
 	JMP ClearPulse
 
-@Pulse1_NoiseSampling:
-	LDA zCurrentTrackEnvelope
-	STA SQ1_ENV
-	LDA zCurrentTrackRawPitch
-	STA SQ1_LO
+@Pulse1_Sampling:
+	LDA iChannelNoteFlags, X
+	TSB NOTE_NOISE_SAMPLING
+	BEQ @Pulse1_Pitch
+
 	LDA zCurrentTrackRawPitch + 1
 	STA SQ1_HI
+
+@Pulse1_Pitch:
+	LDA iChannelNoteFlags, X
+	AND #1 << NOTE_PITCH_OVERRIDE | 1 << NOTE_VIBRATO_OVERRIDE
+	BEQ @Pulse1_EnvCycle
+
+	LDA zCurrentTrackRawPitch
+	STA SQ1_LO
+
+	LDA iChannelNoteFlags, X
+	TSB NOTE_PITCH_OVERRIDE
+	BEQ @Pulse1_Quit
+
+@Pulse1_EnvCycle:
+	LDA iChannelNoteFlags, X
+	AND #1 << NOTE_CYCLE_OVERRIDE | 1 << NOTE_ENV_OVERRIDE
+	BEQ @Pulse1_Quit
+
+	LDA zCurrentTrackEnvelope
+	STA SQ1_ENV
+
+@Pulse1_Quit:
 	RTS
 
 @Pulse2:
@@ -312,91 +303,52 @@ UpdateChannels:
 	LDA zSweep2
 	STA SQ2_SWEEP
 @Pulse2_NoSweep:
-	PLA
-	ASL A ; delta (DPCM only)
-	BMI @Pulse2_VibratoOverride
-	ASL A ; vibrato
-	BMI @Pulse2_Rest
-	ASL A ; rest
-	BMI @Pulse2_NoiseSampling
-	ASL A ; sampling
-	ASL A ; sweep (already covered)
-	BMI @Pulse2_EnvCycleOverrides
-	ASL A ; env
-	BMI @Pulse2_PitchOverride
-	ASL A ; pitch
-	; cycle
-	BMI @Pulse2_EnvCycleOverrides
-	RTS
+	LDA iChannelNoteFlags, X
+	TSB NOTE_REST ; check for rest
+	BEQ @Pulse2_NoiseSampling
 
-@Pulse2_EnvCycleOverrides:
-	LDA zCurrentTrackEnvelope
-	STA SQ2_ENV
-	RTS
-
-@Pulse2_PitchOverride:
-	LDA zCurrentTrackRawPitch
-	STA SQ2_LO
-	LDA zCurrentTrackRawPitch + 1
-	STA SQ2_HI
-	RTS
-
-@Pulse2_VibratoOverride:
-	LDA zCurrentTrackEnvelope
-	STA SQ2_ENV
-	LDA zCurrentTrackRawPitch
-	STA SQ2_LO
-	RTS
-	
-@Pulse2_Rest:
 	LDA zMixer
 	RSB CHAN_1 ; turn off square 2
 	STA zMixer
 	LDY #CHAN_1 << 2
 	JMP ClearPulse
 
-@Pulse2_NoiseSampling:
-	LDA zCurrentTrackEnvelope
-	STA SQ2_ENV
-	LDA zCurrentTrackRawPitch
-	STA SQ2_LO
+@Pulse2_Sampling:
+	LDA iChannelNoteFlags, X
+	TSB NOTE_NOISE_SAMPLING
+	BEQ @Pulse2_Pitch
+
 	LDA zCurrentTrackRawPitch + 1
 	STA SQ2_HI
+
+@Pulse2_Pitch:
+	LDA iChannelNoteFlags, X
+	AND #1 << NOTE_PITCH_OVERRIDE | 1 << NOTE_VIBRATO_OVERRIDE
+	BEQ @Pulse2_EnvCycle
+
+	LDA zCurrentTrackRawPitch
+	STA SQ2_LO
+
+	LDA iChannelNoteFlags, X
+	TSB NOTE_PITCH_OVERRIDE
+	BEQ @Pulse2_Quit
+
+@Pulse2_EnvCycle:
+	LDA iChannelNoteFlags, X
+	AND #1 << NOTE_CYCLE_OVERRIDE | 1 << NOTE_ENV_OVERRIDE
+	BEQ @Pulse2_Quit
+
+	LDA zCurrentTrackEnvelope
+	STA SQ2_ENV
+
+@Pulse2_Quit:
 	RTS
 
 @Hill:
 	LDA iChannelNoteFlags, X
-	ASL A ; delta (DPCM only)
-	BMI @Hill_VibratoOverride
-	ASL A ; vibrato
-	BMI @Hill_Rest
-	ASL A ; rest
-	BMI @Hill_NoiseSampling
-	ASL A ; sampling
-	ASL A ; sweep
-	BMI @Hill_EnvOverride
-	ASL A ; env
-	BMI @Hill_PitchOverride
-	RTS
+	TSB NOTE_REST ; check for rest
+	BEQ @Hill_NoiseSampling
 
-@Hill_PitchOverride:
-	LDA zCurrentTrackRawPitch
-	STA TRI_LO
-	LDA zCurrentTrackRawPitch + 1
-	STA TRI_HI
-	RTS
-
-@Hill_VibratoOverride:
-	LDA zCurrentTrackRawPitch
-	STA TRI_LO
-	RTS
-
-@Hill_EnvOverride:
-	LDA zHillLinearLength
-	STA TRI_LINEAR
-	RTS
-
-@Hill_Rest:
 	LDA zMixer
 	RSB CHAN_2 ; turn off hill
 	STA zMixer
@@ -404,63 +356,76 @@ UpdateChannels:
 	JMP ClearHillDPCM
 
 @Hill_NoiseSampling:
+	LDA iChannelNoteFlags, X
+	TSB NOTE_NOISE_SAMPLING
+	BEQ @Hill_Pitch
+
 	LDA zHillLinearLength
 	STA TRI_LINEAR
-	LDA zCurrentTrackRawPitch
-	STA TRI_LO
 	LDA zCurrentTrackRawPitch + 1
 	STA TRI_HI
+
+@Hill_Pitch:
+	LDA iChannelNoteFlags, X
+	AND #1 << NOTE_PITCH_OVERRIDE | 1 << NOTE_VIBRATO_OVERRIDE
+	BEQ @Hill_Linear
+
+	LDA zCurrentTrackRawPitch
+	STA TRI_LO
+
+@Hill_Quit:
 	RTS
 
 @Noise:
 	LDA iChannelNoteFlags, X
-	ASL A ; delta (DPCM only)
-	ASL A ; vibrato
-	BMI @Noise_Rest
-	ASL A ; rest
-	BMI @Noise_NoiseSampling
-	RTS
+	TSB NOTE_REST
+	BEQ @Noise_Sampling
 
-@Noise_Rest:
 	LDA zMixer
 	RSB CHAN_3 ; turn off noise
 	STA zMixer
 	LDY #CHAN_3 << 2
 	JMP ClearNoise
 
-@Noise_NoiseSampling:
+@Noise_Sampling:
+	LDA iChannelNoteFlags, X
+	TSB NOTE_NOISE_SAMPLING
+	BEQ @Noise_Quit
+
 	LDA zCurrentTrackEnvelope
 	STA NOISE_ENV
 	LDA zCurrentTrackRawPitch
 	STA NOISE_LO
 	LDA #1 << SOUND_LENGTH_F
 	STA NOISE_HI
+
+@Noise_Quit:
 	RTS
 
 @DPCM:
 	LDA iChannelNoteFlags, X
-	BMI @DPCM_DeltaNoiseSamplingOverrides
-	ASL A ; delta
-	ASL A ; vibrato
-	BMI @DPCM_Rest
-	ASL A ; rest
-	BMI @DPCM_DeltaNoiseSamplingOverrides
-	RTS
+	TSB NOTE_REST
+	BEQ @DPCM_DeltaSampling
 
-@DPCM_Rest:
 	LDA zMixer
 	RSB CHAN_4 ; turn off DPCM
 	STA zMixer
 	LDY #CHAN_4 << 2
 	JMP ClearHillDPCM
 
-@DPCM_DeltaNoiseSamplingOverrides:
+@DPCM_DeltaSampling:
+	LDA iChannelNoteFlags, X
+	AND #1 << NOTE_DELTA_OVERRIDE | 1 << NOTE_NOISE_SAMPLING
+	BEQ @DPCM_QUit
+
 	LDA zDPCMSamplePitch
 	STA DPCM_ENV
 	LDA zDPCMSampleOffset
 	STA DPCM_OFFSET
 	LDA zDPCMSampleLength
 	STA DPCM_SIZE
+
+@DPCM_QUit
 	RTS
 
 @None:
