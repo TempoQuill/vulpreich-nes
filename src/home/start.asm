@@ -79,12 +79,12 @@ UpdateJoypads:
 ReadJoypads:
 	; send a jolt to the controller
 	LDA #1
-	STA JOY1, X
+	STA JOY1
 	; send the same jolt to the bottleneck to set C at the end
 	STA zInputBottleNeck, X
 	; 1 >> 1 = 0, C is not needed right now
 	LSR A
-	STA JOY1, X
+	STA JOY1
 @Loop:
 	; Read standard controller data
 	LDA JOY1, X
