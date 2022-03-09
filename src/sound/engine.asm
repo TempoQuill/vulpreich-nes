@@ -1507,6 +1507,7 @@ Music_Call: ; command fe
 ; call music stream (subroutine)
 ; parameters: ll hh ; pointer to subroutine
 	; copy iChannelBackupAddress1 to iChannelBackupAddress2
+	LDA iChannelBackupAddress1, X
 	STA iChannelBackupAddress2, X
 	LDA iChannelBackupAddress1 + 16, X
 	STA iChannelBackupAddress2 + 16, X
