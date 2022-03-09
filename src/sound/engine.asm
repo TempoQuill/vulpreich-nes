@@ -2181,7 +2181,7 @@ StartChannel:
 	LDA #0
 	SEC
 @Loop:
-	ROL A
+	ROR A
 	DEY
 	BNE @Loop
 	ORA zMixer
