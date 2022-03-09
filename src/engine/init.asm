@@ -277,6 +277,8 @@ TitleScreenMain:
 	STA zAuxAddresses + 7
 	JMP (zAuxAddresses + 6)
 @Quit:
+	LDA #1
+	JSR DelayFrame_s_
 	SEC
 	RTS
 
