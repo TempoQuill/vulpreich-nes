@@ -108,6 +108,14 @@ ThreeBytePointers:
 JumpTable:
 ; general purpose jumptable
 ; jumps to addres AY
+	STY zBackupY
+	LDY zBackupY
+	BNE @Normal
+	ADC #1
+	BMI @Prepare
+@Normal:
+	INY
+@Prepare:
 	ADC zTableOffset
 	PHA
 	TYA
