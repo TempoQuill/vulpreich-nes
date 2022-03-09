@@ -305,7 +305,7 @@ UpdateChannels:
 @Pulse2_NoSweep:
 	LDA iChannelNoteFlags, X
 	TSB NOTE_REST ; check for rest
-	BEQ @Pulse2_NoiseSampling
+	BEQ @Pulse2_Sampling
 
 	LDA zMixer
 	RSB CHAN_1 ; turn off square 2
@@ -368,7 +368,7 @@ UpdateChannels:
 @Hill_Pitch:
 	LDA iChannelNoteFlags, X
 	AND #1 << NOTE_PITCH_OVERRIDE | 1 << NOTE_VIBRATO_OVERRIDE
-	BEQ @Hill_Linear
+	BEQ @Hill_Quit
 
 	LDA zCurrentTrackRawPitch
 	STA TRI_LO
