@@ -93,10 +93,6 @@ ReadJoypads:
 	ROL zInputBottleNeck, X
 	BCC @Loop
 	; we're done
-	; make inputs readable to the game
-	LDA zInputBottleNeck, X
-	FAB
-	STA zInputBottleNeck, X
 	RTS
 
 Start:
