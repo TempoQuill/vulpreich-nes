@@ -2180,7 +2180,7 @@ StartChannel:
 	INY
 	LDA #0
 	SEC
-@Loop1:
+@Loop:
 	ROL A
 	DEY
 	BEQ @Loop
