@@ -271,29 +271,26 @@ UpdateBackground:
 	; start writing
 	LDA (zCurrentTileAddress), Y
 	TAX
-	JSR @Inc
-	STX PPUDATA
-	BNE @Loop
-@Quit:
-	STY PPUADDR
-	STY PPUADDR
-	RTS
-
-@Inc:
 ; increment tilemap
 	INC zCurrentTileAddress
 	BNE @Dec
 	INC zCurrentTileAddress + 1
 @Dec:
 ; decrement offset
-	DEC zTileOffset
-	BNE @Done
+	LDA zTileOffset + 1
+	BEQ @Done
 	DEC zTileOffset + 1
 @Done:
+	DEC zTileOffset
 ; compound bitfields to return the state of zero
 ; no bits active, zero flag is set
 	LDA zTileOffset
 	ORA zTileOffset + 1
+	STX PPUDATA
+	BNE @Loop
+@Quit:
+	STY PPUADDR
+	STY PPUADDR
 	RTS
 
 InitPals:
