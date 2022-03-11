@@ -10,6 +10,17 @@ SimpleMultiply:
 @Quit:
 	RTS
 
+MMC5Multiply:
+; multiplies two 8-bit numbers
+; returns number XA
+	LDA zFactorBuffer
+	LDX zFactorBuffer + 1
+	STA MMC5_Multiplier1
+	STX MMC5_Multiplier2
+	LDA MMC5_Multiplier1
+	LDX MMC5_Multiplier2
+	RTS
+
 SimpleDivide:
 	LDX #0
 	STX zDividerBuffer + 1
