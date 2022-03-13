@@ -576,7 +576,7 @@ Music_TitleScreen_Measure5_01:
 	drum_note 10, 2
 	drum_note 10, 2
 	drum_note 1, 4
-	sound_loop 3, Music_Journey_Measure5_01
+	sound_loop 3, Music_TitleScreen_Measure5_01
 	drum_note 10, 4
 	drum_note 1, 4
 	drum_note 10, 2
