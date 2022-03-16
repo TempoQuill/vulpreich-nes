@@ -9,6 +9,10 @@ CharacterFullNames:
 	.db "Lila Fey", $80
 	.db "Gary Raren", $80
 	.db "Sidney Esced", $80
+	.db "Bit-Bob", $80 ; composer in Every Song is Personalized
+	.db "Bit-Bob", $80 ; delivery man in Pioneer's Hut
+	.db "Bit-Bob", $80 ; judge in Carryover Dreams
+	.db "Alex", $80
 	.db "INCIDENTAL-LINE", $80
 	.db "RECEPTIONIST-1", $80
 	.db "VETERENARIAN-1", $80
@@ -24,6 +28,10 @@ CharacterNames:
 	.db "Lila", $80
 	.db "Gary", $80
 	.db "Sidney", $80
+	.db "BITBOB", $80
+	.db "BITBOB", $80
+	.db "BITBOB", $80
+	.db "Alex", $80
 	.db "INC.C1", $80
 	.db "REC.01", $80
 	.db "VET.01", $80
