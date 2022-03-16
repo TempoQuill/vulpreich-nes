@@ -119,6 +119,7 @@ FadePalettes:
 
 @Apply:
 	LDA zPals, Y
+	AND #COLOR_INDEX
 	STA zPals + 1, Y
 	LDA zPals + 4, Y
 	STA zPals + 5, Y
