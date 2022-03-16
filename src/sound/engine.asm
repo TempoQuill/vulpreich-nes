@@ -269,20 +269,31 @@ UpdateChannels:
 	TSB NOTE_NOISE_SAMPLING
 	BEQ @Pulse1_Pitch
 
+	LDA zCurrentTrackEnvelope
+	STA SQ1_ENV
+	LDA zCurrentTrackRawPitch
+	STA SQ1_LO
 	LDA zCurrentTrackRawPitch + 1
 	STA SQ1_HI
+	RTS
 
 @Pulse1_Pitch:
 	LDA iChannelNoteFlags, X
 	AND #1 << NOTE_PITCH_OVERRIDE | 1 << NOTE_VIBRATO_OVERRIDE
 	BEQ @Pulse1_EnvCycle
 
+	TSB NOTE_PITCH_OVERRIDE
+	BNE @Pulse1_Slide
+
 	LDA zCurrentTrackRawPitch
 	STA SQ1_LO
+	RTS
 
-	LDA iChannelNoteFlags, X
-	TSB NOTE_PITCH_OVERRIDE
-	BEQ @Pulse1_Quit
+@Pulse1_Slide:
+	LDA zCurrentTrackRawPitch + 1
+	STA SQ1_HI
+	LDA zCurrentTrackRawPitch
+	STA SQ1_LO
 
 @Pulse1_EnvCycle:
 	LDA iChannelNoteFlags, X
@@ -291,6 +302,8 @@ UpdateChannels:
 
 	LDA zCurrentTrackEnvelope
 	STA SQ1_ENV
+	LDA zCurrentTrackRawPitch + 1
+	STA SQ1_HI
 
 @Pulse1_Quit:
 	RTS
@@ -317,20 +330,31 @@ UpdateChannels:
 	TSB NOTE_NOISE_SAMPLING
 	BEQ @Pulse2_Pitch
 
+	LDA zCurrentTrackEnvelope
+	STA SQ2_ENV
+	LDA zCurrentTrackRawPitch
+	STA SQ2_LO
 	LDA zCurrentTrackRawPitch + 1
 	STA SQ2_HI
+	RTS
 
 @Pulse2_Pitch:
 	LDA iChannelNoteFlags, X
 	AND #1 << NOTE_PITCH_OVERRIDE | 1 << NOTE_VIBRATO_OVERRIDE
 	BEQ @Pulse2_EnvCycle
 
+	TSB NOTE_PITCH_OVERRIDE
+	BNE @Pulse2_Slide
+
 	LDA zCurrentTrackRawPitch
 	STA SQ2_LO
+	RTS
 
-	LDA iChannelNoteFlags, X
-	TSB NOTE_PITCH_OVERRIDE
-	BEQ @Pulse2_Quit
+@Pulse2_Slide:
+	LDA zCurrentTrackRawPitch + 1
+	STA SQ2_HI
+	LDA zCurrentTrackRawPitch
+	STA SQ2_LO
 
 @Pulse2_EnvCycle:
 	LDA iChannelNoteFlags, X
@@ -339,6 +363,8 @@ UpdateChannels:
 
 	LDA zCurrentTrackEnvelope
 	STA SQ2_ENV
+	LDA zCurrentTrackRawPitch + 1
+	STA SQ2_HI
 
 @Pulse2_Quit:
 	RTS
@@ -346,7 +372,7 @@ UpdateChannels:
 @Hill:
 	LDA iChannelNoteFlags, X
 	TSB NOTE_REST ; check for rest
-	BEQ @Hill_NoiseSampling
+	BEQ @Hill_Sampling
 
 	LDA zMixer
 	RSB CHAN_2 ; turn off hill
@@ -354,15 +380,18 @@ UpdateChannels:
 	LDY #CHAN_2 << 2
 	JMP ClearHillDPCM
 
-@Hill_NoiseSampling:
+@Hill_Sampling:
 	LDA iChannelNoteFlags, X
 	TSB NOTE_NOISE_SAMPLING
 	BEQ @Hill_Pitch
 
 	LDA zHillLinearLength
 	STA TRI_LINEAR
+	LDA zCurrentTrackRawPitch
+	STA TRI_LO
 	LDA zCurrentTrackRawPitch + 1
 	STA TRI_HI
+	RTS
 
 @Hill_Pitch:
 	LDA iChannelNoteFlags, X
@@ -371,6 +400,8 @@ UpdateChannels:
 
 	LDA zCurrentTrackRawPitch
 	STA TRI_LO
+	LDA zCurrentTrackRawPitch + 1
+	STA TRI_HI
 
 @Hill_Quit:
 	RTS
@@ -397,6 +428,7 @@ UpdateChannels:
 	STA NOISE_LO
 	LDA #1 << SOUND_LENGTH_F
 	STA NOISE_HI
+	RTS
 
 @Noise_Quit:
 	RTS
@@ -423,6 +455,7 @@ UpdateChannels:
 	STA DPCM_OFFSET
 	LDA zDPCMSampleLength
 	STA DPCM_SIZE
+	RTS
 
 @DPCM_QUit
 	RTS
