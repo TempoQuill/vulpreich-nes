@@ -590,7 +590,9 @@ GeneralHandler:
 	AND #ENVELOPE_MASK
 	STA zCurrentTrackEnvelope
 	LDA iChannelCyclePattern, X
+	ASL iChannelCyclePattern, X
 	ROL A
+	ASL iChannelCyclePattern, X
 	ROL A
 	STA iChannelCyclePattern, X
 	AND #CYCLE_MASK

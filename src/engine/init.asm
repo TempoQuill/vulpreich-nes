@@ -197,9 +197,12 @@ TitleScreen:
 	; enable everything now
 	LDA #NMI_NORMAL
 	STA zNMIState
+	LDX #1
+	STX zPalFade
 	; fade in
 	LDA zPals
 	SSB PAL_FADE_F
+	RSB PAL_FADE_DIR_F
 	STA zPals
 	RTS
 
