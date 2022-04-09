@@ -35,17 +35,19 @@ PrintText:
 	LDA (zCurrentTextAddress), Y
 	BMI @Command
 	STA PPUDATA
-	INC zCurrentTextAddress
-	BNE @Loop
-	INC zCurrentTextAddress + 1
+	INY
 	BNE @Loop
 @Command:
-	STA zCurrentTextByte
-	INC zCurrentTextAddress
-	BNE @SkipCarry
-	INC zCurrentTextAddress + 1
-@SkipCarry:
 	TAX
+	TYA
+	CLC
+	ADC zCurrentTextAddress
+	STA zCurrentTextAddress
+	BCC @SkipCarry
+	LDA #0
+	ADC zCurrentTextAddress + 1
+	STA zCurrentTextAddress + 1
+@SkipCarry:
 	DEX
 	BPL @End
 	DEX
@@ -245,13 +247,134 @@ UpdateGFXAttributes:
 	LDA #<NAMETABLE_ATTRIBUTE_0
 	STA PPUADDR
 @Loop:
-	LDA zPalAttributes - 1, X
-	DEX
+	LDA zPalAttributes
 	STA PPUDATA
-	LDA zPalAttributes - 1, X
-	DEX
+	LDA zPalAttributes + 1
 	STA PPUDATA
-	BNE @Loop
+	LDA zPalAttributes + 2
+	STA PPUDATA
+	LDA zPalAttributes + 3
+	STA PPUDATA
+	LDA zPalAttributes + 4
+	STA PPUDATA
+	LDA zPalAttributes + 5
+	STA PPUDATA
+	LDA zPalAttributes + 6
+	STA PPUDATA
+	LDA zPalAttributes + 7
+	STA PPUDATA
+	LDA zPalAttributes + 8
+	STA PPUDATA
+	LDA zPalAttributes + 9
+	STA PPUDATA
+	LDA zPalAttributes + 10
+	STA PPUDATA
+	LDA zPalAttributes + 11
+	STA PPUDATA
+	LDA zPalAttributes + 12
+	STA PPUDATA
+	LDA zPalAttributes + 13
+	STA PPUDATA
+	LDA zPalAttributes + 14
+	STA PPUDATA
+	LDA zPalAttributes + 15
+	STA PPUDATA
+	LDA zPalAttributes + 16
+	STA PPUDATA
+	LDA zPalAttributes + 17
+	STA PPUDATA
+	LDA zPalAttributes + 18
+	STA PPUDATA
+	LDA zPalAttributes + 19
+	STA PPUDATA
+	LDA zPalAttributes + 20
+	STA PPUDATA
+	LDA zPalAttributes + 21
+	STA PPUDATA
+	LDA zPalAttributes + 22
+	STA PPUDATA
+	LDA zPalAttributes + 23
+	STA PPUDATA
+	LDA zPalAttributes + 24
+	STA PPUDATA
+	LDA zPalAttributes + 25
+	STA PPUDATA
+	LDA zPalAttributes + 26
+	STA PPUDATA
+	LDA zPalAttributes + 27
+	STA PPUDATA
+	LDA zPalAttributes + 28
+	STA PPUDATA
+	LDA zPalAttributes + 29
+	STA PPUDATA
+	LDA zPalAttributes + 30
+	STA PPUDATA
+	LDA zPalAttributes + 31
+	STA PPUDATA
+	LDA zPalAttributes + 32
+	STA PPUDATA
+	LDA zPalAttributes + 33
+	STA PPUDATA
+	LDA zPalAttributes + 34
+	STA PPUDATA
+	LDA zPalAttributes + 35
+	STA PPUDATA
+	LDA zPalAttributes + 36
+	STA PPUDATA
+	LDA zPalAttributes + 37
+	STA PPUDATA
+	LDA zPalAttributes + 38
+	STA PPUDATA
+	LDA zPalAttributes + 39
+	STA PPUDATA
+	LDA zPalAttributes + 40
+	STA PPUDATA
+	LDA zPalAttributes + 41
+	STA PPUDATA
+	LDA zPalAttributes + 42
+	STA PPUDATA
+	LDA zPalAttributes + 43
+	STA PPUDATA
+	LDA zPalAttributes + 44
+	STA PPUDATA
+	LDA zPalAttributes + 45
+	STA PPUDATA
+	LDA zPalAttributes + 46
+	STA PPUDATA
+	LDA zPalAttributes + 47
+	STA PPUDATA
+	LDA zPalAttributes + 48
+	STA PPUDATA
+	LDA zPalAttributes + 49
+	STA PPUDATA
+	LDA zPalAttributes + 50
+	STA PPUDATA
+	LDA zPalAttributes + 51
+	STA PPUDATA
+	LDA zPalAttributes + 52
+	STA PPUDATA
+	LDA zPalAttributes + 53
+	STA PPUDATA
+	LDA zPalAttributes + 54
+	STA PPUDATA
+	LDA zPalAttributes + 55
+	STA PPUDATA
+	LDA zPalAttributes + 56
+	STA PPUDATA
+	LDA zPalAttributes + 57
+	STA PPUDATA
+	LDA zPalAttributes + 58
+	STA PPUDATA
+	LDA zPalAttributes + 59
+	STA PPUDATA
+	LDA zPalAttributes + 60
+	STA PPUDATA
+	LDA zPalAttributes + 61
+	STA PPUDATA
+	LDA zPalAttributes + 62
+	STA PPUDATA
+	LDA zPalAttributes + 63
+	STA PPUDATA
 	RTS
 
 UpdateBackground:
@@ -266,30 +389,29 @@ UpdateBackground:
 	STY PPUADDR
 	LDY zCurrentTileNametableAddress
 	STY PPUADDR
-	; y needs to be constant
 	LDY #0
 @Loop:
 	; start writing
 	LDA (zCurrentTileAddress), Y
-	TAX
 ; increment tilemap
-	INC zCurrentTileAddress
+	INY
 	BNE @Dec
 	INC zCurrentTileAddress + 1
 @Dec:
 ; decrement offset
-	LDA zTileOffset + 1
+	LDX zTileOffset + 1
 	BEQ @Done
 	DEC zTileOffset + 1
 @Done:
 	DEC zTileOffset
 ; compound bitfields to return the state of zero
 ; no bits active, zero flag is set
-	LDA zTileOffset
-	ORA zTileOffset + 1
-	STX PPUDATA
+	STA PPUDATA
+	TXA
+	ORA zTileOffset
 	BNE @Loop
 @Quit:
+	LDY #0
 	STY PPUADDR
 	STY PPUADDR
 	RTS
