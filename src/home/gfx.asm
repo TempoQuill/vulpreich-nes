@@ -44,10 +44,9 @@ PrintText:
 	ADC zCurrentTextAddress
 	STA zCurrentTextAddress
 	BCC @SkipCarry
-	LDA #0
-	ADC zCurrentTextAddress + 1
-	STA zCurrentTextAddress + 1
+	INC zCurrentTextAddress + 1
 @SkipCarry:
+	LDY #0
 	DEX
 	BPL @End
 	DEX
