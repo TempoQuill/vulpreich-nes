@@ -53,7 +53,7 @@ PrintText:
 	STA cNametableAddress
 	BCC @SkipCarry2
 	INC cNametableAddress + 1
-@SkipCarry1:
+@SkipCarry2:
 	LDY #0
 	DEX
 	BPL @End
