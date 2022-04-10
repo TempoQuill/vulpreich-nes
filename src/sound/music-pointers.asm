@@ -6,3 +6,4 @@ ELSE
 ENDIF
 	dba PRG_Music0,    Music_TitleScreen
 	dba PRG_Music0,    Music_Journey
+	dba PRG_Music0,    Music_HOFScene2

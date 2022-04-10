@@ -13,7 +13,7 @@ Drumkit0:
 	.dw Drum0_2 ; crash
 	.dw Drum0_3 ; quiet hi hat
 	.dw Drum0_4 ; open hi hat
-	.dw Drum0_0
+	.dw Drum0_5 ; dry hi hat
 	.dw Drum0_0
 	.dw Drum0_0
 	.dw Drum0_0
@@ -67,5 +67,10 @@ Drum0_4:
 	noise_note 0, 1, 1, 0, 0
 	noise_note 0, 1, 1, 0, 0
 	noise_note 0, 1, 1, 0, 0
+	noise_note 0, 1, 0, 0, 0
+	sound_ret
+
+Drum0_5:
+	noise_note 0, 1, 8, 0, 0
 	noise_note 0, 1, 0, 0, 0
 	sound_ret
