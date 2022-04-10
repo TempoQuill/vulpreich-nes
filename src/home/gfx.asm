@@ -38,14 +38,22 @@ PrintText:
 	INY
 	BNE @Loop
 @Command:
+	INY
 	TAX
 	TYA
 	CLC
 	ADC zCurrentTextAddress
 	STA zCurrentTextAddress
-	BCC @SkipCarry
+	BCC @SkipCarry1
 	INC zCurrentTextAddress + 1
-@SkipCarry:
+@SkipCarry1:
+	TYA
+	CLC
+	ADC cNametableAddress
+	STA cNametableAddress
+	BCC @SkipCarry2
+	INC cNametableAddress + 1
+@SkipCarry1:
 	LDY #0
 	DEX
 	BPL @End
