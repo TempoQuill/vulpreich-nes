@@ -191,6 +191,7 @@ NMI:
 	JSR PrintText
 	JSR UpdateBackground
 	; scroll
+	LDA zNMIState
 	CMP #NMI_GAS
 	BEQ @OAMCheck
 	BCS @ScrollPlasma
