@@ -196,7 +196,7 @@ SFX_ObjectiveComplete_Hill:
 
 SFX_ObjectiveComplete_Noise:
 	set_music
-	sfx_toggle_drum 1
+	sfx_drum_on 1
 	drum_speed 12
 	rest 2
 	drum_note 1, 2
@@ -278,70 +278,70 @@ SFX_IggyVoice4_DPCM:
 
 SFX_JuneVoice0_DPCM:
 	toggle_music
-	sfx_toggle_drum 6
+	sfx_drum_on 6
 	drum_speed 11
 	drum_note 6, 3
 	sound_ret
 
 SFX_JuneVoice1_DPCM:
 	toggle_music
-	sfx_toggle_drum 6
+	sfx_drum_on 6
 	drum_speed 7
 	drum_note 7, 4
 	sound_ret
 
 SFX_JuneVoice2_DPCM:
 	toggle_music
-	sfx_toggle_drum 6
+	sfx_drum_on 6
 	drum_speed 27
 	drum_note 8, 1
 	sound_ret
 
 SFX_JuneVoice3_DPCM:
 	toggle_music
-	sfx_toggle_drum 6
+	sfx_drum_on 6
 	drum_speed 19
 	drum_note 9, 1
 	sound_ret
 
 SFX_JuneVoice4_DPCM:
 	toggle_music
-	sfx_toggle_drum 6
+	sfx_drum_on 6
 	drum_speed 5
 	drum_note 10, 5
 	sound_ret
 
 SFX_OtisVoice0_DPCM:
 	toggle_music
-	sfx_toggle_drum 6
+	sfx_drum_on 6
 	drum_speed 7
 	drum_note 1, 5
 	sound_ret
 
 SFX_OtisVoice1_DPCM:
 	toggle_music
-	sfx_toggle_drum 6
+	sfx_drum_on 6
 	drum_speed 23
 	drum_note 2, 4
 	sound_ret
 
 SFX_OtisVoice2_DPCM:
 	toggle_music
-	sfx_toggle_drum 6
+	sfx_drum_on 6
 	drum_speed 11
 	drum_note 3, 5
 	sound_ret
 
 SFX_OtisVoice3_DPCM:
 	toggle_music
-	sfx_toggle_drum 6
+	sfx_drum_on 6
 	drum_speed 7
 	drum_note 4, 2
 	sound_ret
 
 SFX_OtisVoice4_DPCM:
 	toggle_music
-	sfx_toggle_drum 6
+	sfx_drum_on 6
 	drum_speed 11
 	drum_note 5, 4
 	sound_ret

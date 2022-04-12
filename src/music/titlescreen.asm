@@ -508,7 +508,7 @@ Music_TitleScreen_Measure3_35_37:
 	sound_ret
 
 Music_TitleScreen_Noise:
-	toggle_drum 0
+	drum_on 0
 	drum_speed 12
 	rest 4
 Music_TitleScreen_Loop4_01:

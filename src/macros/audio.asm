@@ -135,8 +135,12 @@ ENDM
 
 ; noise / DPCM
 ; if both channels are active, macro is used on noise
-MACRO toggle_drum id
-	.db toggle_drum_cmd, id ; e3
+MACRO drum_on id
+	.db drum_switch_cmd, id ; e3
+ENDM
+
+MACRO drum_off
+	.db drum_switch_cmd
 ENDM
 
 ; force_stereo_panning / old_panning
@@ -200,8 +204,12 @@ MACRO dummy_ef
 	.db $ef
 ENDM
 
-MACRO sfx_toggle_drum id
-	.db sfx_toggle_drum_cmd, id ; f0
+MACRO sfx_drum_on id
+	.db sfx_drum_switch_cmd, id ; f0
+ENDM
+
+MACRO sfx_drum_off
+	.db sfx_drum_switch_cmd
 ENDM
 
 ; from Ray, renamed to retain technical accuracy

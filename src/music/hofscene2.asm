@@ -360,7 +360,7 @@ Music_HOFScene2_Hill_loop1:
 	sound_jump Music_HOFScene2_Hill_Mainloop
 
 Music_HOFScene2_Noise:
-	toggle_drum 0
+	drum_on 0
 	drum_speed 12
 	rest 16
 	rest 16

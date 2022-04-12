@@ -192,13 +192,7 @@ _UpdateSound:
 	TXA
 	RSB SFX_CHANNEL
 	CMP #CHAN_4
-	BEQ @Flag
 	BCS @NextChannel ; zCurrentChannel > DPCM means go straight to the next channel
-	JMP @Loop
-@Flag:
-	LDA iChannelFlagSection1, X
-	SSB SOUND_DPCM
-	STA iChannelFlagSection1, X
 	JMP @Loop
 
 @Done:
@@ -1844,10 +1838,26 @@ Music_ToggleDrum: ; command e3
 ; 	noise on: 1 (7-bit)
 ; 	noise off: 0
 	; toggle sampling
+	TXA
+	AND #CHAN_3
+	BEQ @DPCM
+	LDA iChannelFlagSection1 + CHAN_4
+	LSR A
+	BCC @Noise
+	LDA iChannelFlagSection1 + CHAN_4
+	EOR #1 << SOUND_DPCM
+	STA iChannelFlagSection1 + CHAN_4
+@Noise:
 	LDA iChannelFlagSection1, X
 	EOR #1 << SOUND_NOISE
 	STA iChannelFlagSection1, X
-	TSB SOUND_NOISE ; isolate bit
+	BPL @Check
+@DPCM:
+	LDA iChannelFlagSection1, X
+	EOR #1 << SOUND_DPCM
+	STA iChannelFlagSection1, X
+@Check:
+	AND #1 << SOUND_DPCM | 1 << SONUD_NOISE ; isolate bits
 	BNE @GetParam ; if routine turns on sampling, read param
 	RTS
 
@@ -1863,10 +1873,26 @@ Music_SFXToggleDrum: ; command f0
 ;	on: 1 (7-bit mirror)
 ; 	off: 0
 	; toggle sampling
+	TXA
+	AND #CHAN_3
+	BEQ @DPCM
+	LDA iChannelFlagSection1 + CHAN_C
+	LSR A
+	BCC @Noise
+	LDA iChannelFlagSection1 + CHAN_C
+	EOR #1 << SOUND_DPCM
+	STA iChannelFlagSection1 + CHAN_C
+@Noise:
 	LDA iChannelFlagSection1, X
 	EOR #1 << SOUND_NOISE
 	STA iChannelFlagSection1, X
-	TSB SOUND_NOISE ; isolate bit
+	BPL @Check
+@DPCM:
+	LDA iChannelFlagSection1, X
+	EOR #1 << SOUND_DPCM
+	STA iChannelFlagSection1, X
+@Check:
+	AND #1 << SOUND_DPCM | 1 << SONUD_NOISE ; isolate bits
 	BNE @GetParam ; if routine turns on sampling, read param
 	RTS
 

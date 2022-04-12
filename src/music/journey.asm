@@ -208,7 +208,7 @@ Music_Journey_Hill:
 	sound_jump Music_Journey_Hill
 
 Music_Journey_Noise:
-	toggle_drum 0
+	drum_on 0
 	drum_speed 6
 Music_Journey_Loop4_01:
 	sound_call Music_Journey_Measure4_01
