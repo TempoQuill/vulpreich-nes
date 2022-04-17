@@ -1853,7 +1853,7 @@ Music_ToggleDrum: ; command e3
 	FSB SOUND_DPCM
 	STA iChannelFlagSection1, X
 @Check:
-	AND #1 << SOUND_DPCM | 1 << SONUD_NOISE ; isolate bits
+	AND #1 << SOUND_DPCM | 1 << SOUND_NOISE ; isolate bits
 	BNE @GetParam ; if routine turns on sampling, read param
 	RTS
 
@@ -1888,7 +1888,7 @@ Music_SFXToggleDrum: ; command f0
 	FSB SOUND_DPCM
 	STA iChannelFlagSection1, X
 @Check:
-	AND #1 << SOUND_DPCM | 1 << SONUD_NOISE ; isolate bits
+	AND #1 << SOUND_DPCM | 1 << SOUND_NOISE ; isolate bits
 	BNE @GetParam ; if routine turns on sampling, read param
 	RTS
 
