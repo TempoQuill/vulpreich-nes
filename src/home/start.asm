@@ -100,6 +100,7 @@ Start:
 	; make sure track 0 is playing
 	LDA #0
 	STA PPUMASK
+	STA zPPUMaskMirror
 	TAY ; MUSIC_NONE
 	JSR PlayMusic
 	; we won't be ready for graphical updates
@@ -112,7 +113,7 @@ Start:
 ; PPUCtrl_Background0000
 ; PPUCtrl_SpriteSize8x8
 ; PPUCtrl_NMIEnabled
-	ORA #1 << PPU_NMI | 1 << PPU_OBJECT_TABLE
+	ORA #PPU_NMI | PPU_OBJECT_TABLE
 	STA zPPUCtrlMirror
 	STA PPUCTRL
 	; wait one vblank to init main loop

@@ -132,23 +132,23 @@ WaitPlaySFX:
 
 WaitSFX:
 	LDA iChannelFlagSection1 + CHAN_8
-	LSR A
+	LSR A ; SOUND_CHANNEL_ON
 	BCS WaitSFX
 
 	LDA iChannelFlagSection1 + CHAN_9
-	LSR A
+	LSR A ; SOUND_CHANNEL_ON
 	BCS WaitSFX
 
 	LDA iChannelFlagSection1 + CHAN_A
-	LSR A
+	LSR A ; SOUND_CHANNEL_ON
 	BCS WaitSFX
 
 	LDA iChannelFlagSection1 + CHAN_B
-	LSR A
+	LSR A ; SOUND_CHANNEL_ON
 	BCS WaitSFX
 
 	LDA iChannelFlagSection1 + CHAN_C
-	LSR A
+	LSR A ; SOUND_CHANNEL_ON
 	BCS WaitSFX
 	RTS
 
@@ -163,23 +163,23 @@ SkipMusic:
 
 CheckSFX:
 	LDA iChannelFlagSection1 + CHAN_8
-	LSR A
+	LSR A ; SOUND_CHANNEL_ON
 	BCS @Done
 
 	LDA iChannelFlagSection1 + CHAN_9
-	LSR A
+	LSR A ; SOUND_CHANNEL_ON
 	BCS @Done
 
 	LDA iChannelFlagSection1 + CHAN_A
-	LSR A
+	LSR A ; SOUND_CHANNEL_ON
 	BCS @Done
 
 	LDA iChannelFlagSection1 + CHAN_B
-	LSR A
+	LSR A ; SOUND_CHANNEL_ON
 	BCS @Done
 
 	LDA iChannelFlagSection1 + CHAN_C
-	LSR A
+	LSR A ; SOUND_CHANNEL_ON
 	BCS @Done
 
 @Done:

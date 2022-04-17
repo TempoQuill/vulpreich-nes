@@ -14,7 +14,7 @@ _InitNameTable:
 ; clear a nametable including attributes
 	; turn off NMI
 	LDA zPPUCtrlMirror
-	RSB PPU_NMI
+	AND #$ff ^ PPU_NMI
 	STA zPPUCtrlMirror
 	STA PPUCTRL
 	; set up address
@@ -33,7 +33,7 @@ _InitNameTable:
 	BNE @Loop
 	; restore NMI
 	LDA zPPUCtrlMirror
-	SSB PPU_NMI
+	ORA #PPU_NMI
 	STA zPPUCtrlMirror
 	STA PPUCTRL
 	RTS

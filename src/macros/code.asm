@@ -41,6 +41,11 @@ MACRO RSB bit
 	AND #$ff ^ (1 << bit)
 ENDM
 
+; flip signle bit
+MACRO FSB bit
+	EOR #1 << bit
+ENDM
+
 ; jump subroutine home
 ; access different memory than currently available
 ; only used in Home ROM

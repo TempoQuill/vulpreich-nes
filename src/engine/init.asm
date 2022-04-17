@@ -62,7 +62,7 @@ IntroSequence:
 	JSR RunTitleScreen
 	BCS @Loop
 	LDA zPPUCtrlMirror
-	RSB PPU_OBJECT_RESOLUTION ; 8x8
+	AND #$ff ^ PPU_OBJECT_RESOLUTION ; 8x8
 	STA zPPUCtrlMirror
 	STA PPUCTRL
 	LDA zTitleScreenOption
@@ -114,6 +114,10 @@ InspiredScreen:
 	; inputs are barred though for the time being
 	LDA #NMI_LIQUID
 	STA zNMIState
+	; sure, we can get the game to show our stuff now
+	LDA #PPU_OBJ | PPU_BG | PPU_OBJ_MASKLIFT | PPU_BG_MASKLIFT
+	STA PPUMASK
+	STA zPPUMaskMirror
 	; fade in palettes
 	LDA zPals
 	SSB PAL_FADE_F
@@ -185,13 +189,13 @@ TitleScreen:
 	LDX #4
 	JSR StoreText
 	LDA zPPUCtrlMirror
-	RSB PPU_NMI
+	AND #$ff ^ PPU_NMI
 	STA zPPUCtrlMirror
 	STA PPUCTRL
 	LDY #MUSIC_TITLE
 	JSR PlayMusic
 	LDA zPPUCtrlMirror
-	SSB PPU_NMI
+	ORA #PPU_NMI
 	STA zPPUCtrlMirror
 	STA PPUCTRL
 	; enable everything now
