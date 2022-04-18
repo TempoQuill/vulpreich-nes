@@ -154,11 +154,12 @@ TitleScreen:
 	; clear nametable and palettes
 	JSR InitNameTable
 	JSR InitPals
+	LDX #15
 @PalLoop:
 	LDA IntroPals, X
 	STA iCurrentPals, X
 	DEX
-	BNE @PalLoop
+	BPL @PalLoop
 	; set up nametable and text
 	LDA #>NAMETABLE_MAP_0
 	STA zCurrentTileNametableAddress
