@@ -214,9 +214,9 @@ TitleScreen:
 	LDY #MUSIC_TITLE
 	JSR PlayMusic
 	; wait for vblank... again
-@VBlank1:
+@VBlank2:
 	LDA PPUSTATUS
-	BPL @Blank1
+	BPL @Blank2
 	JSR UploadTitleGFX
 	; enable everything now
 	LDA zPPUCtrlMirror
