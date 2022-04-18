@@ -56,6 +56,9 @@ IntroPals:
 IntroSequence:
 	JSR InspiredScreen
 	JSR TitleScreen
+	LDA #PPU_OBJ | PPU_BG | PPU_OBJ_MASKLIFT | PPU_BG_MASKLIFT
+	STA PPUMASK
+	STA zPPUMaskMirror
 	LDA #1
 	JSR DelayFrame_s_
 @Loop:
@@ -140,8 +143,10 @@ TitleScreen:
 	AND #$ff ^ PPU_NMI
 	STA zPPUCtrlMirror
 	STA PPUCTRL
-	LDY #MUSIC_NONE
-	JSR PlayMusic
+	; no NMI, nothing to show
+	LDA #0
+	STA PPUMASK
+	STA zPPUMaskMirror
 	; wait for vblank
 @VBlank1:
 	LDA PPUSTATUS
@@ -203,7 +208,9 @@ TitleScreen:
 	STA cNametableAddress + 1
 	LDX #4
 	JSR StoreText
-	STA PPUCTRL
+	; play track 0 again
+	LDY #MUSIC_NONE
+	JSR PlayMusic
 	LDY #MUSIC_TITLE
 	JSR PlayMusic
 	; wait for vblank... again
