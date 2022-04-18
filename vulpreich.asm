@@ -39,8 +39,7 @@
 IFNDEF NSF_FILE
 	; bank 00-02 starter banks
 	.base $8000
-	.include "src/start-0.asm"
-	.pad $a000, $00
+	.include "src/start.asm"
 	.pad $c000, $00
 	.pad $e000, $00 ; needs to be blank
 ELSE

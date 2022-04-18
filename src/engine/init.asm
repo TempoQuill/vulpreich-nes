@@ -132,13 +132,28 @@ InspiredScreen:
 	JMP DelayFrame_s_
 
 TitleScreen:
-	; disable video for now
-	LDA #NMI_SOUND
-	STA zNMIState
+;	; disable video for now
+;	LDA #NMI_SOUND
+;	STA zNMIState
+	; disable NMI for now
+	LDA zPPUCtrlMirror
+	AND #$ff ^ PPU_NMI
+	STA zPPUCtrlMirror
+	STA PPUCTRL
 	LDY #MUSIC_NONE
 	JSR PlayMusic
+	; wait for vblank
+@VBlank1:
+	LDA PPUSTATUS
+	BPL @Blank1
+	; clear nametable and palettes
 	JSR InitNameTable
 	JSR InitPals
+@PalLoop:
+	LDA IntroPals, X
+	STA iCurrentPals, X
+	DEX
+	BNE @PalLoop
 	; set up nametable and text
 	LDA #>NAMETABLE_MAP_0
 	STA zCurrentTileNametableAddress
@@ -188,21 +203,24 @@ TitleScreen:
 	STA cNametableAddress + 1
 	LDX #4
 	JSR StoreText
-	LDA zPPUCtrlMirror
-	AND #$ff ^ PPU_NMI
-	STA zPPUCtrlMirror
 	STA PPUCTRL
 	LDY #MUSIC_TITLE
 	JSR PlayMusic
+	; wait for vblank... again
+@VBlank1:
+	LDA PPUSTATUS
+	BPL @Blank1
+	JSR UploadTitleGFX
+	; enable everything now
 	LDA zPPUCtrlMirror
 	ORA #PPU_NMI
 	STA zPPUCtrlMirror
 	STA PPUCTRL
-	; enable everything now
 	LDA #NMI_NORMAL
 	STA zNMIState
 	LDX #1
 	STX zPalFade
+	STX zPalFadeSpeed
 	; fade in
 	LDA zPals
 	SSB PAL_FADE_F
