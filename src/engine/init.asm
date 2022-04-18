@@ -150,7 +150,7 @@ TitleScreen:
 	; wait for vblank
 @VBlank1:
 	LDA PPUSTATUS
-	BPL @Blank1
+	BPL @VBlank1
 	; clear nametable and palettes
 	JSR InitNameTable
 	JSR InitPals
@@ -216,7 +216,7 @@ TitleScreen:
 	; wait for vblank... again
 @VBlank2:
 	LDA PPUSTATUS
-	BPL @Blank2
+	BPL @VBlank2
 	JSR UploadTitleGFX
 	; enable everything now
 	LDA zPPUCtrlMirror
