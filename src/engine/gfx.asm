@@ -12,11 +12,6 @@ _InitPals:
 
 _InitNameTable:
 ; clear a nametable including attributes
-	; turn off NMI
-	LDA zPPUCtrlMirror
-	AND #$ff ^ PPU_NMI
-	STA zPPUCtrlMirror
-	STA PPUCTRL
 	; set up address
 	LDA #>NAMETABLE_MAP_0
 	STA PPUADDR
@@ -65,11 +60,6 @@ _InitNameTable:
 	BNE @Loop
 	DEY
 	BPL @Loop
-	; restore NMI
-	LDA zPPUCtrlMirror
-	ORA #PPU_NMI
-	STA zPPUCtrlMirror
-	STA PPUCTRL
 	RTS
 
 GetNamePointer:

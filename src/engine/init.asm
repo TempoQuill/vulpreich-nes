@@ -88,6 +88,15 @@ IntroSequence:
 	.dw IntroSequence
 
 InspiredScreen:
+	; we're initializing the PPU
+	; turn off NMI
+	LDA zPPUCtrlMirror
+	AND #$ff ^ PPU_NMI
+	STA zPPUCtrlMirror
+	STA PPUCTRL
+@VBlank:
+	LDA PPUSTATUS
+	BPL @VBlank
 	JSR InitNameTable
 	JSR InitPals
 	LDA #0
@@ -115,6 +124,10 @@ InspiredScreen:
 	BNE @PalLoop
 	; we can enable graphical updates now
 	; inputs are barred though for the time being
+	LDA zPPUCtrlMirror
+	ORA #PPU_NMI
+	STA zPPUCtrlMirror
+	STA PPUCTRL
 	LDA #NMI_LIQUID
 	STA zNMIState
 	; sure, we can get the game to show our stuff now
