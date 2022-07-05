@@ -30,8 +30,8 @@
 ; VulpReich is built with the MMC5 in mind
 ; it maxes out all of the possible specs with this mapper.
 ; 8000-dfff - general purpose ROM
-; 8000-9fff - almost always instruction data
-; a000-bfff - sometimes read-ready data, sometimes instruction data
+; 8000-9fff - switchable window lower
+; a000-bfff - switchable window upper
 ; c000-dfff - always DPCM data
 ; e000-fff9 - home base, here lies only the most essential
 ;             instruction data (mapper data, math, NMI, interfaces, etc.)

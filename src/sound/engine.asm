@@ -237,9 +237,9 @@ UpdateChannels:
 	.dw @Hill
 	.dw @Noise
 	.dw @DPCM
-	; $b0bd - PRG ROM - in window 1
-	; $4802 - Mapper area
-	; $0829 - ZP RAM mirrored - zTableOffset
+	; $b0bd - PRG ROM - in upper switchable window
+	; $2902 - PPU Area mirrored - PPUSTATUS
+	; $f008 - PRG ROM - in home window
 
 @Pulse1:
 	LDA iChannelNoteFlags, X
@@ -980,7 +980,7 @@ HandleDPCM: ; NES only
 @Read:
 ; sample struct:
 ;	[vv] [wx] [yy] [zz]
-;	vv: bank #
+;	vv: bank # to go into $c000-$dfff
 ;	w: loop / interrupt request
 ;	x: pitch
 ;	yy: sample offset
@@ -1224,6 +1224,8 @@ ParseSoundEffect:
 	RTS
 
 GetByteInEnvelopeGroup:
+; start reading envelope data
+; the group id is 7-bit, bit seven is discarded upon CMP
 	; get pointer
 	LDA EnvelopeGroups, Y
 	STA zCurrentEnvelopeGroupAddress
@@ -1790,6 +1792,7 @@ Music_RelativePitch: ; command e7
 
 Music_CyclePattern: ; command de
 ; sequence of 4 cycles to be looped
+; NOTE: sequence plays in ascending bit order
 ; params: 1 (4 2-bit cycle arguments)
 	LDA iChannelFlagSection2, X
 	SSB SOUND_CYCLE_LOOP ; cycle looping
@@ -1802,14 +1805,14 @@ Music_CyclePattern: ; command de
 	LSR iChannelCyclePattern, X
 	ROR A
 	STA iChannelCyclePattern, X
-	; update duty cycle
+	; update cycle
 	AND #$c0 ; only uses top 2 bits
 	STA iChannelCycle, X
 	RTS
 
 Music_EnvelopePattern: ; command e8
 ; envelope group
-; params: 1 (8-bit)
+; params: 1 (7-bit)
 	LDA iChannelFlagSection2, X
 	SSB SOUND_ENV_PTRN
 	STA iChannelFlagSection2, X
@@ -1899,10 +1902,6 @@ Music_SFXToggleDrum: ; command f0
 
 Music_PitchSweep: ; command dd
 ; update pitch sweep
-; WARNING:	Only works for pulse channels
-; 		Does nothing when on other channels
-;	zSweep1 - Pulse1
-;	zSweep2 - Pulse2
 ; params: 1
 	LDA iChannelNoteFlags, X
 	SSB NOTE_PITCH_SWEEP
@@ -1942,7 +1941,8 @@ Music_NoteType: ; command d8
 	JSR GetMusicByte
 	STA iChannelNoteLength, X
 	TXA
-	CMP #3
+	RSB SFX_CHANNEL
+	CMP #CHAN_3
 	BCC Music_Envelope
 	RTS
 
@@ -2042,6 +2042,7 @@ Music_RestartChannel: ; command ea
 
 Music_NewSong: ; command eb
 ; new song
+; variant of an old Gen 1 command
 ; params: 2
 ;	Y: song id
 	JSR GetMusicByte
@@ -2072,6 +2073,7 @@ GetMusicByte:
 	RTS
 
 GetPitch:
+; generate pitch
 ;     in     out
 ; A = Pitch  lo
 ; Y = Octave hi
@@ -2080,12 +2082,12 @@ GetPitch:
 	; get octave
 	LDA iChannelTransposition, X
 	AND #$f0
-	HTL A
+	HTL A ; high nybble
 	ADC zBackupY
 	PHA ; save octave
 	; add pitch
 	LDA iChannelTransposition, X
-	AND #$f
+	AND #$f ; lo nybble
 	ADC zBackupA
 	ASL A
 	TAY
@@ -2097,9 +2099,12 @@ GetPitch:
 	LDA NoteTable, Y
 	TAY
 	PLA ; retrieve octave
+	; shift byte (7 - A) bits
 @Loop:
+	; (7 - A) loops
 	CMP #7
 	BCS @OK
+	; ROR XY
 	PHA
 	TXA
 	ROR A
@@ -2412,6 +2417,8 @@ LoadChannel:
 	STA iChannelFlagSection1, X
 ; make sure channel is cleared
 ; set default tempo and note length in case nothing is loaded
+; input:
+;	x: channel ID
 	STY zBackupY
 	LDA zCurrentChannel
 	CLC ; start
@@ -2486,7 +2493,7 @@ ClearChannels:
 
 ClearHillDPCM:
 ; input: Y = APU offset
-; output: 00 00 00 00
+; output: 00 xx 00 00
 	LDA #0
 	STA SQ1_ENV, Y
 	STA SQ1_LO, Y
@@ -2505,6 +2512,8 @@ ClearPulse:
 	RTS
 
 ClearNoise:
+; input: Y = APU offset
+; output: 30 xx 00 00
 	LDA #1 << SOUND_VOLUME_LOOP_F | 1 << SOUND_RAMP_F
 	STA SQ1_ENV, Y
 	LDA #0
