@@ -36,7 +36,7 @@ _LoadMusicByte:
 	RTS
 
 GetWindowIndex:
-; input -  A - $80-$df
+; input -  A - $80-$bf
 ; output - X - PRG window X
 	AND #$70
 	LSR A

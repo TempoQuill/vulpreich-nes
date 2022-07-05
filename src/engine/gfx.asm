@@ -129,8 +129,6 @@ _StoreText:
 ;	zCurrentTextAddress - output address
 	; initialize offset / addresses
 	LDY #0
-	STY zTextOffset, X
-	STY zTextOffset + 1, X
 	LDA zAuxAddresses + 6
 	STA zCurrentTextAddress, X
 	LDA zAuxAddresses + 7
@@ -140,20 +138,12 @@ _StoreText:
 	JSR GetTextByte
 	CMP #text_end_cmd
 	BEQ @Done
-	INC zTextOffset
-	BNE @NoCarry
-	INC zTextOffset + 1
-@NoCarry:
-	INC zCurrentTextAddress, X
-	BNE @Loop
-	INC zCurrentTextAddress + 1, X
+	INY
 	BNE @Loop
 @Done:
+	STY zTextOffset
 	; revert zCurrentTextAddress to its state before the loop
-	LDA zAuxAddresses + 6
-	STA zCurrentTextAddress, X
-	LDA zAuxAddresses + 7
-	STA zCurrentTextAddress + 1, X
+	LDA zCurrentTextAddress + 1, X
 	JSR GetWindowIndex
 	; we should return to the bank we came from when we're done
 	LDA zTextBank
@@ -171,14 +161,20 @@ _PrintText:
 	; UNLESS $80 or $85 was encountered, we exit from there
 	BMI @GetCommand
 	; increment address
-	INC cNametableAddress
-	BNE @SkipCarry
-	INC cNametableAddress + 1
-@SkipCarry:
-	INC zCurrentTextAddress
-	BNE @CopyToPPU
-	INC zCurrentTextAddress + 1
-@CopyToPPU:
+	INY
+	TYA
+	CLC
+	ADC cNametableAddress
+	STA cNametableAddress
+	LDA #0
+	ADC cNametableAddress + 1
+	STA cNametableAddress + 1
+	TYA
+	ADC zCurrentTextAddress
+	STA zCurrentTextAddress
+	LDA #0
+	ADC zCurrentTextAddress + 1
+	STA zCurrentTextAddress + 1
 	; update PPU address
 	LDA cNametableAddress + 1
 	STA PPUADDR
@@ -190,6 +186,7 @@ _PrintText:
 
 @GetCommand:
 ; generate a pointer offset to branch to
+	INY
 	PLA ; we need the byte here
 	EOR #$80 ; discard sign
 	ASL A ; only sets c if A ≥ $80 at this point (it won't be)
@@ -230,14 +227,12 @@ _PrintText:
 	JSR WritePPUData
 	JSR GetNameTableOffsetLine2
 	JSR GetPPUAddressFromNameTable
-	INY
 	JMP _PrintText
 
 @Line:
 ; print at textbox line 2
 	JSR GetNameTableOffsetLine2
 	JSR GetPPUAddressFromNameTable
-	INY
 	JMP _PrintText
 
 @Para:

@@ -21,7 +21,7 @@ VR_105:
 	text_end
 
 VR_106:
-	.db "Thanks to the chimney"
+	.db "Thanks to the Chimney"
 	text_end
 
 VR_107:

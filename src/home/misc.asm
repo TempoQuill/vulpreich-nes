@@ -145,16 +145,12 @@ ClearOAM:
 	RTS
 
 GetWindowIndex:
-; input -  A - $80-$df
+; input -  A - $80-$bf
 ; output - X - PRG window X
 	LDX #0
 	AND #>WINDOW_MASK
-	SEC
 	BEQ @Quit
-@Loop:
 	INX
-	SBC #>WINDOW_SIZE
-	BNE @Loop
 @Quit:
 	RTS
 
