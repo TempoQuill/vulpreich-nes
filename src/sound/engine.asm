@@ -546,6 +546,13 @@ LoadNote:
 	LDA zBackupY
 	ASL A ; SOUND_RELATIVE_PITCH
 	BPL @CheckEnvelopePattern
+	LDA iChannelRelativeNoteID, X
+	BEQ @rp_off
+	LDA iChannelFlagSection3, X
+	SSB SOUND_REL_PITCH_FLAG
+	STA iChannelFlagSection3, X
+	BNE @CheckEnvelopePattern
+@rp_off:
 	LDA iChannelFlagSection3, X
 	RSB SOUND_REL_PITCH_FLAG
 	STA iChannelFlagSection3, X
@@ -596,18 +603,20 @@ GeneralHandler:
 	SSB NOTE_CYCLE_OVERRIDE
 	STA iChannelNoteFlags, X
 @CheckRelativePitch:
+; interesting notes:
+;	$d9 and $e7 can stack with each other
+;		$d9 $01 and $e7 $01 together would be the same as $d9/e7 $02
+;	$e7 $f4-ff can trigger the rest pitch due to a lack of carry
 	LDA zBackupY
 	ASL A ; SOUND_RELATIVE_PITCH
 	BPL @CheckPitchModifier
 	; is relative pitch on?
 	LDA iChannelFlagSection3, X
 	TSB SOUND_REL_PITCH_FLAG
-	BEQ @RelativePitch_SetFlag
-	LDA iChannelFlagSection3, X
-	RSB SOUND_REL_PITCH_FLAG
-	STA iChannelFlagSection3, X
+	BEQ @CheckPitchModifier
 	; get pitch
 	LDA iChannelNoteID, X
+	BEQ @CheckPitchModifier
 	; add to pitch value
 	ADC iChannelRelativeNoteID, X
 	STA iChannelNoteID, X
@@ -617,14 +626,6 @@ GeneralHandler:
 	JSR GetPitch
 	STA zCurrentTrackRawPitch
 	STY zCurrentTrackRawPitch + 1
-; interesting notes:
-;	$d9 and $e7 can stack with each other
-;		$d9 $01 and $e7 $01 together would be the same as $d9/e7 $02
-;	$e7 $f4-ff can trigger the rest pitch due to a lack of carry
-@RelativePitch_SetFlag:
-	LDA iChannelFlagSection3, X
-	SSB SOUND_REL_PITCH_FLAG
-	STA iChannelFlagSection3, X
 @CheckPitchModifier:
 	LDA zBackupY
 	TSB SOUND_PITCH_MODIFIER
@@ -637,6 +638,8 @@ GeneralHandler:
 	SBC iChannelPitchModifier, X
 	STA zCurrentTrackRawPitch + 1
 @CheckPitchInc:
+; incidentally, pitch_dec_switch can stack with pitch_offset
+; for example, $f1 followed by $e6 $0001 would essentially mean $e6 $0002
 	; is pitch inc on?
 	LDA iChannelFlagSection1, X
 	ASL A ; SOUND_PITCH_INC_SWITCH
@@ -649,8 +652,6 @@ GeneralHandler:
 	BEQ @CheckPitchInc_NoCarry
 	; inc high byte if low byte rolls over
 	DEC zCurrentTrackRawPitch + 1
-; incidentally, pitch_dec_switch can stack with pitch_offset
-; for example, $f1 followed by $e6 $0001 would essentially mean $e6 $0002
 @CheckPitchInc_NoCarry:
 	DEC zCurrentTrackRawPitch
 @CheckVibrato:
