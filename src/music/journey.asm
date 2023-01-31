@@ -114,7 +114,7 @@ Music_Journey_Loop2_09:
 	sound_loop 7, Music_Journey_Loop2_09
 	sound_call Music_Journey_Measure1_09
 	sound_call Music_Journey_Measure1_26
-	set_mute_timer 0
+	set_mute_timer -1
 	vibrato 10, 5, 4
 Music_Journey_Loop2_25:
 	volume_envelope 1, 3
