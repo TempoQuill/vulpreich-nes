@@ -158,8 +158,8 @@ SFX_ObjectiveComplete_Pulse2:
 	note D_, 1
 	duty_cycle 1
 	octave 1
-	note D_, 2
-	rest 6
+	note G_, 3
+	rest 4
 	sound_ret
 
 SFX_ObjectiveComplete_Hill:
