@@ -269,7 +269,7 @@ iChannelSlideFraction:
 	.dsb 16
 iChannelSlideTempo:
 	.dsb 16
-iChannelMuteCounter:
+iChannelStaccatoCounter:
 	.dsb 16 ; 0440
 iChannelPitchModifier:
 	.dsb 32
@@ -279,7 +279,7 @@ iChannelEnvelopeGroup:
 	.dsb 16 ; 0480
 iChannelEnvelopeGroupOffset:
 	.dsb 16
-iChannelMuteMain:
+iChannelStaccatoMain:
 	.dsb 16
 iChannelNoteLength:
 	.dsb 16

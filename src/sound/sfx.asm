@@ -93,7 +93,7 @@ SFX_ObjectiveComplete_Pulse1:
 	set_music
 	tempo 142
 	vibrato 10, 5, 4
-	set_mute_timer 3
+	staccato 3
 	note_type 6, 1, 10
 	rest 4
 	octave 3
@@ -115,12 +115,12 @@ SFX_ObjectiveComplete_Pulse1:
 	note B_, 4
 	duty_cycle 2
 	vibrato 4, 7, 5
-	set_mute_timer 15
+	staccato 15
 	volume_envelope 0, 9
 	note A_, 6
 	octave 3
 	note C_, 6
-	set_mute_timer 11
+	staccato 11
 	octave 2
 	note B_, 8
 	sound_ret

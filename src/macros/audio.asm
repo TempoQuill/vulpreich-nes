@@ -129,8 +129,8 @@ MACRO vibrato preamble, depth, length
 ENDM
 
 ; only works in Ray and Vulpreich
-MACRO set_mute_timer delay
-	.db set_mute_timer_cmd, delay ; e2
+MACRO staccato delay
+	.db staccato_cmd, delay ; e2
 ENDM
 
 ; noise / DPCM

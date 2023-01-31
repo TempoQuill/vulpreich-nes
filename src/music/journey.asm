@@ -27,7 +27,7 @@ Music_Journey_Loop1_25:
 	sound_jump Music_Journey_Loop1_01
 
 Music_Journey_Measure1_09:
-	set_mute_timer 5
+	staccato 5
 	vibrato 4, 7, 5
 	volume_envelope 1, 6
 	octave 2
@@ -67,7 +67,7 @@ Music_Journey_Measure1_09:
 	sound_ret
 
 Music_Journey_Measure1_26:
-	set_mute_timer 5
+	staccato 5
 	vibrato 4, 7, 5
 	volume_envelope 1, 6
 	octave 2
@@ -107,14 +107,14 @@ Music_Journey_Loop2_05:
 	sound_call Music_Journey_Measure1_26
 	sound_loop 2, Music_Journey_Loop2_05
 Music_Journey_Loop2_09:
-	set_mute_timer 7
+	staccato 7
 	vibrato 10, 5, 4
 	sound_call Music_Journey_Measure2_09
 	sound_call Music_Journey_Measure1_26
 	sound_loop 7, Music_Journey_Loop2_09
 	sound_call Music_Journey_Measure1_09
 	sound_call Music_Journey_Measure1_26
-	set_mute_timer -1
+	staccato -1
 	vibrato 10, 5, 4
 Music_Journey_Loop2_25:
 	volume_envelope 1, 3
@@ -142,7 +142,7 @@ Music_Journey_Loop2_25:
 	volume_envelope 1, 1
 	note D_, 2
 	sound_loop 3, Music_Journey_Loop2_25
-	set_mute_timer 7
+	staccato 7
 	vibrato 10, 5, 4
 	sound_call Music_Journey_Measure2_09
 	sound_call Music_Journey_Measure1_26

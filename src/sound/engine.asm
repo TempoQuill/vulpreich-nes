@@ -560,7 +560,7 @@ LoadNote:
 @CheckEnvelopePattern:
 	LDA zBackupY
 	TSB SOUND_ENV_PTRN
-	BEQ @CheckMuteTimer
+	BEQ @CheckStaccato
 	LDA iChannelNoteFlags, X
 	RSB NOTE_ENV_OVERRIDE
 	STA iChannelNoteFlags, X
@@ -568,20 +568,20 @@ LoadNote:
 	LDA #0
 	STA iChannelEnvelopeGroupOffset, X
 
-@CheckMuteTimer:
+@CheckStaccato:
 	LDA zBackupY
-	TSB SOUND_MUTE
-	BNE @MuteTimer
+	TSB SOUND_STACCATO
+	BNE @Staccato
 	RTS
-@MuteTimer:
+@Staccato:
 	; read main byte
-	LDA iChannelMuteMain, X
+	LDA iChannelStaccatoMain, X
 	; copy to counter
-	STA iChannelMuteCounter, X
+	STA iChannelStaccatoCounter, X
 	RTS
 
 GeneralHandler:
-; handle cycle, pitch, env ptrn, mute, and vibrato
+; handle cycle, pitch, env ptrn, staccato, and vibrato
 	LDY iChannelFlagSection2, X
 	STY zBackupY
 	TYA
@@ -727,7 +727,7 @@ GeneralHandler:
 @CheckEnvelopePattern:
 	LDA zBackupY
 	TSB SOUND_ENV_PTRN
-	BEQ @CheckMuteTimer
+	BEQ @CheckStaccato
 	LDA iChannelNoteFlags, X
 	SSB NOTE_ENV_OVERRIDE
 	STA iChannelNoteFlags, X
@@ -738,7 +738,7 @@ GeneralHandler:
 	TXA
 	RSB SFX_CHANNEL
 	CMP #CHAN_2
-	BEQ @CheckMuteTimer ; hill has no volume control on its own
+	BEQ @CheckStaccato ; hill has no volume control on its own
 	; envelope group
 	JSR GetByteInEnvelopeGroup
 	BCC @EnvelopePattern_Set
@@ -746,7 +746,7 @@ GeneralHandler:
 	LDA iChannelNoteFlags, X
 	SSB NOTE_REST
 	STA iChannelNoteFlags, X
-	BNE @CheckMuteTimer
+	BNE @CheckStaccato
 
 @EnvelopePattern_Set:
 	; store envelope during note
@@ -757,20 +757,20 @@ GeneralHandler:
 	LDA iChannelNoteFlags, X
 	SSB NOTE_NOISE_SAMPLING
 	STA iChannelNoteFlags, X
-@CheckMuteTimer:
+@CheckStaccato:
 	LDA zBackupY
-	TSB SOUND_MUTE
-	BNE @MuteTimer
+	TSB SOUND_STACCATO
+	BNE @Staccato
 	RTS
 
-@MuteTimer:
+@Staccato:
 	; check for active counter
-	LDA iChannelMuteCounter, X
-	BEQ @MuteTimer_Enable
+	LDA iChannelStaccatoCounter, X
+	BEQ @Staccato_Enable
 	; disable
-	DEC iChannelMuteCounter, X
+	DEC iChannelStaccatoCounter, X
 	RTS
-@MuteTimer_Enable:
+@Staccato_Enable:
 	LDA iChannelNoteFlags, X
 	SSB NOTE_REST
 	STA iChannelNoteFlags, X
@@ -1400,7 +1400,7 @@ MusicCommands:
 	; e0
 	.dw Music_PitchSlide
 	.dw Music_Vibrato
-	.dw Music_TimeMute
+	.dw Music_Staccato
 	.dw Music_ToggleDrum
 	.dw MusicDummy ; no stereo
 	.dw MusicDummy ; no global volume
@@ -1687,14 +1687,14 @@ Music_SetSoundEvent: ; command f9
 	STA zAudioCommandFlags
 	RTS
 
-Music_TimeMute: ; command e2
+Music_Staccato: ; command e2
 ; cuts a note off after a specified number of frames
 ; useful for optimization
 ; params: 1
 	JSR GetMusicByte
-	STA iChannelMuteMain, X
+	STA iChannelStaccatoMain, X
 	LDA iChannelFlagSection2, X
-	SSB SOUND_MUTE
+	SSB SOUND_STACCATO
 	STA iChannelFlagSection2, X
 	RTS
 
