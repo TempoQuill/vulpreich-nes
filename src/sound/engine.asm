@@ -191,7 +191,7 @@ _UpdateSound:
 	BCS @Done
 	TXA
 	RSB SFX_CHANNEL
-	CMP #CHAN_4
+	CMP #CHAN_4 + 1
 	BCS @NextChannel ; zCurrentChannel > DPCM means go straight to the next channel
 	JMP @Loop
 
@@ -2483,14 +2483,15 @@ ClearChannels:
 	LDA #0
 	STA SND_CHN
 	TAY
-	JSR ClearPulse
+	JSR ClearPulse ;	30 00 00 00
 	LDY #CHAN_1 << 2
-	JSR ClearPulse
+	JSR ClearPulse ;	30 00 00 00
 	LDY #CHAN_2 << 2
-	JSR ClearHillDPCM
+	JSR ClearHillDPCM ;	00 xx 00 00
 	LDY #CHAN_3 << 2
-	JSR ClearNoise
+	JSR ClearNoise ;	30 xx 00 00
 	LDY #CHAN_4 << 2
+;				00 xx 00 00
 
 ClearHillDPCM:
 ; input: Y = APU offset
