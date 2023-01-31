@@ -173,7 +173,7 @@ Sample6_5:
 	dpcm_entry PRG_DPCM2, 14, $cb00, $8c
 
 Sample6_6:
-	dpcm_entry PRG_DPCM2, 15, $d3c0, $8c
+	dpcm_entry PRG_DPCM2, 15, $d400, $8c
 
 Sample6_7:
 	dpcm_entry PRG_DPCM4, 15, $c540, $78
