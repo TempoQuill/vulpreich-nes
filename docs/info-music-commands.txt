@@ -13,7 +13,7 @@ de	2	pulse cycle loop
 df	1	switch data reading mode
 e0	3	note slide
 e1	3	vibrato
-e2	2	manual note length (turn off after x time)
+e2	2	staccato
 e3	2 / 1	turn music drum flag on/off (select kit)
 e6	3	raw pitch modifier
 e7	2	relative pitch
