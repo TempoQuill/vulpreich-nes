@@ -1842,7 +1842,7 @@ Music_ToggleDrum: ; command e3
 	AND #CHAN_3
 	BEQ @DPCM
 	LDA iChannelFlagSection1 + CHAN_4
-	LSR A ; SOUND_DPCM
+	LSR A ; SOUND_CHANNEL_ON
 	BCC @Noise
 	LDA iChannelFlagSection1 + CHAN_4
 	FSB SOUND_DPCM
@@ -1877,7 +1877,7 @@ Music_SFXToggleDrum: ; command f0
 	AND #CHAN_3
 	BEQ @DPCM
 	LDA iChannelFlagSection1 + CHAN_C
-	LSR A ; SOUND_DPCM
+	LSR A ; SOUND_CHANNEL_ON
 	BCC @Noise
 	LDA iChannelFlagSection1 + CHAN_C
 	FSB SOUND_DPCM
