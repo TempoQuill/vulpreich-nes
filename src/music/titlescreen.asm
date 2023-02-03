@@ -6,7 +6,7 @@ Music_TitleScreen:
 	music_subheader 5, Music_TitleScreen_DPCM
 
 Music_TitleScreen_Pulse1:
-	tempo 201
+	tempo 200
 	duty_cycle 1
 	note_type 12, 0, 1
 	rest 4
@@ -398,6 +398,7 @@ Music_TitleScreen_Loop3_01:
 Music_TitleScreen_Loop3_19:
 	sound_call Music_TitleScreen_Measure3_01_04
 	sound_loop 4, Music_TitleScreen_Loop3_19
+	linear_envelope 0, 67
 	octave 2
 	note A_, 4
 	note A_, 4
