@@ -523,8 +523,11 @@ GetName:
 	PHX
 	PHY
 	JSH PRG_GFXEngine, GetNamePointer
+	BEQ @NoName
+	; only bank switch if we have an address to pull from
 	STA MMC5_PRGBankSwitch2, X
 
+@NoName:
 	JSH PRG_GFXEngine, CopyCurrentIndex
 
 	; restore all registers

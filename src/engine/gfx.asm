@@ -108,7 +108,7 @@ CopyCurrentIndex:
 	JSR GetNthString
 
 	; copy cNameLength bytes to string buffer
-	LDY #cNameLength
+	LDY cNameLength
 	INY
 	LDA #<iStringBuffer
 	STA zAuxAddresses + 2
