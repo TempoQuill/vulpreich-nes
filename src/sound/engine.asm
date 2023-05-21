@@ -1286,7 +1286,7 @@ GetDrumSample:
 @CheckDPCM:
 	LDA iChannelFlagSection1 + CHAN_C
 	LSR A ; SOUND_CHANNEL_ON (dpcm)
-	BCS @ContinueDPCM
+	BCC @ContinueDPCM
 	RTS
 @ContinueDPCM:
 	; load set ID
