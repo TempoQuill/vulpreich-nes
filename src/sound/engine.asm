@@ -927,13 +927,13 @@ HandleNoise:
 	STI zDrumDelay ; adds one frame to depicted duration
 	LDA (zDrumAddresses), Y
 	INC zDrumAddresses
-	BEQ @SkipCarry2
+	BNE @SkipCarry2
 	INC zDrumAddresses + 1
 @SkipCarry2:
 	STA zCurrentTrackEnvelope
 	LDA (zDrumAddresses), Y
 	INC zDrumAddresses
-	BEQ @SkipCarry3
+	BNE @SkipCarry3
 	INC zDrumAddresses + 1
 @SkipCarry3:
 	STA zCurrentTrackRawPitch
@@ -1018,13 +1018,13 @@ ENDIF
 	STA zDPCMSamplePitch
 	LDA (zDrumAddresses + 2), Y
 	INC zDrumAddresses + 2
-	BEQ @SkipCarry3
+	BNE @SkipCarry3
 	INC zDrumAddresses + 3
 @SkipCarry3:
 	STA zDPCMSampleOffset
 	LDA (zDrumAddresses + 2), Y
 	INC zDrumAddresses + 2
-	BEQ @SkipCarry4
+	BNE @SkipCarry4
 	INC zDrumAddresses + 3
 @SkipCarry4:
 	STA zDPCMSampleLength
@@ -1281,9 +1281,7 @@ GetDrumSample:
 @CheckNoise:
 	LDA iChannelFlagSection1 + CHAN_B
 	LSR A ; SOUND_CHANNEL_ON (noise)
-	BCS @CheckNoise_Ret
-	JMP @ContinueNoise
-@CheckNoise_Ret:
+	BCC @ContinueNoise
 	RTS
 @CheckDPCM:
 	LDA iChannelFlagSection1 + CHAN_C
