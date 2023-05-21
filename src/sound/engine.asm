@@ -975,7 +975,7 @@ HandleDPCM: ; NES only
 
 	LDA iChannelNoteDuration, X
 	AND #%11111110
-	BEQ @Read
+	BNE @Read
 	RTS
 
 @Read:
