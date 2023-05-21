@@ -751,7 +751,7 @@ GeneralHandler:
 @EnvelopePattern_Set:
 	; store envelope during note
 	; this was unorthodox in Gameboy titles, but old hat on NES
-	; NES doesn't reset current cycle on envelope update
+	; NES doesn't reset phase on envelope update
 	ORA iChannelCycle, X
 	STA zCurrentTrackEnvelope
 	LDA iChannelNoteFlags, X
@@ -949,9 +949,6 @@ HandleNoise:
 	LDA zDrumChannel
 	FSB CHAN_3
 	STA zDrumChannel
-	LDA iChannelNoteFlags, X
-	RSB NOTE_NOISE_SAMPLING
-	STA iChannelNoteFlags, X
 	RTS
 
 HandleDPCM: ; NES only
@@ -1045,9 +1042,6 @@ ENDIF
 	LDA zMixer
 	RSB CHAN_4 ; turn off DPCM
 	STA zMixer
-	LDA iChannelNoteFlags, X
-	AND #$ff ^ (1 << NOTE_DELTA_OVERRIDE | 1 << NOTE_NOISE_SAMPLING)
-	STA iChannelNoteFlags, X
 	RTS
 
 ParseNote:
@@ -1304,30 +1298,34 @@ GetDrumSample:
 	ASL A
 	TAY
 	LDA SampleKits, Y
-	STA zDrumAddresses + 2
+	STA zAuxAddresses + 2
 	INY
 	LDA SampleKits, Y
-	STA zDrumAddresses + 3
-	; use note to seek sample set
+	STA zAuxAddresses + 3
+	; get pitch
 	LDA zCurrentMusicByte
+	; non-rest note?
 	AND #$F0
+	BEQ @QuitDPCM
+	; use 'pitch' to seek sample set
 	LSR A
 	LSR A
 	LSR A
-	ADC zDrumAddresses + 2
-	STA zDrumAddresses + 2
+	ADC zAuxAddresses + 2
+	STA zAuxAddresses + 2
 	LDA #0
 	TAY
-	ADC zDrumAddresses + 3
-	STA zDrumAddresses + 3
-	; load pointer into part 2 of zDrumAddresses
-	LDA (zDrumAddresses + 2), Y
+	ADC zAuxAddresses + 3
+	STA zAuxAddresses + 3
+	; load sample pointer into part 2 of zDrumAddresses
+	LDA (zAuxAddresses + 2), Y
 	PHA
 	INY
-	LDA (zDrumAddresses + 2), Y
+	LDA (zAuxAddresses + 2), Y
 	STA zDrumAddresses + 2, Y
 	PLA
 	STA zDrumAddresses + 2
+@QuitDPCM:
 	RTS
 
 @ContinueNoise:
@@ -1342,39 +1340,39 @@ GetDrumSample:
 	ASL A
 	TAY
 	LDA DrumKits, Y
-	STA zDrumAddresses
+	STA zAuxAddresses + 2
 	INY
 	LDA DrumKits, Y
-	STA zDrumAddresses + 1
-	; use note to seek noise set
+	STA zAuxAddresses + 3
+	; non-rest note?
+	AND #$f0
+	BEQ @QuitNoise
+	; use 'pitch' to seek noise set
 	LDA zCurrentMusicByte
 	AND #$F0
 	LSR A
 	LSR A
 	LSR A
-	ADC zDrumAddresses
-	STA zDrumAddresses
+	ADC zAuxAddresses + 2
+	STA zAuxAddresses + 2
 	LDA #0
 	TAY
-	ADC zDrumAddresses + 1
-	STA zDrumAddresses + 1
+	ADC zAuxAddresses + 3
+	STA zAuxAddresses + 3
 	; load pointer into part 1 of zDrumAddresses
-	LDA (zDrumAddresses), Y
+	LDA (zAuxAddresses + 2), Y
 	PHA
 	INY
-	LDA (zDrumAddresses), Y
+	LDA (zAuxAddresses + 2), Y
 	STA zDrumAddresses, Y
 	DEY
 	PLA
 	STA zDrumAddresses
 	; get note
 	LDA zCurrentMusicByte
-	; non-rest note?
-	AND #$f0
-	BEQ @NonRestNoise
 	; clear delay
 	STY zDrumDelay
-@NonRestNoise:
+@QuitNoise:
 	RTS
 
 ParseMusicCommand:
