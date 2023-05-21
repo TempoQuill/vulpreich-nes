@@ -1345,6 +1345,7 @@ GetDrumSample:
 	LDA DrumKits, Y
 	STA zAuxAddresses + 3
 	; non-rest note?
+	LDA zCurrentMusicByte
 	AND #$f0
 	BEQ @QuitNoise
 	; use 'pitch' to seek noise set
