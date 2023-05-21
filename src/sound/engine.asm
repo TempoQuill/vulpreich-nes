@@ -1322,7 +1322,7 @@ GetDrumSample:
 	ADC zDrumAddresses + 2
 	STA zDrumAddresses + 2
 	LDA #0
-	TYA
+	TAY
 	ADC zDrumAddresses + 3
 	STA zDrumAddresses + 3
 	; load pointer into part 2 of zDrumAddresses
@@ -1330,9 +1330,9 @@ GetDrumSample:
 	PHA
 	INY
 	LDA (zDrumAddresses + 2), Y
-	STA zDrumAddresses, Y
+	STA zDrumAddresses + 2, Y
 	PLA
-	STA zDrumAddresses
+	STA zDrumAddresses + 2
 	RTS
 
 @ContinueNoise:
