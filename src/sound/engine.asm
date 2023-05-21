@@ -1308,8 +1308,9 @@ GetDrumSample:
 	INY
 	LDA SampleKits, Y
 	STA zDrumAddresses + 3
-	LDA zCurrentMusicByte
 	; use note to seek sample set
+	LDA zCurrentMusicByte
+	AND #$F0
 	LSR A
 	LSR A
 	LSR A
@@ -1347,6 +1348,7 @@ GetDrumSample:
 	STA zDrumAddresses + 1
 	; use note to seek noise set
 	LDA zCurrentMusicByte
+	AND #$F0
 	LSR A
 	LSR A
 	LSR A
