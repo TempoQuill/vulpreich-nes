@@ -1319,12 +1319,20 @@ GetDrumSample:
 	LSR A
 	LSR A
 	LSR A
-	; load pointer into part 2 of zDrumAddresses
 	ADC zDrumAddresses + 2
 	STA zDrumAddresses + 2
 	LDA #0
+	TYA
 	ADC zDrumAddresses + 3
 	STA zDrumAddresses + 3
+	; load pointer into part 2 of zDrumAddresses
+	LDA (zDrumAddresses + 2), Y
+	PHA
+	INY
+	LDA (zDrumAddresses + 2), Y
+	STA zDrumAddresses, Y
+	PLA
+	STA zDrumAddresses
 	RTS
 
 @ContinueNoise:
@@ -1354,15 +1362,23 @@ GetDrumSample:
 	LSR A
 	LSR A
 	LSR A
-	; load pointer into part 1 of zDrumAddresses
 	ADC zDrumAddresses
 	STA zDrumAddresses
 	LDA #0
+	TAY
 	ADC zDrumAddresses + 1
 	STA zDrumAddresses + 1
+	; load pointer into part 1 of zDrumAddresses
+	LDA (zDrumAddresses), Y
+	PHA
+	INY
+	LDA (zDrumAddresses), Y
+	STA zDrumAddresses, Y
+	DEY
+	PLA
+	STA zDrumAddresses
 	; clear delay
-	LDA #0
-	STA zDrumDelay
+	STY zDrumDelay
 	RTS
 
 ParseMusicCommand:
