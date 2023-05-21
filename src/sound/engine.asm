@@ -894,7 +894,7 @@ HandleNoise:
 	SSB CHAN_3
 	STA zDrumChannel
 	LDA zDrumDelay
-	BEQ @Read
+	BNE @Read
 	DEC zDrumDelay
 	RTS
 
@@ -1308,13 +1308,6 @@ GetDrumSample:
 	INY
 	LDA SampleKits, Y
 	STA zDrumAddresses + 3
-	; get note
-	LDA zCurrentMusicByte
-	; non-rest note?
-	AND #$f0
-	BNE @NonRestDPCM
-	RTS
-@NonRestDPCM:
 	; use note to seek sample set
 	LSR A
 	LSR A
@@ -1351,13 +1344,6 @@ GetDrumSample:
 	INY
 	LDA DrumKits, Y
 	STA zDrumAddresses + 1
-	; get note
-	LDA zCurrentMusicByte
-	; non-rest note?
-	AND #$f0
-	BNE @NonRestNoise
-	RTS
-@NonRestNoise:
 	; use note to seek noise set
 	LSR A
 	LSR A
@@ -1377,8 +1363,14 @@ GetDrumSample:
 	DEY
 	PLA
 	STA zDrumAddresses
+	; get note
+	LDA zCurrentMusicByte
+	; non-rest note?
+	AND #$f0
+	BEQ @NonRestNoise
 	; clear delay
 	STY zDrumDelay
+@NonRestNoise:
 	RTS
 
 ParseMusicCommand:

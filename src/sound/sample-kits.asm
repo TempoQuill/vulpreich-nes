@@ -24,7 +24,7 @@ SampleKit0:
 
 Sample0_0:
 	;           bank, pitch, offset, length
-	dpcm_entry PRG_DPCM5, 15, $c000, $00
+	dpcm_entry PRG_DPCM5, 0, $c000, $00
 
 Sample0_1:
 	dpcm_entry PRG_DPCM5, 13, $c000, $40
