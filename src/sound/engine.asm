@@ -894,7 +894,7 @@ HandleNoise:
 	SSB CHAN_3
 	STA zDrumChannel
 	LDA zDrumDelay
-	BNE @Read
+	BEQ @Read
 	DEC zDrumDelay
 	RTS
 
