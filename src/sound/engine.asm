@@ -970,9 +970,10 @@ HandleDPCM: ; NES only
 	SSB CHAN_4
 	STA zDrumChannel
 
-	LDA iChannelNoteDuration, X
-	AND #%11111110
-	BNE @Read
+	LDY iChannelNoteDuration, X
+	BEQ @Read
+	DEY
+	BEQ @Read
 	RTS
 
 @Read:
