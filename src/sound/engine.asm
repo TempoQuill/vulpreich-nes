@@ -1271,14 +1271,20 @@ GetDrumSample:
 	AND #$f
 	JSR SetNoteDuration
 	; check current channel
-	TXA
-	CMP #CHAN_B
+	CPX #CHAN_B
 	BEQ @SFXNoise
 	BCS @SFXDPCM
+	TXA
+	SEC
+	SBC #CHAN_3
+	BNE @CheckDPCM
+@CheckNoise:
 	LDA iChannelFlagSection1 + CHAN_B
 	LSR A ; SOUND_CHANNEL_ON (noise)
-	BCS @CheckDPCM
-	JSR @ContinueNoise
+	BCS @CheckNoise_Ret
+	JMP @ContinueNoise
+@CheckNoise_Ret:
+	RTS
 @CheckDPCM:
 	LDA iChannelFlagSection1 + CHAN_C
 	LSR A ; SOUND_CHANNEL_ON (dpcm)
@@ -2411,8 +2417,6 @@ LoadChannel:
 	STA zCurrentChannel
 	TAY
 	LDX zCurrentChannel
-	LDA zMusicID
-	STA iChannelID, X
 	LDA iChannelFlagSection1, X
 	RSB SOUND_CHANNEL_ON ; channel off
 	STA iChannelFlagSection1, X
