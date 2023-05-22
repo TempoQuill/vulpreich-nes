@@ -65,20 +65,11 @@ _UpdateSound:
 	BNE @PlayerOn
 	RTS
 @PlayerOn:
-	LDA zMixer
+	; read / backup current output
+	LDA SND_CHN
+	PHA
 	AND #CHANNEL_FLAGS_MASK
-	; is DPCM on? We are working around a hardware bug!
-	CMP #1 << CHAN_4
-	PHA ; save output for later
-	BCC @SkipWorkaround
-	LDA zMixer
-	CMP #CHANNEL_FLAGS_MASK
-	BEQ @SkipWorkaround
-	PLA
-	LDA #CHANNEL_FLAGS_MASK
 	STA zMixer
-	PHA ; save output for later
-@SkipWorkaround:
 	; start at ch1
 	LDX #CHAN_0
 	STX zCurrentChannel
@@ -196,13 +187,20 @@ _UpdateSound:
 	JMP @Loop
 
 @Done:
+	; restore out output
+	PLA
+	STA zBackupA
+	; does it match current output?
+	LDA SND_CHN
+	CMP zBackupA
+	BEQ @Default
+	; no
 	LDA zMixer
-	AND #CHANNEL_FLAGS_MASK
-	CMP #1 << CHAN_4
-	PLA ; output from previous frame
-	BCS @FinishedUpdate
-	CMP zMixer
-	BEQ @FinishedUpdate
+	AND #CHANNEL_FLAGS_MASK - (1 << CHAN_4)
+	STA SND_CHN
+	BPL @FinishedUpdate
+@Default:
+	; yes
 	LDA zMixer
 	STA SND_CHN
 @FinishedUpdate:
