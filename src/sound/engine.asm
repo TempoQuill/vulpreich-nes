@@ -187,7 +187,7 @@ _UpdateSound:
 	JMP @Loop
 
 @Done:
-	; restore out output
+	; restore our output
 	PLA
 	STA zBackupA
 	; does it match current output?
@@ -250,9 +250,6 @@ UpdateChannels:
 	TSB NOTE_REST ; check for rest
 	BEQ @Pulse1_Sampling
 
-	LDA zMixer
-	RSB CHAN_0 ; turn off square 1
-	STA zMixer
 	LDY #CHAN_0 << 2
 	JMP ClearPulse
 
@@ -311,9 +308,6 @@ UpdateChannels:
 	TSB NOTE_REST ; check for rest
 	BEQ @Pulse2_Sampling
 
-	LDA zMixer
-	RSB CHAN_1 ; turn off square 2
-	STA zMixer
 	LDY #CHAN_1 << 2
 	JMP ClearPulse
 
@@ -366,9 +360,6 @@ UpdateChannels:
 	TSB NOTE_REST ; check for rest
 	BEQ @Hill_Sampling
 
-	LDA zMixer
-	RSB CHAN_2 ; turn off hill
-	STA zMixer
 	LDY #CHAN_2 << 2
 	JMP ClearHillDPCM
 
@@ -403,9 +394,6 @@ UpdateChannels:
 	TSB NOTE_REST
 	BEQ @Noise_Sampling
 
-	LDA zMixer
-	RSB CHAN_3 ; turn off noise
-	STA zMixer
 	LDY #CHAN_3 << 2
 	JMP ClearNoise
 
@@ -430,9 +418,6 @@ UpdateChannels:
 	TSB NOTE_REST
 	BEQ @DPCM_DeltaSampling
 
-	LDA zMixer
-	RSB CHAN_4 ; turn off DPCM
-	STA zMixer
 	LDY #CHAN_4 << 2
 	JMP ClearHillDPCM
 
@@ -1028,19 +1013,12 @@ ENDIF
 	LDA iChannelNoteFlags, X
 	ORA #1 << NOTE_DELTA_OVERRIDE | 1 << NOTE_NOISE_SAMPLING
 	STA iChannelNoteFlags, X
-
-	LDA zMixer
-	SSB CHAN_4 ; turn on DPCM
-	STA zMixer
 	RTS
 
 @Quit:
 	LDA zDrumChannel
 	FSB CHAN_4
 	STA zDrumChannel
-	LDA zMixer
-	RSB CHAN_4 ; turn off DPCM
-	STA zMixer
 	RTS
 
 ParseNote:
