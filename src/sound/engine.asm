@@ -2316,6 +2316,8 @@ _PlayMusic:
 	LDA zAudioCommandFlags
 	AND #1 << MUSIC_PLAYING | 1 << SFX_PRIORITY
 	STA zAudioCommandFlags
+	LDA zMixer
+	STA SND_CHN
 	JMP MusicOn
 
 _PlaySFX:
