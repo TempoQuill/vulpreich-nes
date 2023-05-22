@@ -2219,7 +2219,6 @@ SetGlobalTempo:
 	BEQ @End
 
 @SFXChannel:
-	STX zBackupX
 	LDX #8
 	JSR Tempo
 	INX
@@ -2248,7 +2247,7 @@ Tempo:
 	RTS
 
 StartChannel:
-	LDX zBackupX
+	STX zBackupX
 	LDA iChannelFlagSection1, X
 	SSB SOUND_CHANNEL_ON ; turn channel on
 	STA iChannelFlagSection1, X
