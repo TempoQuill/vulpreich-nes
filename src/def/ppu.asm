@@ -1,3 +1,4 @@
+.enum $0000
 ; y = x * 32 (horizontal tile count)
 TEXT_COORD_1 = $342 ; (2, 26)
 TEXT_COORD_2 = $382 ; (2, 28)
@@ -58,3 +59,5 @@ PPU_OBJ          = $10
 PPU_RED          = $20
 PPU_GREEN        = $40
 PPU_BLUE         = $80
+
+.ende

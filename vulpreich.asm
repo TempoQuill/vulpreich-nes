@@ -1,16 +1,14 @@
 ; -----------------------------------------
 .include "config.asm"
 
-; Add definitions
-.enum $0000
-.include "src/def.asm"
-.ende
-
-.include "header.asm"
-
-; -----------------------------------------
 ; Add macros
 .include "src/macros.asm"
+
+; -----------------------------------------
+; Add definitions
+.include "src/def.asm"
+
+.include "header.asm"
 
 ; -----------------------------------------
 ; Add RAM definitions

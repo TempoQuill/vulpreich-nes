@@ -1,3 +1,4 @@
+.enum $0000
 MMC5 = $05
 
 MMC5_VMirror = %01000100
@@ -173,3 +174,4 @@ NMI_SOUND = 2
 NMI_LIQUID = 3
 NMI_GAS = 4
 NMI_PLASMA = 5
+.ende

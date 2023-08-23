@@ -1,2 +1,6 @@
-CHR_TitleBG = $00
-CHR_TitleOBJ = $01
+.enum $0000
+CHR_TitleBG:
+	.dsb 1
+CHR_TitleOBJ:
+	.dsb 1
+.ende
