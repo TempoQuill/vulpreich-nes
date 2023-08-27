@@ -115,11 +115,12 @@ FadePalettes:
 	; zPalFadePlacement is 2-bit (0-3)
 	LDA zPalFadePlacement
 	BEQ @Final
-	LDY #2
+	TAY
 @AppLoop:
 	JSR @Apply
-	DEY
-	BPL @AppLoop
+	INY
+	CPY #3
+	BCC @AppLoop
 	; cleanup
 	DEC zPalFadePlacement
 	LDA zPalFadeSpeed
@@ -245,145 +246,6 @@ FadePalettes:
 	STA zPals + 12, Y
 	RTS
 
-UpdateGFXAttributes:
-; update / apply current graphical attributes
-	LDX #GFX_ATTRIBUTE_SIZE
-	LDA cNametableAddress + 1
-	ORA #>NAMETABLE_ATTRIBUTE_0
-	STA PPUADDR
-	LDA #<NAMETABLE_ATTRIBUTE_0
-	STA PPUADDR
-@Loop:
-	LDA zPalAttributes
-	STA PPUDATA
-	LDA zPalAttributes + 1
-	STA PPUDATA
-	LDA zPalAttributes + 2
-	STA PPUDATA
-	LDA zPalAttributes + 3
-	STA PPUDATA
-	LDA zPalAttributes + 4
-	STA PPUDATA
-	LDA zPalAttributes + 5
-	STA PPUDATA
-	LDA zPalAttributes + 6
-	STA PPUDATA
-	LDA zPalAttributes + 7
-	STA PPUDATA
-	LDA zPalAttributes + 8
-	STA PPUDATA
-	LDA zPalAttributes + 9
-	STA PPUDATA
-	LDA zPalAttributes + 10
-	STA PPUDATA
-	LDA zPalAttributes + 11
-	STA PPUDATA
-	LDA zPalAttributes + 12
-	STA PPUDATA
-	LDA zPalAttributes + 13
-	STA PPUDATA
-	LDA zPalAttributes + 14
-	STA PPUDATA
-	LDA zPalAttributes + 15
-	STA PPUDATA
-	LDA zPalAttributes + 16
-	STA PPUDATA
-	LDA zPalAttributes + 17
-	STA PPUDATA
-	LDA zPalAttributes + 18
-	STA PPUDATA
-	LDA zPalAttributes + 19
-	STA PPUDATA
-	LDA zPalAttributes + 20
-	STA PPUDATA
-	LDA zPalAttributes + 21
-	STA PPUDATA
-	LDA zPalAttributes + 22
-	STA PPUDATA
-	LDA zPalAttributes + 23
-	STA PPUDATA
-	LDA zPalAttributes + 24
-	STA PPUDATA
-	LDA zPalAttributes + 25
-	STA PPUDATA
-	LDA zPalAttributes + 26
-	STA PPUDATA
-	LDA zPalAttributes + 27
-	STA PPUDATA
-	LDA zPalAttributes + 28
-	STA PPUDATA
-	LDA zPalAttributes + 29
-	STA PPUDATA
-	LDA zPalAttributes + 30
-	STA PPUDATA
-	LDA zPalAttributes + 31
-	STA PPUDATA
-	LDA zPalAttributes + 32
-	STA PPUDATA
-	LDA zPalAttributes + 33
-	STA PPUDATA
-	LDA zPalAttributes + 34
-	STA PPUDATA
-	LDA zPalAttributes + 35
-	STA PPUDATA
-	LDA zPalAttributes + 36
-	STA PPUDATA
-	LDA zPalAttributes + 37
-	STA PPUDATA
-	LDA zPalAttributes + 38
-	STA PPUDATA
-	LDA zPalAttributes + 39
-	STA PPUDATA
-	LDA zPalAttributes + 40
-	STA PPUDATA
-	LDA zPalAttributes + 41
-	STA PPUDATA
-	LDA zPalAttributes + 42
-	STA PPUDATA
-	LDA zPalAttributes + 43
-	STA PPUDATA
-	LDA zPalAttributes + 44
-	STA PPUDATA
-	LDA zPalAttributes + 45
-	STA PPUDATA
-	LDA zPalAttributes + 46
-	STA PPUDATA
-	LDA zPalAttributes + 47
-	STA PPUDATA
-	LDA zPalAttributes + 48
-	STA PPUDATA
-	LDA zPalAttributes + 49
-	STA PPUDATA
-	LDA zPalAttributes + 50
-	STA PPUDATA
-	LDA zPalAttributes + 51
-	STA PPUDATA
-	LDA zPalAttributes + 52
-	STA PPUDATA
-	LDA zPalAttributes + 53
-	STA PPUDATA
-	LDA zPalAttributes + 54
-	STA PPUDATA
-	LDA zPalAttributes + 55
-	STA PPUDATA
-	LDA zPalAttributes + 56
-	STA PPUDATA
-	LDA zPalAttributes + 57
-	STA PPUDATA
-	LDA zPalAttributes + 58
-	STA PPUDATA
-	LDA zPalAttributes + 59
-	STA PPUDATA
-	LDA zPalAttributes + 60
-	STA PPUDATA
-	LDA zPalAttributes + 61
-	STA PPUDATA
-	LDA zPalAttributes + 62
-	STA PPUDATA
-	LDA zPalAttributes + 63
-	STA PPUDATA
-	RTS
-
 UpdateBackground:
 ; write to bg. zCurrentTileNametableAddress according to zCurrentTileAddress
 ; update for zTileOffset bytes
@@ -406,7 +268,7 @@ UpdateBackground:
 	INC zCurrentTileAddress + 1
 @Dec:
 ; decrement offset
-	LDX zTileOffset + 1
+	LDX zTileOffset
 	BEQ @Done
 	DEC zTileOffset + 1
 @Done:
@@ -582,3 +444,112 @@ GetNthString:
 @Episode:
 	PLA
 	JMP GetEpisodeName
+
+
+;
+; This reads from $F0/$F1 to determine where a "buffer" is.
+; Basically, a buffer is like this:
+;
+; PPUADDR  LEN DATA ......
+; $20 $04  $03 $E9 $F0 $FB
+; $25 $5F  $4F $FB
+; $21 $82  $84 $00 $01 $02 $03
+; $00
+;
+; PPUADDR is two bytes (hi,lo) for the address to send to PPUADDR.
+; LEN is the length, with the following two bitmasks:
+;
+;  - $80: Set the "draw vertically" option
+;  - $40: Use ONE tile instead of a string
+;
+; DATA is either (LEN) bytes or one byte.
+;
+; After (LEN) bytes have been written, the buffer pointer
+; is incremented to (LEN+2) and the function restarts.
+; A byte of $00 terminates execution and returns.
+;
+; There is a similar function, `UpdatePPUFromBufferNMI`,
+; that is called during NMI, but unlike this one,
+; that one does NOT use bitmasks, nor increment the pointer.
+;
+UpdatePPUFromBufferWithOptions:
+	; First, check if we have anything to send to the PPU
+	LDY #$00
+	LDA (zPPUDataBufferPointer), Y
+	; If the first byte at the buffer address is #$00, we have nothing. We're done here!
+	BEQ @Quit
+
+	; Clear address latch
+	LDX PPUSTATUS
+	; Set the PPU address to the
+	; address from the PPU buffer
+	STA PPUADDR
+	INY
+	LDA (zPPUDataBufferPointer), Y
+	STA PPUADDR
+	INY
+	LDA (zPPUDataBufferPointer), Y ; Data segment length byte...
+	ASL A
+	PHA
+	; Enable NMI + Vertical increment + whatever else was already set...
+	LDA zPPUCtrlMirror
+	ORA #PPUCtrl_Base2000 | PPUCtrl_WriteVertical | PPUCtrl_Sprite0000 | PPUCtrl_Background0000 | PPUCtrl_SpriteSize8x8 | PPUCtrl_NMIEnabled
+	; ...but only if $80 was set in the length byte. Otherwise, turn vertical incrementing back off.
+	BCS @EnableVerticalIncrement
+
+	AND #PPUCtrl_Base2C00 | PPUCtrl_WriteHorizontal | PPUCtrl_Sprite1000 | PPUCtrl_Background1000 | PPUCtrl_SpriteSize8x16 | PPUCtrl_NMIEnabled | $40
+
+@EnableVerticalIncrement:
+	STA PPUCTRL
+	PLA
+	; Check if the second bit ($40) in the length has been set
+	ASL A
+	; If not, we are copying a string of data
+	BCC @CopyStringOfTiles
+
+	; Length (A) is now (A << 2).
+	; OR in #$02 now if we are copying a single tile;
+	; This will be rotated out into register C momentarily
+	ORA #$02
+	INY
+
+@CopyStringOfTiles:
+	; Restore the data length.
+	; A = (Length & #$3F)
+	LSR A
+
+	; This moves the second bit (used above to signal
+	; "one tile mode") into the Carry register
+	LSR A
+	TAX ; Copy the length into register X
+
+@CopyLoop:
+	; If Carry is set (from above), we're only copying one tile.
+	; Do not increment Y to advance copying index
+	BCS @CopySingleTileSkip
+
+	INY
+
+@CopySingleTileSkip:
+	LDA (zPPUDataBufferPointer), Y ; Load data from buffer...
+	STA PPUDATA ; ...store it to the PPU.
+	DEX ; Decrease remaining length.
+	BNE @CopyLoop ; Are we done? If no, copy more stuff
+
+	INY ; Y contains the amount of copied data now
+	TYA ; ...and now A does
+	CLC ; Clear carry bit (from earlier)
+	ADC zPPUDataBufferPointer ; Add the length to the PPU data buffer
+	STA zPPUDataBufferPointer
+	LDA zPPUDataBufferPointer + 1
+	; If the length overflowed (carry set),
+	; add that to the hi byte of the pointer
+	ADC #$00
+	STA zPPUDataBufferPointer + 1
+	; Start the cycle over again.
+	; (If the PPU buffer points to a 0, it will terminate after this jump)
+	JMP UpdatePPUFromBufferWithOptions
+
+@Quit:
+	RTS
+

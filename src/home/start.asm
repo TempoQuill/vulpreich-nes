@@ -173,7 +173,6 @@ NMI:
 	BEQ @DMA
 	; palettes
 	JSR @ApplyPalette
-	JSR UpdateGFXAttributes
 	; dma shortcut
 	LDA zNMIState
 	BEQ @DMAUpdate

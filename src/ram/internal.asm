@@ -101,6 +101,7 @@ zCurrentWindow:
 	.dsb 2
 zBackupWindow:
 	.dsb 2 ; 0030
+zPPUDataBufferPointer:
 	.dsb 2
 	.dsb 2 ; 0034
 	.dsb 2
@@ -194,10 +195,9 @@ zTextSpeed:
 	.dsb 4 ; 00a4
 	.dsb 4 ; 00a8
 	.dsb 4 ; 00ac
+	.dsb 48 ; 00b0
 zPals:
-	.dsb 16 ; 00b0
-zPalAttributes:
-	.dsb 64 ; 00c0
+	.dsb 32 ; 00f0
 
 ; section: STACK
 iStack:
