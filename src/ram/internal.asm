@@ -72,7 +72,6 @@ zAudioRAMEnd:
 
 ; section: Hardware Assistive RAM
 ; backup registers, banks, addresses, and buffers
-zNMIState:
 	.dsb 1
 zNMITimer:
 	.dsb 1
@@ -111,7 +110,10 @@ zAuxAddresses: ; back up 4 at a time
 ; 1: updates / text
 ; 2: vblank
 ; 3: everything else
-	.dsb 8 ; 0038
+	.dsb 2 ; 0038
+	.dsb 2
+	.dsb 2
+	.dsb 2
 zFactorBuffer:
 	.dsb 4 ; 0040
 zDividerBuffer:
@@ -159,15 +161,11 @@ zCurrentTextAddress:
 	.dsb 2 ; 0064
 	.dsb 2
 	.dsb 2 ; 0068
-zTextOffset:
 	.dsb 2
 	.dsb 2 ; 006c
 	.dsb 2
-zCurrentTileAddress:
 	.dsb 2 ; 0070
-zTileOffset:
 	.dsb 2
-zCurrentTileNametableAddress:
 	.dsb 2 ; 0074
 zJumpTableIndex:
 	.dsb 1
@@ -176,7 +174,6 @@ zTitleScreenTimer:
 	.dsb 2 ; 0078
 zSaveFileExists:
 	.dsb 1
-zTextSpeed:
 	.dsb 1
 	.dsb 1 ; 007c
 	.dsb 1
@@ -197,7 +194,7 @@ zTextSpeed:
 	.dsb 4 ; 00ac
 	.dsb 48 ; 00b0
 zPals:
-	.dsb 32 ; 00f0
+	.dsb 32 ; 00e0
 
 ; section: STACK
 iStack:

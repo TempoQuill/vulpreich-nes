@@ -101,12 +101,9 @@ Start:
 	LDA #0
 	STA PPUMASK
 	STA zPPUMaskMirror
+	; music 0
 	TAY ; MUSIC_NONE
 	JSR PlayMusic
-	; we won't be ready for graphical updates
-	; if we update anything now, it has to be only sound
-	LDA #NMI_SOUND
-	STA zNMIState
 ; PPUCtrl_Base2000
 ; PPUCtrl_WriteHorizontal
 ; PPUCtrl_Sprite1000
@@ -141,9 +138,6 @@ SyncToCurrentWindow:
 ; It also runs the audio engine, allowing music to play continuously no matter
 ; how busy the rest of the game happens to be.
 ;
-; in VulpReich, the NMI can take on 6 unique states.
-; Functionality these states range from disabling everything but sound and
-; basic NMI operation to ignoring inputs, sprites or scrolling
 NMI:
 	PHP
 	PHA
@@ -159,70 +153,22 @@ NMI:
 	STA zWindow2
 	LDA zCurrentWindow
 	STA zWindow1
-	; look for NMI_SOUND, else go through the passes
-	LDA zNMIState
-	CMP #NMI_SOUND
-	BEQ @JustSound
-@MapBufferMain:
-	TAX
-	BNE @Palettes
-	; map buffer
-	JSR @MapBuffer
-@Palettes:
-	CMP #NMI_GAS
-	BEQ @DMA
 	; palettes
 	JSR @ApplyPalette
 	; dma shortcut
-	LDA zNMIState
-	BEQ @DMAUpdate
-	BNE @MapMain
-@DMA:
-	TAX
-	BNE @MapMain
-@DMAUpdate:
-	; DMA
-	LDX #>iVirtualOAM
-	STX OAM_DMA
-@MapMain:
 	; Map
-	JSR @Map
 	; tiles
-	JSR PrintText
-	JSR UpdateBackground
+	JSR UpdatePPUFromBufferWithOptions
 	; scroll
-	LDA zNMIState
-	CMP #NMI_GAS
-	BEQ @OAMCheck
-	BCS @ScrollPlasma
-	; scroll (normal)
-	LDX zPPUScrollXMirror
-	STX PPUSCROLL
-	LDX zPPUScrollYMirror
-	STX PPUSCROLL
-	BCC @OAMCheck
-@ScrollPlasma:
-	; scroll (plasma)
-	LDX zPPUScrollXMirror
-	STX PPUSCROLL
+	LDX zPPUCtrlMirror
+	STX PPUCTRL
 	LDX #0
 	STX PPUSCROLL
-@OAMCheck:
-	LDA zNMIState
-	BNE @PaletteFade
-	; OAM
-	JSR @OAM
-@PaletteFade:
-	CMP #NMI_GAS
-	BEQ @Joy
-	PHA
+	STX PPUSCROLL
+	LDX zPPUMaskMirror
+	STX PPUMASK
 	JSR FadePalettes
-	PLA
-@Joy:
-	CMP #NMI_LIQUID
-	BEQ @JustSound
-	JSR UpdateJoypads
-@JustSound:
+;	JSR UpdateJoypads
 	; advance sound by one frame
 	JSR UpdateSound
 	; check for an NMI timer (4.25 seconds maximum)
@@ -247,16 +193,8 @@ NMI:
 	PLP
 	RTI
 
-@MapBuffer:
-	RTS
-
-@Map:
-	RTS
-
-@OAM:
-	RTS
-
 @ApplyPalette:
+	LDX PPUSTATUS
 	LDX #>PALETTE_RAM
 	STX PPUADDR
 	LDX #<PALETTE_RAM

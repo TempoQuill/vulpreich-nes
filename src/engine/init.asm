@@ -94,25 +94,19 @@ InspiredScreen:
 	AND #$ff ^ PPU_NMI
 	STA zPPUCtrlMirror
 	STA PPUCTRL
-@VBlank:
-	LDA PPUSTATUS
-	BPL @VBlank
+
 	JSR InitNameTable
 	JSR InitPals
+
+	JSR HideSprites
+
+	LDA PPUSTATUS
+
+	LDA #$3F
+	STA PPUADDR
 	LDA #0
-	STA zStringXOffset
-	LDA #>BeginningText
-	STA zAuxAddresses + 7
-	LDA #<BeginningText
-	STA zAuxAddresses + 6
-	LDA #PRG_Start0
-	STA zTextBank
-	LDA #<(NAMETABLE_MAP_0 + $140)
-	STA cNametableAddress
-	LDA #>(NAMETABLE_MAP_0 + $140)
-	STA cNametableAddress + 1
-	LDX #0
-	JSR StoreText
+	STA PPUADDR
+
 	; store the palette data
 	LDX #15
 	STX zPalFade
@@ -122,14 +116,26 @@ InspiredScreen:
 	STA iCurrentPals, X
 	DEX
 	BNE @PalLoop
+
+	LDA #<cPPUBuffer
+	STA zPPUDataBufferPointer
+	LDA #>cPPUBuffer
+	STA zPPUDataBufferPointer + 1
+
 	; we can enable graphical updates now
-	; inputs are barred though for the time being
 	LDA zPPUCtrlMirror
 	ORA #PPU_NMI
 	STA zPPUCtrlMirror
 	STA PPUCTRL
-	LDA #NMI_LIQUID
-	STA zNMIState
+
+	LDA #1
+	JSR DelayFrame_s_
+
+	LDA #<BeginningText
+	STA zPPUDataBufferPointer
+	LDA #>BeginningText
+	STA zPPUDataBufferPointer + 1
+
 	; sure, we can get the game to show our stuff now
 	LDA #PPU_OBJ | PPU_BG | PPU_OBJ_MASKLIFT | PPU_BG_MASKLIFT
 	STA PPUMASK
@@ -148,9 +154,8 @@ InspiredScreen:
 	JMP DelayFrame_s_
 
 TitleScreen:
-;	; disable video for now
-;	LDA #NMI_SOUND
-;	STA zNMIState
+	LDA #1
+	JSR DelayFrame_s_
 	; disable NMI for now
 	LDA zPPUCtrlMirror
 	AND #$ff ^ PPU_NMI
@@ -160,13 +165,22 @@ TitleScreen:
 	LDA #0
 	STA PPUMASK
 	STA zPPUMaskMirror
-	; wait for vblank
-@VBlank1:
-	LDA PPUSTATUS
-	BPL @VBlank1
 	; clear nametable and palettes
 	JSR InitNameTable
 	JSR InitPals
+
+	LDA PPUSTATUS
+
+	LDA #$3F
+	LDX #0
+	STA PPUADDR
+	STX PPUADDR
+
+	; set fade speed
+	INX
+	STX zPalFade
+	STX zPalFadeSpeed
+
 	LDX #15
 @PalLoop:
 	LDA IntroPals, X
@@ -174,104 +188,47 @@ TitleScreen:
 	DEX
 	BPL @PalLoop
 	; set up nametable and text
-	LDA #>NAMETABLE_MAP_0
-	STA zCurrentTileNametableAddress
-	LDA #<NAMETABLE_MAP_0
-	STA zCurrentTileNametableAddress + 1
-	LDA #<LogoData
-	STA zCurrentTileAddress
-	LDA #>LogoData
-	STA zCurrentTileAddress
-	LDA #11
-	STA zTileOffset
-	LDA #1
-	STA zTileOffset + 1
-	LDA #>StarringText
-	STA zAuxAddresses + 7
-	LDA #<StarringText
-	STA zAuxAddresses + 6
-	LDA #PRG_Start0
-	STA zTextBank
-	LDA #<(NAMETABLE_MAP_0 + $140)
-	STA cNametableAddress
-	LDA #>(NAMETABLE_MAP_0 + $140)
-	STA cNametableAddress + 1
-	LDX #0
-	JSR StoreText
-	LDA #>StartText
-	STA zAuxAddresses + 7
-	LDA #<StartText
-	STA zAuxAddresses + 6
-	LDA #PRG_Start0
-	STA zTextBank
-	LDA #<(NAMETABLE_MAP_0 + $2a0)
-	STA cNametableAddress
-	LDA #>(NAMETABLE_MAP_0 + $2a0)
-	STA cNametableAddress + 1
-	LDX #2
-	JSR StoreText
-	LDA #>ReleaseInfo
-	STA zAuxAddresses + 7
-	LDA #<ReleaseInfo
-	STA zAuxAddresses + 6
-	LDA #PRG_Start0
-	STA zTextBank
-	LDA #<(NAMETABLE_MAP_0 + $340)
-	STA cNametableAddress
-	LDA #>(NAMETABLE_MAP_0 + $340)
-	STA cNametableAddress + 1
-	LDX #4
-	JSR StoreText
-	; play track 0 again
-	LDY #MUSIC_NONE
-	JSR PlayMusic
-	LDY #MUSIC_TITLE
-	JSR PlayMusic
-	; wait for vblank... again
-@VBlank2:
-	LDA PPUSTATUS
-	BPL @VBlank2
-	JSR UploadTitleGFX
-	; enable everything now
+	LDA #<cPPUBuffer
+	STA zPPUDataBufferPointer
+	LDA #>cPPUBuffer
+	STA zPPUDataBufferPointer + 1
+
+	; we can enable graphical updates now
 	LDA zPPUCtrlMirror
 	ORA #PPU_NMI
 	STA zPPUCtrlMirror
 	STA PPUCTRL
-	LDA #NMI_NORMAL
-	STA zNMIState
-	LDX #1
-	STX zPalFade
-	STX zPalFadeSpeed
+
+	LDA #1
+	JSR DelayFrame_s_
+
+	LDA #<TitleScreenLayout
+	STA zPPUDataBufferPointer
+	LDA #>TitleScreenLayout
+	STA zPPUDataBufferPointer
+
+	LDA #1
+	JSR DelayFrame_s_
+	; music 1
+	LDY #MUSIC_NONE
+	JSR PlayMusic
+	LDY #MUSIC_TITLE
+	JSR PlayMusic
+
+	; sure, we can get the game to show our stuff now
+	LDA #PPU_OBJ | PPU_BG | PPU_OBJ_MASKLIFT | PPU_BG_MASKLIFT
+	STA PPUMASK
+	STA zPPUMaskMirror
+
 	; fade in
 	LDA zPals
+	AND #COLOR_INDEX
 	SSB PAL_FADE_F
-	RSB PAL_FADE_DIR_F
 	STA zPals
-	RTS
+	LDA #6
+	JSR DelayFrame_s_
 
 RunTitleScreen:
-	LDA zTextOffset
-	ORA zTextOffset + 1
-	BNE @DoNotAdjust
-	LDY zTextOffset + 2
-	TYA
-	ORA zTextOffset + 3
-	BNE @Adjust
-	LDA zTextOffset + 4
-	ORA zTextOffset + 5
-	BEQ @DoNotAdjust
-@Adjust:
-	LDA zTextOffset + 3
-	STY zTextOffset
-	STA zTextOffset + 1
-	LDY zTextOffset + 4
-	LDA zTextOffset + 5
-	STY zTextOffset + 2
-	STA zTextOffset + 3
-	LDA #0
-	STA zTextOffset + 4
-	STA zTextOffset + 5
-@DoNotAdjust:
 	LDA zJumpTableIndex
 	BMI @Done
 	ASL A
@@ -348,8 +305,10 @@ TitleScreenMain:
 	LDA #TITLESCREENOPTION_MAIN_MENU
 	STA zTitleScreenOption
 	JSR ClearOAM
+	; music 0
 	LDY #MUSIC_NONE
 	JSR PlayMusic
+	; sfx 6
 	LDY #SFX_SELECT_1
 	JSR PlaySFX
 	; fade out palettes
@@ -370,6 +329,7 @@ TitleScreenMain:
 	RTS
 
 @Press_B:
+	; music 0
 	LDY #MUSIC_NONE
 	JSR PlayMusic
 	JSR ClearOAM
@@ -430,6 +390,3 @@ Intro_CheckInput:
 	INY
 @A_Start:
 	RTS
-
-LogoData:
-.incbin "src/raw-data/logodata.bin"

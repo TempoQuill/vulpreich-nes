@@ -124,7 +124,7 @@ JumpTable:
 
 HideSprites:
 	SEC
-	LDY #$ff
+	LDY #$f8
 	LDX #0
 @Loop:
 	TXA
@@ -132,6 +132,7 @@ HideSprites:
 	TAX
 	TYA
 	STA iVirtualOAM, X
+	TXA
 	BNE @Loop
 	RTS
 

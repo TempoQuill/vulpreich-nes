@@ -1,3 +1,12 @@
+MACRO text address, text
+	.dh address
+	.dl address
+	.db +end - +start
++start
+	.db text
++end
+ENDM
+
 MACRO text_end
 	.db text_end_cmd
 ENDM

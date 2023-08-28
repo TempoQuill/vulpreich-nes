@@ -1,98 +1,3 @@
-StoreText:
-; store all text as instructed: unlike the subs below, we aren't in an NMI
-; so we can't use the conventional update when returning
-	; JSH means we are accessing a subroutine in a different bank
-	; since we're already home, we can just bankswitch from here
-	JSH PRG_GFXEngine, _StoreText
-	JMP SyncToCurrentWindow
-
-PrintText:
-; print text one character at a time
-	LDY #0
-	; check for active byte queue
-	LDA zTextOffset
-	ORA zTextOffset + 1
-	BNE @DoPrint
-	RTS
-@DoPrint:
-	; we have text to print now
-	; which way? CHR by CHR or instant?
-	LDA zTextSpeed
-	BEQ @Instant
-	JSH PRG_GFXEngine, _PrintText
-	JMP UpdatePRG
-
-@Instant:
-	; read the status
-	LDA PPUSTATUS
-	; update address
-	LDA cNametableAddress + 1
-	STA PPUADDR
-	LDA cNametableAddress
-	STA PPUADDR
-@Loop:
-	; parse until a command is read
-	LDA (zCurrentTextAddress), Y
-	BMI @Command
-	STA PPUDATA
-	INY
-	BNE @Loop
-@Command:
-	INY
-	TAX
-	TYA
-	CLC
-	ADC zCurrentTextAddress
-	STA zCurrentTextAddress
-	BCC @SkipCarry1
-	INC zCurrentTextAddress + 1
-@SkipCarry1:
-	TYA
-	CLC
-	ADC cNametableAddress
-	STA cNametableAddress
-	BCC @SkipCarry2
-	INC cNametableAddress + 1
-@SkipCarry2:
-	LDY #0
-	DEX
-	BPL @End
-	DEX
-	BPL @Next
-
-@End:
-	; do some cleanup
-	LDA #0
-	STA zTextOffset
-	STA zTextOffset + 1
-	RTS
-
-@Next:
-	; raise to the nearest multiple of 64
-	LDA cNametableAddress
-	AND #$c0
-	ASL A
-	ROL A
-	ROL A
-	TAX
-	INX ; next vertically even tile
-	TXA
-	LDX cNametableAddress + 1
-	LSR A
-	ROR A
-	ROR A
-	BCC @NextWrite
-	CLC
-	INX
-@NextWrite:
-	ADC zStringXOffset
-	; update address
-	STX cNametableAddress + 1
-	STA cNametableAddress
-	STX PPUADDR
-	STA PPUADDR
-	BCC @Loop
-
 FadePalettes:
 ; fade in and fade out the palettes on screen
 	; zPals initial byte contains two bitwise commands
@@ -147,7 +52,7 @@ FadePalettes:
 	RSB PAL_FADE_DIR_F
 	PHA ; save this for later
 	AND #COLOR_INDEX
-	LDX #NUM_PALETTES
+	LDX #NUM_BG_PALETTES
 @FinalLoop:
 	; clear palettes
 	DEX
@@ -158,6 +63,8 @@ FadePalettes:
 	BNE @FinalLoop
 	; apply the flags
 	PLA
+	AND #$c0
+	ORA zPals
 	STA zPals
 	; reset placement byte
 	LDA #PALETTE_FADE_PLACEMENT_MASK
@@ -246,45 +153,6 @@ FadePalettes:
 	STA zPals + 12, Y
 	RTS
 
-UpdateBackground:
-; write to bg. zCurrentTileNametableAddress according to zCurrentTileAddress
-; update for zTileOffset bytes
-	LDA PPUSTATUS
-	; are we pointing to PRG?
-	LDA zCurrentTileAddress + 1
-	BPL @Quit ; PRG never branches
-	; apply background address
-	LDY zCurrentTileNametableAddress + 1
-	STY PPUADDR
-	LDY zCurrentTileNametableAddress
-	STY PPUADDR
-	LDY #0
-@Loop:
-	; start writing
-	LDA (zCurrentTileAddress), Y
-; increment tilemap
-	INY
-	BNE @Dec
-	INC zCurrentTileAddress + 1
-@Dec:
-; decrement offset
-	LDX zTileOffset
-	BEQ @Done
-	DEC zTileOffset + 1
-@Done:
-	DEC zTileOffset
-; compound bitfields to return the state of zero
-; no bits active, zero flag is set
-	STA PPUDATA
-	TXA
-	ORA zTileOffset
-	BNE @Loop
-@Quit:
-	LDY #0
-	STY PPUADDR
-	STY PPUADDR
-	RTS
-
 InitPals:
 ; despite not being in an NMI, conventional PRG updates apparently work here
 ; initialize palettes
@@ -311,14 +179,6 @@ GetTextByte:
 	LDA zCurrentTextByte
 	RTS
 
-GetPPUAddressFromNameTable:
-; store the nametable pointer through PPU
-	LDA cNametableAddress + 1
-	STA PPUADDR
-	LDA cNametableAddress
-	STA PPUADDR
-	RTS
-
 ReadPPUData:
 ; copy 
 	LDX #TEXT_BOX_WIDTH
@@ -330,51 +190,6 @@ ReadPPUData:
 	STA iStringBuffer + $60, X
 	LDX zBackupX
 	BNE @Loop
-	RTS
-
-WritePPUData:
-	LDX #TEXT_BOX_WIDTH
-	STX zBackupX
-@Loop:
-	DEX
-	DEC zBackupX
-	STA PPUDATA
-	INC cNametableAddress
-	LDX zBackupX
-	BNE @Loop
-	RTS
-
-WritePPUDataFromStringBuffer:
-	LDX #TEXT_BOX_WIDTH
-	STX zBackupX
-@Loop:
-	DEX
-	DEC zBackupX
-	LDA iStringBuffer + $60, X
-	STA PPUDATA
-	INC cNametableAddress
-	LDX zBackupX
-	BNE @Loop
-	RTS
-
-GetNameTableOffsetLine1:
-	LDA #<NAMETABLE_MAP_0
-	CLC
-	ADC #<TEXT_COORD_1
-	STA cNametableAddress
-	LDA #>NAMETABLE_MAP_0
-	ADC #>TEXT_COORD_1
-	STA cNametableAddress + 1
-	RTS
-
-GetNameTableOffsetLine2:
-	LDA #<NAMETABLE_MAP_0
-	CLC
-	ADC #<TEXT_COORD_2
-	STA cNametableAddress
-	LDA #>NAMETABLE_MAP_0
-	ADC #>TEXT_COORD_2
-	STA cNametableAddress + 1
 	RTS
 
 GetName:

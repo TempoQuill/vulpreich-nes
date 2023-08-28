@@ -2,7 +2,6 @@ cCardBCDBalance:
 	.dsb 4 ; 5c00
 cCurrentBCDPrice:
 	.dsb 4 ; 5c04
-cNametableAddress:
 	.dsb 2 ; 5c08
 cObjectIndex:
 	.dsb 1
@@ -32,5 +31,8 @@ cMenuHeader:
 	.dsb 16 ; 5ee0
 cMenuHeaderEnd:
 	.dsb 16 ; 5ef0
-cTextBuffer:
-	.dsb $100 ; 5f00
+	.dsb $80 ; 5f00
+cPPUIndex:
+	.dsb 1
+cPPUBuffer:
+	.dsb $7f ; 5f80
