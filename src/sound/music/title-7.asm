@@ -284,9 +284,9 @@ MusDTitle7_SQ1:
 	note_type 4, 8
 	note F#, 3
 	; -bors,
-	note_type 4, 1
+	note_type 2, 1
 	note E_, 3
-	note_type 2, 5
+	note_type 4, 5
 	note E_, 3
 	toggle_sweep
 	note_type 1, 4

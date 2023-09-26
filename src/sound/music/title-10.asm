@@ -316,7 +316,7 @@ MusDTitle10_Noise:
 	drum_note P_Snare
 	drum_note P_Snare
 	note_type 1, 8
-	drum_note P_Kick
+	drum_note P_Crash
 	drum_note P_Kick
 	note_type 1, 4
 	drum_note P_Kick

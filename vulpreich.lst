@@ -6352,15 +6352,15 @@
 0A75A                           o = (3 - 1) * $18
 0A75A 3C                        	.db F# + o
 0A75B                           	; -bors,
-0A75B                           	note_type 4, 1
-0A75B                           i = (4 - 1) << 4
-0A75B B1                        	.db $80 + i + 1
+0A75B                           	note_type 2, 1
+0A75B                           i = (2 - 1) << 4
+0A75B 91                        	.db $80 + i + 1
 0A75C                           	note E_, 3
 0A75C                           o = (3 - 1) * $18
 0A75C 38                        	.db E_ + o
-0A75D                           	note_type 2, 5
-0A75D                           i = (2 - 1) << 4
-0A75D 95                        	.db $80 + i + 5
+0A75D                           	note_type 4, 5
+0A75D                           i = (4 - 1) << 4
+0A75D B5                        	.db $80 + i + 5
 0A75E                           	note E_, 3
 0A75E                           o = (3 - 1) * $18
 0A75E 38                        	.db E_ + o
@@ -8735,8 +8735,8 @@
 0AAB8                           	note_type 1, 8
 0AAB8                           i = (1 - 1) << 4
 0AAB8 88                        	.db $80 + i + 8
-0AAB9                           	drum_note P_Kick
-0AAB9 10                        	.db P_Kick * 2
+0AAB9                           	drum_note P_Crash
+0AAB9 04                        	.db P_Crash * 2
 0AABA                           	drum_note P_Kick
 0AABA 10                        	.db P_Kick * 2
 0AABB                           	note_type 1, 4
