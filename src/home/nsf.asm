@@ -1,58 +1,30 @@
 .base $e080
 LOAD:
 INIT:
-	PHA
-	JSR _InitSound
-	PLY
 IFDEF NSF_SFX
-	JMP _PlaySFX
+	TAY
+	TAX
+	DEY
+	LDA SoundEffectDestinations, Y
+	STA zCurrentMusicPointer
+	LDY #0
+	STY zCurrentMusicPointer + 1
+	TXA
+	STA (zCurrentMusicPointer), Y
+	RTS
 ELSE
-	INY
-	JMP _PlayMusic
+	STA zMusicQueue
+	RTS
 ENDIF
 
 PLAY:
-	JMP _UpdateSound
+	JMP StartProcessingSoundQueue
 
-_LoadMusicByte:
-	STX zBackupX
-	STY zBackupY
-	LDY zBackupX
-	LDA iChannelAddress + 16, X
-	STA zAuxAddresses + 1
-	JSR GetWindowIndex
-	LDA iChannelBank, Y
-	STA iNSFBanks, X
-	INX
-	ADC #1
-	STA iNSFBanks, X
-	LDA iChannelAddress, Y
-	STA zAuxAddresses
-	LDY #0
-	LDA (zAuxAddresses), Y
-	STA zCurrentMusicByte
-	JSR UpdatePRG ; restore old bank
-	LDX zBackupX
-	RTS
-
-GetWindowIndex:
-; input -  A - $80-$bf
-; output - X - PRG window X
-	AND #$70
-	LSR A
-	LSR A
-	LSR A
-	TAX
-	RTS
-
-UpdatePRG:
-	LDX #5
-UpdatePRG_Loop:
-	LDA iNSFBanks, X
-	STA NSF_PRGBank0, X ; bank register
-	DEX
-	CPX #$ff
-	BCC UpdatePRG_Loop
+SetMusicBank:
+	ASL A
+	STA NSF_PRGBank2
+	ORA #1
+	STA NSF_PRGBank3
 	RTS
 
 .pad $f000, 0

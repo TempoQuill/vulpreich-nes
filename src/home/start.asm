@@ -103,7 +103,7 @@ Start:
 	STA zPPUMaskMirror
 	; music 0
 	TAY ; MUSIC_NONE
-	JSR PlayMusic
+	STY zMusicQueue
 ; PPUCtrl_Base2000
 ; PPUCtrl_WriteHorizontal
 ; PPUCtrl_Sprite1000
@@ -265,7 +265,7 @@ RESET:
 	STA MMC5_CHRBankSwitchUpper
 
 	; MMC5 Pulse channels
-	LDA #1 << CHAN_3 | 1 << CHAN_2 | 1 << CHAN_1 | 1 << CHAN_0
+	LDA #$0f
 	STA MMC5_SND_CHN
 
 	; select the first two CHR banks
@@ -315,8 +315,6 @@ RESET:
 
 	LDA #MMC5_VMirror
 	STA MMC5_NametableMapping
-	JSR InitSound
-	; audio interfaces preserve all registers
 	INX
 	TXA
 @Loop:

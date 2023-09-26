@@ -210,10 +210,8 @@ TitleScreen:
 	LDA #1
 	JSR DelayFrame_s_
 	; music 1
-	LDY #MUSIC_NONE
-	JSR PlayMusic
 	LDY #MUSIC_TITLE
-	JSR PlayMusic
+	STY zMusicQueue
 
 	; sure, we can get the game to show our stuff now
 	LDA #PPU_OBJ | PPU_BG | PPU_OBJ_MASKLIFT | PPU_BG_MASKLIFT
@@ -287,7 +285,6 @@ TitleScreenMain:
 
 @End:
 	INC zJumpTableIndex
-	STA zMusicID
 	INC zTitleScreenTimer
 	CLC
 	RTS
@@ -307,7 +304,7 @@ TitleScreenMain:
 	JSR ClearOAM
 	; music 0
 	LDY #MUSIC_NONE
-	JSR PlayMusic
+	STY zMusicQueue
 	; sfx 6
 	LDY #SFX_SELECT_1
 	JSR PlaySFX
@@ -331,7 +328,7 @@ TitleScreenMain:
 @Press_B:
 	; music 0
 	LDY #MUSIC_NONE
-	JSR PlayMusic
+	STY zMusicQueue
 	JSR ClearOAM
 	LDA zPals
 	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
@@ -350,7 +347,6 @@ TitleScreenMain:
 TitleScreenEnd:
 ; Wait until the music is queued
 	INC zTitleScreenTimer
-	LDA iChannelID
 	BEQ @Continue
 	CLC
 	RTS

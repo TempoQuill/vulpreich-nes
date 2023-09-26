@@ -1,226 +1,145 @@
-.enum $0001
+.enum $0000
 C_:
-	.dsb 1
-C#:
-	.dsb 1
-D_:
-	.dsb 1
-D#:
-	.dsb 1
-E_:
-	.dsb 1
-F_:
-	.dsb 1
-F#:
-	.dsb 1
-G_:
-	.dsb 1
-G#:
-	.dsb 1
-A_:
-	.dsb 1
-A#:
-	.dsb 1
-B_:
-	.dsb 1
-.ende
-
-.enum $0000
-CHAN_0:
-	.dsb 1
-CHAN_1:
-	.dsb 1
-CHAN_2:
-	.dsb 1
-CHAN_3:
-	.dsb 1
-CHAN_4:
-	.dsb 4
-CHAN_8:
-	.dsb 1
-CHAN_9:
-	.dsb 1
-CHAN_A:
-	.dsb 1
-CHAN_B:
-	.dsb 1
-CHAN_C:
-SFX_CHANNEL = 3
-CHANNEL_BIT_MASK = $f
-CHANNEL_TOTAL_MASK = $e0
-CHANNEL_RAM_STEP_LENGTH = $10
-CHANNEL_FLAGS_MASK = $1f
-.ende
-
-.enum $0000
-; iChannelFlagSection1
-SOUND_CHANNEL_ON:
-	.dsb 1
-SOUND_SUBROUTINE:
-	.dsb 1
-SOUND_LOOPING:
-	.dsb 1
-SOUND_READING_MODE:
-	.dsb 1
-SOUND_NOISE:
-	.dsb 1
-; SOUND_CRY:
-	.dsb 1
-SOUND_PITCH_INC_SWITCH:
-	.dsb 1
-SOUND_DPCM: ; nes only
-.ende
-
-.enum $0000
-; iChannelFlagSection2
-SOUND_VIBRATO:
-	.dsb 1
-SOUND_PITCH_SLIDE:
-	.dsb 1
-SOUND_CYCLE_LOOP:
-	.dsb 1
-SOUND_STACCATO:
-	.dsb 1
-SOUND_PITCH_MODIFIER:
-	.dsb 1
-SOUND_ENV_PTRN:
-	.dsb 1
-SOUND_RELATIVE_PITCH::
-;	.dsb 1
-; SOUND_STEREO:
-.ende
-
-.enum $0000
-; iChannelFlagSection3
-SOUND_VIBRATO_DIR:
-	.dsb 1
-SOUND_PITCH_SLIDE_DIR:
-	.dsb 1
-SOUND_REL_PITCH_FLAG:
-	.dsb 1
-.ende
-
-.enum $0000
-; iChannelNoteFlags
-NOTE_CYCLE_OVERRIDE:
-	.dsb 1
-NOTE_PITCH_OVERRIDE:
-	.dsb 1
-NOTE_ENV_OVERRIDE:
-	.dsb 1
-NOTE_PITCH_SWEEP:
-	.dsb 1
-NOTE_NOISE_SAMPLING:
-	.dsb 1
-NOTE_REST:
-	.dsb 1
-NOTE_VIBRATO_OVERRIDE:
-	.dsb 1
-NOTE_DELTA_OVERRIDE: ; nes only
-.ende
-
-.enum $0000
-; zAudioCommandFlags
-SOUND_EVENT:
-	.dsb 1
-SFX_PRIORITY:
-	.dsb 1
-MUSIC_PLAYING:
-	.dsb 1
-FRAME_SWAP:
-	.dsb 1
-RCOND_PULSE_1:
-	.dsb 1
-RCOND_PULSE_2:
-	.dsb 1
-RCOND_HILL:
-	.dsb 1
-RCOND_NOISE_DPCM:
-
-; register defs
-ENVELOPE_MASK = $3f
-CYCLE_MASK = $c0
-SOUND_LENGTH_F = 3
-SOUND_RAMP_F = 4
-SOUND_VOLUME_LOOP_F = 5
-
-; DPCM
-SOUND_DPCM_LOOP_F = 6
-DPCM_PITCH_MASK = $f
-
-.ende
-
-.enum $00d0
-FIRST_SOUND_COMMAND:
-; all commands from Pokemon Ray
-; only absent commands are those that use features not present on NES (ex. master volume, stereo)
-octave_cmd:
-	.dsb 8
-note_type_cmd:
-	.dsb 1
-transpose_cmd:
-	.dsb 1
-tempo_cmd:
-	.dsb 1
-duty_cycle_cmd:
-	.dsb 1
-volume_envelope_cmd:
-	.dsb 1
-pitch_sweep_cmd:
-	.dsb 1
-duty_cycle_pattern_cmd:
-	.dsb 1
-toggle_music_cmd:
-	.dsb 1
-pitch_slide_cmd:
-	.dsb 1
-vibrato_cmd:
-	.dsb 1
-staccato_cmd:
-	.dsb 1
-drum_switch_cmd:
-	.dsb 3
-pitch_offset_cmd:
-	.dsb 1
-relative_pitch_cmd:
-	.dsb 1
-volume_envelope_group_cmd:
-	.dsb 1
-tempo_relative_cmd:
-	.dsb 1
-restart_channel_cmd:
-	.dsb 1
-new_song_cmd:
-	.dsb 1
-sfx_priority_on_cmd:
-	.dsb 1
-sfx_priority_off_cmd:
-	.dsb 1
-sound_jump_flag_cmd:
 	.dsb 2
-sfx_drum_switch_cmd:
+C#:
+	.dsb 2
+D_:
+	.dsb 2
+D#:
+	.dsb 2
+E_:
+	.dsb 2
+F_:
+	.dsb 2
+F#:
+	.dsb 2
+G_:
+	.dsb 2
+G#:
+	.dsb 2
+A_:
+	.dsb 2
+A#:
+	.dsb 2
+B_:
+	.dsb 2
+.ende
+.enum $0001
+PM_Cs1:
 	.dsb 1
-pitch_dec_switch_cmd:
+PM_D1:
 	.dsb 1
-frame_swap_cmd:
+PM_Ds1:
 	.dsb 1
-set_music_cmd:
-	.dsb 6
-set_sound_event_cmd:
+PM_E1:
 	.dsb 1
-set_condition_cmd:
+PM_F1:
 	.dsb 1
-sound_jump_if_cmd:
+PM_Fs1:
 	.dsb 1
-sound_jump_cmd:
+PM_G1:
 	.dsb 1
-sound_loop_cmd:
+PM_Gs1:
 	.dsb 1
-sound_call_cmd:
+PM_A1:
 	.dsb 1
-sound_ret_cmd:
-env_ret_cmd:
-
-env_loop_cmd = env_ret_cmd - 1
-
+PM_As1:
+	.dsb 1
+PM_B1:
+	.dsb 1
+PM_C2:
+	.dsb 1
+PM_Cs2:
+	.dsb 1
+PM_D2:
+	.dsb 1
+PM_Ds2:
+	.dsb 1
+PM_E2:
+	.dsb 1
+PM_F2:
+	.dsb 1
+PM_Fs2:
+	.dsb 1
+PM_G2:
+	.dsb 1
+PM_Gs2:
+	.dsb 1
+PM_A2:
+	.dsb 1
+PM_As2:
+	.dsb 1
+PM_B2:
+	.dsb 1
+Maj_Slide:
+	.dsb 1
+Maj_Cs2:
+	.dsb 1
+Maj_D2:
+	.dsb 1
+Maj_Ds2:
+	.dsb 1
+Maj_E2:
+	.dsb 1
+Maj_F2:
+	.dsb 1
+Maj_Fs2:
+	.dsb 1
+Maj_G2:
+	.dsb 1
+Maj_Gs2:
+	.dsb 1
+Maj_A2:
+	.dsb 1
+Maj_As2:
+	.dsb 1
+Maj_B2:
+	.dsb 1
+Maj_C3:
+	.dsb 1
+Maj_Cs3:
+	.dsb 1
+PC_G:
+	.dsb 1
+PC_Gs:
+	.dsb 1
+PC_A:
+	.dsb 1
+PC_As:
+	.dsb 1
+PC_B:
+	.dsb 1
+PC_C:
+	.dsb 1
+PC_Cs:
+	.dsb 1
+PC_D:
+	.dsb 1
+PC_Ds:
+	.dsb 1
+PC_E:
+	.dsb 1
+P_Ds4:
+	.dsb 1
+P_As4_G5:
+	.dsb 1
+P_C5__Gs5:
+	.dsb 1
+P_D5__As5:
+	.dsb 1
+P_Gs4:
+	.dsb 1
+P_As3:
+	.dsb 1
+P_G4__Ds5:
+	.dsb 1
+P_F4:
+	.dsb 1
+P_C4:
+	.dsb 1
+P_D4__As4:
+	.dsb 1
+P_F5__As4G5:
+	.dsb 1
+PC_Slide:
 .ende

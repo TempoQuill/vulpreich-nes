@@ -13,12 +13,13 @@ PRG_Audio:
 	.dsb 1
 PRG_Music0:
 	.dsb 1
-IFNDEF NSF_FILE
 	.dsb 1
+IFNDEF NSF_FILE
 PRG_GFXEngine:
 	.dsb 1
 PRG_Names0:
-	.dsb $72
+	.dsb 1
+	.dsb $68
 ENDIF
 PRG_DPCM0:
 	.dsb 1
@@ -31,6 +32,24 @@ PRG_DPCM3:
 PRG_DPCM4:
 	.dsb 1
 PRG_DPCM5:
+	.dsb 1
+PRG_DPCM6:
+	.dsb 1
+PRG_DPCM7:
+	.dsb 1
+PRG_DPCM8:
+	.dsb 1
+PRG_DPCM9:
+	.dsb 1
+PRG_DPCM10:
+	.dsb 1
+PRG_DPCM11:
+	.dsb 1
+PRG_DPCM12:
+	.dsb 1
+PRG_DPCM13:
+	.dsb 1
+PRG_DPCM14:
 	.dsb 1
 PRG_Home:
 

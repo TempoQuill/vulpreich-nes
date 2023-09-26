@@ -1,9 +1,27 @@
 .include "src/sound/engine.asm"
+
+;
+; -------------------------------------------------------------------------
+; Various bits of the music engine have been extracted into separate files;
+; see the individual files for details on the formats within
+;
+
+; Determine which spot in Zero-Page to write to
+.include "src/sound/sfx-queues.asm"
+
+; Frequency table for notes; standard between various Mario games
 .include "src/sound/notes.asm"
-.include "src/sound/envelope-groups.asm"
-.include "src/sound/noise-kits.asm"
-.include "src/sound/sample-kits.asm"
-.include "src/sound/music-pointers.asm"
-.include "src/music/nothing.asm"
-.include "src/sound/sfx-pointers.asm"
-.include "src/sound/sfx.asm"
+
+; Base note lengths and TRI_LINEAR parameters
+.include "src/sound/note-lengths.asm"
+
+; Channels active in the music (usually all 5)
+.include "src/sound/music-channel-count.asm"
+
+; noise sound effect pointers, contains some percussion
+.include "src/sound/noise-sfx-pointers.asm"
+
+.include "src/sound/noise-sfx.asm"
+
+; DPCM sound effect data
+.include "src/sound/dpcm-sfx-data.asm"

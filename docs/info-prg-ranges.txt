@@ -7,10 +7,19 @@ $83	8000-9fff	- audio engine
 $84	a000-bfff	- music
 $86	8000-9fff	- text engine
 $87	a000-bfff	- name list
-$f9	c000-dfff	- dpcm data of common sound effects
-$fa	c000-dfff	- dpcm data of mostly voices
-$fb	c000-dfff	- dpcm data of voices
-$fc	c000-dfff	- dpcm data of voices
-$fd	c000-dfff	- dpcm data of voices
-$fe	c000-dfff	- dpcm data of all percussion
+$f0	c000-dfff	- dpcm data of common sound effects
+$f1	c000-dfff	- dpcm data of mostly voices
+$f2	c000-dfff	- dpcm data of voices
+$f3	c000-dfff	- dpcm data of voices
+$f4	c000-dfff	- dpcm data of voices
+$f5	c000-dfff	- dpcm data
+$f6	c000-dfff	- dpcm data
+$f7	c000-dfff	- dpcm data
+$f8	c000-dfff	- dpcm data
+$f9	c000-dfff	- dpcm data
+$fa	c000-dfff	- dpcm data
+$fb	c000-dfff	- dpcm data
+$fc	c000-dfff	- dpcm data
+$fd	c000-dfff	- dpcm data
+$fe	c000-dfff	- dpcm data
 $ff	e000-ffff	- boot area / home ROM

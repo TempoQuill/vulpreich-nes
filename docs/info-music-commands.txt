@@ -1,40 +1,13 @@
-00-0f	1	rest
-00-cf	4 / 3	sound effect note
-10-cf	1	music note
-80-ff	4	DPCM entry (bank, pitch, address, length)
-d0-d7	1	octave
-d8	3 / 2	note initialization
-d9	2	transposition
-da	3	tempo (16-bit big endian)
-db	2	pulse cycle
-dc	2	volume / linear envelope
-dd	2	sweep
-de	2	pulse cycle loop
-df	1	switch data reading mode
-e0	3	note slide
-e1	3	vibrato
-e2	2	staccato
-e3	2 / 1	turn music drum flag on/off (select kit)
-e6	3	raw pitch modifier
-e7	2	relative pitch
-e8	2	volume envelope group
-e9	2	signed tempo modifier
-ea	3	restart channel
-eb	3	new song
-ec	1	sound effect priority on
-ed	1	sound effect priority off
-ee	3	jump according to flags within ZP ram
-f0	2 / 1	turn sound effect drum flag on/off (select kit)
-f1	1	when on, decrement pitch timer (sharpens pitch)
-f2	1	swap between animation frames
-f3	1	treat proceeding data as music
-f9	1	turn event flag on
-fa	2	present condition
-fb	4	jump on present condition
-fc	3	jump
-fd	4	loop
-fe	3	call
-ff	1	return
-
-note: prior to migration, e4, e5 and ef all had commands.  However, these were
-tailored to features the NES simply did not have like stereo and global volume.
+	Pulse 1		Pulse 2		Hill	Noise	DPCM
+00	Sweep switch	Next segment	Repeat current sequence
+01					Rest
+02-7C	Note				Drum ID	Sample ID
+7E	Rest				N/A	Rest
+80-8F	Instrument 1 + length	15/16	Note length
+90-9F	Instrument 2 + length	15/16
+A0-AF	Instrument 3 + length	15/16
+B0-BF	Instrument 4 + length	4/7
+C0-CF	Instrument 5 + length	4/7
+D0-DF	Instrument 6 + length	4/7
+E0-EF	Instrument 2 + length	4/7
+F0-FF	Instrument 7 + length	Hold

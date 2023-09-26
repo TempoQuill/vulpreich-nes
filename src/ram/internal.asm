@@ -1,78 +1,64 @@
-
 ; section: AUDIO RAM (zero page)
-
-; duty cycle, length flag, volume ramp flag, ramp length/volume
-zAudioRAM:
-zCurrentTrackEnvelope:
-	.dsb 1 ; 0000
-; also includes note length
-zCurrentTrackRawPitch:
+zCurrentMusicPointer:
+	.dsb 2 ; 0000
+zNextPitch:
 	.dsb 2
-zCurrentNoteDuration:
+zNoiseIndexPointer:
+	.dsb 2 ; 0004
+zNoiseSFXOffset:
 	.dsb 1
-zCurrentMusicByte:
-	.dsb 1 ; 0004
-zCurrentChannel:
+zMusicPulse1NoteLengthFraction:
 	.dsb 1
-
-; linear length + flag
-zHillLinearLength:
-	.dsb 1
-; 0 = off
-; 1 = on
-; 0-1: Pulses 2: Hill 3: Noise 4: DPCM
-zMixer:
-	.dsb 1
-zSweep1:
+zMusicPulse2NoteLengthFraction:
 	.dsb 1 ; 0008
-zSweep2:
+zMusicHillNoteLengthFraction:
 	.dsb 1
-zMusicID:
+zMusicNoiseNoteLengthFraction:
+	.dsb 1
+zMusicDPCMNoteLengthFraction:
+	.dsb 1
+zHillIns:
+	.dsb 1 ; 000c
+zPulse2Ins:
+	.dsb 1
+zPulse1Ins:
+	.dsb 1
+zMusicStack:
+	.dsb 1
+zOctave:
+	.dsb 1 ; 0010
+zMusicChannelCount:
+	.dsb 1
+zDPCMNoteRatioLength:
+	.dsb 1
+iCurrentMusic:
+	.dsb 1
+zCurrentDrum:
+	.dsb 1 ; 0014
+zCurrentDPCMSFX:
+	.dsb 1
+zCurrentNoiseSFX:
+	.dsb 1
+	.dsb 1
+zMusicQueue:
+	.dsb 1 ; 0018
+zDPCMSFX:
+	.dsb 1
+zNoiseDrumSFX:
+	.dsb 1
+	.dsb 1
+	.dsb 1 ; 001c
+	.dsb 1
+	.dsb 1
 	.dsb 1
 zMusicBank:
+	.dsb 1 ; 0020
+zSweep:
 	.dsb 1
-
-zDrumAddresses:
-	.dsb 4 ; 000c
-zDrumChannel:
-	.dsb 1 ; 0010
-zDrumDelay:
+zTempo:
 	.dsb 1
-zMusicDrumSet:
-	.dsb 1
-zSFXDrumSet:
-	.dsb 1
-
-zDPCMSamplePitch:
-	.dsb 1 ; 0014
-zDPCMSampleOffset:
-	.dsb 1
-zDPCMSampleLength:
-	.dsb 1
-zDPCMSampleBank:
-	.dsb 1
-; 0: Sound event 1: SFX Priority 2: MusicPlaying 3: frame swap 4-7: RAM Conditions
-zAudioCommandFlags:
-	.dsb 1 ; 0018
-zCurrentSFX:
-	.dsb 1
-
-zRawPitchBackup:
-	.dsb 2
-zPitchSlideDifference:
-	.dsb 2 ; 001c
-zVibratoBackup:
-	.dsb 1
-
-zCurrentEnvelopeGroupOffset:
-	.dsb 1
-zCurrentEnvelopeGroupAddress:
-	.dsb 2 ; 0020
-zAudioRAMEnd:
-
 ; section: Hardware Assistive RAM
 ; backup registers, banks, addresses, and buffers
-	.dsb 1
 zNMITimer:
 	.dsb 1
 zCHRWindow0:
@@ -204,83 +190,113 @@ iStackTop:
 	.dsb 1
 
 ; section: AUDIO RAM (channels) 0200 - 04bf
-; each entry is spread across 16 bytes
-; xx0 pulse 1 xx1 pulse 2 xx2 hill xx3 noise xx4 DPCM
-; xx8 pulse 1 xx9 pulse 2 xxa hill xxb noise xxc DPCM
-iChannelRAM:
-iChannelID:
-	.dsb 16 ; 0200
-iChannelBank:
+iMusicPulse2BigPointer:
+	.dsb 2 ; 0200
+iMusicPulse1BigPointer:
+	.dsb 2
+iMusicHillBigPointer:
+	.dsb 2 ; 0204
+iMusicNoiseBigPointer:
+	.dsb 2
+iMusicDPCMBigPointer:
+	.dsb 2 ; 0208
+iMusicPulse2NoteSubFrames:
+	.dsb 1
+iMusicPulse1NoteSubFrames:
+	.dsb 1
+iMusicHillNoteSubFrames:
+	.dsb 1 ; 020c
+iMusicNoiseNoteSubFrames:
+	.dsb 1
+iMusicDPCMNoteSubFrames:
+	.dsb 1
+iCurrentMusicOffset:
+	.dsb 1
+iPulse2NoteLength:
+	.dsb 1 ; 0210
+iPulse1NoteLength:
+	.dsb 1
+iHillNoteLength:
+	.dsb 1
+iNoiseNoteLength:
+	.dsb 1
+iDPCMNoteLength:
+	.dsb 1 ; 0214
+iMusicStartPoint:
+	.dsb 1
+iMusicEndPoint:
+	.dsb 1
+iMusicLoopPoint:
+	.dsb 1
+iCurrentPulse2Offset:
+	.dsb 1 ; 0218
+iCurrentPulse1Offset:
+	.dsb 1
+iCurrentHillOffset:
+	.dsb 1
+iCurrentNoiseOffset:
+	.dsb 1
+iCurrentDPCMOffset:
+	.dsb 1 ; 021c
+iMusicPulse2NoteLength:
+	.dsb 1
+iMusicPulse1NoteLength:
+	.dsb 1
+iMusicHillNoteLength:
+	.dsb 1
+iMusicNoiseNoteLength:
+	.dsb 1 ; 0220
+iMusicDPCMNoteLength:
+	.dsb 1
+iMusicPulse2InstrumentOffset:
+	.dsb 1
+iMusicPulse1InstrumentOffset:
+	.dsb 1
+	.dsb 1 ; 0224
+	.dsb 1
+	.dsb 1
+	.dsb 1
+	.dsb 1 ; 0228
+	.dsb 1
+	.dsb 1
+	.dsb 1
+	.dsb 1 ; 022c
+	.dsb 1
+	.dsb 1
+	.dsb 1
 	.dsb 16
-iChannelFlagSection1:
-	.dsb 16
-iChannelFlagSection2:
-	.dsb 16
-iChannelFlagSection3:
 	.dsb 16 ; 0240
-iChannelAddress:
 	.dsb 32
-iChannelBackupAddress1:
 	.dsb 32
-iChannelBackupAddress2:
 	.dsb 32
-iChannelNoteFlags:
 	.dsb 16
-iChannelCondition:
 	.dsb 16 ; 02c0
-iChannelCycle:
 	.dsb 16
-iChannelEnvelope:
 	.dsb 16
-iChannelRawPitch:
 	.dsb 32
-iChannelNoteID:
 	.dsb 16
-iChannelOctave:
 	.dsb 16
-iChannelTransposition:
 	.dsb 16
-iChannelNoteDuration:
 	.dsb 32 ; 0340
-iChannelPitchIncrementation:
 	.dsb 16
-iChannelLoopCounter:
 	.dsb 16
-iChannelTempo:
 	.dsb 32 ; 0380
-iChannelCyclePattern:
 	.dsb 16
-iChannelVibratoCounter:
 	.dsb 16
-iChannelVibratoPreamble:
 	.dsb 16 ; 03c0
-iChannelVibratoDepth:
 	.dsb 16
-iChannelVibratoTimer:
 	.dsb 16
-iChannelSlideTarget:
 	.dsb 32
-iChannelSlideDepth:
 	.dsb 16
-iChannelSlideFraction:
 	.dsb 16
-iChannelSlideTempo:
 	.dsb 16
-iChannelStaccatoCounter:
 	.dsb 16 ; 0440
-iChannelPitchModifier:
 	.dsb 32
-iChannelRelativeNoteID:
 	.dsb 16
-iChannelEnvelopeGroup:
 	.dsb 16 ; 0480
-iChannelEnvelopeGroupOffset:
 	.dsb 16
-iChannelStaccatoMain:
 	.dsb 16
-iChannelNoteLength:
 	.dsb 16
-iChannelRAMEnd:
 ; section: groups
 	.dsb 16 ; 04c0
 iCurrentPals:

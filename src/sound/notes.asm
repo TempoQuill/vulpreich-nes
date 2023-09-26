@@ -1,31 +1,13 @@
-NoteTable:
-	.dw $7ff ; rest
-	.dw $6ad ; c
-	.dw $64d
-	.dw $5f3
-	.dw $59d
-	.dw $54c
-	.dw $500
-	.dw $4b8
-	.dw $474 ; g
-	.dw $434
-	.dw $3f8
-	.dw $3bf
-	.dw $389
-
-	.dw $356
-	.dw $326
-	.dw $2f9
-	.dw $2ce
-	.dw $2a6
-	.dw $280
-	.dw $25c
-	.dw $23a
-	.dw $21a
-	.dw $1fc
-	.dw $1df
-	.dw $1c4
-
-	.dw $1ab
-	.dw $193
-	.dw $17c
+NoteFrequencyData:
+	.dw $1AB8 ; C
+	.dw $1938 ; C# / Db
+	.dw $17CC ; D
+	.dw $1678 ; D# / Eb
+	.dw $1534 ; E
+	.dw $1404 ; F
+	.dw $12E4 ; F# / Gb
+	.dw $11D4 ; G
+	.dw $10D4 ; G# / Ab
+	.dw $0FE0 ; A
+	.dw $0EFC ; A# / Bb
+	.dw $0E24 ; B

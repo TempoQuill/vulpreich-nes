@@ -1,0 +1,22 @@
+
+
+VulpReich - DPCM SET
+Bank Area: 49,152 - 57,343 / 65536
+Bank ID's: 112-126
+ID Offset: 128
+112 - 116 sources:
+-Rumble Viral - Excited fox makes adorable sounds when pet
+-Riot the Red Fox - Fox Barks at Neighbors
+-Ray the Fox and his friends - RAY THE FOX PURRS
+-SaveAFox - Sophie guards Jagger from Luka
+-E-FamiTracker
+-Minecraft
+
+117 - 126 sources:
+-Andrew Stein and Megabyte Brony - Spitfire
+-Andrew Stein - Our Last Goodnight
+-WeiselFace - Equestria Train
+-Skitchin' (Sega Mega Drive)
+-Zoop (Sega Mega Drive)
+
+WARNING: This set can only be used in games paired with capable FamiCom mappers.  A minimum program size of 256KiB is required for practical use of this set.
