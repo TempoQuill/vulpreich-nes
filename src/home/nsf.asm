@@ -1,6 +1,5 @@
 .base $e080
-LOAD:
-INIT:
+PLAY:
 IFDEF NSF_SFX
 	TAY
 	TAX
@@ -17,11 +16,11 @@ ELSE
 	RTS
 ENDIF
 
-PLAY:
+LOAD:
+INIT:
 	JMP StartProcessingSoundQueue
 
 SetMusicBank:
-	ASL A
 	STA NSF_PRGBank2
 	ORA #1
 	STA NSF_PRGBank3

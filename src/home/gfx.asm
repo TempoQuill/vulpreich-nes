@@ -49,8 +49,6 @@ FadePalettes:
 	LDA zPalFadeSpeed
 	STA zPalFade
 	LDA zPals
-	RSB PAL_FADE_DIR_F
-	PHA ; save this for later
 	AND #COLOR_INDEX
 	LDX #NUM_BG_PALETTES
 @FinalLoop:
@@ -61,13 +59,8 @@ FadePalettes:
 	STA zPals + 4, X
 	STA zPals, X
 	BNE @FinalLoop
-	; apply the flags
-	PLA
-	AND #$c0
-	ORA zPals
-	STA zPals
 	; reset placement byte
-	LDA #PALETTE_FADE_PLACEMENT_MASK
+	LDA #0
 	STA zPalFadePlacement
 	RTS
 
@@ -95,7 +88,7 @@ FadePalettes:
 	; we're done
 	; do cleanup
 	; reset placement byte
-	LDA #PALETTE_FADE_PLACEMENT_MASK
+	LDA #PALETTE_FADE_PLACEMENT_MASK - 1
 	STA zPalFadePlacement
 	LDA zPals
 	RSB PAL_FADE_F

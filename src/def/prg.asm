@@ -1,3 +1,10 @@
+MACRO NSF_Const
+	IFNDEF NSF_FILE
+		.dsb 1
+	ELSE
+		.dsb 2
+	ENDIF
+ENDM
 IFNDEF NSF_FILE
 	.enum $0080
 PRG_Start0:
@@ -10,10 +17,10 @@ ELSE
 	.enum $0000
 ENDIF
 PRG_Audio:
-	.dsb 1
+	NSF_Const
 PRG_Music0:
-	.dsb 1
-	.dsb 1
+	NSF_Const
+	NSF_Const
 IFNDEF NSF_FILE
 PRG_GFXEngine:
 	.dsb 1
@@ -22,35 +29,35 @@ PRG_Names0:
 	.dsb $68
 ENDIF
 PRG_DPCM0:
-	.dsb 1
+	NSF_Const
 PRG_DPCM1:
-	.dsb 1
+	NSF_Const
 PRG_DPCM2:
-	.dsb 1
+	NSF_Const
 PRG_DPCM3:
-	.dsb 1
+	NSF_Const
 PRG_DPCM4:
-	.dsb 1
+	NSF_Const
 PRG_DPCM5:
-	.dsb 1
+	NSF_Const
 PRG_DPCM6:
-	.dsb 1
+	NSF_Const
 PRG_DPCM7:
-	.dsb 1
+	NSF_Const
 PRG_DPCM8:
-	.dsb 1
+	NSF_Const
 PRG_DPCM9:
-	.dsb 1
+	NSF_Const
 PRG_DPCM10:
-	.dsb 1
+	NSF_Const
 PRG_DPCM11:
-	.dsb 1
+	NSF_Const
 PRG_DPCM12:
-	.dsb 1
+	NSF_Const
 PRG_DPCM13:
-	.dsb 1
+	NSF_Const
 PRG_DPCM14:
-	.dsb 1
+	NSF_Const
 PRG_Home:
 
 

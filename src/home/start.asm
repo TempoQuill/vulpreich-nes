@@ -36,31 +36,37 @@ ResetPPUAddress:
 ; Updates joypad press/held values
 ;
 UpdateJoypads:
-	LDX #0
 	JSR ReadJoypads
+	LDY #0
 
-@DoubleCheckInput0:
+@Loop1:
 	; Work around DPCM sample bug,
 	; where some inputs get forged
-	LDY zInputBottleNeck, X
+	LDA zInputBottleNeck
+	STA iBackupInput, Y
 	JSR ReadJoypads
+	DEY
+	BNE @Loop1
 
-	TYA
-	CMP zInputBottleNeck, X
-	BNE @DoubleCheckInput0
+	LDX #$02
+	LDA zInputBottleNeck
 
-	INX
-	JSR ReadJoypads
+@CMPStash:
+	DEX
+	BMI @UseStash
+	CMP iBackupInput, X
+	BNE @CMPStash
+	BEQ @Bottleneck
 
-@DoubleCheckInput1:
-	LDY zInputBottleNeck, X
-	JSR ReadJoypads
+@UseStash:
+	LDA iBackupInput
+	AND iBackupInput + 1
+	STA zInputBottleNeck
 
-	TYA
-	CMP zInputBottleNeck, X
-	BNE @DoubleCheckInput1
+@Bottleneck:
+	LDX #$01
 
-@Loop:
+@Loop2:
 	LDA zInputBottleNeck, X ; Update the press/held values
 	TAY
 	EOR zInputCurrentState, X
@@ -68,8 +74,7 @@ UpdateJoypads:
 	STA zInputBottleNeck, X
 	STY zInputCurrentState, X
 	DEX
-	BPL @Loop
-
+	BPL @Loop2
 	RTS
 
 
@@ -81,16 +86,19 @@ ReadJoypads:
 	LDA #1
 	STA JOY1
 	; send the same jolt to the bottleneck to set C at the end
-	STA zInputBottleNeck, X
+	STA zInputBottleNeck + 1
 	; 1 >> 1 = 0, C is not needed right now
 	LSR A
 	STA JOY1
 @Loop:
 	; Read standard controller data
-	LDA JOY1, X
+	LDA JOY1
 	LSR A
 	; are we done?
-	ROL zInputBottleNeck, X
+	ROL zInputBottleNeck
+	LDA JOY2
+	LSR A
+	ROL zInputBottleNeck + 1
 	BCC @Loop
 	; we're done
 	RTS
@@ -168,7 +176,7 @@ NMI:
 	LDX zPPUMaskMirror
 	STX PPUMASK
 	JSR FadePalettes
-;	JSR UpdateJoypads
+	JSR UpdateJoypads
 	; advance sound by one frame
 	JSR UpdateSound
 	; check for an NMI timer (4.25 seconds maximum)

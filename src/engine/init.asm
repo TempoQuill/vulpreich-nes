@@ -56,36 +56,11 @@ IntroPals:
 IntroSequence:
 	JSR InspiredScreen
 	JSR TitleScreen
-	LDA #PPU_OBJ | PPU_BG | PPU_OBJ_MASKLIFT | PPU_BG_MASKLIFT
-	STA PPUMASK
-	STA zPPUMaskMirror
-	LDA #1
-	JSR DelayFrame_s_
 @Loop:
 	JSR RunTitleScreen
-	BCS @Loop
-	LDA zPPUCtrlMirror
-	AND #$ff ^ PPU_OBJECT_RESOLUTION ; 8x8
-	STA zPPUCtrlMirror
-	STA PPUCTRL
-	LDA zTitleScreenOption
-	CMP #NUM_TITLESCREENOPTION
-	BCC @Begin
-	LDA #TITLESCREENOPTION_MAIN_MENU
-@Begin:
-	ASL A
-	TAY
-	LDA @DW, Y
-	STA zAuxAddresses + 6
-	INY
-	LDA @DW, Y
-	STA zAuxAddresses + 7
-	JMP (zAuxAddresses + 6)
-
-@DW
-	.dw IntroSequence
-	.dw IntroSequence
-	.dw IntroSequence
+	LDA #1
+	JSR DelayFrame_s_
+	JMP @Loop
 
 InspiredScreen:
 	; we're initializing the PPU
@@ -101,6 +76,9 @@ InspiredScreen:
 	JSR HideSprites
 
 	LDA PPUSTATUS
+
+	LDY #MUSIC_NONE
+	STY zMusicQueue
 
 	LDA #$3F
 	STA PPUADDR
@@ -172,12 +150,12 @@ TitleScreen:
 	LDA PPUSTATUS
 
 	LDA #$3F
-	LDX #0
 	STA PPUADDR
-	STX PPUADDR
+	LDA #0
+	STA PPUADDR
 
 	; set fade speed
-	INX
+	LDX #4
 	STX zPalFade
 	STX zPalFadeSpeed
 
@@ -205,7 +183,7 @@ TitleScreen:
 	LDA #<TitleScreenLayout
 	STA zPPUDataBufferPointer
 	LDA #>TitleScreenLayout
-	STA zPPUDataBufferPointer
+	STA zPPUDataBufferPointer + 1
 
 	LDA #1
 	JSR DelayFrame_s_
@@ -223,166 +201,58 @@ TitleScreen:
 	AND #COLOR_INDEX
 	SSB PAL_FADE_F
 	STA zPals
-	LDA #6
-	JSR DelayFrame_s_
-
-RunTitleScreen:
-	LDA zJumpTableIndex
-	BMI @Done
-	ASL A
-	TAY
-	LDA @DW, Y
-	STA zAuxAddresses + 2
-	INY
-	LDA @DW, Y
-	STA zAuxAddresses + 3
-	JMP (zAuxAddresses + 2)
-@Done:
-	SEC
-	RTS
-
-@DW:
-	.dw TitleScreenTimer
-	.dw TitleScreenMain
-	.dw TitleScreenEnd
-
-TitleScreenTimer:
-	; next scene
-	INC zJumpTableIndex
-	; set timer for $1000 frames (about 1:08)
-	LDA #0
-	STA zTitleScreenTimer
-	LDA #$10
-	STA zTitleScreenTimer + 1
-	SEC
-	RTS
-
-TitleScreenMain:
-	; has our timer concluded?
-	LDA zTitleScreenTimer
-	ORA zTitleScreenTimer + 1
-	BEQ @End
-	; it's still a non-zero
-	LDA zTitleScreenTimer
-	BNE @Skip
-	DEC zTitleScreenTimer + 1
-@Skip:
-	DEC zTitleScreenTimer
-	; check for controller 1 input
-	JSR Intro_CheckInput
-	BCC @Quit
-	LDA @DW, Y
-	INY
-	STA zAuxAddresses + 6
-	LDA @DW, Y
-	STA zAuxAddresses + 7
-	JMP (zAuxAddresses + 6)
-@Quit:
-	LDA #1
-	JSR DelayFrame_s_
-	SEC
-	RTS
-
-@End:
-	INC zJumpTableIndex
-	INC zTitleScreenTimer
-	CLC
-	RTS
-
-@DW:
-	.dw @Press_A_Start
-	.dw @Press_B
-	.dw @Press_Up_Down
-
-@Press_A_Start:
-	LDA zInputBottleNeck
-	TSB START_BUTTON
-	BNE @CheckSelect
-@Normal:
-	LDA #TITLESCREENOPTION_MAIN_MENU
-	STA zTitleScreenOption
-	JSR ClearOAM
-	; music 0
-	LDY #MUSIC_NONE
-	STY zMusicQueue
-	; sfx 6
-	LDY #SFX_SELECT_1
-	JSR PlaySFX
-	; fade out palettes
-	LDA zPals
-	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
-	STA zPals
-	RSB PAL_FADE_DIR_F ; wait $8f frames (2.38 seconds)
-	CLC
+	LDA #$15
 	JMP DelayFrame_s_
 
-@CheckSelect:
-	LDA zInputBottleNeck
-	AND #1 << SELECT_BUTTON
-	BEQ @Normal
-	LDA #TITLESCREENOPTION_DELETE_SAVE_FILE
-	STA zTitleScreenOption
-	CLC
-	RTS
-
-@Press_B:
-	; music 0
-	LDY #MUSIC_NONE
+RunTitleScreen:
+	JSR TryTitleScreenInput
+	BEQ @NoInput
+	DEX
+	LDY @MusicQueue, X
 	STY zMusicQueue
-	JSR ClearOAM
-	LDA zPals
-	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
-	STA zPals
-	RSB PAL_FADE_DIR_F ; wait $8f frames (2.38 seconds)
-	JSR DelayFrame_s_
-	CLC
-	RTS
-
-@Press_Up_Down:
-	LDY #SFX_CURSOR_1
+	LDY @InputSounds, X
 	JSR PlaySFX
-	CLC
+@NoInput:
 	RTS
 
-TitleScreenEnd:
-; Wait until the music is queued
-	INC zTitleScreenTimer
-	BEQ @Continue
-	CLC
-	RTS
+@MusicQueue:
+	.db 0
+	.db 0
+	.db 0
+	.db MUSIC_NONE
 
-@Continue:
-	LDA #TITLESCREENOPTION_RESTART
-	STA zTitleScreenSelectedOption
-	; return to the inspired screen
-	LDA zJumpTableIndex
-	SSB 7
-	STA zJumpTableIndex
-	CLC
-	RTS
+@InputSounds:
+	.db SFX_EXCLAMATION_1
+	.db SFX_SELECT_1
+	.db SFX_CURSOR_1
+	.db SFX_SELECT_1
 
-Intro_CheckInput:
-; c = necesary input (a, b, start, up, down)
-; y = pointer offset (0 for a/start, 2 for b, 4 for up/down)
-	LDY #0
-	LDA zInputBottleNeck
-	ASL A
-	BCS @A_Start
-	ASL A
-	BCS @B
-	ASL A
-	ASL A
-	BCS @A_Start
-	ASL A
-	BCS @Up_Down
-	ASL A
-	BCS @Up_Down
-	RTS
-@Up_Down:
-	INY
-	INY
-@B:
-	INY
-	INY
-@A_Start:
+; OUTPUT: X:
+; 0 - Invalid
+; 1 - A / Start
+; 2 - Up / Down
+; 3 - Select + A + B
+TryTitleScreenInput:
+	LDX #0
+	LDY zInputBottleNeck
+	BEQ @Ret
+	INX
+	CPY #1 << SELECT_BUTTON | 1 << A_BUTTON | 1 << B_BUTTON
+	BEQ @Ret
+	TYA
+	INX
+	AND #1 << A_BUTTON | 1 << START_BUTTON
+	BNE @Ret
+	INX
+	TYA
+	AND #1 << DOWN_BUTTON | 1 << UP_BUTTON
+	BNE @Ret
+	INX
+	TYA
+	AND #1 << B_BUTTON
+	BNE @Ret
+	LDX #0
+@Ret:
+	STX iTitleInputIndex
+	TXA
 	RTS

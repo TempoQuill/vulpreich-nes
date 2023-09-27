@@ -37,7 +37,7 @@ ELSE
 	.db PRG_Audio, PRG_Audio + 1, PRG_Music0, PRG_Music0 + 1, PRG_DPCM0, PRG_DPCM0 + 1, PRG_Home, PRG_Home + 1
 	.dw $4e20 ; PAL, unused
 	.db 0 ; this is an NTSC file
-	.db 0 ; no extra chip (North American settings)
+	.db %00001000 ; MMC5 registers enabled, 2A03 only though
 	.dsb 4, 0 ; proceeding data is program data
 
 ENDIF

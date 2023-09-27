@@ -252,7 +252,10 @@ iMusicPulse2InstrumentOffset:
 	.dsb 1
 iMusicPulse1InstrumentOffset:
 	.dsb 1
+; section: input
+iBackupInput:
 	.dsb 1 ; 0224
+iTitleInputIndex:
 	.dsb 1
 	.dsb 1
 	.dsb 1

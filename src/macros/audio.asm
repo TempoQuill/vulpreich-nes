@@ -38,7 +38,11 @@ ENDM
 
 ; define a ROM Bank
 MACRO audio_bank num
-	.db $80 | num
+	IFNDEF NSF_FILE
+		.db $80 | num
+	ELSE
+		.db num
+	ENDIF
 ENDM
 
 ; zNoiseDrumSFX macros
