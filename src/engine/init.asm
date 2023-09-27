@@ -74,7 +74,7 @@ IntroSequence:
 	LDA #MUSIC_NONE
 	STA zMusicQueue
 @SongEnds:
-	LDA #10
+	LDA #4
 	STA zPalFadeSpeed
 	STA zPalFade
 	LDA zPals
@@ -108,7 +108,7 @@ InspiredScreen:
 	STA PPUADDR
 
 	; store the palette data
-	LDX #15
+	LDX #6
 	STX zPalFade
 	STX zPalFadeSpeed
 @PalLoop:
@@ -123,6 +123,9 @@ InspiredScreen:
 	STA zPPUDataBufferPointer + 1
 
 	; we can enable graphical updates now
+	LDA #0
+	STA zFilmStandardTimerOdd
+	STA zFilmStandardTimerEven
 	LDA zPPUCtrlMirror
 	ORA #PPU_NMI
 	STA zPPUCtrlMirror
@@ -143,14 +146,13 @@ InspiredScreen:
 	; fade in palettes
 	LDA zPals
 	SSB PAL_FADE_F
-	STA zPals
-	SSB PAL_FADE_DIR_F ; wait $cf frames (3.45 seconds)
+	STA zPals ; wait $8f frames (5.96 seconds)
 	JSR DelayFrame_s_
 	; fade out palettes
 	LDA zPals
 	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
 	STA zPals
-	RSB PAL_FADE_DIR_F ; wait $8f frames (2.38 seconds)
+	RSB PAL_FADE_F ; wait $4f frames (3.29 seconds)
 	JMP DelayFrame_s_
 
 TitleScreen:
@@ -177,7 +179,7 @@ TitleScreen:
 	STA PPUADDR
 
 	; set fade speed
-	LDX #4
+	LDX #1
 	STX zPalFade
 	STX zPalFadeSpeed
 
@@ -194,6 +196,9 @@ TitleScreen:
 	STA zPPUDataBufferPointer + 1
 
 	; we can enable graphical updates now
+	LDA #0
+	STA zFilmStandardTimerOdd
+	STA zFilmStandardTimerEven
 	LDA zPPUCtrlMirror
 	ORA #PPU_NMI
 	STA zPPUCtrlMirror
@@ -223,7 +228,7 @@ TitleScreen:
 	AND #COLOR_INDEX
 	SSB PAL_FADE_F
 	STA zPals
-	LDA #$15
+	LDA #5
 	JMP DelayFrame_s_
 
 RunTitleScreen:

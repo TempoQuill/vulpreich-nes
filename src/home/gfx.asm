@@ -361,3 +361,37 @@ UpdatePPUFromBufferWithOptions:
 @Quit:
 	RTS
 
+; Decides if next frame is on
+; Frames:
+;	Odd	Even
+; Start	0	0
+; 1	1	4
+; 2	0	3
+; 3	ff	2
+; 4	ff	1
+; 5	ff	0
+; Output: C
+; 0 = On
+; 1 = Off
+UpdateFilmTimers:
+	LDA zFilmStandardTimerOdd
+	BPL @DecOdd
+	DEC zFilmStandardTimerEven
+	BPL @Quit
+	LDA #1
+	STA zFilmStandardTimerOdd
+	LDA #4
+	STA zFilmStandardTimerEven
+@Quit:
+	RTS
+
+@DecOdd:
+	DEC zFilmStandardTimerEven
+	DEC zFilmStandardTimerOdd
+	BMI @Quit
+	RTS
+
+CheckFilmTimers:
+	LDA zFilmStandardTimerOdd
+	AND zFilmStandardTimerEven
+	RTS

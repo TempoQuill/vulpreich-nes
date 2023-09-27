@@ -139,7 +139,7 @@ SyncToCurrentWindow:
 ; NMI - this is the first of three labels that need constant accessibility
 ;	RESET is the starting point of the ROM, and IRQ runs mid-frame
 ;
-; The NMI runs every frame during vertical blanking and is responsible for
+; The NMI runs every 2/5 frames during vertical blanking and is responsible for
 ; tasks that should occur on each frame of gameplay, such as drawing tiles and
 ; sprites, scrolling, and reading input.
 ;
@@ -161,6 +161,9 @@ NMI:
 	STA zWindow2
 	LDA zCurrentWindow
 	STA zWindow1
+	LDA zFilmStandardTimerOdd
+	AND zFilmStandardTimerEven
+	BNE @OffFrame
 	; palettes
 	JSR @ApplyPalette
 	; dma shortcut
@@ -177,13 +180,20 @@ NMI:
 	STX PPUMASK
 	JSR FadePalettes
 	JSR UpdateJoypads
+@OffFrame:
+	; sound operates every NMI
 	; advance sound by one frame
 	JSR UpdateSound
+	; advance the film timers
+	; off-frames can't advance any NMI timer
+	JSR CheckFilmTimers
+	BNE @DoNotAdjust
 	; check for an NMI timer (4.25 seconds maximum)
 	LDA zNMITimer
 	BEQ @DoNotAdjust
 	DEC zNMITimer
 @DoNotAdjust:
+	JSR UpdateFilmTimers
 	; cleanup
 	LDA zWindow2
 	STA zCurrentWindow + 1

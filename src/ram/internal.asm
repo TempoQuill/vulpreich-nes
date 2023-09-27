@@ -161,7 +161,11 @@ zTitleScreenTimer:
 zSaveFileExists:
 	.dsb 1
 	.dsb 1
+; Standard film FPS timers
+; Used to skip NMI 3/5 times for 24 FPS
+zFilmStandardTimerOdd:
 	.dsb 1 ; 007c
+zFilmStandardTimerEven:
 	.dsb 1
 	.dsb 1
 	.dsb 1
