@@ -56,11 +56,33 @@ IntroPals:
 IntroSequence:
 	JSR InspiredScreen
 	JSR TitleScreen
+	LDA #<TITLE_SCREEN_DURATION
+	STA zTitleScreenTimer
+	LDA #>TITLE_SCREEN_DURATION
+	STA zTitleScreenTimer + 1
 @Loop:
+	DEC zTitleScreenTimer
 	JSR RunTitleScreen
 	LDA #1
 	JSR DelayFrame_s_
-	JMP @Loop
+	LDA iCurrentMusic
+	BEQ @SongEnds
+	LDA zTitleScreenTimer
+	BNE @Loop
+	DEC zTitleScreenTimer + 1
+	BPL @Loop
+	LDA #MUSIC_NONE
+	STA zMusicQueue
+@SongEnds:
+	LDA #10
+	STA zPalFadeSpeed
+	STA zPalFade
+	LDA zPals
+	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
+	STA zPals
+	LDA #40
+	JSR DelayFrame_s_
+	JMP IntroSequence
 
 InspiredScreen:
 	; we're initializing the PPU
