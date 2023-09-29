@@ -179,7 +179,8 @@ InspiredScreen:
 	; fade in palettes
 	LDA zPals
 	SSB PAL_FADE_F
-	STA zPals ; wait $8f frames (5.96 seconds)
+	STA zPals
+	EOR #$c0 ; wait $4f frames (3.29 seconds)
 	JSR DelayFrame_s_
 	; fade out palettes
 	LDA zPals
