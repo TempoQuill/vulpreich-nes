@@ -149,13 +149,34 @@ FadePalettes:
 InitPals:
 ; despite not being in an NMI, conventional PRG updates apparently work here
 ; initialize palettes
-	JSH PRG_GFXEngine, _InitPals
-	JMP UpdatePRG
+	LDA #15
+	TAX
+	STA zPals, X
+@Loop:
+	DEX
+	STA zPals, X
+	BNE @Loop
+@Quit:
+	RTS
 
 InitNameTable:
 ; initialize nametables + attributes
-	JSH PRG_GFXEngine, _InitNameTable
-	JMP UpdatePRG
+	; set up address
+	LDA PPUSTATUS
+	LDA #>NAMETABLE_MAP_0
+	STA PPUADDR
+	LDA #<NAMETABLE_MAP_0
+	STA PPUADDR ; happens to be the empty tile we need
+	TAX
+	; write for $400 bytes
+@Loop:
+	DEX
+	STA PPUDATA
+	STA PPUDATA
+	STA PPUDATA
+	STA PPUDATA
+	BPL @Loop
+	RTS
 
 GetTextByte:
 ; snatch a byte from zCurrentTextAddress in zTextBank
@@ -393,5 +414,7 @@ UpdateFilmTimers:
 
 CheckFilmTimers:
 	LDA zFilmStandardTimerOdd
-	AND zFilmStandardTimerEven
+	BEQ @OnFrame
+	LDA zFilmStandardTimerEven
+@OnFrame:
 	RTS

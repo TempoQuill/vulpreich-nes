@@ -122,14 +122,19 @@ JumpTable:
 	PHA
 	RTS
 
+; y, tile, attr, x
 HideSprites:
-	SEC
 	LDY #$f8
 	LDX #0
 @Loop:
 	TXA
-	SBC #4
+	CLC
+	ADC #$fc
 	TAX
+	LDA #0
+	STA iVirtualOAM + 3, X
+	STA iVirtualOAM + 2, X
+	STA iVirtualOAM + 1, X
 	TYA
 	STA iVirtualOAM, X
 	TXA

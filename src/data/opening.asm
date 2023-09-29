@@ -1,4 +1,6 @@
 TitleScreenLayout:
+	; Tiles
+	; logo
 	.db $20, $23, $0f
 	.db $7d, $7e, $00, $7f, $80, $81, $00, $82
 	.db $00, $00, $00, $83, $84, $85, $86
@@ -34,12 +36,36 @@ TitleScreenLayout:
 	.db $00, $09, $0a
 	.db $21, $28, $04
 	.db $0b, $0c, $0d, $0e
+	; field
+	.db $21, $b3, $03
+	.db $10, $11, $12
+	.db $21, $d3, $03
+	.db $13, $14, $15
+	.db $21, $f3, $02
+	.db $16, $17
+	.db $22, $00, $60, $0f
+	.db $22, $20, $60, $18
+	.db $22, $40, $60, $19
+	.db $22, $60, $60, $1a
 
-	.db $23, $d1, $06
-	.db $c0, $f0, $f0, $f0, $f0, $30
-
+	; Attributes
+	; ...starring Iggy Reich
+	.db $23, $d0, $48, $f0
+	; field
+	.db $23, $dc, $02
+	.db $88, $22
+	; grass
+	.db $23, $e0, $48, $ff
 	.db $23, $f0, $08
+	; @2024 Tempo Quill
+	; free to air/use when sales end
 	.db $50, $58, $5a, $5a, $5a, $5a, $50, $50
+
+	.db $3f, $10, $10
+	.db $0f, $17, $10, $30
+	.db $0f, $17, $28, $38
+	.db $0f, $02, $16, $39
+	.db $0f, $0c, $0a, $05
 
 	text $2166, "_starring Iggy Reich"
 
@@ -51,7 +77,116 @@ TitleScreenLayout:
 	text_end
 
 BeginningText:
+	.db $3f, $10, $50, $0f
 	text $2142, "_inspired by Doug Tennapel&"
 	text $218b, "CATSCRATCH_"
 	text_end
 
+TitldNTInitData:
+	.db $20, $00, $60, $00
+	.db $20, $20, $60, $00
+	.db $20, $40, $60, $00
+	.db $20, $60, $60, $00
+	.db $20, $80, $60, $00
+	.db $20, $a0, $60, $00
+	.db $20, $c0, $60, $00
+	.db $20, $e0, $60, $00
+	.db $21, $00, $60, $00
+	.db $21, $20, $60, $00
+	.db $21, $40, $60, $00
+	.db $21, $60, $60, $00
+	.db $21, $80, $60, $00
+	.db $21, $a0, $60, $00
+	.db $21, $c0, $60, $00
+	.db $21, $e0, $60, $00
+	.db $22, $00, $60, $00
+	.db $22, $20, $60, $00
+	.db $22, $40, $60, $00
+	.db $22, $60, $60, $00
+	.db $22, $80, $60, $00
+	.db $22, $a0, $60, $00
+	.db $22, $c0, $60, $00
+	.db $22, $e0, $60, $00
+	.db $23, $00, $60, $00
+	.db $23, $20, $60, $00
+	.db $23, $40, $60, $00
+	.db $23, $60, $60, $00
+	.db $23, $80, $60, $00
+	.db $23, $a0, $60, $00
+	.db $23, $c0, $60, $00
+	.db $23, $e0, $60, $00
+TitldNTInitData_END:
+	.db $00
+
+LyricInitStartingData:
+	.db $21, $60, $01, $00
+LyricInitStartingData_END:
+	.db $00
+
+LyricInstaClear:
+	.db $21, $60, $60, $00
+	.db $00
+
+Verse1Line1:
+	text $2164, "He may look like any pet,"
+	text_end
+
+Verse1Line2:
+	text $2164, "like he& another number,"
+	text_end
+
+Verse1Line3:
+	text $2162, "but e<r since his owner fled,"
+	text_end
+
+Verse1Line4:
+	text $2164, "it& never been the same."
+	text_end
+
+Verse1Line5:
+	text $2164, "For now,he*l walk about"
+	text_end
+
+Verse1Line6:
+	text $2161, "and greet his furry neighbors,"
+	text_end
+
+Verse1Line7:
+	text $2162, "because when he& running out,"
+	text_end
+
+Verse1Line8:
+	text $2162, "they*l always know his name."
+	text_end
+
+PrechorusLine1:
+	text $2165, "It& Otis,June and him"
+	text_end
+
+PrechorusLine2:
+	text $2164, "just venturing together."
+	text_end
+
+PrechorusLine3:
+	text $2162, "Who knows the mischief that"
+	text_end
+
+PrechorusLine4:
+	text $2165, "they*l get into today."
+	text_end
+
+ChorusLine1:
+	text $2169, "Come with Iggy"
+	text_end
+
+ChorusLine2:
+	text $2168, "and his friends;"
+	text_end
+
+ChorusLine3:
+	text $2168, "you*l be fawning"
+	text_end
+
+ChorusLine4:
+	text $2167, "until the very end."
+	text_end

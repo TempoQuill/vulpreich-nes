@@ -37,7 +37,7 @@ ResetPPUAddress:
 ;
 UpdateJoypads:
 	JSR ReadJoypads
-	LDY #0
+	LDY #1
 
 @Loop1:
 	; Work around DPCM sample bug,
@@ -46,7 +46,7 @@ UpdateJoypads:
 	STA iBackupInput, Y
 	JSR ReadJoypads
 	DEY
-	BNE @Loop1
+	BPL @Loop1
 
 	LDX #$02
 	LDA zInputBottleNeck
@@ -112,13 +112,15 @@ Start:
 	; music 0
 	TAY ; MUSIC_NONE
 	STY zMusicQueue
+	LDY #PRG_Music0
+	STY zMusicBank
 ; PPUCtrl_Base2000
 ; PPUCtrl_WriteHorizontal
-; PPUCtrl_Sprite1000
-; PPUCtrl_Background0000
+; PPUCtrl_Sprite0000
+; PPUCtrl_Background1000
 ; PPUCtrl_SpriteSize8x8
 ; PPUCtrl_NMIEnabled
-	ORA #PPU_NMI | PPU_OBJECT_TABLE
+	ORA #PPU_NMI | PPU_BACKGROUND_TABLE
 	STA zPPUCtrlMirror
 	STA PPUCTRL
 	; wait one vblank to init main loop
@@ -161,15 +163,16 @@ NMI:
 	STA zWindow2
 	LDA zCurrentWindow
 	STA zWindow1
-	LDA zFilmStandardTimerOdd
-	AND zFilmStandardTimerEven
+	JSR CheckFilmTimers
 	BNE @OffFrame
 	; palettes
 	JSR @ApplyPalette
-	; dma shortcut
 	; Map
 	; tiles
 	JSR UpdatePPUFromBufferWithOptions
+	; dma shortcut
+	LDA #>iVirtualOAM
+	STA OAM_DMA
 	; scroll
 	LDX zPPUCtrlMirror
 	STX PPUCTRL
@@ -287,13 +290,28 @@ RESET:
 	STA MMC5_SND_CHN
 
 	; select the first two CHR banks
-	LDA #CHR_TitleBG
-	STA MMC5_CHRBankSwitch4
-	STA zCHRWindow0
-	LDA #CHR_TitleOBJ
-	STA MMC5_CHRBankSwitch8
-	STA MMC5_CHRBankSwitch12
-	STA zCHRWindow1
+	LDX #CHR_TitleBG
+	STX MMC5_CHRBankSwitch8
+	STX MMC5_CHRBankSwitch12
+	STX zCHRWindow0
+	DEX ; CHR_TitleOBJ
+	STX MMC5_CHRBankSwitch4
+	STX zCHRWindow1
+	TXA
+	; init RAM
+@Loop:
+	; clear RAM
+	DEX
+	STA $0, X
+	STA $100, X
+	STA $200, X
+	STA $300, X
+	STA $400, X
+	STA $500, X
+	STA $600, X
+	STA $700, X
+	STA $5e00, X ; mmc5 RAM
+	BNE @Loop
 
 	; select the starter PRG banks
 	LDA #PRG_Start0
@@ -333,52 +351,6 @@ RESET:
 
 	LDA #MMC5_VMirror
 	STA MMC5_NametableMapping
-	INX
-	TXA
-@Loop:
-	; clear RAM
-	DEX
-	STA $400, X
-	STA $500, X
-	STA $600, X
-	STA $700, X
-	STA $5c00, X ; mmc5 RAM
-	STA $5d00, X
-	STA $5e00, X
-	STA $5f00, X
-	STA $6000, X ; cart RAM
-	STA $6100, X
-	STA $6200, X
-	STA $6300, X
-	STA $6400, X
-	STA $6500, X
-	STA $6600, X
-	STA $6700, X
-	STA $6800, X
-	STA $6900, X
-	STA $6a00, X
-	STA $6b00, X
-	STA $6c00, X
-	STA $6d00, X
-	STA $6e00, X
-	STA $6f00, X
-	STA $7000, X
-	STA $7100, X
-	STA $7200, X
-	STA $7300, X
-	STA $7400, X
-	STA $7500, X
-	STA $7600, X
-	STA $7700, X
-	STA $7800, X
-	STA $7900, X
-	STA $7a00, X
-	STA $7b00, X
-	STA $7c00, X
-	STA $7d00, X
-	STA $7e00, X
-	STA $7f00, X
-	BNE @Loop
 	JMP Start
 
 IRQ:

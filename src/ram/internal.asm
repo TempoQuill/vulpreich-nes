@@ -122,7 +122,6 @@ zPPUScrollXMirror:
 	.dsb 1
 zPPUScrollYMirror:
 	.dsb 1 ; 0058
-zStringXOffset:
 	.dsb 1
 zPalPointer:
 	.dsb 2
@@ -167,9 +166,13 @@ zFilmStandardTimerOdd:
 	.dsb 1 ; 007c
 zFilmStandardTimerEven:
 	.dsb 1
+zLyricsOffset:
 	.dsb 1
+zStringXOffset:
 	.dsb 1
-	.dsb 2 ; 0080
+zStringXConst:
+	.dsb 1 ; 0080
+	.dsb 1
 	.dsb 2
 	.dsb 4 ; 0084
 	.dsb 4 ; 0088
@@ -183,8 +186,9 @@ zFilmStandardTimerEven:
 	.dsb 4 ; 00a8
 	.dsb 4 ; 00ac
 	.dsb 48 ; 00b0
+	.dsb 16 ; 00e0
 zPals:
-	.dsb 32 ; 00e0
+	.dsb 16 ; 00e0
 
 ; section: STACK
 iStack:

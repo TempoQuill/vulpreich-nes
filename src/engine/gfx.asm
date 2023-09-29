@@ -1,33 +1,3 @@
-_InitPals:
-; clear palette RAM
-	LDA #15
-	TAX
-	STA zPals, X
-@Loop:
-	DEX
-	STA zPals, X
-	BNE @Loop
-@Quit:
-	RTS
-
-_InitNameTable:
-; clear a nametable including attributes
-	; set up address
-	LDA #>NAMETABLE_MAP_0
-	STA PPUADDR
-	LDA #<NAMETABLE_MAP_0
-	STA PPUADDR ; happens to be the empty tile we need
-	LDY #>NAMETABLE_AREA
-	LDX #<NAMETABLE_AREA
-	; write for $400 bytes
-@Loop:
-	DEX
-	STA PPUDATA
-	BNE @Loop
-	DEY
-	BPL @Loop
-	RTS
-
 GetNamePointer:
 	; turn cObjectType into index Y
 	LDA cObjectType
