@@ -68,6 +68,8 @@ IntroSequence:
 	STA zPPUDataBufferPointer
 	LDA LyricalPointers + 1
 	STA zPPUDataBufferPointer + 1
+	; initialize sprite animations
+	JSR StartInitializingSprites
 @Loop:
 	DEC zTitleScreenTimer
 	JSR RunTitleScreen
@@ -173,7 +175,7 @@ InspiredScreen:
 	STA zPPUDataBufferPointer + 1
 
 	; sure, we can get the game to show our stuff now
-	LDA #PPU_OBJ | PPU_BG | PPU_OBJ_MASKLIFT | PPU_BG_MASKLIFT
+	LDA #PPU_OBJ | PPU_BG
 	STA PPUMASK
 	STA zPPUMaskMirror
 	; fade in palettes
@@ -268,7 +270,7 @@ TitleScreen:
 	STY zMusicQueue
 
 	; sure, we can get the game to show our stuff now
-	LDA #PPU_OBJ | PPU_BG | PPU_OBJ_MASKLIFT | PPU_BG_MASKLIFT
+	LDA #PPU_OBJ | PPU_BG
 	STA PPUMASK
 	STA zPPUMaskMirror
 
@@ -295,6 +297,8 @@ TitleScreen:
 
 RunTitleScreen:
 	JSR RunLyrics
+	JSR InitNextSprite
+	JSR RunAnimations
 	JSR TryTitleScreenInput
 	BEQ @NoInput
 	DEX
@@ -393,4 +397,287 @@ RunLyrics:
 	CLC
 	ADC zStringXConst
 	STA iStringBuffer + 1
+	RTS
+
+RunAnimations:
+	LDA zFilmStandardTimerOdd
+	BPL LocalObject1Eject
+	JSR RunObject1
+	RTS
+
+LocalObject1Eject:
+	RTS
+
+RunObject1:
+	; did we reach our starting point yet?
+	LDA zTitleScreenTimer + 1
+	CMP zTitleObj1StartingPoint + 1
+	BEQ @Low
+	BCC @AlreadyPassed
+	BCS LocalObject1Eject
+@Low:
+	LDA zTitleScreenTimer
+	CMP zTitleObj1StartingPoint
+	BCS LocalObject1Eject
+@AlreadyPassed:
+	; decrement the title object timer
+	; reset the timer to 4 when branching
+	DEC zTitleObj1Timer
+	BMI @Reset
+	; nab the animation offset
+	LDY zTitleObj1Timer
+	; apply movement and calculate resolution
+	JSR ApplySprite1Movement
+@Logic:
+	; set up the logic
+	LDA (zTitleObj1IndexPointer), Y
+	STA zTitleObj1PointerIndex
+	TAY
+	LDA (zTitleObj1PointerAddresses), Y
+	STA zTitleObj1FramePointer
+	LDA (zTitleObj1PointerAddresses + 2), Y
+	STA zTitleObj1FramePointer + 1
+	LDY zTitleObj1ResTarget
+	DEY
+
+@MainLoop1:
+	; copy data from current resolution to zero
+	JSR CopySprite1DataDescending
+	BPL @MainLoop1
+	; hide sprite data above resolution value
+	; quit if resolution matches its target
+	RTS
+
+@Reset:
+	; loop the pointer every 4 frames
+	LDY #4
+	STY zTitleObj1Timer
+	DEC zTitleObj1Timer
+	DEY
+	BNE @Logic ; always branches
+
+InitIggyAnimation:
+	LDA #<IggyFrames_pointersLO
+	STA zTitleObj1PointerAddresses
+	LDA #>IggyFrames_pointersLO
+	STA zTitleObj1PointerAddresses + 1
+	LDA #<IggyFrames_pointersHI
+	STA zTitleObj1PointerAddresses + 2
+	LDA #>IggyFrames_pointersHI
+	STA zTitleObj1PointerAddresses + 3
+	LDA #IggyFrames_IndexSequence_START - IggyFrames_IndexSequence
+	STA zTitleObj1Timer
+	LDA #>IggyFrames_IndexSequence
+	STA zTitleObj1IndexPointer + 1
+	LDA #<IggyFrames_IndexSequence
+	STA zTitleObj1IndexPointer
+	LDA #>IggyFrames_Movement
+	STA zTitleObj1MovementPointer + 1
+	LDA #<IggyFrames_Movement
+	STA zTitleObj1MovementPointer
+	LDA #>TITLE_SCREEN_IGGY_ENTRANCE_1 ; $08
+	STA zTitleObj1StartingPoint + 1
+	LDA #<TITLE_SCREEN_IGGY_ENTRANCE_1 ; $1f
+	STA zTitleObj1StartingPoint
+	LDA #OAM_32_32_WIDTH
+	STA zTitleObj1ResTarget
+	ORA #$80
+	STA zTitleObj1Res
+	LDA #$6f
+	STA zTitleObj1YCoord
+	LDA #TITLE_IGGY_OFFSET
+	STA zTitleObj1OAMPointer
+	LDA #$e1
+	STA zTitleObj1XCoord
+	LDA #0
+	STA zTitleObj1PointerIndex
+	STA zTitleObj1FramePointer
+	STA zTitleObj1FramePointer + 1
+	LDA #>iVirtualOAM
+	STA zTitleObj1OAMPointer + 1
+	RTS
+
+InitIggy2Animation:
+	LDA #<IggyFrames_pointersLO
+	STA zTitleObj1PointerAddresses
+	LDA #>IggyFrames_pointersLO
+	STA zTitleObj1PointerAddresses + 1
+	LDA #<IggyFrames_pointersHI
+	STA zTitleObj1PointerAddresses + 2
+	LDA #>IggyFrames_pointersHI
+	STA zTitleObj1PointerAddresses + 3
+	LDA #IggyFrames_LeftRunningCycle_START - IggyFrames_LeftRunningCycle
+	STA zTitleObj1Timer
+	LDA #>IggyFrames_LeftRunningCycle
+	STA zTitleObj1IndexPointer + 1
+	LDA #<IggyFrames_LeftRunningCycle
+	STA zTitleObj1IndexPointer
+	LDA #>IggyFrames_LeftMovement
+	STA zTitleObj1MovementPointer + 1
+	LDA #<IggyFrames_LeftMovement
+	STA zTitleObj1MovementPointer
+	LDA #>TITLE_SCREEN_IGGY_ENTRANCE_2 ; $01
+	STA zTitleObj1StartingPoint + 1
+	LDA #<TITLE_SCREEN_IGGY_ENTRANCE_2 ; $fc
+	STA zTitleObj1StartingPoint
+	LDA #OAM_32_32_WIDTH
+	STA zTitleObj1ResTarget
+	LDA #$6f
+	STA zTitleObj1YCoord
+	LDA #TITLE_IGGY_OFFSET
+	STA zTitleObj1OAMPointer
+	LDA #$FF
+	STA zTitleObj1XCoord
+	LDA #0
+	STA zTitleObj1PointerIndex
+	STA zTitleObj1FramePointer
+	STA zTitleObj1FramePointer + 1
+	STA zTitleObj1Res
+	LDA #>iVirtualOAM
+	STA zTitleObj1OAMPointer + 1
+	RTS
+
+InitCrowAnimation:
+	RTS
+
+InitCrow2Animation:
+	RTS
+
+InitJuneAnimation:
+	RTS
+
+InitOtisAnimation:
+	RTS
+
+ClearTitleAnim1Area:
+	LDA #0
+	LDY #zTitleObj1End - zTitleObj1
+@Loop:
+	DEY
+	STA zTitleObj1, Y
+	BPL @Loop
+	RTS
+
+ClearTitleAnim2Area:
+	LDA #0
+	LDY #zTitleObj2End - zTitleObj2
+@Loop:
+	DEY
+	STA zTitleObj2, Y
+	BPL @Loop
+	RTS
+
+Anim2InitPointersLO:
+	dl ClearTitleAnim2Area
+
+Anim2InitPointersHI:
+	dh ClearTitleAnim2Area
+
+Anim1InitPointersLO:
+	dl InitIggyAnimation
+	dl ClearTitleAnim1Area
+
+Anim1InitPointersHI:
+	dh InitIggyAnimation
+	dh ClearTitleAnim1Area
+
+CopySprite1DataDescending:
+	; byte 3 - x coordinate
+	LDA (zTitleObj1FramePointer), Y
+	CLC
+	ADC zTitleObj1XCoord
+	STA (zTitleObj1OAMPointer), Y
+	DEY
+	; byte 2 - tile attribute (palette, reversal, priority)
+	LDA (zTitleObj1FramePointer), Y
+	STA (zTitleObj1OAMPointer), Y
+	DEY
+	; byte 1 - tile pair number & $FE (bit 0 determines the current bank)
+	LDA (zTitleObj1FramePointer), Y
+	STA (zTitleObj1OAMPointer), Y
+	DEY
+	; byte 0 - y coordinate
+	LDA (zTitleObj1FramePointer), Y
+	CLC
+	ADC zTitleObj1YCoord
+	STA (zTitleObj1OAMPointer), Y
+	DEY
+	RTS
+
+ApplySprite1Movement:
+	; get change in movement
+	LDA (zTitleObj1MovementPointer), Y
+	CLC
+	ADC zTitleObj1XCoord
+	STA zTitleObj1XCoord
+	RTS
+
+InitNextSprite:
+	LDA ztitleObjFinished
+	BEQ @Quit
+	LDY #0
+	STY ztitleObjFinished
+	CMP #2
+	BEQ @Obj2
+	BCS @BothSprites
+@Obj1:
+	INC zTitle1ObjIndex
+	LDY zTitle1ObjIndex
+	BPL InitTitleObj1
+@Obj2:
+	INC zTitle2ObjIndex
+	LDY zTitle2ObjIndex
+	BPL InitTitleObj2
+@BothSprites:
+	INC zTitle1ObjIndex
+	INC zTitle2ObjIndex
+	LDY zTitle1ObjIndex
+	LDX zTitle2ObjIndex
+	BPL InitSprites
+@Quit:
+	RTS
+
+InitTitleObj1:
+	LDA Anim1InitPointersLO, Y
+	STA zTitleObj1InitPointer
+	LDA Anim1InitPointersHI, Y
+	STA zTitleObj1InitPointer + 1
+	JMP (zTitleObj1InitPointer)
+
+InitTitleObj2:
+	LDA Anim2InitPointersLO, Y
+	STA zTitleObj2InitPointer
+	LDA Anim2InitPointersHI, Y
+	STA zTitleObj2InitPointer + 1
+InitTitleObj2Preset:
+	JMP (zTitleObj2InitPointer)
+
+InitSprites:
+	LDA Anim1InitPointersLO, Y
+	STA zTitleObj1InitPointer
+	LDA Anim1InitPointersHI, Y
+	STA zTitleObj1InitPointer + 1
+	LDA Anim2InitPointersLO, X
+	STA zTitleObj2InitPointer
+	LDA Anim2InitPointersHI, X
+	STA zTitleObj2InitPointer + 1
+	JSR InitTitleObj2Preset
+	JMP (zTitleObj1InitPointer)
+
+StartInitializingSprites:
+	LDA #3
+	STA ztitleObjFinished
+	LDA #$ff
+	STA zTitle1ObjIndex
+	STA zTitle2ObjIndex
+	TAY
+	TAX
+	LDA Anim1InitPointersLO - $ff, Y
+	STA zTitleObj1InitPointer
+	LDA Anim1InitPointersHI - $ff, Y
+	STA zTitleObj1InitPointer + 1
+	LDA Anim2InitPointersLO - $ff, X
+	STA zTitleObj2InitPointer
+	LDA Anim2InitPointersHI - $ff, X
+	STA zTitleObj2InitPointer + 1
 	RTS

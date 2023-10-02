@@ -60,4 +60,13 @@ PPU_RED          = $20
 PPU_GREEN        = $40
 PPU_BLUE         = $80
 
+OAM_PALETTE_MASK = %00000011
+OAM_PAL_0 = 0
+OAM_PAL_1 = 1
+OAM_PAL_2 = 2
+OAM_PAL_3 = 3
+OAM_BG_PRIORITY = $20
+OAM_REV_X = $40
+OAM_REV_Y = $80
+
 .ende

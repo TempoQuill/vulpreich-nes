@@ -37,16 +37,16 @@ TitleScreenLayout:
 	.db $21, $28, $04
 	.db $0b, $0c, $0d, $0e
 	; field
-	.db $21, $b3, $03
+	.db $21, $b3, $03 ; Crow's Y coord + $80
 	.db $10, $11, $12
 	.db $21, $d3, $03
 	.db $13, $14, $15
 	.db $21, $f3, $02
 	.db $16, $17
 	.db $22, $00, $60, $0f
-	.db $22, $20, $60, $18
-	.db $22, $40, $60, $19
-	.db $22, $60, $60, $1a
+	.db $22, $20, $60, $18 ; Otis' Y Coord + $80
+	.db $22, $40, $60, $19 ; Iggy's Y Coord + $80
+	.db $22, $60, $60, $1a ; June's Y Coord + $80
 
 	; Attributes
 	; ...starring Iggy Reich
@@ -61,11 +61,12 @@ TitleScreenLayout:
 	; free to air/use when sales end
 	.db $50, $58, $5a, $5a, $5a, $5a, $50, $50
 
+	; sprites
 	.db $3f, $10, $10
-	.db $0f, $17, $10, $30
-	.db $0f, $17, $28, $38
-	.db $0f, $02, $16, $39
-	.db $0f, $0c, $0a, $05
+	.db $0f, $07, $10, $30 ; Iggy
+	.db $0f, $08, $28, $38 ; June
+	.db $0f, $02, $16, $39 ; Otis
+	.db $0f, $0c, $0a, $05 ; crow
 
 	text $2166, "_starring Iggy Reich"
 

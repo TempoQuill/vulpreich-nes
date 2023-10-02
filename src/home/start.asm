@@ -16,6 +16,8 @@ UpdateCHR:
 
 	LDA zCHRWindow1
 	STA MMC5_CHRBankSwitch8  ; 1000-1fff
+
+	LDA zCHRWindow2
 	STA MMC5_CHRBankSwitch12 ; 1000-1fff, 0000-0fff
 
 	RTS
@@ -109,8 +111,7 @@ Start:
 	LDA #0
 	STA PPUMASK
 	STA zPPUMaskMirror
-	; music 0
-	TAY ; MUSIC_NONE
+	TAY
 	STY zMusicQueue
 	LDY #PRG_Music0
 	STY zMusicBank
@@ -291,12 +292,14 @@ RESET:
 
 	; select the first two CHR banks
 	LDX #CHR_TitleBG
-	STX MMC5_CHRBankSwitch8
 	STX MMC5_CHRBankSwitch12
-	STX zCHRWindow0
-	DEX ; CHR_TitleOBJ
-	STX MMC5_CHRBankSwitch4
+	STX zCHRWindow2
+	DEX ; CHR_TitleOBJ2
+	STX MMC5_CHRBankSwitch8
 	STX zCHRWindow1
+	DEX ; CHR_TitleOBJ1
+	STX MMC5_CHRBankSwitch4
+	STX zCHRWindow0
 	TXA
 	; init RAM
 @Loop:

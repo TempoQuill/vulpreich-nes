@@ -126,8 +126,8 @@ JumpTable:
 HideSprites:
 	LDY #$f8
 	LDX #0
-@Loop:
 	TXA
+@Loop:
 	CLC
 	ADC #$fc
 	TAX

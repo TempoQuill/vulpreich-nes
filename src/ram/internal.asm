@@ -61,9 +61,7 @@ zTempo:
 ; backup registers, banks, addresses, and buffers
 zNMITimer:
 	.dsb 1
-zCHRWindow0:
 	.dsb 1 ; 0024
-zCHRWindow1:
 	.dsb 1
 zBackupA:
 	.dsb 1
@@ -88,8 +86,13 @@ zBackupWindow:
 	.dsb 2 ; 0030
 zPPUDataBufferPointer:
 	.dsb 2
-	.dsb 2 ; 0034
-	.dsb 2
+	.dsb 1 ; 0034
+zCHRWindow0:
+	.dsb 1
+zCHRWindow1:
+	.dsb 1
+zCHRWindow2:
+	.dsb 1
 
 zAuxAddresses: ; back up 4 at a time
 ; 0: audio
@@ -172,19 +175,84 @@ zStringXOffset:
 	.dsb 1
 zStringXConst:
 	.dsb 1 ; 0080
+; section: title screen animation variables
+; only allows 2 objects due to the 8-sprite per scanline limitation.
+; ANIMATION QUEUE 1 - Iggy / Otis
+; 0     - Frames left before looping
+; 1     - Pointer index
+; 2     - X Coordinate
+; 3-4   - Starting point
+; 5-6   - Frame pointer
+; 7-8   - Index pointer
+; 9-13  - Pointer addresses (LO and HI)
+; 14     - Y Coordinate - only changes on per sprite basis
+; 15    - Sprite resolution - only changes when sprites enter/exit the screen
+; 16	- Sprite resolution base - only changes on per sprite basis
+; 17-18 - OAM pointer - $07xx
+; 19-20 - Movement pointer
+zTitleObj1:
+zTitleObj1Timer:
 	.dsb 1
+zTitleObj1PointerIndex:
+	.dsb 1
+zTitleObj1XCoord:
+	.dsb 1
+zTitleObj1StartingPoint:
+	.dsb 2 ; 0084
+zTitleObj1FramePointer:
 	.dsb 2
-	.dsb 4 ; 0084
-	.dsb 4 ; 0088
-	.dsb 4 ; 008c
-	.dsb 4 ; 0090
-	.dsb 4 ; 0094
-	.dsb 4 ; 0098
+zTitleObj1IndexPointer:
+	.dsb 2 ; 0088
+zTitleObj1PointerAddresses:
+	.dsb 4
+zTitleObj1YCoord:
+	.dsb 1
+zTitleObj1Res:
+	.dsb 1
+zTitleObj1ResTarget:
+	.dsb 1 ; 0090
+zTitleObj1OAMPointer:
+	.dsb 2
+zTitleObj1MovementPointer:
+	.dsb 2
+zTitleObj1End:
+; ANIMATION QUEUE 2 - June / the crow
+zTitleObj2:
+zTitleObj2Timer:
+	.dsb 1
+zTitleObj2PointerIndex:
+	.dsb 1
+zTitleObj2XCoord:
+	.dsb 1
+zTitleObj2StartingPoint:
+	.dsb 2 ; 0098
+zTitleObj2FramePointer:
+	.dsb 2
+zTitleObj2PointerAddresses:
 	.dsb 4 ; 009c
-	.dsb 4 ; 00a0
-	.dsb 4 ; 00a4
-	.dsb 4 ; 00a8
-	.dsb 4 ; 00ac
+zTitleObj2IndexPointer:
+	.dsb 2 ; 00a0
+zTitleObj2YCoord:
+	.dsb 1
+zTitleObj2Res:
+	.dsb 1
+zTitleObj2ResTarget:
+	.dsb 1 ; 00a4
+zTitleObj2OAMPointer:
+	.dsb 2
+zTitleObj2MovementPointer:
+	.dsb 2
+zTitleObj2End:
+ztitleObjFinished:
+	.dsb 1
+zTitle1ObjIndex:
+	.dsb 1
+zTitle2ObjIndex:
+	.dsb 1
+zTitleObj1InitPointer:
+	.dsb 2 ; 00ac
+zTitleObj2InitPointer:
+	.dsb 2
 	.dsb 48 ; 00b0
 	.dsb 16 ; 00e0
 zPals:
