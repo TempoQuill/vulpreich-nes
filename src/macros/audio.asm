@@ -115,3 +115,13 @@ ENDM
 MACRO smp_note id
 	.db id * 2
 ENDM
+
+MACRO sfx_sweep period, dir, step
+p = period << 4
+d = dir << 3
+	.db $80 + p + d + step
+ENDM
+
+MACRO sfx_note raw_pitch
+	.dw $800 + raw_pitch
+ENDM

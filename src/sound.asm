@@ -25,3 +25,7 @@
 
 ; DPCM sound effect data
 .include "src/sound/dpcm-sfx-data.asm"
+
+; Pulse 2 sound effect data
+.include "src/sound/pulse-2-sfx-pointers.asm"
+.include "src/sound/pulse-2-sfx.asm"

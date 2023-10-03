@@ -153,8 +153,8 @@ IggyFrames_12_data:
 	nesst_meta   0, 16, $76, OAM_REV_X
 	nesst_meta   8,  0, $5e, OAM_REV_X
 	nesst_meta   8, 16, $74, OAM_REV_X
-	nesst_meta  16, 16, $72, OAM_REV_X
 	nesst_meta  16,  0, $6a, OAM_REV_X
+	nesst_meta  16, 16, $72, OAM_REV_X
 	nesst_meta  24,  0, $68, OAM_REV_X
 	nesst_meta  24, 16, $7e, OAM_REV_X
 

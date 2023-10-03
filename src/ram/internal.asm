@@ -40,17 +40,19 @@ zCurrentDPCMSFX:
 zCurrentNoiseSFX:
 	.dsb 1
 	.dsb 1
-zMusicQueue:
+zCurrentPulse2SFX:
 	.dsb 1 ; 0018
+zMusicQueue:
+	.dsb 1
 zDPCMSFX:
 	.dsb 1
 zNoiseDrumSFX:
 	.dsb 1
-	.dsb 1
 	.dsb 1 ; 001c
+zPulse2SFX:
 	.dsb 1
-	.dsb 1
-	.dsb 1
+zPulse1IndexPointer:
+	.dsb 2
 zMusicBank:
 	.dsb 1 ; 0020
 zSweep:
@@ -328,14 +330,16 @@ iMusicPulse2InstrumentOffset:
 	.dsb 1
 iMusicPulse1InstrumentOffset:
 	.dsb 1
+iTitleInputIndex:
+	.dsb 1 ; 0224
+iPulse2SFXVolume:
+	.dsb 2
+iPulse2SFXOffset:
+	.dsb 1
+iPulse2SFXSweep:
+	.dsb 1 ; 0225
 ; section: input
 iBackupInput:
-	.dsb 1 ; 0224
-iTitleInputIndex:
-	.dsb 1
-	.dsb 1
-	.dsb 1
-	.dsb 1 ; 0228
 	.dsb 1
 	.dsb 1
 	.dsb 1

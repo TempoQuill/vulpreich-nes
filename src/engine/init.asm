@@ -347,7 +347,6 @@ TryTitleScreenInput:
 	BNE @Ret
 	LDX #0
 @Ret:
-	STX iTitleInputIndex
 	TXA
 	RTS
 
@@ -403,6 +402,7 @@ RunAnimations:
 	LDA zFilmStandardTimerOdd
 	BPL LocalObject1Eject
 	JSR RunObject1
+	JSR RunSoundQueues
 	RTS
 
 LocalObject1Eject:
@@ -681,3 +681,45 @@ StartInitializingSprites:
 	LDA Anim2InitPointersHI - $ff, X
 	STA zTitleObj2InitPointer + 1
 	RTS
+
+RunSoundQueues:
+	LDA zTitleObj1IndexPointer
+	CMP #<IggyFrames_IndexSequence
+	BNE @Bail
+	LDA zTitleObj1IndexPointer + 1
+	CMP #>IggyFrames_IndexSequence
+	BNE @Bail
+	LDY zTitleObj1PointerIndex
+	LDA TitleScreenIggySoundQueues, Y
+	TAY
+	LDA zCurrentDPCMSFX
+	BNE @Bail
+	JSR PlaySFX
+@Bail:
+	RTS
+
+TitleScreenIggySoundQueues:
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db SFX_STOP
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db SFX_IGGY_TALKING
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db 0

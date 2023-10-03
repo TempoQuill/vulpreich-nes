@@ -5,16 +5,158 @@ StartProcessingSoundQueue:
 	LDA #$FF
 	STA JOY2
 
+	JSR ProcessPulse2SFX
 	JSR ProcessNoiseQueue
 	JSR ProcessDPCMQueue
 	JSR ProcessMusicQueue
 
 	; Reset queues
 	LDA #$00
+	STA zPulse2SFX
 	STA zNoiseDrumSFX
 	STA zDPCMSFX
 	STA zMusicQueue
 	RTS
+
+ProcessPulse2SFX:
+	LDA zPulse2SFX
+	BNE ProcessPulse2SFX_Part2
+	LDA zCurrentPulse2SFX
+	BNE ProcessPulse2SFX_Part3
+ProcessPulse2SFX_Exit:
+	RTS
+
+ProcessPulse2SFX_Part2:
+	STA zCurrentPulse2SFX
+	LDY #0
+	STY iPulse2SFXOffset
+	STY iPulse2SFXSweep
+	TAY
+	DEY
+
+ProcessPulse2SFX_DesignatePointer:
+	LDA Pulse2SFXVolumes, Y
+	STA iPulse2SFXVolume
+	LDA Pulse2SFXEnvelopes, Y
+	STA iPulse2SFXVolume + 1
+	LDA Pulse2SFXPointersLO, Y
+	STA zPulse1IndexPointer
+	LDA Pulse2SFXPointersHI, Y
+	STA zPulse1IndexPointer + 1
+
+ProcessPulse2SFX_Part3:
+	LDY iPulse2SFXOffset
+	LDA (zPulse1IndexPointer), Y
+	BEQ ProcessPulse2SFX_End
+	BPL ProcessPulse2SFX_Note
+
+	INY
+	STA iPulse2SFXSweep
+	LDA (zPulse1IndexPointer), Y
+
+ProcessPulse2SFX_Note:
+	INY
+	CMP #$40
+	BCS ProcessPulse2SFX_Tie
+	CMP #$08
+	LDX #$10
+	BCC ProcessPulse2SFX_Volume
+	LDX iPulse2SFXVolume
+ProcessPulse2SFX_Volume:
+	STX SQ2_ENV
+	TAX
+	LDA (zPulse1IndexPointer), Y
+	INY
+	STA SQ2_LO
+	STX SQ2_HI
+	LDA SND_CHN
+	ORA #$0F
+	STA SND_CHN
+	CPX #$08
+	BCC ProcessPulse2SFX_Tie
+	LDA iPulse2SFXSweep
+	STA SQ2_SWEEP
+	LDA iPulse2SFXVolume + 1
+	STA SQ2_ENV
+ProcessPulse2SFX_Tie:
+	STY iPulse2SFXOffset
+	RTS
+
+ProcessPulse2SFX_End:
+	STA zCurrentPulse2SFX
+	STA iPulse2SFXSweep
+	STA zPulse1IndexPointer
+	STA zPulse1IndexPointer + 1
+	STA iPulse2SFXOffset
+	LDA #$10
+	STX SQ2_ENV
+	LDA #0
+	STA SQ2_LO
+	STA SQ2_HI
+	STA SQ2_SWEEP
+	RTS
+
+Pulse2SFXVolumes:
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $9f
+
+Pulse2SFXEnvelopes:
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $00
+	.db $80
 
 ;
 ; Noise Channel SFX / Percussion Queue
@@ -394,6 +536,9 @@ StopMusic:
 	STA SQ1_LO
 	STA SQ1_SWEEP
 
+	LDX zCurrentPulse2SFX
+	BNE ClearChannelTriangle
+
 	LDA #$10
 	STA SQ2_ENV
 	LDA #$00
@@ -401,6 +546,7 @@ StopMusic:
 	STA SQ2_LO
 	STA SQ2_SWEEP
 
+ClearChannelTriangle:
 	STA TRI_LINEAR
 	STA TRI_HI
 	STA TRI_LO
@@ -446,6 +592,8 @@ ProcessMusicQueue_Square2Patch:
 
 ProcessMusicQueue_Square2Note:
 ; + = note
+	LDX zCurrentPulse2SFX
+	BNE ProcessMusicQueue_Square2ContinueNote
 
 	; We're clear! Play the note!
 	LDX #$04
@@ -467,6 +615,8 @@ ProcessMusicQueue_Square2UpdateNoteOffset:
 ;   Y = sweep
 	STX SQ2_ENV
 	STY SQ2_SWEEP
+
+ProcessMusicQueue_Square2ContinueNote:
 	; set note length
 	LDA iMusicPulse2NoteSubFrames
 	CLC
@@ -478,6 +628,9 @@ ProcessMusicQueue_Square2UpdateNoteOffset:
 
 ProcessMusicQueue_Square2SustainNote:
 	; note update
+	; SFX playing?  If yes, skip to updating Pulse 1
+	LDX zCurrentPulse2SFX
+	BNE ProcessMusicQueue_Square1
 
 ProcessMusicQueue_LoadSquare2InstrumentOffset:
 	; load isntrument offset
