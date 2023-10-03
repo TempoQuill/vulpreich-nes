@@ -35,7 +35,16 @@ TITLE_CROW_OFFSET:
 TITLE_OAM_TOTAL_WIDTH:
 .ende
 
-TITLE_SCREEN_IGGY_ENTRANCE_1 = $81f
+TITLE_SCREEN_IGGY_ENTRANCE_1 = $813
 TITLE_SCREEN_IGGY_ENTRANCE_2 = $1fc
 
-ENTER_EXIT_DIR_F = %10000000
+; zTitleObj1ScreenEdgeFlags
+; off = $00
+; on = $01
+; left = $00
+; right = $40
+; enter = $00
+; exit = $80
+ENTER_EXIT_ACT_F = 0
+ENTER_EXIT_DIR_F = 6
+ENTER_EXIT_F     = 7

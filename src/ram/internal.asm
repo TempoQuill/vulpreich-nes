@@ -188,8 +188,8 @@ zStringXConst:
 ; 7-8   - Index pointer
 ; 9-13  - Pointer addresses (LO and HI)
 ; 14     - Y Coordinate - only changes on per sprite basis
-; 15    - Sprite resolution - only changes when sprites enter/exit the screen
-; 16	- Sprite resolution base - only changes on per sprite basis
+; 15    - Sprite flags - only changes when sprites enter/exit the screen
+; 16	- Sprite resolution - only changes on per sprite basis
 ; 17-18 - OAM pointer - $07xx
 ; 19-20 - Movement pointer
 zTitleObj1:
@@ -209,9 +209,9 @@ zTitleObj1PointerAddresses:
 	.dsb 4
 zTitleObj1YCoord:
 	.dsb 1
-zTitleObj1Res:
+zTitleObj1ScreenEdgeFlags:
 	.dsb 1
-zTitleObj1ResTarget:
+zTitleObj1Resolution:
 	.dsb 1 ; 0090
 zTitleObj1OAMPointer:
 	.dsb 2
@@ -236,9 +236,9 @@ zTitleObj2IndexPointer:
 	.dsb 2 ; 00a0
 zTitleObj2YCoord:
 	.dsb 1
-zTitleObj2Res:
+zTitleObj2ScreenEdgeFlags:
 	.dsb 1
-zTitleObj2ResTarget:
+zTitleObj2Resolution:
 	.dsb 1 ; 00a4
 zTitleObj2OAMPointer:
 	.dsb 2

@@ -437,15 +437,15 @@ RunObject1:
 	STA zTitleObj1FramePointer
 	LDA (zTitleObj1PointerAddresses + 2), Y
 	STA zTitleObj1FramePointer + 1
-	LDY zTitleObj1ResTarget
+	LDY zTitleObj1Resolution
 	DEY
 
 @MainLoop1:
 	; copy data from current resolution to zero
 	JSR CopySprite1DataDescending
 	BPL @MainLoop1
-	; hide sprite data above resolution value
-	; quit if resolution matches its target
+	JSR IsAtEdge_TitleOBJ1
+	BCS @On
 	RTS
 
 @Reset:
@@ -455,6 +455,109 @@ RunObject1:
 	DEC zTitleObj1Timer
 	DEY
 	BNE @Logic ; always branches
+
+@On:
+	LDA zTitleObj1XCoord
+	AND #$18
+	SBC zTitleObj1Resolution
+	EOR #$ff
+	TAY
+	INY
+	LDA #$ff
+	BIT zTitleObj1ScreenEdgeFlags
+	BMI @Entering
+	CLC
+	LDA zTitleObj1XCoord
+	ADC zTitleObj1Resolution
+	BCS @Exiting
+	JMP ClearSprite1
+@Exiting:
+	LDA #$ff
+	BIT zTitleObj1ScreenEdgeFlags
+	BVS @Entering
+	JMP Sprite1ExitMask
+@Entering:
+	BVS @Exiting
+	JMP Sprite1EntranceMask
+
+IsAtEdge_TitleOBJ1:
+; input:
+; c = activity
+; v = direction
+; s = action
+; output:
+; c = 0 - off, not at edge yet | on, cleared the edge
+; c = 1 - on,  still on edge   | off, entered the edge
+	LDA zTitleObj1ScreenEdgeFlags
+	LSR A
+	BCC @Off
+	AND #%00000001
+	BNE @Clear
+	LDA zTitleObj1XCoord
+	CLC
+	ADC zTitleObj1Resolution
+	BCS @Eject
+	LDA zTitleObj1ScreenEdgeFlags
+	BPL @Done
+	EOR #1 << ENTER_EXIT_ACT_F
+	STA zTitleObj1ScreenEdgeFlags
+	RTS
+
+@Clear:
+	LDA #0
+	STA zTitleObj1ScreenEdgeFlags
+	RTS
+
+@Done:
+	LDA #%00000011
+	STA zTitleObj1ScreenEdgeFlags
+@Eject:
+	RTS
+
+@Off:
+	LDA zTitleObj1XCoord
+	CLC
+	ADC zTitleObj1Resolution
+	BCC @Eject
+	LDA zTitleObj1ScreenEdgeFlags
+	EOR #1 << ENTER_EXIT_ACT_F | 1 << ENTER_EXIT_F
+	STA zTitleObj1ScreenEdgeFlags
+	RTS
+
+Sprite1EntranceMask:
+ClearObj1:
+	LDA #0
+	DEY
+	STA (zTitleObj1OAMPointer), Y
+	DEY
+	STA (zTitleObj1OAMPointer), Y
+	DEY
+	STA (zTitleObj1OAMPointer), Y
+	LDA #$F8
+	DEY
+	STA (zTitleObj1OAMPointer), Y
+	BPL Sprite1EntranceMask
+	RTS
+
+Sprite1ExitMask:
+	LDA #$F8
+	INY
+	STA (zTitleObj1OAMPointer), Y
+	LDA #0
+	INY
+	STA (zTitleObj1OAMPointer), Y
+	INY
+	STA (zTitleObj1OAMPointer), Y
+	INY
+	STA (zTitleObj1OAMPointer), Y
+	CPY zTitleObj1Resolution
+	BCC Sprite1ExitMask
+	RTS
+
+ClearSprite1:
+	INC ztitleObjFinished
+	LDY #$20
+	BNE ClearObj1
 
 InitIggyAnimation:
 	LDA #<IggyFrames_pointersLO
@@ -480,9 +583,11 @@ InitIggyAnimation:
 	LDA #<TITLE_SCREEN_IGGY_ENTRANCE_1 ; $1f
 	STA zTitleObj1StartingPoint
 	LDA #OAM_32_32_WIDTH
-	STA zTitleObj1ResTarget
-	ORA #$80
-	STA zTitleObj1Res
+	STA zTitleObj1Resolution
+	; entering from the left
+	; but movement should already take care of that
+	LDA #1 << ENTER_EXIT_ACT_F | 1 << ENTER_EXIT_F
+	STA zTitleObj1ScreenEdgeFlags
 	LDA #$6f
 	STA zTitleObj1YCoord
 	LDA #TITLE_IGGY_OFFSET
@@ -521,7 +626,10 @@ InitIggy2Animation:
 	LDA #<TITLE_SCREEN_IGGY_ENTRANCE_2 ; $fc
 	STA zTitleObj1StartingPoint
 	LDA #OAM_32_32_WIDTH
-	STA zTitleObj1ResTarget
+	STA zTitleObj1Resolution
+	; entering from the right
+	LDA #1 << ENTER_EXIT_ACT_F | 1 << ENTER_EXIT_DIR_F
+	STA zTitleObj1ScreenEdgeFlags
 	LDA #$6f
 	STA zTitleObj1YCoord
 	LDA #TITLE_IGGY_OFFSET
@@ -532,7 +640,6 @@ InitIggy2Animation:
 	STA zTitleObj1PointerIndex
 	STA zTitleObj1FramePointer
 	STA zTitleObj1FramePointer + 1
-	STA zTitleObj1Res
 	LDA #>iVirtualOAM
 	STA zTitleObj1OAMPointer + 1
 	RTS
@@ -610,6 +717,19 @@ ApplySprite1Movement:
 	CLC
 	ADC zTitleObj1XCoord
 	STA zTitleObj1XCoord
+	; determine which direction we're going
+	LDA (zTitleObj1MovementPointer), Y
+	BPL @Left
+	; right = 1
+	LDA zTitleObj1ScreenEdgeFlags
+	SSB ENTER_EXIT_DIR_F
+	STA zTitleObj1ScreenEdgeFlags
+	RTS
+@Left:
+	; left = 0
+	LDA zTitleObj1ScreenEdgeFlags
+	RSB ENTER_EXIT_DIR_F
+	STA zTitleObj1ScreenEdgeFlags
 	RTS
 
 InitNextSprite:
