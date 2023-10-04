@@ -40,8 +40,6 @@ IFNDEF NSF_FILE
 	.include "src/start.asm"
 	.pad $c000, $00
 	.pad $e000, $00 ; needs to be blank
-ELSE
-	.include "src/home/nsf.asm"
 ENDIF
 
 ; bank 03 - sound engine
@@ -138,5 +136,8 @@ IFNDEF NSF_FILE
 	.include "src/home.asm"
 
 	.include "src/chr.asm"
+ELSE
+	.base $e000
+	.include "src/home/nsf.asm"
 ENDIF
 

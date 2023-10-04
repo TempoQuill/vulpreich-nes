@@ -255,7 +255,13 @@ zTitleObj1InitPointer:
 	.dsb 2 ; 00ac
 zTitleObj2InitPointer:
 	.dsb 2
-	.dsb 48 ; 00b0
+zTitleObjLoopPoint1:
+	.dsb 1 ; 00b0
+zTitleObjLoopPoint2:
+	.dsb 1
+	.dsb 1
+	.dsb 1
+	.dsb 44 ; 00b4
 zPals:
 	.dsb 32 ; 00e0
 

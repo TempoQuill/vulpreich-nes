@@ -5,3 +5,4 @@
 .include "src/data/opening.asm"
 .include "src/data/title-lyrics.asm"
 .include "src/data/title-iggy-sprite.asm"
+.include "src/data/title-otis-sprite.asm"

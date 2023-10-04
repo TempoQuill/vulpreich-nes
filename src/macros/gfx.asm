@@ -11,6 +11,10 @@ MACRO text_end
 	.db text_end_cmd
 ENDM
 
+MACRO nesst_meta x, y, tile, attr
+	.db y, tile, attr, x
+ENDM
+
 MACRO next text
 	.db text_next_cmd, text
 ENDM

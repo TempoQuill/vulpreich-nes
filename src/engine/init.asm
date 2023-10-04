@@ -450,7 +450,7 @@ RunObject1:
 
 @Reset:
 	; loop the pointer every 4 frames
-	LDY #4
+	LDY zTitleObjLoopPoint1
 	STY zTitleObj1Timer
 	DEC zTitleObj1Timer
 	DEY
@@ -589,25 +589,13 @@ InitIggyAnimation:
 	STA zTitleObj1StartingPoint + 1
 	LDA #<TITLE_SCREEN_IGGY_ENTRANCE_1 ; $1f
 	STA zTitleObj1StartingPoint
-	LDA #OAM_32_32_WIDTH
-	STA zTitleObj1Resolution
-	; entering from the left
-	; but movement should already take care of that
-	LDA #1 << ENTER_EXIT_ACT_F | 1 << ENTER_EXIT_F
-	STA zTitleObj1ScreenEdgeFlags
-	LDA #$6f
-	STA zTitleObj1YCoord
 	LDA #TITLE_IGGY_OFFSET
 	STA zTitleObj1OAMPointer
-	LDA #$e1
-	STA zTitleObj1XCoord
-	LDA #0
-	STA zTitleObj1PointerIndex
-	STA zTitleObj1FramePointer
-	STA zTitleObj1FramePointer + 1
-	LDA #>iVirtualOAM
-	STA zTitleObj1OAMPointer + 1
-	RTS
+	LDA #$6f
+	STA zTitleObj1YCoord
+	LDA #4
+	STA zTitleObjLoopPoint1
+	JMP GenericSpriteSetup_LargeLeft
 
 InitIggy2Animation:
 	LDA #<IggyFrames_pointersLO
@@ -643,6 +631,8 @@ InitIggy2Animation:
 	STA zTitleObj1OAMPointer
 	LDA #$FF
 	STA zTitleObj1XCoord
+	LDA #4
+	STA zTitleObjLoopPoint1
 	LDA #0
 	STA zTitleObj1PointerIndex
 	STA zTitleObj1FramePointer
@@ -661,6 +651,50 @@ InitJuneAnimation:
 	RTS
 
 InitOtisAnimation:
+	LDA #<OtisFrames_pointersLO
+	STA zTitleObj1PointerAddresses
+	LDA #>OtisFrames_pointersLO
+	STA zTitleObj1PointerAddresses + 1
+	LDA #<OtisFrames_pointersHI
+	STA zTitleObj1PointerAddresses + 2
+	LDA #>OtisFrames_pointersHI
+	STA zTitleObj1PointerAddresses + 3
+	LDA #OtisFrames_IndexSequence_START - OtisFrames_IndexSequence
+	STA zTitleObj1Timer
+	LDA #>OtisFrames_IndexSequence
+	STA zTitleObj1IndexPointer + 1
+	LDA #<OtisFrames_IndexSequence
+	STA zTitleObj1IndexPointer
+	LDA #>OtisFrames_Movement
+	STA zTitleObj1MovementPointer + 1
+	LDA #<OtisFrames_Movement
+	STA zTitleObj1MovementPointer
+	LDA #>TITLE_SCREEN_OTIS_ENTRANCE_1 ; $08
+	STA zTitleObj1StartingPoint + 1
+	LDA #<TITLE_SCREEN_OTIS_ENTRANCE_1 ; $1f
+	STA zTitleObj1StartingPoint
+	LDA #TITLE_OTIS_OFFSET
+	STA zTitleObj1OAMPointer
+	LDA #$6b
+	STA zTitleObj1YCoord
+	LDA #6
+	STA zTitleObjLoopPoint1
+
+GenericSpriteSetup_LargeLeft:
+	LDA #OAM_32_32_WIDTH
+	STA zTitleObj1Resolution
+	; entering from the left
+	; but movement should already take care of that
+	LDA #1 << ENTER_EXIT_ACT_F | 1 << ENTER_EXIT_F
+	STA zTitleObj1ScreenEdgeFlags
+	LDA #$e1
+	STA zTitleObj1XCoord
+	LDA #0
+	STA zTitleObj1PointerIndex
+	STA zTitleObj1FramePointer
+	STA zTitleObj1FramePointer + 1
+	LDA #>iVirtualOAM
+	STA zTitleObj1OAMPointer + 1
 	RTS
 
 ClearTitleAnim1Area:
@@ -689,10 +723,12 @@ Anim2InitPointersHI:
 
 Anim1InitPointersLO:
 	dl InitIggyAnimation
+	dl InitOtisAnimation
 	dl ClearTitleAnim1Area
 
 Anim1InitPointersHI:
 	dh InitIggyAnimation
+	dh InitOtisAnimation
 	dh ClearTitleAnim1Area
 
 CopySprite1DataDescending:

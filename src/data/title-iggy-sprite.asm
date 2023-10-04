@@ -11,10 +11,6 @@
 ; of four.
 ;
 
-MACRO nesst_meta x, y, tile, attr
-	.db y, tile, attr, x
-ENDM
-
 IggyFrames_0_data:
 
 	nesst_meta   0,  0, $ff, 0
