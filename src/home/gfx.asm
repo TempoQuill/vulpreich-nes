@@ -32,31 +32,16 @@ FadePalettes:
 	STA zPalFade
 	RTS
 
-@Apply:
-	LDA zPals, Y
-	AND #COLOR_INDEX
-	STA zPals + 1, Y
-	LDA zPals + 4, Y
-	STA zPals + 5, Y
-	LDA zPals + 8, Y
-	STA zPals + 9, Y
-	LDA zPals + 12, Y
-	STA zPals + 13, Y
-	RTS
-
 @Final:
 	; clear fade direction flag (we're fading in now)
 	LDA zPalFadeSpeed
 	STA zPalFade
 	LDA zPals
 	AND #COLOR_INDEX
-	LDX #NUM_BG_PALETTES
+	LDX #PALETTE_RAM_SPAN
 @FinalLoop:
 	; clear palettes
 	DEX
-	STA zPals + 12, X
-	STA zPals + 8, X
-	STA zPals + 4, X
 	STA zPals, X
 	BNE @FinalLoop
 	; reset placement byte
@@ -96,54 +81,119 @@ FadePalettes:
 	RTS
 
 @Zero:
+	JMP @DoZero
+
+@One:
+	JMP @DoOne
+
+@Two:
+	JMP @DoTwo
+
+@Apply:
+	LDA zPals, Y
+	AND #COLOR_INDEX
+	STA zPals + $01, Y
+	LDA zPals + $04, Y
+	STA zPals + $05, Y
+	LDA zPals + $08, Y
+	STA zPals + $09, Y
+	LDA zPals + $0c, Y
+	STA zPals + $0d, Y
+	LDA zPals + $10, Y
+	STA zPals + $11, Y
+	LDA zPals + $14, Y
+	STA zPals + $15, Y
+	LDA zPals + $18, Y
+	STA zPals + $19, Y
+	LDA zPals + $1c, Y
+	STA zPals + $1d, Y
+	RTS
+
+@DoZero:
 	INC zPalFadePlacement
 	INY
 	LDA iCurrentPals, Y
 	STA zPals, Y
-	STA zPals + 1, Y
-	STA zPals + 2, Y
-	LDA iCurrentPals + 4, Y
-	STA zPals + 4, Y
-	STA zPals + 5, Y
-	STA zPals + 6, Y
-	LDA iCurrentPals + 8, Y
-	STA zPals + 8, Y
-	STA zPals + 9, Y
-	STA zPals + 10, Y
-	LDA iCurrentPals + 12, Y
-	STA zPals + 12, Y
-	STA zPals + 13, Y
-	STA zPals + 14, Y
+	STA zPals + $01, Y
+	STA zPals + $02, Y
+	LDA iCurrentPals + $04, Y
+	STA zPals + $04, Y
+	STA zPals + $05, Y
+	STA zPals + $06, Y
+	LDA iCurrentPals + $08, Y
+	STA zPals + $08, Y
+	STA zPals + $09, Y
+	STA zPals + $0a, Y
+	LDA iCurrentPals + $0c, Y
+	STA zPals + $0c, Y
+	STA zPals + $0d, Y
+	STA zPals + $0e, Y
+	LDA iCurrentPals + $10, Y
+	STA zPals + $10, Y
+	STA zPals + $11, Y
+	STA zPals + $12, Y
+	LDA iCurrentPals + $14, Y
+	STA zPals + $14, Y
+	STA zPals + $15, Y
+	STA zPals + $16, Y
+	LDA iCurrentPals + $18, Y
+	STA zPals + $18, Y
+	STA zPals + $19, Y
+	STA zPals + $1a, Y
+	LDA iCurrentPals + $1c, Y
+	STA zPals + $1c, Y
+	STA zPals + $1d, Y
+	STA zPals + $1e, Y
 	RTS
 
-@One:
+@DoOne:
 	INC zPalFadePlacement
 	LDY zPalFadePlacement
 	LDA iCurrentPals, Y
 	STA zPals, Y
-	STA zPals + 1, Y
-	LDA iCurrentPals + 4, Y
-	STA zPals + 4, Y
-	STA zPals + 5, Y
-	LDA iCurrentPals + 8, Y
-	STA zPals + 8, Y
-	STA zPals + 9, Y
-	LDA iCurrentPals + 12, Y
-	STA zPals + 12, Y
-	STA zPals + 13, Y
+	STA zPals + $01, Y
+	LDA iCurrentPals + $04, Y
+	STA zPals + $04, Y
+	STA zPals + $05, Y
+	LDA iCurrentPals + $08, Y
+	STA zPals + $08, Y
+	STA zPals + $09, Y
+	LDA iCurrentPals + $0c, Y
+	STA zPals + $0c, Y
+	STA zPals + $0d, Y
+	LDA iCurrentPals + $10, Y
+	STA zPals + $10, Y
+	STA zPals + $11, Y
+	LDA iCurrentPals + $14, Y
+	STA zPals + $14, Y
+	STA zPals + $15, Y
+	LDA iCurrentPals + $18, Y
+	STA zPals + $18, Y
+	STA zPals + $19, Y
+	LDA iCurrentPals + $1c, Y
+	STA zPals + $1c, Y
+	STA zPals + $1d, Y
 	RTS
 
-@Two:
+@DoTwo:
 	INC zPalFadePlacement
 	LDY zPalFadePlacement
 	LDA iCurrentPals, Y
 	STA zPals, Y
-	LDA iCurrentPals + 4, Y
-	STA zPals + 4, Y
-	LDA iCurrentPals + 8, Y
-	STA zPals + 8, Y
-	LDA iCurrentPals + 12, Y
-	STA zPals + 12, Y
+	LDA iCurrentPals + $04, Y
+	STA zPals + $04, Y
+	LDA iCurrentPals + $08, Y
+	STA zPals + $08, Y
+	LDA iCurrentPals + $0c, Y
+	STA zPals + $0c, Y
+	LDA iCurrentPals + $10, Y
+	STA zPals + $10, Y
+	LDA iCurrentPals + $14, Y
+	STA zPals + $14, Y
+	LDA iCurrentPals + $18, Y
+	STA zPals + $18, Y
+	LDA iCurrentPals + $1c, Y
+	STA zPals + $1c, Y
 	RTS
 
 InitPals:

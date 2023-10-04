@@ -61,13 +61,6 @@ TitleScreenLayout:
 	; free to air/use when sales end
 	.db $50, $58, $5a, $5a, $5a, $5a, $50, $50
 
-	; sprites
-	.db $3f, $10, $10
-	.db $0f, $07, $10, $30 ; Iggy
-	.db $0f, $08, $28, $38 ; June
-	.db $0f, $02, $16, $39 ; Otis
-	.db $0f, $0c, $0a, $05 ; crow
-
 	text $2166, "_starring Iggy Reich"
 
 	text $228d, "Begin"

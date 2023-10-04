@@ -225,32 +225,60 @@ NMI:
 	AND #COLOR_INDEX
 	TAX
 	STA PPUDATA
-	LDA zPals + 1
+	LDA zPals + $01
 	STA PPUDATA
-	LDA zPals + 2
+	LDA zPals + $02
 	STA PPUDATA
-	LDA zPals + 3
-	STA PPUDATA
-	STX PPUDATA
-	LDA zPals + 5
-	STA PPUDATA
-	LDA zPals + 6
-	STA PPUDATA
-	LDA zPals + 7
+	LDA zPals + $03
 	STA PPUDATA
 	STX PPUDATA
-	LDA zPals + 9
+	LDA zPals + $05
 	STA PPUDATA
-	LDA zPals + 10
+	LDA zPals + $06
 	STA PPUDATA
-	LDA zPals + 11
+	LDA zPals + $07
 	STA PPUDATA
 	STX PPUDATA
-	LDA zPals + 13
+	LDA zPals + $09
 	STA PPUDATA
-	LDA zPals + 14
+	LDA zPals + $0a
 	STA PPUDATA
-	LDA zPals + 15
+	LDA zPals + $0b
+	STA PPUDATA
+	STX PPUDATA
+	LDA zPals + $0d
+	STA PPUDATA
+	LDA zPals + $0e
+	STA PPUDATA
+	LDA zPals + $0f
+	STA PPUDATA
+	STX PPUDATA
+	LDA zPals + $11
+	STA PPUDATA
+	LDA zPals + $12
+	STA PPUDATA
+	LDA zPals + $13
+	STA PPUDATA
+	STX PPUDATA
+	LDA zPals + $15
+	STA PPUDATA
+	LDA zPals + $16
+	STA PPUDATA
+	LDA zPals + $17
+	STA PPUDATA
+	STX PPUDATA
+	LDA zPals + $19
+	STA PPUDATA
+	LDA zPals + $1a
+	STA PPUDATA
+	LDA zPals + $1b
+	STA PPUDATA
+	STX PPUDATA
+	LDA zPals + $1d
+	STA PPUDATA
+	LDA zPals + $1e
+	STA PPUDATA
+	LDA zPals + $1f
 	STA PPUDATA
 	RTS
 

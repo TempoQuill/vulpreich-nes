@@ -136,7 +136,7 @@ InspiredScreen:
 	STX zPalFade
 	STX zPalFadeSpeed
 
-	LDX #15
+	LDX #$1f
 @PalLoop:
 	LDA IntroPals, X
 	STA iCurrentPals, X
@@ -228,7 +228,7 @@ TitleScreen:
 	STX zPalFade
 	STX zPalFadeSpeed
 
-	LDX #15
+	LDX #$1f
 @PalLoop:
 	LDA IntroPals, X
 	STA iCurrentPals, X

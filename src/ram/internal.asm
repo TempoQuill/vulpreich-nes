@@ -256,9 +256,8 @@ zTitleObj1InitPointer:
 zTitleObj2InitPointer:
 	.dsb 2
 	.dsb 48 ; 00b0
-	.dsb 16 ; 00e0
 zPals:
-	.dsb 16 ; 00e0
+	.dsb 32 ; 00e0
 
 ; section: STACK
 iStack:
@@ -381,9 +380,8 @@ iBackupInput:
 	.dsb 16
 	.dsb 16
 ; section: groups
-	.dsb 16 ; 04c0
 iCurrentPals:
-	.dsb 16 ; 04d0
+	.dsb 32 ; 04c0
 iNSFBanks:
 	.dsb 8 ; 04e0
 	.dsb $18 ; 04e8
