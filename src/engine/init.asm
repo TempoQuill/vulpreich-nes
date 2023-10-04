@@ -426,9 +426,9 @@ RunObject1:
 	BMI @Reset
 	; nab the animation offset
 	LDY zTitleObj1Timer
+@Logic:
 	; apply movement and calculate resolution
 	JSR ApplySprite1Movement
-@Logic:
 	; set up the logic
 	LDA (zTitleObj1IndexPointer), Y
 	STA zTitleObj1PointerIndex
