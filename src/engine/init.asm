@@ -475,10 +475,14 @@ RunObject1:
 	LDA #$ff
 	BIT zTitleObj1ScreenEdgeFlags
 	BVS @Entering
+	CPY zTitleObj1Resolution
+	BCS @Quit
 	JMP Sprite1ExitMask
 @Entering:
 	BVS @Exiting
 	JMP Sprite1EntranceMask
+@Quit:
+	RTS
 
 IsAtEdge_TitleOBJ1:
 ; input:
@@ -537,12 +541,13 @@ ClearObj1:
 	LDA #$F8
 	DEY
 	STA (zTitleObj1OAMPointer), Y
+	BEQ @Done
 	BPL Sprite1EntranceMask
+@Done:
 	RTS
 
 Sprite1ExitMask:
 	LDA #$F8
-	INY
 	STA (zTitleObj1OAMPointer), Y
 	LDA #0
 	INY
@@ -551,6 +556,7 @@ Sprite1ExitMask:
 	STA (zTitleObj1OAMPointer), Y
 	INY
 	STA (zTitleObj1OAMPointer), Y
+	INY
 	CPY zTitleObj1Resolution
 	BCC Sprite1ExitMask
 	RTS
