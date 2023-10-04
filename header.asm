@@ -1,3 +1,9 @@
+MACRO nsf_bank_define const
+	.db (const << 1)
+	.db (const << 1) + 1
+ENDM
+.org 0
+
 IFNDEF NSF_FILE
 ; vulpreich header specs
 ; MAP: MMC5
@@ -24,18 +30,21 @@ ELSE
 		.db $2 ; songs
 	ENDIF
 	.db $1 ; starting song
-	.dw LOAD
-	.dw INIT
+	.dw StartProcessingSoundQueue
 	.dw PLAY
+	.dw StartProcessingSoundQueue
 	.db "VULPREICH"
-	.dsb 23, 0
+.pad $2e, $00
 	.db "TEMPO QUILL"
-	.dsb 21, 0
+.pad $4e, $00
 	.db "2022 Free to use when sales end"
-	.db 0
+.pad $6e, $00
 	.dw $411a ; NTSC
-	.db PRG_Audio, PRG_Audio + 1, PRG_Music0, PRG_Music0 + 1, PRG_DPCM0, PRG_DPCM0 + 1, PRG_Home, PRG_Home + 1
-	.dw $4e20 ; PAL, unused
+	nsf_bank_define PRG_Audio
+	nsf_bank_define PRG_Music0
+	nsf_bank_define PRG_DPCM0
+	nsf_bank_define PRG_Home
+	.dw 0 ; PAL, unused
 	.db 0 ; this is an NTSC file
 	.db %00001000 ; MMC5 registers enabled, 2A03 only though
 	.dsb 4, 0 ; proceeding data is program data

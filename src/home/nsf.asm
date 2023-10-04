@@ -1,4 +1,3 @@
-.base $e080
 PLAY:
 IFDEF NSF_SFX
 	TAY
@@ -12,7 +11,9 @@ IFDEF NSF_SFX
 	STA (zCurrentMusicPointer), Y
 	RTS
 ELSE
-	STA zMusicQueue
+	TAX
+	INX
+	STX zMusicQueue
 	RTS
 ENDIF
 
@@ -21,6 +22,7 @@ INIT:
 	JMP StartProcessingSoundQueue
 
 SetMusicBank:
+	ASL A
 	STA NSF_PRGBank2
 	ORA #1
 	STA NSF_PRGBank3
