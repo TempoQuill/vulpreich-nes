@@ -511,6 +511,7 @@ IsAtEdge_TitleOBJ1:
 @Done:
 	LDA #%00000011
 	STA zTitleObj1ScreenEdgeFlags
+	SEC
 @Eject:
 	RTS
 
