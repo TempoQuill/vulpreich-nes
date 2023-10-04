@@ -567,14 +567,7 @@ ClearSprite1:
 	BNE ClearObj1
 
 InitIggyAnimation:
-	LDA #<IggyFrames_pointersLO
-	STA zTitleObj1PointerAddresses
-	LDA #>IggyFrames_pointersLO
-	STA zTitleObj1PointerAddresses + 1
-	LDA #<IggyFrames_pointersHI
-	STA zTitleObj1PointerAddresses + 2
-	LDA #>IggyFrames_pointersHI
-	STA zTitleObj1PointerAddresses + 3
+	JSR SetUpCommonIggyPointers
 	LDA #IggyFrames_IndexSequence_START - IggyFrames_IndexSequence
 	STA zTitleObj1Timer
 	LDA #>IggyFrames_IndexSequence
@@ -589,23 +582,10 @@ InitIggyAnimation:
 	STA zTitleObj1StartingPoint + 1
 	LDA #<TITLE_SCREEN_IGGY_ENTRANCE_1 ; $1f
 	STA zTitleObj1StartingPoint
-	LDA #TITLE_IGGY_OFFSET
-	STA zTitleObj1OAMPointer
-	LDA #$6f
-	STA zTitleObj1YCoord
-	LDA #4
-	STA zTitleObjLoopPoint1
-	JMP GenericSpriteSetup_LargeLeft
+	JMP SpriteSetup_LargeLeft
 
 InitIggy2Animation:
-	LDA #<IggyFrames_pointersLO
-	STA zTitleObj1PointerAddresses
-	LDA #>IggyFrames_pointersLO
-	STA zTitleObj1PointerAddresses + 1
-	LDA #<IggyFrames_pointersHI
-	STA zTitleObj1PointerAddresses + 2
-	LDA #>IggyFrames_pointersHI
-	STA zTitleObj1PointerAddresses + 3
+	JSR SetUpCommonIggyPointers
 	LDA #IggyFrames_LeftRunningCycle_START - IggyFrames_LeftRunningCycle
 	STA zTitleObj1Timer
 	LDA #>IggyFrames_LeftRunningCycle
@@ -623,23 +603,11 @@ InitIggy2Animation:
 	LDA #OAM_32_32_WIDTH
 	STA zTitleObj1Resolution
 	; entering from the right
-	LDA #1 << ENTER_EXIT_ACT_F | 1 << ENTER_EXIT_DIR_F
+	LDA #1 << ENTER_EXIT_ACT_F | 1 << ENTER_EXIT_F | 1 << ENTER_EXIT_DIR_F
 	STA zTitleObj1ScreenEdgeFlags
-	LDA #$6f
-	STA zTitleObj1YCoord
-	LDA #TITLE_IGGY_OFFSET
-	STA zTitleObj1OAMPointer
 	LDA #$FF
 	STA zTitleObj1XCoord
-	LDA #4
-	STA zTitleObjLoopPoint1
-	LDA #0
-	STA zTitleObj1PointerIndex
-	STA zTitleObj1FramePointer
-	STA zTitleObj1FramePointer + 1
-	LDA #>iVirtualOAM
-	STA zTitleObj1OAMPointer + 1
-	RTS
+	JMP GenericSpriteSetup
 
 InitCrowAnimation:
 	RTS
@@ -680,7 +648,7 @@ InitOtisAnimation:
 	LDA #6
 	STA zTitleObjLoopPoint1
 
-GenericSpriteSetup_LargeLeft:
+SpriteSetup_LargeLeft:
 	LDA #OAM_32_32_WIDTH
 	STA zTitleObj1Resolution
 	; entering from the left
@@ -690,11 +658,29 @@ GenericSpriteSetup_LargeLeft:
 	LDA #$e1
 	STA zTitleObj1XCoord
 	LDA #0
+GenericSpriteSetup:
 	STA zTitleObj1PointerIndex
 	STA zTitleObj1FramePointer
 	STA zTitleObj1FramePointer + 1
 	LDA #>iVirtualOAM
 	STA zTitleObj1OAMPointer + 1
+	RTS
+
+SetUpCommonIggyPointers:
+	LDA #<IggyFrames_pointersLO
+	STA zTitleObj1PointerAddresses
+	LDA #>IggyFrames_pointersLO
+	STA zTitleObj1PointerAddresses + 1
+	LDA #<IggyFrames_pointersHI
+	STA zTitleObj1PointerAddresses + 2
+	LDA #>IggyFrames_pointersHI
+	STA zTitleObj1PointerAddresses + 3
+	LDA #TITLE_IGGY_OFFSET
+	STA zTitleObj1OAMPointer
+	LDA #$6f
+	STA zTitleObj1YCoord
+	LDA #4
+	STA zTitleObjLoopPoint1
 	RTS
 
 ClearTitleAnim1Area:
