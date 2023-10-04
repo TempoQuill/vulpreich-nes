@@ -43,7 +43,7 @@ IggyFrames_2_data:
 	nesst_meta   0, 16, $1a, 0
 	nesst_meta   8,  0, $ff, 0
 	nesst_meta   8, 16, $1c, 0
-	nesst_meta  16,  0, $df, 0
+	nesst_meta  16,  0, $ff, 0
 	nesst_meta  16, 16, $1e, 0
 	nesst_meta  24,  0, $ff, 0
 	nesst_meta  24, 16, $20, 0
@@ -263,7 +263,7 @@ IggyFrames_22_data:
 	nesst_meta   0, 16, $1a, OAM_REV_X
 	nesst_meta   8,  0, $ff, OAM_REV_X
 	nesst_meta   8, 16, $1c, OAM_REV_X
-	nesst_meta  16,  0, $df, OAM_REV_X
+	nesst_meta  16,  0, $ff, OAM_REV_X
 	nesst_meta  16, 16, $1e, OAM_REV_X
 	nesst_meta  24,  0, $ff, OAM_REV_X
 	nesst_meta  24, 16, $20, OAM_REV_X

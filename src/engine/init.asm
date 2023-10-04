@@ -427,7 +427,7 @@ RunObject1:
 	; nab the animation offset
 	LDY zTitleObj1Timer
 @Logic:
-	; apply movement and calculate resolution
+	; apply movement and deduce direction
 	JSR ApplySprite1Movement
 	; set up the logic
 	LDA (zTitleObj1IndexPointer), Y
