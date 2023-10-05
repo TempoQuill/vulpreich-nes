@@ -68,6 +68,7 @@ SFX_DOOR_SLAM: ; $1b
 SFX_SINK: ; $1c
 	.dsb 1
 SFX_STOP:
+NUM_SFX:
 	.dsb 1
 SFX_OBJECTIVE_COMPLETE: ; $1e
 .ende

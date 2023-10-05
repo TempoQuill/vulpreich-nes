@@ -2,7 +2,7 @@ PLAY:
 IFDEF NSF_SFX
 	TAY
 	TAX
-	DEY
+	INX
 	LDA SoundEffectDestinations, Y
 	STA zCurrentMusicPointer
 	LDY #0

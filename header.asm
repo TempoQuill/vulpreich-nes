@@ -25,9 +25,9 @@ ELSE
 	.db "NESM", $1a ; handshake
 	.db $1 ; version
 	IFDEF NSF_SFX
-		.db $1d ; sfx
+		.db NUM_SFX ; sfx
 	ELSE
-		.db $2 ; songs
+		.db NUM_MUSIC_TRACKS ; songs
 	ENDIF
 	.db $1 ; starting song
 	.dw StartProcessingSoundQueue
