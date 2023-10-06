@@ -23,9 +23,7 @@
 ;
 
 NLT_Title = $64
-NLT_Journy = $50
-NLT_HOFScene3 = $a0
-NLT_ObjComplete = $47
+NLT_GardenParty = $61
 
 ;
 ; Triangle Linearity Indeces

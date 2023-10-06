@@ -138,7 +138,7 @@ MusDTitle10_SQ1:
 	rest
 	; ah
 	note_type 3, 8
-	note B_, 3
+	note B_, 2
 	note_type 3, 10
 	rest
 	note_type 3, 5
