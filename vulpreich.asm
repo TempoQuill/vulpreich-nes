@@ -65,19 +65,11 @@ IFNDEF NSF_FILE
 	.include "src/names-0.asm"
 	.pad $c000, $00
 
-	; bank 08-6f - unused (for now)
-	.dsb (($ef - PRG_Names0) * $2000), $00
+	; bank 08-671 - unused (for now)
+	.dsb (($f1 - PRG_Names0) * $2000), $00
 ENDIF
 
-; dpcm data - 48K
-.base $c000
-.incbin "src/raw-data/dpcm70.bin"
-.pad $e000, $00
-
-.base $c000
-.incbin "src/raw-data/dpcm71.bin"
-.pad $e000, $00
-
+; dpcm data - 104K
 .base $c000
 .incbin "src/raw-data/dpcm72.bin"
 .pad $e000, $00
@@ -99,36 +91,35 @@ ENDIF
 .pad $e000, $00
 
 .base $c000
-.incbin "src/raw-data/dpcm77.bin"
+.incbin "src/raw-data/dmcbank77.bin"
 .pad $e000, $00
 
 .base $c000
-.incbin "src/raw-data/dpcm78.bin"
+.incbin "src/raw-data/dmcbank78.bin"
 .pad $e000, $00
 
 .base $c000
-.incbin "src/raw-data/dpcm79.bin"
+.incbin "src/raw-data/dmcbank79.bin"
 .pad $e000, $00
 
 .base $c000
-.incbin "src/raw-data/dpcm7a.bin"
+.incbin "src/raw-data/dmcbank7a.bin"
 .pad $e000, $00
 
 .base $c000
-.incbin "src/raw-data/dpcm7b.bin"
+.incbin "src/raw-data/dmcbank7b.bin"
 .pad $e000, $00
 
 .base $c000
-.incbin "src/raw-data/dpcm7c.bin"
+.incbin "src/raw-data/dmcbank7c.bin"
 .pad $e000, $00
 
 .base $c000
-.incbin "src/raw-data/dpcm7d.bin"
+.incbin "src/raw-data/dmcbank7d.bin"
 .pad $e000, $00
 
 .base $c000
-.incbin "src/raw-data/dpcm7e.bin"
-.incbin "docs/dmc-set-meta.txt"
+.incbin "src/raw-data/dmcbank7e.bin"
 .pad $e000, $00
 
 IFNDEF NSF_FILE

@@ -7,13 +7,11 @@ $83	8000-9fff	- audio engine
 $84	a000-bfff	- music
 $86	8000-9fff	- text engine
 $87	a000-bfff	- name list
-$f0	c000-dfff	- dpcm data of common sound effects
-$f1	c000-dfff	- dpcm data of mostly voices
-$f2	c000-dfff	- dpcm data of voices
-$f3	c000-dfff	- dpcm data of voices
+$f2	c000-dfff	- dpcm data of common sound effects
+$f3	c000-dfff	- dpcm data of mostly voices
 $f4	c000-dfff	- dpcm data of voices
-$f5	c000-dfff	- dpcm data
-$f6	c000-dfff	- dpcm data
+$f5	c000-dfff	- dpcm data of voices
+$f6	c000-dfff	- dpcm data of voices
 $f7	c000-dfff	- dpcm data
 $f8	c000-dfff	- dpcm data
 $f9	c000-dfff	- dpcm data

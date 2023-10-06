@@ -19,7 +19,7 @@ PRG_GFXEngine:
 	.dsb 1
 PRG_Names0:
 	.dsb 1
-	.dsb $68
+	.dsb $6a
 ENDIF
 PRG_DPCM0:
 	.dsb 1
@@ -46,10 +46,6 @@ PRG_DPCM10:
 PRG_DPCM11:
 	.dsb 1
 PRG_DPCM12:
-	.dsb 1
-PRG_DPCM13:
-	.dsb 1
-PRG_DPCM14:
 	.dsb 1
 PRG_Home:
 
