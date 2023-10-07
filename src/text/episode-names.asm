@@ -1,4 +1,5 @@
 ; & = 's
+; \ = 'n
 EpisodeNames:
 VR_101:
 	.db "Reich Fox"
@@ -57,7 +58,7 @@ VR_114:
 	text_end
 
 VR_115:
-	.db "Bite Board"
+	.db "Bite-wise"
 	text_end
 
 VR_116:
