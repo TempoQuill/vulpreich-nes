@@ -37,23 +37,24 @@ TitleScreenLayout:
 	.db $21, $28, $04
 	.db $0b, $0c, $0d, $0e
 	; field
-	.db $21, $b3, $03 ; Crow's Y coord + $80
-	.db $10, $11, $12
-	.db $21, $d3, $03
-	.db $13, $14, $15
-	.db $21, $f3, $02
-	.db $16, $17
+	.db $21, $e0, $60, $1b
 	.db $22, $00, $60, $0f
 	.db $22, $20, $60, $18 ; Otis' Y Coord + $80
 	.db $22, $40, $60, $19 ; Iggy's Y Coord + $80
 	.db $22, $60, $60, $1a ; June's Y Coord + $80
+	.db $21, $b3, $03 ; Crow's Y coord + $80
+	.db $10, $11, $12
+	.db $21, $d3, $03
+	.db $13, $14, $15
+	.db $21, $f1, $06
+	.db $1c, $00, $16, $17, $00, $1d
 
 	; Attributes
 	; ...starring Iggy Reich
 	.db $23, $d0, $48, $f0
 	; field
-	.db $23, $dc, $02
-	.db $88, $22
+	.db $23, $d8, $08
+	.db $f0, $f0, $f0, $f0, $b8, $e2, $f0, $f0
 	; grass
 	.db $23, $e0, $48, $ff
 	.db $23, $f0, $08

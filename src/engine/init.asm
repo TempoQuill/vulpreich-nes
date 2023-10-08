@@ -769,7 +769,7 @@ InitOtisAnimation:
 	STA zTitleObj1StartingPoint
 	LDA #TITLE_OTIS_OFFSET
 	STA zTitleObj1OAMPointer
-	LDA #$6b
+	LDA #$67
 	STA zTitleObj1YCoord
 	LDA #6
 	STA zTitleObjLoopPoint1
@@ -803,7 +803,7 @@ SetUpCommonIggyPointers:
 	STA zTitleObj1PointerAddresses + 3
 	LDA #TITLE_IGGY_OFFSET
 	STA zTitleObj1OAMPointer
-	LDA #$6f
+	LDA #$6d
 	STA zTitleObj1YCoord
 	LDA #4
 	STA zTitleObjLoopPoint1
