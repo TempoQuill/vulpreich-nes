@@ -245,7 +245,7 @@ zTitleObj2OAMPointer:
 zTitleObj2MovementPointer:
 	.dsb 2
 zTitleObj2End:
-ztitleObjFinished:
+zTitleObjFinished:
 	.dsb 1
 zTitle1ObjIndex:
 	.dsb 1

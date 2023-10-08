@@ -399,10 +399,96 @@ RunLyrics:
 	RTS
 
 RunAnimations:
+	; monitor film timer (odd) to run on 2's
 	LDA zFilmStandardTimerOdd
-	BPL LocalObject1Eject
+	BPL @Quit
+	; run sprite 1 (Iggy, Otis)
 	JSR RunObject1
+	; run sprite 2 (June, a crow)
+	JSR RunObject2
 	JSR RunSoundQueues
+@Quit:
+	RTS
+
+LocalObject2Eject:
+	RTS
+
+RunObject2:
+	; did we reach our starting point yet?
+	LDA zTitleScreenTimer + 1
+	CMP zTitleObj2StartingPoint + 1
+	BEQ @Low
+	BCC @AlreadyPassed
+	BCS LocalObject2Eject
+@Low:
+	LDA zTitleScreenTimer
+	CMP zTitleObj2StartingPoint
+	BCS LocalObject2Eject
+@AlreadyPassed:
+	; decrement the title object timer
+	; reset the timer to 4 when branching
+	DEC zTitleObj2Timer
+	BMI @Reset
+	; nab the animation offset
+	LDY zTitleObj2Timer
+@Logic:
+	; apply movement and deduce direction
+	JSR ApplySprite2Movement
+	; set up the logic
+	LDA (zTitleObj2IndexPointer), Y
+	STA zTitleObj2PointerIndex
+	TAY
+	LDA (zTitleObj2PointerAddresses), Y
+	STA zTitleObj2FramePointer
+	LDA (zTitleObj2PointerAddresses + 2), Y
+	STA zTitleObj2FramePointer + 1
+	LDY zTitleObj2Resolution
+	DEY
+
+@MainLoop1:
+	; copy data from current resolution to zero
+	JSR CopySprite2DataDescending
+	BPL @MainLoop1
+	JSR IsAtEdge_TitleOBJ1
+	BCS @On
+	RTS
+
+@Reset:
+	; loop the pointer every 4 frames
+	LDY zTitleObjLoopPoint1
+	STY zTitleObj2Timer
+	DEC zTitleObj2Timer
+	DEY
+	BNE @Logic ; always branches
+
+@On:
+	LDA zTitleObj2XCoord
+	AND #$18
+	SBC zTitleObj2Resolution
+	EOR #$ff
+	TAY
+	INY
+	LDA #$ff
+	BIT zTitleObj2ScreenEdgeFlags
+	BMI @Entering
+	CLC
+	LDA zTitleObj2XCoord
+	ADC zTitleObj2Resolution
+	BCS @Exiting
+	JMP ClearSprite2
+@Exiting:
+	LDA #$ff
+	BIT zTitleObj2ScreenEdgeFlags
+	BVS @ToTheLeft
+@FramTheRight:
+	CPY zTitleObj2Resolution
+	BCS @Quit
+	JMP Sprite2ExitMask
+@Entering:
+	BVS @FramTheRight
+@ToTheLeft:
+	JMP Sprite2EntranceMask
+@Quit:
 	RTS
 
 LocalObject1Eject:
@@ -564,9 +650,48 @@ Sprite1ExitMask:
 	RTS
 
 ClearSprite1:
-	INC ztitleObjFinished
+	INC zTitleObjFinished
 	LDY #$20
 	BNE ClearObj1
+
+Sprite2EntranceMask:
+ClearObj2:
+	LDA #0
+	DEY
+	STA (zTitleObj2OAMPointer), Y
+	DEY
+	STA (zTitleObj2OAMPointer), Y
+	DEY
+	STA (zTitleObj2OAMPointer), Y
+	LDA #$F8
+	DEY
+	STA (zTitleObj2OAMPointer), Y
+	BEQ @Done
+	BPL Sprite2EntranceMask
+@Done:
+	RTS
+
+Sprite2ExitMask:
+	LDA #$F8
+	STA (zTitleObj2OAMPointer), Y
+	LDA #0
+	INY
+	STA (zTitleObj2OAMPointer), Y
+	INY
+	STA (zTitleObj2OAMPointer), Y
+	INY
+	STA (zTitleObj2OAMPointer), Y
+	INY
+	CPY zTitleObj2Resolution
+	BCC Sprite2ExitMask
+	RTS
+
+ClearSprite2:
+	LDA #2
+	ORA zTitleObjFinished
+	STA zTitleObjFinished
+	LDY #$20
+	BNE ClearObj2
 
 InitIggyAnimation:
 	JSR SetUpCommonIggyPointers
@@ -743,6 +868,29 @@ CopySprite1DataDescending:
 	DEY
 	RTS
 
+CopySprite2DataDescending:
+	; byte 3 - x coordinate
+	LDA (zTitleObj2FramePointer), Y
+	CLC
+	ADC zTitleObj2XCoord
+	STA (zTitleObj2OAMPointer), Y
+	DEY
+	; byte 2 - tile attribute (palette, reversal, priority)
+	LDA (zTitleObj2FramePointer), Y
+	STA (zTitleObj2OAMPointer), Y
+	DEY
+	; byte 1 - tile pair number & $FE (bit 0 determines the current bank)
+	LDA (zTitleObj2FramePointer), Y
+	STA (zTitleObj2OAMPointer), Y
+	DEY
+	; byte 0 - y coordinate
+	LDA (zTitleObj2FramePointer), Y
+	CLC
+	ADC zTitleObj2YCoord
+	STA (zTitleObj2OAMPointer), Y
+	DEY
+	RTS
+
 ApplySprite1Movement:
 	; get change in movement
 	LDA (zTitleObj1MovementPointer), Y
@@ -764,11 +912,32 @@ ApplySprite1Movement:
 	STA zTitleObj1ScreenEdgeFlags
 	RTS
 
+ApplySprite2Movement:
+	; get change in movement
+	LDA (zTitleObj2MovementPointer), Y
+	CLC
+	ADC zTitleObj2XCoord
+	STA zTitleObj2XCoord
+	; determine which direction we're going
+	LDA (zTitleObj2MovementPointer), Y
+	BPL @Left
+	; right = 1
+	LDA zTitleObj2ScreenEdgeFlags
+	SSB ENTER_EXIT_DIR_F
+	STA zTitleObj2ScreenEdgeFlags
+	RTS
+@Left:
+	; left = 0
+	LDA zTitleObj2ScreenEdgeFlags
+	RSB ENTER_EXIT_DIR_F
+	STA zTitleObj2ScreenEdgeFlags
+	RTS
+
 InitNextSprite:
-	LDA ztitleObjFinished
+	LDA zTitleObjFinished
 	BEQ @Quit
 	LDY #0
-	STY ztitleObjFinished
+	STY zTitleObjFinished
 	CMP #2
 	BEQ @Obj2
 	BCS @BothSprites
@@ -818,7 +987,7 @@ InitSprites:
 
 StartInitializingSprites:
 	LDA #3
-	STA ztitleObjFinished
+	STA zTitleObjFinished
 	LDA #$ff
 	STA zTitle1ObjIndex
 	STA zTitle2ObjIndex
