@@ -474,12 +474,14 @@ RunObject1:
 @Exiting:
 	LDA #$ff
 	BIT zTitleObj1ScreenEdgeFlags
-	BVS @Entering
+	BVS @ToTheLeft
+@FramTheRight:
 	CPY zTitleObj1Resolution
 	BCS @Quit
 	JMP Sprite1ExitMask
 @Entering:
-	BVS @Exiting
+	BVS @FramTheRight
+@ToTheLeft:
 	JMP Sprite1EntranceMask
 @Quit:
 	RTS
@@ -606,7 +608,6 @@ InitIggy2Animation:
 	LDA #1 << ENTER_EXIT_ACT_F | 1 << ENTER_EXIT_F | 1 << ENTER_EXIT_DIR_F
 	STA zTitleObj1ScreenEdgeFlags
 	LDA #$FF
-	STA zTitleObj1XCoord
 	JMP GenericSpriteSetup
 
 InitCrowAnimation:
@@ -656,9 +657,9 @@ SpriteSetup_LargeLeft:
 	LDA #1 << ENTER_EXIT_ACT_F | 1 << ENTER_EXIT_F
 	STA zTitleObj1ScreenEdgeFlags
 	LDA #$e1
+GenericSpriteSetup:
 	STA zTitleObj1XCoord
 	LDA #0
-GenericSpriteSetup:
 	STA zTitleObj1PointerIndex
 	STA zTitleObj1FramePointer
 	STA zTitleObj1FramePointer + 1
@@ -710,11 +711,13 @@ Anim2InitPointersHI:
 Anim1InitPointersLO:
 	dl InitIggyAnimation
 	dl InitOtisAnimation
+	dl InitIggy2Animation
 	dl ClearTitleAnim1Area
 
 Anim1InitPointersHI:
 	dh InitIggyAnimation
 	dh InitOtisAnimation
+	dh InitIggy2Animation
 	dh ClearTitleAnim1Area
 
 CopySprite1DataDescending:

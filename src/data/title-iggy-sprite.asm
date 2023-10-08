@@ -234,47 +234,46 @@ IggyFrames_19_data:
 IggyFrames_20_data:
 
 	nesst_meta   0,  0, $ff, OAM_REV_X
-	nesst_meta   0, 16, $00, OAM_REV_X
+	nesst_meta   0, 16, $06, OAM_REV_X
 	nesst_meta   8,  0, $ff, OAM_REV_X
-	nesst_meta   8, 16, $02, OAM_REV_X
+	nesst_meta   8, 16, $04, OAM_REV_X
 	nesst_meta  16,  0, $ff, OAM_REV_X
-	nesst_meta  16, 16, $04, OAM_REV_X
+	nesst_meta  16, 16, $02, OAM_REV_X
 	nesst_meta  24,  0, $ff, OAM_REV_X
-	nesst_meta  24, 16, $06, OAM_REV_X
+	nesst_meta  24, 16, $00, OAM_REV_X
 
 IggyFrames_21_data:
 
 	nesst_meta   0,  0, $ff, OAM_REV_X
-	nesst_meta   0, 16, $08, OAM_REV_X
+	nesst_meta   0, 16, $0e, OAM_REV_X
 	nesst_meta   8,  0, $ff, OAM_REV_X
-	nesst_meta   8, 16, $0a, OAM_REV_X
+	nesst_meta   8, 16, $0c, OAM_REV_X
 	nesst_meta  16,  0, $ff, OAM_REV_X
-	nesst_meta  16, 16, $0c, OAM_REV_X
+	nesst_meta  16, 16, $0a, OAM_REV_X
 	nesst_meta  24,  0, $ff, OAM_REV_X
-	nesst_meta  24, 16, $0e, OAM_REV_X
+	nesst_meta  24, 16, $08, OAM_REV_X
 
 IggyFrames_22_data:
 
 	nesst_meta   0,  0, $ff, OAM_REV_X
-	nesst_meta   0, 16, $1a, OAM_REV_X
+	nesst_meta   0, 16, $20, OAM_REV_X
 	nesst_meta   8,  0, $ff, OAM_REV_X
-	nesst_meta   8, 16, $1c, OAM_REV_X
+	nesst_meta   8, 16, $1e, OAM_REV_X
 	nesst_meta  16,  0, $ff, OAM_REV_X
-	nesst_meta  16, 16, $1e, OAM_REV_X
+	nesst_meta  16, 16, $1c, OAM_REV_X
 	nesst_meta  24,  0, $ff, OAM_REV_X
-	nesst_meta  24, 16, $20, OAM_REV_X
+	nesst_meta  24, 16, $1a, OAM_REV_X
 
 IggyFrames_23_data:
 
 	nesst_meta   0,  0, $ff, OAM_REV_X
-	nesst_meta   0, 16, $22, OAM_REV_X
+	nesst_meta   0, 16, $28, OAM_REV_X
 	nesst_meta   8,  0, $ff, OAM_REV_X
-	nesst_meta   8, 16, $24, OAM_REV_X
+	nesst_meta   8, 16, $26, OAM_REV_X
 	nesst_meta  16,  0, $ff, OAM_REV_X
-	nesst_meta  16, 16, $26, OAM_REV_X
+	nesst_meta  16, 16, $24, OAM_REV_X
 	nesst_meta  24,  0, $ff, OAM_REV_X
-	nesst_meta  24, 16, $28, OAM_REV_X
-
+	nesst_meta  24, 16, $22, OAM_REV_X
 IggyFrames_pointersLO:
 
 	.dl IggyFrames_0_data
