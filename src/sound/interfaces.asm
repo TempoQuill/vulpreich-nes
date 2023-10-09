@@ -1,3 +1,11 @@
+; +------------+
+; |Update Sound|
+; +------------+
+; This function runs every frame and jumps to the sound engine to get
+; everything there done.
+;
+; The current song bank is loaded into the CPU alongside the sound engine
+; because this is also responsible for playing all audio.
 UpdateSound:
 	PHP
 	PHA
@@ -17,6 +25,14 @@ UpdateSound:
 	PLP
 	RTS
 
+; +----------------------------+
+; |Play designated sound effect|
+; +----------------------------+
+; This function automatically writes to a spot in Zero-Page RAM specified by a
+; string of data in order to play a sound reliably.
+;
+; It also fakes bit priority by only writing values in the spot already written
+; to if the new value is lower than or equal to the old value.
 PlaySFX:
 	PHP
 	PHA
@@ -30,8 +46,15 @@ PlaySFX:
 	STA zCurrentMusicPointer
 	LDY #0
 	STY zCurrentMusicPointer + 1
+	LDA (zCurrentMusicPointer), Y
+	BEQ @Stash
+	TXA
+	CMP (zCurrentMusicPointer), Y
+	BCS @Skip
+@Stash:
 	TXA
 	STA (zCurrentMusicPointer), Y
+@Skip:
 	JSR UpdatePRG
 	PLY
 	PLX
@@ -46,6 +69,7 @@ WaitPlaySFX:
 WaitSFX:
 	LDA zCurrentDPCMSFX
 	ORA zCurrentNoiseSFX
+	ORA zCurrentPulse2SFX
 	BNE WaitSFX
 	RTS
 
@@ -61,6 +85,7 @@ SkipMusic:
 CheckSFX:
 	LDA zCurrentDPCMSFX
 	ORA zCurrentNoiseSFX
+	ORA zCurrentPulse2SFX
 	BNE @On
 	CLC
 	RTS

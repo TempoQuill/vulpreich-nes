@@ -441,14 +441,16 @@ UpdatePPUFromBufferWithOptions:
 ; 3	ff	2
 ; 4	ff	1
 ; 5	ff	0
-; Output: C
-; 0 = On
-; 1 = Off
 UpdateFilmTimers:
+	; Odd state?
 	LDA zFilmStandardTimerOdd
 	BPL @DecOdd
+	; Negative
+	; Even state?
 	DEC zFilmStandardTimerEven
 	BPL @Quit
+	; Negative
+	; Reset
 	LDA #1
 	STA zFilmStandardTimerOdd
 	LDA #4
@@ -459,9 +461,13 @@ UpdateFilmTimers:
 @DecOdd:
 	DEC zFilmStandardTimerEven
 	DEC zFilmStandardTimerOdd
-	BMI @Quit
 	RTS
 
+; Check if we're on-frame
+; Simply loading A with a timer value can tell you if you're on-frame
+; Output: Z
+; 0 - Off-frame (neither timer was 0)
+; 1 - On-frame (one timer was 0)
 CheckFilmTimers:
 	LDA zFilmStandardTimerOdd
 	BEQ @OnFrame

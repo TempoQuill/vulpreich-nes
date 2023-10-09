@@ -164,6 +164,9 @@ NMI:
 	STA zWindow2
 	LDA zCurrentWindow
 	STA zWindow1
+	; if none of neither timer is 0, we're off-frame
+	; starting timer values of 1 & 4 allow for 24 FPS
+	;           (Standard Animation Framerate)-++
 	JSR CheckFilmTimers
 	BNE @OffFrame
 	; palettes
@@ -188,15 +191,16 @@ NMI:
 	; sound operates every NMI
 	; advance sound by one frame
 	JSR UpdateSound
-	; advance the film timers
+	; check the film timers again
 	; off-frames can't advance any NMI timer
 	JSR CheckFilmTimers
 	BNE @DoNotAdjust
-	; check for an NMI timer (4.25 seconds maximum)
+	; check for an NMI timer (10.625 seconds maximum at 24 FPS)
 	LDA zNMITimer
 	BEQ @DoNotAdjust
 	DEC zNMITimer
 @DoNotAdjust:
+	; advance the film timers
 	JSR UpdateFilmTimers
 	; cleanup
 	LDA zWindow2
