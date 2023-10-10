@@ -123,7 +123,8 @@ d = dir << 3
 ENDM
 
 MACRO sfx_note length, raw_pitch
-	.dw $800 + raw_pitch
+	.db >($800 + raw_pitch)
+	.db <($800 + raw_pitch)
 IF length > 1
 	REPT length - 1
 		.db $40
