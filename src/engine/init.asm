@@ -832,6 +832,48 @@ InitCrow2Animation:
 	RTS
 
 InitJuneAnimation:
+	LDA #<JuneFrames_pointersLO
+	STA zTitleObj2PointerAddresses
+	LDA #>JuneFrames_pointersLO
+	STA zTitleObj2PointerAddresses + 1
+	LDA #<JuneFrames_pointersHI
+	STA zTitleObj2PointerAddresses + 2
+	LDA #>JuneFrames_pointersHI
+	STA zTitleObj2PointerAddresses + 3
+	LDA #TITLE_JUNE_OFFSET
+	STA zTitleObj2OAMPointer
+	LDA #$73
+	STA zTitleObj2YCoord
+	LDA #4
+	STA zTitleObjLoopPoint2
+	LDA #JuneFrames_IndexSequence_START - JuneFrames_IndexSequence
+	STA zTitleObj2Timer
+	LDA #>JuneFrames_IndexSequence
+	STA zTitleObj2IndexPointer + 1
+	LDA #<JuneFrames_IndexSequence
+	STA zTitleObj2IndexPointer
+	LDA #>JuneFrames_Movement
+	STA zTitleObj2MovementPointer + 1
+	LDA #<JuneFrames_Movement
+	STA zTitleObj2MovementPointer
+	LDA #>TITLE_SCREEN_JUNE_ENTRANCE_1 ; $07
+	STA zTitleObj2StartingPoint + 1
+	LDA #<TITLE_SCREEN_JUNE_ENTRANCE_1 ; $94
+	STA zTitleObj2StartingPoint
+	LDA #OAM_24_32_WIDTH
+	STA zTitleObj2Resolution
+	; entering from the left
+	; but movement should already take care of that
+	LDA #1 << ENTER_EXIT_ACT_F | 1 << ENTER_EXIT_F
+	STA zTitleObj2ScreenEdgeFlags
+	LDA #$e9
+	STA zTitleObj2XCoord
+	LDA #0
+	STA zTitleObj2PointerIndex
+	STA zTitleObj2FramePointer
+	STA zTitleObj2FramePointer + 1
+	LDA #>iVirtualOAM
+	STA zTitleObj2OAMPointer + 1
 	RTS
 
 InitOtisAnimation:
@@ -922,10 +964,12 @@ ClearTitleAnim2Area:
 
 Anim2InitPointersLO:
 	dl InitCrowAnimation
+	dl InitJuneAnimation
 	dl ClearTitleAnim2Area
 
 Anim2InitPointersHI:
 	dh InitCrowAnimation
+	dh InitJuneAnimation
 	dh ClearTitleAnim2Area
 
 Anim1InitPointersLO:
