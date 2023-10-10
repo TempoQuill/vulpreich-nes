@@ -472,6 +472,7 @@ RunObject2:
 	LDA #$ff
 	BIT zTitleObj2ScreenEdgeFlags
 	BMI @Quit
+	BVS @Quit
 @NonZero:
 	LDA #$ff
 	BIT zTitleObj2ScreenEdgeFlags
@@ -558,6 +559,7 @@ RunObject1:
 	LDA #$ff
 	BIT zTitleObj1ScreenEdgeFlags
 	BMI @Quit
+	BVS @Quit
 @NonZero:
 	LDA #$ff
 	BIT zTitleObj1ScreenEdgeFlags
@@ -829,6 +831,48 @@ InitCrowAnimation:
 	RTS
 
 InitCrow2Animation:
+	LDA #<CrowFrames_pointersLO
+	STA zTitleObj2PointerAddresses
+	LDA #>CrowFrames_pointersLO
+	STA zTitleObj2PointerAddresses + 1
+	LDA #<CrowFrames_pointersHI
+	STA zTitleObj2PointerAddresses + 2
+	LDA #>CrowFrames_pointersHI
+	STA zTitleObj2PointerAddresses + 3
+	LDA #TITLE_CROW_OFFSET
+	STA zTitleObj2OAMPointer
+	LDA #$4d
+	STA zTitleObj2YCoord
+	LDA #4
+	STA zTitleObjLoopPoint2
+	LDA #CrowFrames_FlyLeftSequence_START - CrowFrames_FlyLeftSequence
+	STA zTitleObj2Timer
+	LDA #>CrowFrames_FlyLeftSequence
+	STA zTitleObj2IndexPointer + 1
+	LDA #<CrowFrames_FlyLeftSequence
+	STA zTitleObj2IndexPointer
+	LDA #>CrowFrames_FlyLeftMovement
+	STA zTitleObj2MovementPointer + 1
+	LDA #<CrowFrames_FlyLeftMovement
+	STA zTitleObj2MovementPointer
+	LDA #>TITLE_SCREEN_CROW_ENTRANCE_2 ; $01
+	STA zTitleObj2StartingPoint + 1
+	LDA #<TITLE_SCREEN_CROW_ENTRANCE_2 ; $f6
+	STA zTitleObj2StartingPoint
+	LDA #OAM_24_32_WIDTH
+	STA zTitleObj2Resolution
+	; entering from the left
+	; but movement should already take care of that
+	LDA #1 << ENTER_EXIT_ACT_F | 1 << ENTER_EXIT_F | 1 << ENTER_EXIT_DIR_F
+	STA zTitleObj2ScreenEdgeFlags
+	LDA #$ff
+	STA zTitleObj2XCoord
+	LDA #0
+	STA zTitleObj2PointerIndex
+	STA zTitleObj2FramePointer
+	STA zTitleObj2FramePointer + 1
+	LDA #>iVirtualOAM
+	STA zTitleObj2OAMPointer + 1
 	RTS
 
 InitJuneAnimation:
@@ -965,11 +1009,13 @@ ClearTitleAnim2Area:
 Anim2InitPointersLO:
 	dl InitCrowAnimation
 	dl InitJuneAnimation
+	dl InitCrow2Animation
 	dl ClearTitleAnim2Area
 
 Anim2InitPointersHI:
 	dh InitCrowAnimation
 	dh InitJuneAnimation
+	dh InitCrow2Animation
 	dh ClearTitleAnim2Area
 
 Anim1InitPointersLO:
