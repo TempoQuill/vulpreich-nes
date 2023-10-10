@@ -28,4 +28,6 @@ SoundEffectDestinations:
 	.db zNoiseDrumSFX
 	.db zNoiseDrumSFX
 	.db zPulse2SFX
+	.db zPulse2SFX
+	.db zNoiseDrumSFX
 	.db zNoiseDrumSFX + 1

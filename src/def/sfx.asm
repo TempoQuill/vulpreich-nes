@@ -39,7 +39,9 @@ SFX_DOOR_SHUT:		.dsb 1
 P_Conga:
 SFX_DOOR_SLAM:		.dsb 1
 SFX_SINK:		.dsb 1
-SFX_STOP:
+SFX_STOP:		.dsb 1
+SFX_JUMP:		.dsb 1
+SFX_FLAP:
 NUM_SFX:
 	.dsb 1
 SFX_OBJECTIVE_COMPLETE: ; $1e

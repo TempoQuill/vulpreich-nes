@@ -157,7 +157,7 @@ InspiredScreen:
 	BPL @StringLoop
 	; we can enable graphical updates now
 	LDA zPPUCtrlMirror
-	ORA #PPU_NMI | PPU_OBJECT_RESOLUTION
+	ORA #PPU_NMI | PPU_OBJ_RES
 	STA zPPUCtrlMirror
 	STA PPUCTRL
 
@@ -200,7 +200,7 @@ InspiredScreen:
 TitleScreen:
 	; disable NMI for now
 	LDA zPPUCtrlMirror
-	AND #$ff ^ (PPU_NMI | PPU_OBJECT_RESOLUTION)
+	AND #$ff ^ (PPU_NMI | PPU_OBJ_RES)
 	STA zPPUCtrlMirror
 	STA PPUCTRL
 	; no NMI, nothing to show
@@ -243,7 +243,7 @@ TitleScreen:
 	; we can enable graphical updates now
 	; increase sprite size for faster logic
 	LDA zPPUCtrlMirror
-	ORA #PPU_NMI | PPU_OBJECT_RESOLUTION
+	ORA #PPU_NMI | PPU_OBJ_RES
 	STA zPPUCtrlMirror
 	STA PPUCTRL
 
@@ -449,13 +449,13 @@ RunObject2:
 	; copy data from current resolution to zero
 	JSR CopySprite2DataDescending
 	BPL @MainLoop1
-	JSR IsAtEdge_TitleOBJ1
+	JSR IsAtEdge_TitleOBJ2
 	BCS @On
 	RTS
 
 @Reset:
 	; loop the pointer every 4 frames
-	LDY zTitleObjLoopPoint1
+	LDY zTitleObjLoopPoint2
 	STY zTitleObj2Timer
 	DEC zTitleObj2Timer
 	DEY
@@ -468,6 +468,11 @@ RunObject2:
 	EOR #$ff
 	TAY
 	INY
+	BNE @NonZero
+	LDA #$ff
+	BIT zTitleObj2ScreenEdgeFlags
+	BMI @Quit
+@NonZero:
 	LDA #$ff
 	BIT zTitleObj2ScreenEdgeFlags
 	BMI @Entering
@@ -480,12 +485,12 @@ RunObject2:
 	LDA #$ff
 	BIT zTitleObj2ScreenEdgeFlags
 	BVS @ToTheLeft
-@FramTheRight:
+@FromTheRight:
 	CPY zTitleObj2Resolution
 	BCS @Quit
 	JMP Sprite2ExitMask
 @Entering:
-	BVS @FramTheRight
+	BVS @FromTheRight
 @ToTheLeft:
 	JMP Sprite2EntranceMask
 @Quit:
@@ -549,6 +554,11 @@ RunObject1:
 	EOR #$ff
 	TAY
 	INY
+	BNE @NonZero
+	LDA #$ff
+	BIT zTitleObj1ScreenEdgeFlags
+	BMI @Quit
+@NonZero:
 	LDA #$ff
 	BIT zTitleObj1ScreenEdgeFlags
 	BMI @Entering
@@ -561,12 +571,12 @@ RunObject1:
 	LDA #$ff
 	BIT zTitleObj1ScreenEdgeFlags
 	BVS @ToTheLeft
-@FramTheRight:
+@FromTheRight:
 	CPY zTitleObj1Resolution
 	BCS @Quit
 	JMP Sprite1ExitMask
 @Entering:
-	BVS @FramTheRight
+	BVS @FromTheRight
 @ToTheLeft:
 	JMP Sprite1EntranceMask
 @Quit:
@@ -617,6 +627,44 @@ IsAtEdge_TitleOBJ1:
 	STA zTitleObj1ScreenEdgeFlags
 	RTS
 
+IsAtEdge_TitleOBJ2:
+	LDA zTitleObj2ScreenEdgeFlags
+	LSR A
+	BCC @Off
+	AND #%00000001
+	BNE @Clear
+	LDA zTitleObj2XCoord
+	CLC
+	ADC zTitleObj2Resolution
+	BCS @Eject
+	LDA zTitleObj2ScreenEdgeFlags
+	BPL @Done
+	EOR #1 << ENTER_EXIT_ACT_F
+	STA zTitleObj2ScreenEdgeFlags
+	RTS
+
+@Clear:
+	LDA #0
+	STA zTitleObj2ScreenEdgeFlags
+	RTS
+
+@Done:
+	LDA #%00000011
+	STA zTitleObj2ScreenEdgeFlags
+	SEC
+@Eject:
+	RTS
+
+@Off:
+	LDA zTitleObj2XCoord
+	CLC
+	ADC zTitleObj2Resolution
+	BCC @Eject
+	LDA zTitleObj2ScreenEdgeFlags
+	EOR #1 << ENTER_EXIT_ACT_F | 1 << ENTER_EXIT_F
+	STA zTitleObj2ScreenEdgeFlags
+	RTS
+
 Sprite1EntranceMask:
 ClearObj1:
 	LDA #0
@@ -651,7 +699,7 @@ Sprite1ExitMask:
 
 ClearSprite1:
 	INC zTitleObjFinished
-	LDY #$20
+	LDY zTitleObj1Resolution
 	BNE ClearObj1
 
 Sprite2EntranceMask:
@@ -690,7 +738,7 @@ ClearSprite2:
 	LDA #2
 	ORA zTitleObjFinished
 	STA zTitleObjFinished
-	LDY #$20
+	LDY zTitleObj2Resolution
 	BNE ClearObj2
 
 InitIggyAnimation:
@@ -705,9 +753,9 @@ InitIggyAnimation:
 	STA zTitleObj1MovementPointer + 1
 	LDA #<IggyFrames_Movement
 	STA zTitleObj1MovementPointer
-	LDA #>TITLE_SCREEN_IGGY_ENTRANCE_1 ; $08
+	LDA #>TITLE_SCREEN_IGGY_ENTRANCE_1 ; $07
 	STA zTitleObj1StartingPoint + 1
-	LDA #<TITLE_SCREEN_IGGY_ENTRANCE_1 ; $1f
+	LDA #<TITLE_SCREEN_IGGY_ENTRANCE_1 ; $dc
 	STA zTitleObj1StartingPoint
 	JMP SpriteSetup_LargeLeft
 
@@ -736,6 +784,48 @@ InitIggy2Animation:
 	JMP GenericSpriteSetup
 
 InitCrowAnimation:
+	LDA #<CrowFrames_pointersLO
+	STA zTitleObj2PointerAddresses
+	LDA #>CrowFrames_pointersLO
+	STA zTitleObj2PointerAddresses + 1
+	LDA #<CrowFrames_pointersHI
+	STA zTitleObj2PointerAddresses + 2
+	LDA #>CrowFrames_pointersHI
+	STA zTitleObj2PointerAddresses + 3
+	LDA #TITLE_CROW_OFFSET
+	STA zTitleObj2OAMPointer
+	LDA #$4d
+	STA zTitleObj2YCoord
+	LDA #4
+	STA zTitleObjLoopPoint2
+	LDA #CrowFrames_IndexSequence_START - CrowFrames_IndexSequence
+	STA zTitleObj2Timer
+	LDA #>CrowFrames_IndexSequence
+	STA zTitleObj2IndexPointer + 1
+	LDA #<CrowFrames_IndexSequence
+	STA zTitleObj2IndexPointer
+	LDA #>CrowFrames_Movement
+	STA zTitleObj2MovementPointer + 1
+	LDA #<CrowFrames_Movement
+	STA zTitleObj2MovementPointer
+	LDA #>TITLE_SCREEN_CROW_ENTRANCE_1 ; $08
+	STA zTitleObj2StartingPoint + 1
+	LDA #<TITLE_SCREEN_CROW_ENTRANCE_1 ; $14
+	STA zTitleObj2StartingPoint
+	LDA #OAM_24_32_WIDTH
+	STA zTitleObj2Resolution
+	; entering from the left
+	; but movement should already take care of that
+	LDA #1 << ENTER_EXIT_ACT_F | 1 << ENTER_EXIT_F
+	STA zTitleObj2ScreenEdgeFlags
+	LDA #$e9
+	STA zTitleObj2XCoord
+	LDA #0
+	STA zTitleObj2PointerIndex
+	STA zTitleObj2FramePointer
+	STA zTitleObj2FramePointer + 1
+	LDA #>iVirtualOAM
+	STA zTitleObj2OAMPointer + 1
 	RTS
 
 InitCrow2Animation:
@@ -763,9 +853,9 @@ InitOtisAnimation:
 	STA zTitleObj1MovementPointer + 1
 	LDA #<OtisFrames_Movement
 	STA zTitleObj1MovementPointer
-	LDA #>TITLE_SCREEN_OTIS_ENTRANCE_1 ; $08
+	LDA #>TITLE_SCREEN_OTIS_ENTRANCE_1 ; $07
 	STA zTitleObj1StartingPoint + 1
-	LDA #<TITLE_SCREEN_OTIS_ENTRANCE_1 ; $1f
+	LDA #<TITLE_SCREEN_OTIS_ENTRANCE_1 ; $40
 	STA zTitleObj1StartingPoint
 	LDA #TITLE_OTIS_OFFSET
 	STA zTitleObj1OAMPointer
@@ -777,11 +867,14 @@ InitOtisAnimation:
 SpriteSetup_LargeLeft:
 	LDA #OAM_32_32_WIDTH
 	STA zTitleObj1Resolution
+
+SpriteSetup_Left:
 	; entering from the left
 	; but movement should already take care of that
 	LDA #1 << ENTER_EXIT_ACT_F | 1 << ENTER_EXIT_F
 	STA zTitleObj1ScreenEdgeFlags
 	LDA #$e1
+
 GenericSpriteSetup:
 	STA zTitleObj1XCoord
 	LDA #0
@@ -828,9 +921,11 @@ ClearTitleAnim2Area:
 	RTS
 
 Anim2InitPointersLO:
+	dl InitCrowAnimation
 	dl ClearTitleAnim2Area
 
 Anim2InitPointersHI:
+	dh InitCrowAnimation
 	dh ClearTitleAnim2Area
 
 Anim1InitPointersLO:
@@ -1004,20 +1099,65 @@ StartInitializingSprites:
 	RTS
 
 RunSoundQueues:
-	LDA zTitleObj1IndexPointer
-	CMP #<IggyFrames_IndexSequence
+	JSR RunSound1
+
+RunSound2:
+	LDA zTitleObj2PointerAddresses
+	CMP #<CrowFrames_pointersLO
 	BNE @Bail
-	LDA zTitleObj1IndexPointer + 1
-	CMP #>IggyFrames_IndexSequence
+	LDA zTitleObj2PointerAddresses + 1
+	CMP #>CrowFrames_pointersLO
 	BNE @Bail
-	LDY zTitleObj1PointerIndex
-	LDA TitleScreenIggySoundQueues, Y
+	LDY zTitleObj2PointerIndex
+	LDA TitleScreenCrowSoundQueues, Y
+	BEQ @Bail
 	TAY
 	LDA zCurrentDPCMSFX
 	BNE @Bail
 	JSR PlaySFX
 @Bail:
 	RTS
+
+RunSound1:
+	LDA zTitleObj1PointerAddresses
+	CMP #<IggyFrames_pointersLO
+	BNE @Bail
+	LDA zTitleObj1PointerAddresses + 1
+	CMP #>IggyFrames_pointersLO
+	BNE @Bail
+	LDY zTitleObj1PointerIndex
+	LDA TitleScreenIggySoundQueues, Y
+	BEQ @Bail
+	TAY
+	LDA zCurrentDPCMSFX
+	BNE @Bail
+	JSR PlaySFX
+@Bail:
+	RTS
+
+TitleScreenCrowSoundQueues:
+	.db 0
+	.db 0
+	.db SFX_JUMP
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db SFX_FLAP
+	.db 0
+	.db 0
+	.db 0
+	.db SFX_FLAP
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db SFX_FLAP
+	.db 0
+	.db 0
 
 TitleScreenIggySoundQueues:
 	.db 0

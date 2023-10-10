@@ -121,7 +121,7 @@ Start:
 ; PPUCtrl_Background1000
 ; PPUCtrl_SpriteSize8x8
 ; PPUCtrl_NMIEnabled
-	ORA #PPU_NMI | PPU_BACKGROUND_TABLE
+	ORA #PPU_NMI | PPU_BG_TABLE
 	STA zPPUCtrlMirror
 	STA PPUCTRL
 	; wait one vblank to init main loop
@@ -180,6 +180,7 @@ NMI:
 	; scroll
 	LDX zPPUCtrlMirror
 	STX PPUCTRL
+	JSR ResetPPUAddress
 	LDX #0
 	STX PPUSCROLL
 	STX PPUSCROLL

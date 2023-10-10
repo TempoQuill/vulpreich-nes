@@ -111,5 +111,11 @@ NoiseSFX_Sink:
 	noise_note 3, 0, 2
 	noise_ret
 
+NoiseSFX_Flap:
+	noise_envelope 0, 0
+	noise_note 1, 0, 7
+	noise_note 1, 0, 6
+	noise_ret
+
 NoiseSFX_None:
 	noise_ret

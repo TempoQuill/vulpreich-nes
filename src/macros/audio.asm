@@ -122,6 +122,11 @@ d = dir << 3
 	.db $80 + p + d + step
 ENDM
 
-MACRO sfx_note raw_pitch
+MACRO sfx_note length, raw_pitch
 	.dw $800 + raw_pitch
+IF length > 1
+	REPT length - 1
+		.db $40
+	ENDR
+ENDIF
 ENDM

@@ -6,3 +6,4 @@
 .include "src/data/title-lyrics.asm"
 .include "src/data/title-iggy-sprite.asm"
 .include "src/data/title-otis-sprite.asm"
+.include "src/data/title-crow-sprite.asm"

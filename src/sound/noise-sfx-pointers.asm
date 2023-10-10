@@ -28,6 +28,8 @@ NoiseSFXPointersLo:
 	.dl NoiseSFX_DoorSlam
 	.dl NoiseSFX_Sink
 	.dl NoiseSFX_None
+	.dl NoiseSFX_None
+	.dl NoiseSFX_Flap
 
 NoiseSFXPointersHi:
 	.dh NoiseSFX_Hihat
@@ -59,3 +61,5 @@ NoiseSFXPointersHi:
 	.dh NoiseSFX_DoorSlam
 	.dh NoiseSFX_Sink
 	.dh NoiseSFX_None
+	.dh NoiseSFX_None
+	.dh NoiseSFX_Flap
