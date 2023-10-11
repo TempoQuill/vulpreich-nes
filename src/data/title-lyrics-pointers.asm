@@ -1,6 +1,10 @@
 LyricalPointers:
 	.dw cPPUBuffer
 	.dw iStringBuffer
+	.dw TitleJuniorFey
+	.dw iStringBuffer
+	.dw TitleAndOtisReren
+	.dw iStringBuffer
 	.dw Verse1Line1
 	.dw LyricInstaClear
 	.dw Verse1Line2

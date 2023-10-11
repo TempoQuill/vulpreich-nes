@@ -112,3 +112,11 @@ TitldNTInitData:
 	.db $23, $e0, $60, $00
 TitldNTInitData_END:
 	.db $00
+
+TitleJuniorFey:
+	text $216b, "_Junior Fey"
+	text_end
+
+TitleAndOtisReren:
+	text $2169, "_and Otis Reren"
+	text_end

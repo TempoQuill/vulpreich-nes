@@ -1,7 +1,3 @@
-MACRO time_stamp elapse
-	.dw TITLE_SCREEN_DURATION - (elapse)
-ENDM
-
 TryLoadSaveData:
 	LDA #0
 	STA zSaveFileExists
@@ -296,9 +292,9 @@ TitleScreen:
 	RTS
 
 RunTitleScreen:
-	JSR RunLyrics
 	JSR InitNextSprite
 	JSR RunAnimations
+	JSR RunLyrics
 	JSR TryTitleScreenInput
 	BEQ @NoInput
 	DEX
@@ -365,6 +361,7 @@ InitPPULineClear:
 	RTS
 
 RunLyrics:
+	; Have we run into our current time stamp?
 	LDY zLyricsOffset
 	LDA zTitleScreenTimer + 1
 	CMP LyricsTimeStamps + 1, Y
@@ -372,22 +369,28 @@ RunLyrics:
 	LDA zTitleScreenTimer
 	CMP LyricsTimeStamps, Y
 	BNE @Ready
+	; yes, increment
 	INY
 	INY
 	STY zLyricsOffset
+	; load next pointer
 	LDA LyricalPointers, Y
 	STA zPPUDataBufferPointer
 	LDA LyricalPointers + 1, Y
 	STA zPPUDataBufferPointer + 1
+	; is this pointer a string buffer?
 	CMP #>iStringBuffer
 	BEQ InitPPULineClear
+	; Hehehh! Nope!
 	BNE @Exit
 @Ready:
+	; load our pointer
 	LDA LyricalPointers, Y
 	STA zPPUDataBufferPointer
 	LDA LyricalPointers + 1, Y
 	STA zPPUDataBufferPointer + 1
 @Exit:
+	; increment the string clear offset
 	LDY zStringXOffset
 	INY
 	TYA

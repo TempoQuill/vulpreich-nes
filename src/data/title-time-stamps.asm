@@ -1,4 +1,12 @@
+MACRO time_stamp elapse
+	.dw TITLE_SCREEN_DURATION - (elapse)
+ENDM
+
 LyricsTimeStamps:
+	time_stamp 30 * 12 + 6	; gradual clear!
+	time_stamp 30 * 13 + 8	; "...Junior Fey"
+	time_stamp 30 * 14 + 10 ; gradual clear!
+	time_stamp 30 * 15 + 12 ; "...And Otis Reren"
 	time_stamp 30 * 24	; gradual clear!
 	time_stamp 30 * 26	; "He may look like any pet,"
 	time_stamp 30 * 27 + 23	; clear!
