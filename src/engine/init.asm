@@ -533,12 +533,7 @@ RunObject2:
 	EOR #$ff
 	TAY
 	INY
-	BNE @NonZero
-	LDA #$ff
-	BIT zTitleObj2ScreenEdgeFlags
-	BMI @Quit
-	BVS @Quit
-@NonZero:
+	JSR @AdjustFor24x32
 	LDA #$ff
 	BIT zTitleObj2ScreenEdgeFlags
 	BMI @Entering
@@ -560,6 +555,18 @@ RunObject2:
 @ToTheLeft:
 	JMP Sprite2EntranceMask
 @Quit:
+	RTS
+
+@AdjustFor24x32:
+	LDA zTitleObj2Resolution
+	AND #$1f
+	BEQ @DoNotAdjust
+	TYA
+	CLC
+	ADC #$8
+	AND #$1f
+	TAY
+@DoNotAdjust:
 	RTS
 
 LocalObject1Eject:
@@ -620,12 +627,7 @@ RunObject1:
 	EOR #$ff
 	TAY
 	INY
-	BNE @NonZero
-	LDA #$ff
-	BIT zTitleObj1ScreenEdgeFlags
-	BMI @Quit
-	BVS @Quit
-@NonZero:
+	JSR @AdjustFor24x32
 	LDA #$ff
 	BIT zTitleObj1ScreenEdgeFlags
 	BMI @Entering
@@ -647,6 +649,18 @@ RunObject1:
 @ToTheLeft:
 	JMP Sprite1EntranceMask
 @Quit:
+	RTS
+
+@AdjustFor24x32:
+	LDA zTitleObj1Resolution
+	AND #$1f
+	BEQ @DoNotAdjust
+	TYA
+	CLC
+	ADC #$8
+	AND #$1f
+	TAY
+@DoNotAdjust:
 	RTS
 
 IsAtEdge_TitleOBJ1:
