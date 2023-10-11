@@ -259,9 +259,16 @@ zTitleObjLoopPoint1:
 	.dsb 1 ; 00b0
 zTitleObjLoopPoint2:
 	.dsb 1
+zCursorXPos:
+	.dsb 1
+zCursorYPos:
+	.dsb 1
+zCursorFrame:
+	.dsb 1 ; 00b4
 	.dsb 1
 	.dsb 1
-	.dsb 44 ; 00b4
+	.dsb 1
+	.dsb 40 ; 00b8
 zPals:
 	.dsb 32 ; 00e0
 

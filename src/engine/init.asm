@@ -298,12 +298,18 @@ RunTitleScreen:
 	JSR TryTitleScreenInput
 	BEQ @NoInput
 	DEX
+	PHX
+	CPX #2
+	BNE @Other
+	JSR AdjustCursorPos
+@Other:
+	PLX
 	LDY @MusicQueue, X
 	STY zMusicQueue
 	LDY @InputSounds, X
 	JSR PlaySFX
 @NoInput:
-	RTS
+	JMP RunCursor
 
 @MusicQueue:
 	.db 0
@@ -317,11 +323,25 @@ RunTitleScreen:
 	.db SFX_CURSOR_1
 	.db SFX_SELECT_1
 
+AdjustCursorPos:
+	LDX #$4e
+	LDY #$ab
+	LDA zInputBottleNeck
+	CMP #1 << DOWN_BUTTON
+	BEQ @Done
+	LDX #$46
+	LDY #$9b
+@Done:
+	STX zCursorXPos
+	STY zCursorYPos
+	RTS
+
 ; OUTPUT: X:
 ; 0 - Invalid
-; 1 - A / Start
-; 2 - Up / Down
-; 3 - Select + A + B
+; 1 - Select + A + B
+; 2 - A / Start
+; 3 - Up / Down
+; 4 - B
 TryTitleScreenInput:
 	LDX #0
 	LDY zInputBottleNeck
@@ -411,6 +431,48 @@ RunAnimations:
 	JSR RunObject2
 	JSR RunSoundQueues
 @Quit:
+	RTS
+
+RunCursor:
+	LDA zFilmStandardTimerOdd
+	BPL @NoUpdate
+	LDY zCursorFrame
+	INY
+	TYA
+	AND #%00000011
+	STA zCursorFrame
+@NoUpdate:
+	LDX #OAM_16_16_WIDTH
+	LDY zCursorFrame
+	LDA CursorMetspriteOffsets, Y
+	TAY
+@Loop:
+	; X Position
+	LDA zCursorXPos
+	JSR @Coord
+	; attribute
+	JSR @TileAttr
+	; tile no.
+	JSR @TileAttr
+	; Y position
+	LDA zCursorYPos
+	JSR @Coord
+	BPL @Loop
+	RTS
+
+@TileAttr:
+	DEY
+	LDA CursorMetaspriteData, Y
+	DEX
+	STA iVirtualOAM + TITLE_CURSOR_OFFSET, X
+	RTS
+
+@Coord:
+	DEY
+	CLC
+	ADC CursorMetaspriteData, Y
+	DEX
+	STA iVirtualOAM + TITLE_CURSOR_OFFSET, X
 	RTS
 
 LocalObject2Eject:
@@ -1174,6 +1236,7 @@ InitSprites:
 	JMP (zTitleObj1InitPointer)
 
 StartInitializingSprites:
+	; main characters
 	LDA #3
 	STA zTitleObjFinished
 	LDA #$ff
@@ -1189,7 +1252,29 @@ StartInitializingSprites:
 	STA zTitleObj2InitPointer
 	LDA Anim2InitPointersHI - $ff, X
 	STA zTitleObj2InitPointer + 1
+	; cursor
+	LDA #0
+	STA zTitleScreenOption
+	STA zCursorFrame
+	LDA #$46
+	STA zCursorXPos
+	LDA #$9b
+	STA zCursorYPos
 	RTS
+
+CursorMetaspriteData:
+	nesst_meta   0,  0, $9d, 1
+	nesst_meta   8,  0, $9f, 1
+	nesst_meta   0,  0, $a1, 1
+	nesst_meta   8,  0, $a3, 1
+	nesst_meta   0,  0, $9d, 1 | OAM_REV_Y
+	nesst_meta   8,  0, $9f, 1 | OAM_REV_Y
+
+CursorMetspriteOffsets:
+	.db OAM_16_16_WIDTH * 1
+	.db OAM_16_16_WIDTH * 2
+	.db OAM_16_16_WIDTH * 3
+	.db OAM_16_16_WIDTH * 2
 
 RunSoundQueues:
 	JSR RunSound1

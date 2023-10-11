@@ -64,7 +64,7 @@ TitleScreenLayout:
 
 	text $2166, "_starring Iggy Reich"
 
-	text $228d, "Begin"
+	text $228b, "Save Menu"
 	text $22cc, "Options"
 
 	text $2327, "@2024 Tempo Quill"
@@ -72,7 +72,6 @@ TitleScreenLayout:
 	text_end
 
 BeginningText:
-	.db $3f, $10, $50, $0f
 	text $2142, "_inspired by Doug Tennapel&"
 	text $218b, "CATSCRATCH_"
 	text_end
