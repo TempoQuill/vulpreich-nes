@@ -27,7 +27,7 @@
 ; add each of the banks
 ; VulpReich is built with the MMC5 in mind
 ; it maxes out all of the possible specs with this mapper.
-; 8000-dfff - general purpose ROM
+; 8000-bfff - general purpose ROM
 ; 8000-9fff - switchable window lower
 ; a000-bfff - switchable window upper
 ; c000-dfff - always DPCM data
