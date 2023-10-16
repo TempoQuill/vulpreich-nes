@@ -9,16 +9,16 @@ UpdatePRG:
 
 UpdateCHR:
 ; This updates all the needed registers.
-; we're in mode 1, so we can switch tilesets in as needed
+; we're in mode 1, so we can switch tilesets / sprites in as needed
 ; 4K is the perfect balance between speed and flexibility
 	LDA zCHRWindow0
-	STA MMC5_CHRBankSwitch4 ; 0000-0fff
+	STA MMC5_CHRBankSwitch4 ; sprite table 0
 
 	LDA zCHRWindow1
-	STA MMC5_CHRBankSwitch8  ; 1000-1fff
+	STA MMC5_CHRBankSwitch8 ; sprite table 1
 
 	LDA zCHRWindow2
-	STA MMC5_CHRBankSwitch12 ; 1000-1fff, 0000-0fff
+	STA MMC5_CHRBankSwitch12 ; background
 
 	RTS
 
@@ -169,6 +169,8 @@ NMI:
 	;           (Standard Animation Framerate)-++
 	JSR CheckFilmTimers
 	BNE @OffFrame
+	; CHR ROM
+	JSR UpdateCHR
 	; palettes
 	JSR @ApplyPalette
 	; Map
