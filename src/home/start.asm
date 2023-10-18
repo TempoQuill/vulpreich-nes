@@ -48,57 +48,77 @@ ResetPPUAddress:
 ; Updates joypad press/held values
 ;
 UpdateJoypads:
-	JSR ReadJoypads
-	LDY #1
+	; Work around DPCM sample bug.
+	; Some inputs are skipped, leading to polling corruption
+	; most noticeable with forged right presses, but also mistaking
+	; certain inputs for others
 
-@Loop1:
-	; Work around DPCM sample bug,
-	; where some inputs get forged
+	; Delection can result in each column below:
+	; Interpreted: A B      SELECT START UP   DOWN LEFT  RIGHT
+	; Reality:     B SELECT START  UP    DOWN LEFT RIGHT NULL
+	JSR ReadJoypad
 	LDA zInputBottleNeck
-	STA iBackupInput, Y
-	JSR ReadJoypads
-	DEY
-	BPL @Loop1
-
-	LDX #$02
+	STA iBackupInput
+	JSR ReadJoypad
 	LDA zInputBottleNeck
+	STA iBackupInput + 1
+	LDX #1
+	EOR iBackupInput
+	BEQ @Loop
+	TAX
 
-@CMPStash:
-	DEX
-	BMI @UseStash
-	CMP iBackupInput, X
-	BNE @CMPStash
-	BEQ @Bottleneck
-
-@UseStash:
+	LDA iBackupInput + 1
+	BEQ @CorrectInput
 	LDA iBackupInput
-	AND iBackupInput + 1
+	BEQ @CorrectInput
+
+	JSR @FindDeletion
+
+	LDA iBackupInput, Y
+
+@CorrectInput:
 	STA zInputBottleNeck
 
-@Bottleneck:
-	LDX #$01
-
-@Loop2:
-	LDA zInputBottleNeck, X ; Update the press/held values
+@Loop:
+	LDA zInputBottleNeck
 	TAY
-	EOR zInputCurrentState, X
-	AND zInputBottleNeck, X
-	STA zInputBottleNeck, X
-	STY zInputCurrentState, X
-	DEX
-	BPL @Loop2
+	EOR zInputCurrentState
+	AND zInputBottleNeck
+	STA zInputBottleNeck
+	STY zInputCurrentState
 	RTS
 
+@FindDeletion:
+	TXA
+	AND iBackupInput
+	STA iBackupInput + 2
+	TXA
+	AND iBackupInput + 1
+	STA iBackupInput + 3
+	LDY #0
+@Looking:
+	LSR iBackupInput + 3
+	BCS @Found
+	LDY #1
+	LDA iBackupInput + 3
+	BEQ @Found
+	LSR iBackupInput + 2
+	BCS @Found
+	LDY #0
+	LDA iBackupInput + 2
+	BNE @Looking
+@Found:
+	RTS
 
 ;
 ; Reads joypad pressed input
 ;
-ReadJoypads:
+ReadJoypad:
 	; send a jolt to the controller
 	LDA #1
 	STA JOY1
 	; send the same jolt to the bottleneck to set C at the end
-	STA zInputBottleNeck + 1
+	STA zInputBottleNeck
 	; 1 >> 1 = 0, C is not needed right now
 	LSR A
 	STA JOY1
@@ -108,9 +128,6 @@ ReadJoypads:
 	LSR A
 	; are we done?
 	ROL zInputBottleNeck
-	LDA JOY2
-	LSR A
-	ROL zInputBottleNeck + 1
 	BCC @Loop
 	; we're done
 	RTS
