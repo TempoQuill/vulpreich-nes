@@ -12,14 +12,24 @@ UpdateCHR:
 ; we're in mode 1, so we can switch tilesets / sprites in as needed
 ; 4K is the perfect balance between speed and flexibility
 	LDA zCHRWindow0
+	BEQ @CHR2
 	STA MMC5_CHRBankSwitch4 ; sprite table 0
 
+@CHR2:
 	LDA zCHRWindow1
+	BEQ @CHR3
 	STA MMC5_CHRBankSwitch8 ; sprite table 1
 
+@CHR3:
 	LDA zCHRWindow2
+	BEQ @Quit
 	STA MMC5_CHRBankSwitch12 ; background
 
+@Quit:
+	LDA #0
+	STA zCHRWindow0
+	STA zCHRWindow1
+	STA zCHRWindow2
 	RTS
 
 ; this unreferenced subroutine was commonplace in 80's NES games
@@ -325,7 +335,8 @@ RESET:
 	LDA #$0f
 	STA MMC5_SND_CHN
 
-	; select the first two CHR banks
+	; select the first three CHR banks
+	; bank 0 is a mirror of 3
 	LDX #CHR_TitleBG
 	STX MMC5_CHRBankSwitch12
 	STX zCHRWindow2
@@ -335,6 +346,7 @@ RESET:
 	DEX ; CHR_TitleOBJ1
 	STX MMC5_CHRBankSwitch4
 	STX zCHRWindow0
+	DEX
 	TXA
 	; init RAM
 @Loop:

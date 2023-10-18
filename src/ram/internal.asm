@@ -139,9 +139,9 @@ zPalFadeSpeed:
 zPalFadePlacement:
 	.dsb 1
 ; section: miscellaneous
-zTitleScreenOption:
+zSaveMenuOption:
 	.dsb 1 ; 0060
-zTitleScreenSelectedOption:
+zSaveMenuSelectedOption:
 	.dsb 1
 zCurrentTextByte:
 	.dsb 1

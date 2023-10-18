@@ -257,7 +257,7 @@ RunTitleScreen:
 	PHX
 	CPX #2
 	BNE @Other
-	JSR AdjustCursorPos
+	JSR AdjustCursorPos_Title
 @Other:
 	PLX
 	LDY @MusicQueue, X
@@ -265,7 +265,7 @@ RunTitleScreen:
 	LDY @InputSounds, X
 	JSR PlaySFX
 @NoInput:
-	JMP RunCursor
+	JMP RunCursor_Title
 
 @MusicQueue:
 	.db 0
@@ -279,7 +279,7 @@ RunTitleScreen:
 	.db SFX_CURSOR_1
 	.db SFX_SELECT_1
 
-AdjustCursorPos:
+AdjustCursorPos_Title:
 	LDX #$4e
 	LDY #$ab
 	LDA zInputBottleNeck
@@ -389,7 +389,7 @@ RunAnimations:
 @Quit:
 	RTS
 
-RunCursor:
+RunCursor_Title:
 	LDA zFilmStandardTimerOdd
 	BPL @NoUpdate
 	LDY zCursorFrame
@@ -400,7 +400,7 @@ RunCursor:
 @NoUpdate:
 	LDX #OAM_16_16_WIDTH
 	LDY zCursorFrame
-	LDA CursorMetspriteOffsets, Y
+	LDA CursorMetspriteOffsets_Title, Y
 	TAY
 @Loop:
 	; X Position
@@ -418,7 +418,7 @@ RunCursor:
 
 @TileAttr:
 	DEY
-	LDA CursorMetaspriteData, Y
+	LDA CursorMetaspriteData_Title, Y
 	DEX
 	STA iVirtualOAM + TITLE_CURSOR_OFFSET, X
 	RTS
@@ -426,7 +426,7 @@ RunCursor:
 @Coord:
 	DEY
 	CLC
-	ADC CursorMetaspriteData, Y
+	ADC CursorMetaspriteData_Title, Y
 	DEX
 	STA iVirtualOAM + TITLE_CURSOR_OFFSET, X
 	RTS
@@ -1224,7 +1224,6 @@ StartInitializingSprites:
 	STA zTitleObj2InitPointer + 1
 	; cursor
 	LDA #0
-	STA zTitleScreenOption
 	STA zCursorFrame
 	LDA #$46
 	STA zCursorXPos
@@ -1232,7 +1231,7 @@ StartInitializingSprites:
 	STA zCursorYPos
 	RTS
 
-CursorMetaspriteData:
+CursorMetaspriteData_Title:
 	nesst_meta   0,  0, $9d, 1
 	nesst_meta   8,  0, $9f, 1
 	nesst_meta   0,  0, $a1, 1
@@ -1240,7 +1239,7 @@ CursorMetaspriteData:
 	nesst_meta   0,  0, $9d, 1 | OAM_REV_Y
 	nesst_meta   8,  0, $9f, 1 | OAM_REV_Y
 
-CursorMetspriteOffsets:
+CursorMetspriteOffsets_Title:
 	.db OAM_16_16_WIDTH * 1
 	.db OAM_16_16_WIDTH * 2
 	.db OAM_16_16_WIDTH * 3

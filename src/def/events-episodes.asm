@@ -54,7 +54,9 @@ LOC_BLOCK: ; $08
 	.dsb 1
 LOC_PARK: ; $09
 	.dsb 1
-LOC_COURT: ; $0a
+LOC_PHILS: ; 0a
+	.dsb 1
+LOC_COURT: ; $0b
 .ende
 
 .enum $0000
@@ -111,5 +113,9 @@ EPISODE_OTIS_ODOR: ; $18
 EPISODE_HORNET_TAG: ; $19
 	.dsb 1
 EPISODE_FIRST_REUNION: ; $1a
+	.dsb 1
+EPISODE_COUNT:
+
+NUM_EPISODES = EPISODE_COUNT >> 1
 
 .ende
