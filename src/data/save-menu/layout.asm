@@ -11,35 +11,46 @@ SaveMenuLayout:
 	.db $23, $4f, $51, $92
 	.db $23, $6f, $51, $91
 	; bg details
-	.db $21, $f8, $83 ; June's house
+	.db $21, $db, $83 ; June's house
 	.db $c1, $c4, $c7
-	.db $21, $f9, $05
+
+	.db $21, $dc, $85
 	.db $c2, $c5, $c8, $ca, $cc
-	.db $21, $fa, $04
+
+	.db $21, $dd, $84
 	.db $c3, $c6, $c9, $cb
+
 	.db $20, $83, $83 ; pointing to save data
 	.db $be, $bf, $c0
+
 	.db $21, $c6, $05 ; street lamp
 	.db $b8, $b9, $b7, $b7, $b6
 	.db $21, $ea, $c7, $b5
+
 	.db $22, $67, $02 ; street details
 	.db $ba, $bb
+
 	.db $22, $c3, $08
 	.db $9d, $00, $a0, $a1, $a2, $00, $96, $b4
+
 	.db $22, $e2, $08
 	.db $9e, $00, $00, $a3, $a4, $a5, $00, $97
-	.db $23, $01, $01
-	.db $9f
+
+	.db $23, $01, $05
+	.db $9f, $00, $00, $ce, $cf
+
 	.db $23, $08, $82
 	.db $98, $99
-	.db $23, $04, $02
-	.db $ce, $cf
+
 	.db $23, $43, $05
 	.db $cd, $00, $00, $00, $9a
+
 	.db $23, $61, $07
 	.db $a8, $a9, $aa, $00, $00, $00, $9b
+
 	.db $23, $81, $06
 	.db $ab, $ac, $ad, $00, $00, $9c
+
 	.db $23, $a1, $01
 	.db $cd
 	.db $23, $a6, $01
@@ -84,6 +95,7 @@ SaveMenuLayoutNormalAttributes:
 	.db $af, $fe, $ff, $bf, $af, $a7, $af, $af
 	.db $0a
 	.db $23, $f9, $47, $0f
+	.db $00
 
 SaveMenuLayout_END:
 	.db $00

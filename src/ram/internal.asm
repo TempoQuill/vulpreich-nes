@@ -149,7 +149,9 @@ zTextBank:
 	.dsb 1
 zCurrentTextAddress:
 	.dsb 2 ; 0064
+zSaveMenuROMPointer:
 	.dsb 2
+zSaveMenuRAMPointer:
 	.dsb 2 ; 0068
 	.dsb 2
 	.dsb 2 ; 006c
@@ -157,7 +159,7 @@ zCurrentTextAddress:
 	.dsb 2 ; 0070
 	.dsb 2
 	.dsb 2 ; 0074
-zJumpTableIndex:
+zTitleScreenSelectedOption:
 	.dsb 1
 	.dsb 1
 zTitleScreenTimer:

@@ -45,14 +45,23 @@ IntroSequence:
 @CheckPal:
 	LDY zPals + 15
 	CPY #$f
-	BEQ @RST
+	BEQ @Terminal
 	LDA #1
 	JSR DelayFrame_s_
 	JMP @CheckPal
-@RST:
+@Terminal:
 	LDA zFilmStandardTimerEven
 	JSR DelayFrame_s_
+	LDX zTitleScreenSelectedOption
+	BEQ @RST
+	DEX ; SELECT + A + B
+	BEQ @RST
+	DEX ; START / A
+	BEQ @SaveMenu
+@RST:
 	JMP IntroSequence
+@SaveMenu:
+	JMP SaveMenuScreen
 
 InspiredScreen:
 	; we're initializing the PPU
@@ -221,6 +230,8 @@ TitleScreen:
 	LDY #MUSIC_TITLE
 	STY zMusicQueue
 
+	LDA #0
+	STA zTitleScreenSelectedOption
 	; sure, we can get the game to show our stuff now
 	LDA #PPU_OBJ | PPU_BG
 	STA PPUMASK
@@ -269,7 +280,7 @@ RunTitleScreen:
 
 @MusicQueue:
 	.db 0
-	.db 0
+	.db MUSIC_NONE
 	.db 0
 	.db MUSIC_NONE
 
@@ -320,6 +331,7 @@ TryTitleScreenInput:
 	LDX #0
 @Ret:
 	TXA
+	STA zTitleScreenSelectedOption
 	RTS
 
 InitPPULineClear:
@@ -413,7 +425,7 @@ RunCursor_Title:
 	; Y position
 	LDA zCursorYPos
 	JSR @Coord
-	BPL @Loop
+	BNE @Loop
 	RTS
 
 @TileAttr:

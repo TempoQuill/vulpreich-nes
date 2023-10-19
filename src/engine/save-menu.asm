@@ -39,46 +39,39 @@ InitSaveMenuBackground:
 	; initialize background
 	JSR InitSaveMenuData
 
-	; if the first 128 bytes match, data's probably preserved
-	LDY #$80
-@Check:
-	LDA wSaveMenuArea, Y
-	CMP SaveMenuLayout, Y
-	BNE @SetupROMtoRAM
-	DEY
-	BPL @Check
-	BMI @DataFinished
-
-@SetupROMtoRAM:
+	; switch to main save file
+	LDA #RAM_PrimaryPlayFile
+	STA MMC5_PRGBankSwitch1
+	STA zRAMBank
 ; copy the layout of the save menu background
 	; start by loading two pointers: one to ROM, one to W/SRAM
 	LDA #>SaveMenuLayout
-	STA zAuxAddresses + 7
+	STA zSaveMenuROMPointer + 1
 	LDA #<SaveMenuLayout
-	STA zAuxAddresses + 6
+	STA zSaveMenuROMPointer
 	LDA #>wSaveMenuArea
-	STA zPPUDataBufferPointer + 1
+	STA zSaveMenuRAMPointer + 1
 	LDA #<wSaveMenuArea
-	STA zPPUDataBufferPointer
+	STA zSaveMenuRAMPointer
 
 	; add an offset to the high byte
 	LDA #>(SaveMenuLayout_END - SaveMenuLayout)
 	STA wSaveMenuOffsetHI
 	TAY
 	CLC
-	ADC zAuxAddresses + 7
-	STA zAuxAddresses + 7
+	ADC zSaveMenuROMPointer + 1
+	STA zSaveMenuROMPointer + 1
 	TYA
 	CLC
-	ADC zPPUDataBufferPointer + 1
-	STA zPPUDataBufferPointer + 1
+	ADC zSaveMenuRAMPointer + 1
+	STA zSaveMenuRAMPointer + 1
 
 	; we now copy the data until we run negative
 	LDY #<(SaveMenuLayout_END - SaveMenuLayout)
 @CopyData:
 	JSR SendToSaveData
-	DEC zAuxAddresses + 7
-	DEC zPPUDataBufferPointer + 1
+	DEC zSaveMenuROMPointer + 1
+	DEC zSaveMenuRAMPointer + 1
 	DEC wSaveMenuOffsetHI
 	BPL @CopyData
 
@@ -88,34 +81,34 @@ InitSaveMenuBackground:
 ; in order the data goes: name, episodes, events, locations
 	; We load in our data in case
 	LDA #>wSaveMenuData1
-	STA zPPUDataBufferPointer + 1
+	STA zSaveMenuRAMPointer + 1
 	LDA #<wSaveMenuData1
-	STA zPPUDataBufferPointer
+	STA zSaveMenuRAMPointer
 
 	; is there a string in Save Area 1?
 	LDA sSaveArea1
 	BEQ @SkipRAM1
 
 	LDA #>sSaveArea1
-	STA zAuxAddresses + 7
+	STA zSaveMenuRAMPointer + 1
 	LDA #<sSaveArea1
-	STA zAuxAddresses + 6
+	STA zSaveMenuRAMPointer
 
 	LDY #wSaveMenuData2 - wSaveMenuData1
 	JSR SendToSaveData
 
 	LDA #>wSaveMenuData2
-	STA zPPUDataBufferPointer + 1
+	STA zSaveMenuRAMPointer + 1
 	LDA #<wSaveMenuData2
-	STA zPPUDataBufferPointer
+	STA zSaveMenuRAMPointer
 @SkipRAM1:
 	LDA sSaveArea2
 	BEQ @SkipRAM2
 
 	LDA #>sSaveArea2
-	STA zAuxAddresses + 7
+	STA zSaveMenuRAMPointer + 1
 	LDA #<sSaveArea2
-	STA zAuxAddresses + 6
+	STA zSaveMenuRAMPointer
 
 	LDY #wSaveMenuData2 - wSaveMenuData1
 	JSR SendToSaveData
@@ -134,10 +127,14 @@ InitSaveMenuBackground:
 	DEY
 	BPL @StringLoop
 	; we can enable graphical updates now
+	; increase sprite size for faster logic
 	LDA zPPUCtrlMirror
 	ORA #PPU_NMI | PPU_OBJ_RES
 	STA zPPUCtrlMirror
 	STA PPUCTRL
+
+	LDA #1
+	JSR DelayFrame_s_
 
 	LDA #<iStringBuffer
 	STA zPPUDataBufferPointer
@@ -151,6 +148,9 @@ InitSaveMenuBackground:
 	STY zPPUDataBufferPointer + 1
 	LDY #<wSaveMenuArea
 	STY zPPUDataBufferPointer
+
+	LDA #1
+	JSR DelayFrame_s_
 
 	; sure, we can get the game to show our stuff now
 	LDA #PPU_OBJ | PPU_BG
@@ -170,8 +170,11 @@ InitSaveMenuBackground:
 	RTS
 
 InitSaveMenuOptionsNSprites:
-	LDA #0
-	STA zSaveMenuOption
+	LDX #0
+	STX zSaveMenuOption
+	STX zCursorFrame
+	DEX
+	STX zSaveMenuSelectedOption
 	LDA #<SaveMenuLayoutNormalAttributes
 	STA zPPUDataBufferPointer
 	LDA #>SaveMenuLayoutNormalAttributes
@@ -188,19 +191,113 @@ InitSaveMenuOptionsNSprites:
 	STA zCursorYPos
 	RTS
 
+RunCursor_SaveMenu:
+	LDA zFilmStandardTimerOdd
+	BPL @NoUpdate
+	LDY zCursorFrame
+	TYA
+	AND #%00000100
+	STA zCursorFrame
+	INY
+	TYA
+	AND #%00000011
+	ORA zCursorFrame
+	STA zCursorFrame
+@NoUpdate:
+	LDX #OAM_16_16_WIDTH
+	LDY zCursorFrame
+	LDA CursorMetspriteOffsets_SaveMenu, Y
+	TAY
+@Loop:
+	; X Position
+	LDA zCursorXPos
+	JSR @Coord
+	; attribute
+	JSR @TileAttr
+	; tile no.
+	JSR @TileAttr
+	; Y position
+	LDA zCursorYPos
+	JSR @Coord
+	BNE @Loop
+	RTS
+
+@TileAttr:
+	DEY
+	LDA CursorMetaspriteData_SaveMenu, Y
+	DEX
+	STA iVirtualOAM + SAVE_MENU_CURSOR_OFFS, X
+	RTS
+
+@Coord:
+	DEY
+	CLC
+	ADC CursorMetaspriteData_SaveMenu, Y
+	DEX
+	STA iVirtualOAM + SAVE_MENU_CURSOR_OFFS, X
+	RTS
+
 SaveMenuPals:
 .incbin "src/raw-data/save-menu.pal"
 
 SaveMenuScreen:
 	JSR InitSaveMenuBackground
 	JSR InitSaveMenuOptionsNSprites
-@Loop:
+@Run:
+	JSR TrySaveMenuInput
+	JSR AlignSaveMenuOptions
+	JSR RunCursor_SaveMenu
+	LDA #1
+	JSR DelayFrame_s_
+	JMP @Run
+
+AlignSaveMenuOptions:
+	; curosr
+	LDY zSaveMenuOption
+	LDA SaveMenuCursr_YPositions, Y
+	STA zCursorYPos
+	LDA SaveMenuCursr_FrameSet, Y
+	BNE @Add
+	LDA zCursorFrame
+	AND #3
+	STA zCursorFrame
+	BPL @Attr
+@Add:
+	ORA zCursorFrame
+	STA zCursorFrame
+@Attr:
+	; attribute data
+	LDY zSaveMenuOption
+	LDA @AttrPointersLO, Y
+	STA zPPUDataBufferPointer
+	LDA @AttrPointersHI, Y
+	STA zPPUDataBufferPointer + 1
 	RTS
+
+@AttrPointersLO:
+	dl SaveMenuLayoutNormalAttributes
+	dl SaveMenuLayoutNormalAttributes
+	dl SaveMenuHighlight1
+	dl SaveMenuHighlight2
+	dl SaveMenuLayoutNormalAttributes
+
+@AttrPointersHI:
+	dh SaveMenuLayoutNormalAttributes
+	dh SaveMenuLayoutNormalAttributes
+	dh SaveMenuHighlight1
+	dh SaveMenuHighlight2
+	dh SaveMenuLayoutNormalAttributes
+
+SaveMenuCursr_YPositions:
+	.db $0b, $0b, $f8, $f8
+
+SaveMenuCursr_FrameSet:
+	.db 4, 0, 4, 4
 
 SendToSaveData:
 	DEY
-	LDA (zAuxAddresses + 6), Y
-	STA (zPPUDataBufferPointer), Y
+	LDA (zSaveMenuROMPointer), Y
+	STA (zSaveMenuRAMPointer), Y
 	TYA
 	BNE SendToSaveData
 	RTS
@@ -214,4 +311,94 @@ InitSaveMenuData:
 	BNE @Loop
 	LDA #CHR_SaveMenuBG
 	STA zCHRWindow2
+	RTS
+
+TrySaveMenuInput:
+	JSR GetInputAction
+	; 0 - do nothing
+	BEQ @NoUpdate
+	; 1 - switch betwen cursor & attributes
+	DEX
+	BEQ @OptionBit1
+	; 2 - switch cursor / attributes position
+	DEX
+	BEQ @OptionBit0
+	; 3 - select current option
+	DEX
+	BEQ @Select
+	; 4 - back to title screen
+	DEX
+	BEQ @NoUpdate
+	; > 4 - invalid
+@NoUpdate;
+	RTS
+
+@Select:
+	LDA zSaveMenuOption
+	STA zSaveMenuSelectedOption
+	LDY #SFX_SELECT_1
+	JMP PlaySFX
+
+@Back:
+	LDA #$4
+	STA zSaveMenuOption
+	STA zSaveMenuSelectedOption
+	LDY #SFX_SELECT_1
+	JMP PlaySFX
+
+@OptionBit1:
+	TYA
+	AND #1 << UP_BUTTON | 1 << DOWN_BUTTON
+	CMP #1 << UP_BUTTON
+	LDA #%00000010
+	BCC @BitUp
+	BCS @BitDown
+
+@OptionBit0:
+	TYA
+	AND #1 << LEFT_BUTTON | 1 << RIGHT_BUTTON
+	CMP #1 << LEFT_BUTTON
+	LDA #%00000001
+	BCS @BitDown
+@BitUp:
+	ORA zSaveMenuOption
+	STA zSaveMenuOption
+	LDY #SFX_CURSOR_1
+	JMP PlaySFX
+
+@BitDown:
+	FAB
+	AND zSaveMenuOption
+	STA zSaveMenuOption
+	LDY #SFX_CURSOR_1
+	JMP PlaySFX
+
+; 0 - do nothing
+; 1 - switch between cursor & attributes
+; 2 - switch cursor / attributes position
+; 3 - select current option
+; 4 - back to title screen
+GetInputAction:
+	LDX #0
+	LDY zInputBottleNeck
+	BEQ @Done
+	TYA
+	INX
+	AND #1 << UP_BUTTON | 1 << DOWN_BUTTON
+	BNE @Done
+	INX
+	TYA
+	AND #1 << LEFT_BUTTON | 1 << RIGHT_BUTTON
+	BNE @Done
+	INX
+	TYA
+	AND #1 << A_BUTTON | 1 << START_BUTTON
+	BNE @Done
+	INX
+	TYA
+	TSB B_BUTTON
+	BNE @Done
+	LDX #0
+@Done:
+	TXA
 	RTS
