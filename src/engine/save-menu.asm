@@ -152,6 +152,8 @@ InitSaveMenuBackground:
 	LDA #1
 	JSR DelayFrame_s_
 
+	JSR InitSaveMenuOptionsNSprites
+
 	; sure, we can get the game to show our stuff now
 	LDA #PPU_OBJ | PPU_BG
 	STA PPUMASK
@@ -242,7 +244,6 @@ SaveMenuPals:
 
 SaveMenuScreen:
 	JSR InitSaveMenuBackground
-	JSR InitSaveMenuOptionsNSprites
 @Run:
 	JSR TrySaveMenuInput
 	JSR AlignSaveMenuOptions
@@ -311,6 +312,10 @@ InitSaveMenuData:
 	BNE @Loop
 	LDA #CHR_SaveMenuBG
 	STA zCHRWindow2
+	LDA #CHR_TitleOBJ2
+	STA zCHRWindow1
+	LDA #CHR_TitleOBJ1
+	STA zCHRWindow0
 	RTS
 
 TrySaveMenuInput:

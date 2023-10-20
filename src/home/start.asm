@@ -11,19 +11,17 @@ UpdateCHR:
 ; This updates all the needed registers.
 ; we're in mode 1, so we can switch tilesets / sprites in as needed
 ; 4K is the perfect balance between speed and flexibility
-	LDA zCHRWindow0
-	BEQ @CHR2
-	STA MMC5_CHRBankSwitch4 ; sprite table 0
-
-@CHR2:
-	LDA zCHRWindow1
-	BEQ @CHR3
-	STA MMC5_CHRBankSwitch8 ; sprite table 1
-
-@CHR3:
 	LDA zCHRWindow2
 	BEQ @Quit
 	STA MMC5_CHRBankSwitch12 ; background
+
+	LDA zCHRWindow1
+	BEQ @Quit
+	STA MMC5_CHRBankSwitch8 ; sprite table 1
+
+	LDA zCHRWindow0
+	BEQ @Quit
+	STA MMC5_CHRBankSwitch4 ; sprite table 0
 
 @Quit:
 	LDA #0
