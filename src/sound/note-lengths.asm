@@ -23,7 +23,7 @@
 ;
 
 NLT_Title = $64
-NLT_GardenParty = $61
+NTL_Save = $a4
 
 ;
 ; Triangle Linearity Indeces

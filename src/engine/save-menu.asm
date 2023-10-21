@@ -159,6 +159,9 @@ InitSaveMenuBackground:
 	STA PPUMASK
 	STA zPPUMaskMirror
 
+	LDA #MUSIC_SAVE_MENU
+	STA zMusicQueue
+
 	; fade in
 	LDA zPals
 	AND #COLOR_INDEX

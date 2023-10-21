@@ -55,4 +55,12 @@ MusicHeaderTitle9:
 MusicHeaderTitle10:
 	musicHeader NLT_Title, MusDTitle10, MusDTitle10_Hill, MusDTitle10_SQ1, MusDTitle10_Noise, MusDTitle10_DPCM
 
+; ----------------------------------------
+; Save Menu
+MusicHeaderSaveMenu1:
+	musicHeader NTL_Save, MusDSave1, MusDSave1_Hill, MusDSave1_SQ1, MusDSave1_Noise, MusDSave1_DPCM
+
+MusicHeaderSaveMenu2:
+	musicHeader NTL_Save, MusDSave2, MusDSave2_Hill, MusDSave2_SQ1, MusDSave2_Noise, MusDSave2_DPCM
+
 .pad MusicHeaders + $100, $ff

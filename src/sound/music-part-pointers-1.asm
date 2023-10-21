@@ -22,4 +22,10 @@ MusicPartPointers_TitleLoop:
 MusicPartPointers_TitleEnd:
 	musicHeaderPointer MusicHeaderTitle10
 
+MusicPartPointers_SaveMenu:
+MusicPartPointers_SaveMenuLoop:
+	musicHeaderPointer MusicHeaderSaveMenu1
+MusicPartPointers_SaveMenuEnd:
+	musicHeaderPointer MusicHeaderSaveMenu2
+
 .pad MusicPartPointers + $100, $ff

@@ -9,3 +9,6 @@
 .include "src/sound/music/title-8.asm"
 .include "src/sound/music/title-9.asm"
 .include "src/sound/music/title-10.asm"
+
+.include "src/sound/music/save-menu-1.asm"
+.include "src/sound/music/save-menu-2.asm"

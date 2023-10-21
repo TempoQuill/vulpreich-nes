@@ -6,5 +6,5 @@
 ;
 MusicChannelStack:
 	.db $05 ; title
-	.db $05 ; hof scene 3
+	.db $05 ; save menu
 	.db $05 ; journey

@@ -62,13 +62,11 @@ Audio1_InstrumentDVE_D0_Short:
 
 InstrumentDVE_F0:
 Audio1_InstrumentDVE_F0:
-	.db "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@AABBCCDDEFGH" + Duty1
-	.db "D" + Duty2
+	.db "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ABI" + Duty2
 
 InstrumentDVE_F0_Short:
 Audio1_InstrumentDVE_F0_Short:
-	.db "@@@@@@@@@@AABBCCDDEFGH" + Duty1
-	.db "D" + Duty2
+	.db "@@@@@@@@@@@@@@@@@@@@ABI" + Duty2
 
 NoteLengthMultipliers:
 Audio1_NoteLengthMultipliers:
