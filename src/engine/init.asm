@@ -11,6 +11,8 @@ IntroPals:
 
 IntroSequence:
 	JSR InspiredScreen
+
+IntroSequence_TitleOnly:
 	JSR TitleScreen
 	; initialize the lyrical offset
 	LDA #0

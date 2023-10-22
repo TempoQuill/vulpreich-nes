@@ -251,9 +251,43 @@ SaveMenuScreen:
 	JSR TrySaveMenuInput
 	JSR AlignSaveMenuOptions
 	JSR RunCursor_SaveMenu
+	; was B just pressed?
+	LDA zInputBottleNeck
+	TSB B_BUTTON
+	BNE @Back
+	; Nope.  We're still running.
 	LDA #1
 	JSR DelayFrame_s_
 	JMP @Run
+@Back:
+	; B was pressed.
+	; Run sound queues
+	LDY #SFX_SELECT_1
+	JSR PlaySFX
+	LDA #$FF
+	STA zMusicQueue
+	; Update palette fade speed
+	LDA #1
+	STA zPalFadeSpeed
+	; fade out
+	LDA zPals
+	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
+	STA zPals
+@WaitForFadeOut:
+	; wait until fadeout is finished
+	LDA #1
+	JSR DelayFrame_s_
+	LDA zPals
+	BMI @WaitForFadeOut
+	; update CHR windows
+	LDA #CHR_TitleBG
+	STA zCHRWindow2
+	LDA #CHR_TitleOBJ2
+	STA zCHRWindow1
+	LDA #CHR_TitleOBJ1
+	STA zCHRWindow0
+	; aaaand JUMP!
+	JMP IntroSequence_TitleOnly
 
 AlignSaveMenuOptions:
 	; curosr
