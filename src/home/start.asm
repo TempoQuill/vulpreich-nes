@@ -54,30 +54,38 @@ UpdateJoypads:
 	; Delection can result in each column below:
 	; Interpreted: A B      SELECT START UP   DOWN LEFT  RIGHT
 	; Reality:     B SELECT START  UP    DOWN LEFT RIGHT NULL
+; STEP 1: Read input twice, stash them one at a time.
 	JSR ReadJoypad
 	LDA zInputBottleNeck
 	STA iBackupInput
 	JSR ReadJoypad
 	LDA zInputBottleNeck
 	STA iBackupInput + 1
-	LDX #1
+; STEP 2: EOR the backups together.  0 means the backups match
 	EOR iBackupInput
 	BEQ @Loop
+; Corrupt stash!
+; STEP 3: Stash result.
 	TAX
 
+; STEP 4: Look for the correct input.
+; MEASURE 1: If one of the backups is 0, nothing was pressed.
 	LDA iBackupInput + 1
 	BEQ @CorrectInput
 	LDA iBackupInput
 	BEQ @CorrectInput
 
+; MEASURE 2: Find the correct backup, as output by Y
 	JSR @FindDeletion
 
 	LDA iBackupInput, Y
 
 @CorrectInput:
+; At this point, A is assumed to hold the correct input, which should be used.
 	STA zInputBottleNeck
 
 @Loop:
+	; determine which buttons were newly pressed
 	LDA zInputBottleNeck
 	TAY
 	EOR zInputCurrentState
@@ -87,24 +95,32 @@ UpdateJoypads:
 	RTS
 
 @FindDeletion:
+	; We need the EOR result!
+	; Seperate each bit into where they belong.
 	TXA
 	AND iBackupInput
 	STA iBackupInput + 2
 	TXA
 	AND iBackupInput + 1
 	STA iBackupInput + 3
+	; Y will now determine which backup is the correct input.
+	; Looping may occur during right presses.
 	LDY #0
 @Looking:
+	; iBackupInput(3) trips C --> Y = 0
 	LSR iBackupInput + 3
 	BCS @Found
-	LDY #1
+	; iBackupInput(3) trips Z --> Y = 1
+	INY
 	LDA iBackupInput + 3
 	BEQ @Found
+	; iBackupInput(2) trips C --> Y = 1
 	LSR iBackupInput + 2
 	BCS @Found
-	LDY #0
+	; iBackupInput(2) trips Z --> Y = 0
+	DEY
 	LDA iBackupInput + 2
-	BNE @Looking
+	BNE @Looking ; loop if nothing was tripped
 @Found:
 	RTS
 
