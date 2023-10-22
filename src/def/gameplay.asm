@@ -55,3 +55,11 @@ TITLE_SCREEN_IGGY_ENTRANCE_2 = $1ec
 ENTER_EXIT_ACT_F = 0
 ENTER_EXIT_DIR_F = 6
 ENTER_EXIT_F     = 7
+
+; 0-1 - Price Modifier
+; 2-3 - Text speed
+; 4   - Cutscenes
+; 5   - Voices
+; 6   - Sound Effects
+; 7   - Music
+DEFAULT_OPTION = %11111010

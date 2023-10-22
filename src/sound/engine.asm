@@ -264,6 +264,9 @@ ProcessMusicQueue_StopMusic:
 	JMP StopMusic
 
 ProcessMusicQueue:
+	LDY zOptions
+	BPL ProcessMusicQueue_StopMusic
+
 	; start by checking for no music
 	LDY zMusicQueue
 	TYA

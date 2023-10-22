@@ -267,6 +267,7 @@ zCursorYPos:
 	.dsb 1
 zCursorFrame:
 	.dsb 1 ; 00b4
+zOptions:
 	.dsb 1
 	.dsb 1
 	.dsb 1

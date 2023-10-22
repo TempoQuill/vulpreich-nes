@@ -42,6 +42,9 @@ PlaySFX:
 	DEY
 	LDA #PRG_Audio
 	STA MMC5_PRGBankSwitch2
+	LDA SoundEffectClasses, Y
+	AND zOptions
+	BEQ @Skip
 	LDA SoundEffectDestinations, Y
 	STA zCurrentMusicPointer
 	LDY #0

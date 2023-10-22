@@ -152,6 +152,8 @@ Start:
 	LDA #0
 	STA PPUMASK
 	STA zPPUMaskMirror
+	LDY #DEFAULT_OPTION
+	STY zOptions
 	TAY
 	STY zMusicQueue
 	LDY #PRG_Music0

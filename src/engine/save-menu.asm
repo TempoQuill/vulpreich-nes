@@ -2,27 +2,10 @@ InitSaveMenuBackground:
 ; We are assumed to be switched to RAM_PrimaryPlayFile
 	; we're initializing the PPU
 	; turn off NMI & PPU
-	LDA zPPUCtrlMirror
-	AND #$ff ^ PPU_NMI
-	STA zPPUCtrlMirror
-	STA PPUCTRL
-	LDA #0
-	STA PPUMASK
-	STA zPPUMaskMirror
-@VBlank:
-	; wait for vblank
-	LDA PPUSTATUS
-	BPL @VBlank
-
-	; PPU initialization
-	JSR InitNameTable
-	JSR InitPals
-	JSR HideSprites
+	JSR InitPPU_FullScreenUpdate
 
 	LDY #MUSIC_NONE
 	STY zMusicQueue
-
-	JSR ResetPPUAddress
 
 	; store the palette data
 	LDY #1
@@ -136,13 +119,7 @@ InitSaveMenuBackground:
 	LDA #1
 	JSR DelayFrame_s_
 
-	LDA #<iStringBuffer
-	STA zPPUDataBufferPointer
-	LDA #>iStringBuffer
-	STA zPPUDataBufferPointer + 1
-
-	LDA #1
-	JSR DelayFrame_s_
+	JSR SetUpStringBuffer
 
 	LDY #>wSaveMenuArea
 	STY zPPUDataBufferPointer + 1
@@ -154,10 +131,7 @@ InitSaveMenuBackground:
 
 	JSR InitSaveMenuOptionsNSprites
 
-	; sure, we can get the game to show our stuff now
-	LDA #PPU_OBJ | PPU_BG
-	STA PPUMASK
-	STA zPPUMaskMirror
+	JSR ShowNewScreen
 
 	LDA #MUSIC_SAVE_MENU
 	STA zMusicQueue
@@ -273,12 +247,7 @@ SaveMenuScreen:
 	LDA zPals
 	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
 	STA zPals
-@WaitForFadeOut:
-	; wait until fadeout is finished
-	LDA #1
-	JSR DelayFrame_s_
-	LDA zPals
-	BMI @WaitForFadeOut
+	JSR WaitForFadeOut
 	; update CHR windows
 	LDA #CHR_TitleBG
 	STA zCHRWindow2

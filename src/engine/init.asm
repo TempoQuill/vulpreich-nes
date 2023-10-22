@@ -29,15 +29,19 @@ IntroSequence_TitleOnly:
 	JSR RunTitleScreen
 	LDA #1
 	JSR DelayFrame_s_
-	LDA iCurrentMusic
-	BEQ @SongEnds
+	LDA zTitleScreenSelectedOption
+	AND #$7f
+	CMP #2
+	BEQ @Next
+	CMP #4
+	BEQ @Next
 	LDA zTitleScreenTimer
 	BNE @Loop
 	DEC zTitleScreenTimer + 1
 	BPL @Loop
 	LDA #MUSIC_NONE
 	STA zMusicQueue
-@SongEnds:
+@Next:
 	LDA #2
 	STA zPalFadeSpeed
 	STA zPalFade
@@ -63,53 +67,24 @@ IntroSequence_TitleOnly:
 @RST:
 	JMP IntroSequence
 @SaveMenu:
+	LDX zTitleScreenSelectedOption
+	BMI @RST
 	JMP SaveMenuScreen
 
 InspiredScreen:
 	; we're initializing the PPU
 	; turn off NMI & PPU
-	LDA zPPUCtrlMirror
-	AND #$ff ^ PPU_NMI
-	STA zPPUCtrlMirror
-	STA PPUCTRL
-	LDA #0
-	STA PPUMASK
-	STA zPPUMaskMirror
-
-@VBlank:
-	LDA PPUSTATUS
-	BPL @VBlank
-	JSR InitNameTable
-	JSR InitPals
-
-	JSR HideSprites
-
-	LDA PPUSTATUS
+	JSR InitPPU_FullScreenUpdate
 
 	LDY #MUSIC_NONE
 	STY zMusicQueue
-
-	LDA #$3F
-	STA PPUADDR
-	LDA #0
-	STA PPUADDR
 
 	; store the palette data
 	LDX #5
 	STX zPalFade
 	STX zPalFadeSpeed
 
-	LDX #$1f
-@PalLoop:
-	LDA IntroPals, X
-	STA iCurrentPals, X
-	DEX
-	BNE @PalLoop
-
-	LDA #<cPPUBuffer
-	STA zPPUDataBufferPointer
-	LDA #>cPPUBuffer
-	STA zPPUDataBufferPointer + 1
+	JSR TitleScreenPaletteAndNameTableSetup
 
 	LDY #TitldNTInitData_END - TitldNTInitData
 
@@ -124,23 +99,13 @@ InspiredScreen:
 	STA zPPUCtrlMirror
 	STA PPUCTRL
 
-	LDA #<iStringBuffer
-	STA zPPUDataBufferPointer
-	LDA #>iStringBuffer
-	STA zPPUDataBufferPointer + 1
-
-	LDA #1
-	JSR DelayFrame_s_
+	JSR SetUpStringBuffer
 
 	LDA #<BeginningText
 	STA zPPUDataBufferPointer
 	LDA #>BeginningText
 	STA zPPUDataBufferPointer + 1
-
-	; sure, we can get the game to show our stuff now
-	LDA #PPU_OBJ | PPU_BG
-	STA PPUMASK
-	STA zPPUMaskMirror
+	JSR ShowNewScreen
 	; fade in palettes
 	LDA zPals
 	SSB PAL_FADE_F
@@ -151,75 +116,29 @@ InspiredScreen:
 	LDA zPals
 	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
 	STA zPals
-@WaitForFadeOut:
-	LDA zPals
-	BPL @Done
-	LDA #1
-	JSR DelayFrame_s_
-	JMP @WaitForFadeOut
-@Done:
-	RTS
+	JMP WaitForFadeOut
 
 TitleScreen:
 	; disable NMI for now
-	LDA zPPUCtrlMirror
-	AND #$ff ^ (PPU_NMI | PPU_OBJ_RES)
-	STA zPPUCtrlMirror
-	STA PPUCTRL
-	; no NMI, nothing to show
-	LDA #0
-	STA PPUMASK
-	STA zPPUMaskMirror
-@VBlank:
-	LDA PPUSTATUS
-	BPL @VBlank
-	; clear nametable and palettes
-	JSR InitNameTable
-	JSR InitPals
-
-	JSR HideSprites
-
-	LDA PPUSTATUS
-
-	LDA #$3F
-	STA PPUADDR
-	LDA #0
-	STA PPUADDR
+	JSR InitPPU_FullScreenUpdate
 
 	; set fade speed
 	LDX #1
 	STX zPalFade
 	STX zPalFadeSpeed
 
-	LDX #$1f
-@PalLoop:
-	LDA IntroPals, X
-	STA iCurrentPals, X
-	DEX
-	BPL @PalLoop
-	; set up nametable and text
-	LDA #<cPPUBuffer
-	STA zPPUDataBufferPointer
-	LDA #>cPPUBuffer
-	STA zPPUDataBufferPointer + 1
+	JSR TitleScreenPaletteAndNameTableSetup
 
 	; we can enable graphical updates now
-	; increase sprite size for faster logic
 	LDA zPPUCtrlMirror
-	ORA #PPU_NMI | PPU_OBJ_RES
+	ORA #PPU_NMI
 	STA zPPUCtrlMirror
 	STA PPUCTRL
 
 	LDA #1
 	JSR DelayFrame_s_
 
-	LDA #<iStringBuffer
-	STA zPPUDataBufferPointer
-	LDA #>iStringBuffer
-	STA zPPUDataBufferPointer + 1
-
-	LDA #1
-	JSR DelayFrame_s_
+	JSR SetUpStringBuffer
 
 	LDA #<TitleScreenLayout
 	STA zPPUDataBufferPointer
@@ -234,15 +153,11 @@ TitleScreen:
 
 	LDA #0
 	STA zTitleScreenSelectedOption
-	; sure, we can get the game to show our stuff now
-	LDA #PPU_OBJ | PPU_BG
-	STA PPUMASK
-	STA zPPUMaskMirror
-
 	LDA #<TITLE_SCREEN_DURATION
 	STA zTitleScreenTimer
 	LDA #>TITLE_SCREEN_DURATION
 	STA zTitleScreenTimer + 1
+	JSR ShowNewScreen
 	; fade in
 	LDA zPals
 	AND #COLOR_INDEX
@@ -332,7 +247,17 @@ TryTitleScreenInput:
 	BNE @Ret
 	LDX #0
 @Ret:
+	LDY zCursorXPos
+	CPY #$48
+	BCS @Opt
 	TXA
+@Done:
+	STA zTitleScreenSelectedOption
+	RTS
+@Opt:
+	TXA
+	BEQ @Done
+	ORA #$80
 	STA zTitleScreenSelectedOption
 	RTS
 
@@ -1345,3 +1270,63 @@ TitleScreenIggySoundQueues:
 	.db 0
 	.db 0
 	.db 0
+
+InitPPU_FullScreenUpdate:
+	; turn off NMI & PPU
+	LDA zPPUCtrlMirror
+	AND #$ff ^ PPU_NMI
+	STA zPPUCtrlMirror
+	STA PPUCTRL
+	LDA #0
+	STA PPUMASK
+	STA zPPUMaskMirror
+@VBlank:
+	LDA PPUSTATUS
+	BPL @VBlank
+	; clear nametable and palettes
+	JSR InitNameTable
+	JSR InitPals
+	JSR HideSprites
+	LDA PPUSTATUS
+	LDA #$3F
+	STA PPUADDR
+	LDA #0
+	STA PPUADDR
+	RTS
+
+TitleScreenPaletteAndNameTableSetup:
+	LDX #$1f
+@PalLoop:
+	LDA IntroPals, X
+	STA iCurrentPals, X
+	DEX
+	BPL @PalLoop
+	; set up nametable and text
+	LDA #<cPPUBuffer
+	STA zPPUDataBufferPointer
+	LDA #>cPPUBuffer
+	STA zPPUDataBufferPointer + 1
+	RTS
+
+SetUpStringBuffer:
+	LDA #<iStringBuffer
+	STA zPPUDataBufferPointer
+	LDA #>iStringBuffer
+	STA zPPUDataBufferPointer + 1
+
+	LDA #1
+	JMP DelayFrame_s_
+
+WaitForFadeOut:
+	LDA #1
+	JSR DelayFrame_s_
+	LDA zPals
+	BMI WaitForFadeOut
+	RTS
+
+ShowNewScreen:
+	; sure, we can get the game to show our stuff now
+	LDA #PPU_OBJ | PPU_BG
+	STA PPUMASK
+	STA zPPUMaskMirror
+	RTS
