@@ -1327,6 +1327,5 @@ WaitForFadeOut:
 ShowNewScreen:
 	; sure, we can get the game to show our stuff now
 	LDA #PPU_OBJ | PPU_BG
-	STA PPUMASK
 	STA zPPUMaskMirror
 	RTS
