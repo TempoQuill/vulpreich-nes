@@ -34,13 +34,13 @@ UpdateCHR:
 ; it's a bit superfluous though
 ; just write the address to the PPU as you see here to the location you want
 ResetPPUAddress:
-	LDA PPUSTATUS
+	LDA rSTATE
 	LDA #>PALETTE_RAM ; hi then lo
-	STA PPUADDR
+	STA rWORD
 	LDA #<PALETTE_RAM
-	STA PPUADDR
-	STA PPUADDR
-	STA PPUADDR
+	STA rWORD
+	STA rWORD
+	STA rWORD
 	RTS
 ;
 ; Updates joypad press/held values
@@ -130,15 +130,15 @@ UpdateJoypads:
 ReadJoypad:
 	; send a jolt to the controller
 	LDA #1
-	STA JOY1
+	STA rJOY
 	; send the same jolt to the bottleneck to set C at the end
 	STA zInputBottleNeck
 	; 1 >> 1 = 0, C is not needed right now
 	LSR A
-	STA JOY1
+	STA rJOY
 @Loop:
 	; Read standard controller data
-	LDA JOY1
+	LDA rJOY
 	LSR A
 	; are we done?
 	ROL zInputBottleNeck
@@ -150,7 +150,7 @@ Start:
 	; our game's configuration is now initialized
 	; make sure track 0 is playing
 	LDA #0
-	STA PPUMASK
+	STA rMASK
 	STA zPPUMaskMirror
 	LDY #DEFAULT_OPTION
 	STY zOptions
@@ -166,7 +166,7 @@ Start:
 ; PPUCtrl_NMIEnabled
 	ORA #PPU_NMI | PPU_BG_TABLE
 	STA zPPUCtrlMirror
-	STA PPUCTRL
+	STA rCTRL
 	; wait one vblank to init main loop
 	LDA #1
 	JSR DelayFrame_s_
@@ -221,16 +221,16 @@ NMI:
 	JSR UpdatePPUFromBufferWithOptions
 	; dma shortcut
 	LDA #>iVirtualOAM
-	STA OAM_DMA
+	STA rOAMDMA
 	; scroll
 	LDX zPPUCtrlMirror
-	STX PPUCTRL
+	STX rCTRL
 	JSR ResetPPUAddress
 	LDX #0
-	STX PPUSCROLL
-	STX PPUSCROLL
+	STX rSCROLL
+	STX rSCROLL
 	LDX zPPUMaskMirror
-	STX PPUMASK
+	STX rMASK
 	JSR FadePalettes
 	JSR UpdateJoypads
 @OffFrame:
@@ -266,70 +266,70 @@ NMI:
 	RTI
 
 @ApplyPalette:
-	LDX PPUSTATUS
+	LDX rSTATE
 	LDX #>PALETTE_RAM
-	STX PPUADDR
+	STX rWORD
 	LDX #<PALETTE_RAM
-	STX PPUADDR
+	STX rWORD
 	LDA zPals
 	AND #COLOR_INDEX
 	TAX
-	STA PPUDATA
+	STA rDATA
 	LDA zPals + $01
-	STA PPUDATA
+	STA rDATA
 	LDA zPals + $02
-	STA PPUDATA
+	STA rDATA
 	LDA zPals + $03
-	STA PPUDATA
-	STX PPUDATA
+	STA rDATA
+	STX rDATA
 	LDA zPals + $05
-	STA PPUDATA
+	STA rDATA
 	LDA zPals + $06
-	STA PPUDATA
+	STA rDATA
 	LDA zPals + $07
-	STA PPUDATA
-	STX PPUDATA
+	STA rDATA
+	STX rDATA
 	LDA zPals + $09
-	STA PPUDATA
+	STA rDATA
 	LDA zPals + $0a
-	STA PPUDATA
+	STA rDATA
 	LDA zPals + $0b
-	STA PPUDATA
-	STX PPUDATA
+	STA rDATA
+	STX rDATA
 	LDA zPals + $0d
-	STA PPUDATA
+	STA rDATA
 	LDA zPals + $0e
-	STA PPUDATA
+	STA rDATA
 	LDA zPals + $0f
-	STA PPUDATA
-	STX PPUDATA
+	STA rDATA
+	STX rDATA
 	LDA zPals + $11
-	STA PPUDATA
+	STA rDATA
 	LDA zPals + $12
-	STA PPUDATA
+	STA rDATA
 	LDA zPals + $13
-	STA PPUDATA
-	STX PPUDATA
+	STA rDATA
+	STX rDATA
 	LDA zPals + $15
-	STA PPUDATA
+	STA rDATA
 	LDA zPals + $16
-	STA PPUDATA
+	STA rDATA
 	LDA zPals + $17
-	STA PPUDATA
-	STX PPUDATA
+	STA rDATA
+	STX rDATA
 	LDA zPals + $19
-	STA PPUDATA
+	STA rDATA
 	LDA zPals + $1a
-	STA PPUDATA
+	STA rDATA
 	LDA zPals + $1b
-	STA PPUDATA
-	STX PPUDATA
+	STA rDATA
+	STX rDATA
 	LDA zPals + $1d
-	STA PPUDATA
+	STA rDATA
 	LDA zPals + $1e
-	STA PPUDATA
+	STA rDATA
 	LDA zPals + $1f
-	STA PPUDATA
+	STA rDATA
 	RTS
 
 ;
@@ -355,7 +355,7 @@ RESET:
 	STA MMC5_PRGRAMProtect2
 
 	; Set nametable mapping
-	LDA #%01010000
+	LDA #MMC5_HMirror
 	STA MMC5_NametableMapping
 
 	; setup RAM
@@ -366,7 +366,7 @@ RESET:
 
 	; MMC5 Pulse channels
 	LDA #$0f
-	STA MMC5_SND_CHN
+	STA MMC5_MIXER
 
 	; select the first three CHR banks
 	; bank 0 is a mirror of 3
@@ -416,24 +416,27 @@ RESET:
 	CLD
 ; Nametable base 0, Horizontal writing, OBJ base 0, BG base 0, 8x8 OBJs, no NMI
 	LDA #0
-	STA PPUCTRL
+	STA rCTRL
 	STA zPPUCtrlMirror
 	LDX #<iStackTop ; Reset stack pointer
 	TXS
 
 @VBlankLoop:
 	; Wait for first VBlank
-	LDA PPUSTATUS
+	LDA rSTATE
 	AND #PPUStatus_VBlankHit
 	BEQ @VBlankLoop
 
 @VBlank2Loop:
 	; Wait for second VBlank
-	LDA PPUSTATUS
+	LDA rSTATE
 	BPL @VBlank2Loop
 
-	LDA #MMC5_VMirror
+	LDA #MMC5_SFiller
 	STA MMC5_NametableMapping
+	LDA #0
+	STA MMC5_FillModeTile
+	STA MMC5_FillModeColor
 	JMP Start
 
 IRQ:

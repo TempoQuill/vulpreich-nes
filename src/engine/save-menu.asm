@@ -114,7 +114,7 @@ InitSaveMenuBackground:
 	LDA zPPUCtrlMirror
 	ORA #PPU_NMI | PPU_OBJ_RES
 	STA zPPUCtrlMirror
-	STA PPUCTRL
+	STA rCTRL
 
 	LDA #1
 	JSR DelayFrame_s_

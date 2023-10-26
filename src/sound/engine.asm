@@ -3,14 +3,14 @@
 ;
 StartProcessingSoundQueue:
 	LDA #$FF
-	STA JOY2
+	STA rFRC
 
 	JSR ProcessPulse2SFX
 	JSR ProcessNoiseQueue
 	JSR ProcessDPCMQueue
 	JSR ProcessMusicQueue
 
-	; Reset queues
+	; Reset queues- aaaand it's done!
 	LDA #$00
 	STA zPulse2SFX
 	STA zNoiseDrumSFX
@@ -63,21 +63,21 @@ ProcessPulse2SFX_Note:
 	BCC ProcessPulse2SFX_Volume
 	LDX iPulse2SFXVolume
 ProcessPulse2SFX_Volume:
-	STX SQ2_ENV
+	STX rNR20
 	TAX
 	LDA (zPulse1IndexPointer), Y
 	INY
-	STA SQ2_LO
-	STX SQ2_HI
-	LDA SND_CHN
+	STA rNR22
+	STX rNR23
+	LDA rMIX
 	ORA #$0F
-	STA SND_CHN
+	STA rMIX
 	CPX #$08
 	BCC ProcessPulse2SFX_Tie
 	LDA iPulse2SFXSweep
-	STA SQ2_SWEEP
+	STA rNR21
 	LDA iPulse2SFXVolume + 1
-	STA SQ2_ENV
+	STA rNR20
 ProcessPulse2SFX_Tie:
 	STY iPulse2SFXOffset
 	RTS
@@ -89,11 +89,11 @@ ProcessPulse2SFX_End:
 	STA zPulse1IndexPointer + 1
 	STA iPulse2SFXOffset
 	LDA #$10
-	STX SQ2_ENV
+	STX rNR20
 	LDA #0
-	STA SQ2_LO
-	STA SQ2_HI
-	STA SQ2_SWEEP
+	STA rNR22
+	STA rNR23
+	STA rNR21
 	RTS
 
 Pulse2SFXVolumes:
@@ -170,11 +170,11 @@ ProcessNoiseQueue_Part3:
 ProcessNoiseQueue_Done:
 	; if it was $00, we're at the end of the data for this sound effect
 	LDX #$90
-	STX NOISE_ENV
+	STX rNR40
 	LDX #$18
-	STX NOISE_HI
+	STX rNR43
 	LDX #$00
-	STX NOISE_LO
+	STX rNR42
 	STX zCurrentNoiseSFX
 	STX zCurrentDrum
 	RTS
@@ -182,7 +182,7 @@ ProcessNoiseQueue_Done:
 ProcessNoiseQueue_Patch:
 	; apply patch
 	LDA (zNoiseIndexPointer), Y
-	STA NOISE_ENV
+	STA rNR40
 	LDY zNoiseSFXOffset
 	INC zNoiseSFXOffset
 
@@ -191,12 +191,12 @@ ProcessNoiseQueue_Note:
 	LDA (zNoiseIndexPointer), Y
 	CMP #$7E
 	BEQ ProcessNoiseQueue_Exit
-	STA NOISE_LO
+	STA rNR42
 	LDA #$08
-	STA NOISE_HI
-	LDA SND_CHN
+	STA rNR43
+	LDA rMIX
 	ORA #$0F
-	STA SND_CHN
+	STA rMIX
 
 ProcessNoiseQueue_Exit:
 	RTS
@@ -216,7 +216,7 @@ ProcessDPCMQueue:
 	RTS
 
 ProcessDPCMQueue_SoundCheck:
-	LDA SND_CHN
+	LDA rMIX
 	AND #$10
 	BNE ProcessDPCMQueue_Exit
 
@@ -224,7 +224,7 @@ ProcessDPCMQueue_None:
 	LDA #$00
 	STA zCurrentDPCMSFX
 	LDA #%00001111
-	STA SND_CHN
+	STA rMIX
 
 ProcessDPCMQueue_Exit:
 	RTS
@@ -245,16 +245,16 @@ ELSE
 ENDIF
 
 	LDA DMCPitchTable, Y
-	STA DPCM_ENV
+	STA rNR50
 
 	LDA DMCStartTable, Y
-	STA DPCM_OFFSET
+	STA rNR52
 	LDA DMCLengthTable, Y
-	STA DPCM_SIZE
+	STA rNR53
 	LDA #%00001111
-	STA SND_CHN
+	STA rMIX
 	LDA #%00011111
-	STA SND_CHN
+	STA rMIX
 	RTS
 
 ProcessMusicQueue_ThenReadNoteData:
@@ -483,36 +483,36 @@ StopMusic:
 ;	zMusicQueue is $80
 ;	initializing the sound engine for a new song
 	LDA #$10
-	STA SQ1_ENV
+	STA rNR10
 	LDA #$00
 	STA iCurrentMusic
-	STA SQ1_HI
-	STA SQ1_LO
-	STA SQ1_SWEEP
+	STA rNR13
+	STA rNR12
+	STA rNR11
 
 	LDX zCurrentPulse2SFX
 	BNE ClearChannelTriangle
 
 	LDA #$10
-	STA SQ2_ENV
+	STA rNR20
 	LDA #$00
-	STA SQ2_HI
-	STA SQ2_LO
-	STA SQ2_SWEEP
+	STA rNR23
+	STA rNR22
+	STA rNR21
 
 ClearChannelTriangle:
-	STA TRI_LINEAR
-	STA TRI_HI
-	STA TRI_LO
+	STA rNR30
+	STA rNR33
+	STA rNR32
 
 ClearChannelNoise:
 	LDA zCurrentNoiseSFX
 	BNE ClearChannelDPCM
 	STA zCurrentDrum
-	STA NOISE_HI
-	STA NOISE_LO
+	STA rNR43
+	STA rNR42
 	LDA #$10
-	STA NOISE_ENV
+	STA rNR40
 
 ClearChannelDPCM:
 	LDA zCurrentDPCMSFX
@@ -567,8 +567,8 @@ ProcessMusicQueue_Square2UpdateNoteOffset:
 ; Input
 ;   X = duty/volume/envelope
 ;   Y = sweep
-	STX SQ2_ENV
-	STY SQ2_SWEEP
+	STX rNR20
+	STY rNR21
 
 ProcessMusicQueue_Square2ContinueNote:
 	; set note length
@@ -600,9 +600,9 @@ ProcessMusicQueue_LoadSquare2Instrument:
 	JSR LoadSquareInstrumentDVE
 
 	; update
-	STA SQ2_ENV
+	STA rNR20
 	LDX #$7F
-	STX SQ2_SWEEP
+	STX rNR21
 
 ProcessMusicQueue_Square1:
 ; if note length != 0, sustain note
@@ -674,8 +674,8 @@ ProcessMusicQueue_Square1UpdateNoteOffset:
 ; Input
 ;   X = duty/volume/envelope
 ;   Y = sweep
-	STY SQ1_SWEEP
-	STX SQ1_ENV
+	STY rNR11
+	STX rNR10
 	; set note length
 	LDA iMusicPulse1NoteSubFrames
 	CLC
@@ -700,14 +700,14 @@ ProcessMusicQueue_Square1AfterDecrementInstrumentOffset:
 	JSR LoadSquareInstrumentDVE
 
 	; update
-	STA SQ1_ENV
+	STA rNR10
 	LDA zSweep
 	BNE ProcessMusicQueue_Square1Sweep
 
 	LDA #$7F
 
 ProcessMusicQueue_Square1Sweep:
-	STA SQ1_SWEEP
+	STA rNR11
 
 ProcessMusicQueue_Triangle:
 	; if offset = 0, skip to next channel
@@ -754,7 +754,7 @@ ProcessMusicQueue_TriangleNoteLength:
 	STA iHillNoteLength
 	STY iMusicHillNoteSubFrames
 	LDA #$1F
-	STA TRI_LINEAR
+	STA rNR30
 
 	; next byte is treated like a note, or mute
 	LDY iCurrentHillOffset
@@ -793,7 +793,7 @@ ProcessMusicQueue_TriangleMax:
 	LDA #$7F
 
 ProcessMusicQueue_TriangleSetLength:
-	STA TRI_LINEAR
+	STA rNR30
 	JMP ProcessMusicQueue_Noise
 
 ProcessMusicQueue_TriangleLoopSegment:
@@ -889,11 +889,11 @@ ProcessMusicQueue_DPCMlength:
 	BNE ProcessMusicQueue_DPCMExit11
 	; Disable - no sound effects playing
 	LDX #%00001111
-	STX SND_CHN
+	STX rMIX
 	LDX #0
-	STX DPCM_ENV
-	STX DPCM_OFFSET
-	STX DPCM_SIZE
+	STX rNR50
+	STX rNR52
+	STX rNR53
 ProcessMusicQueue_DPCMExit11:
 	RTS
 
@@ -944,19 +944,19 @@ ELSE
 ENDIF
 	; pitch
 	LDA DMCSamplePitchTable, Y
-	STA DPCM_ENV
+	STA rNR50
 	; address
 	LDA DMCSamplePointers, Y
-	STA DPCM_OFFSET
+	STA rNR52
 	; length
 	LDA DMCSampleLengths, Y
-	STA DPCM_SIZE
+	STA rNR53
 
 	; mixer
 	LDX #%00001111
-	STX SND_CHN
+	STX rMIX
 	LDA #%00011111
-	STA SND_CHN
+	STA rMIX
 
 ProcessMusicQueue_DPCMSFXExit:
 	LDA iMusicDPCMNoteSubFrames
@@ -981,11 +981,11 @@ ProcessMusicQueue_DPCMEnd:
 ProcessMusicQueue_DPCMDisable:
 	; Disable
 	LDX #%00001111
-	STX SND_CHN
+	STX rMIX
 	LDX #0
-	STX DPCM_ENV
-	STX DPCM_OFFSET
-	STX DPCM_SIZE
+	STX rNR50
+	STX rNR52
+	STX rNR53
 ProcessMusicQueue_DPCMExit2:
 	RTS
 
@@ -1166,7 +1166,7 @@ PlayNote:
 	LDA #$10
 
 PlayNote_TriangleRest:
-	STA SQ1_ENV, X
+	STA rNR10, X
 	LDA #$00
 	RTS
 
@@ -1203,10 +1203,10 @@ PlayNote_FrequencyOctaveLoop:
 
 PlayNote_SetFrequency:
 	LDA zNextPitch
-	STA SQ1_LO, X
+	STA rNR12, X
 	LDA zNextPitch + 1
 	ORA #$08
-	STA SQ1_HI, X
+	STA rNR13, X
 	RTS
 
 SongBanks:

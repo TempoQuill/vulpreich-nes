@@ -12,7 +12,7 @@
 ; Frequency table for notes; standard between various Mario games
 .include "src/sound/notes.asm"
 
-; Base note lengths and TRI_LINEAR parameters
+; Base note lengths and rNR30 parameters
 .include "src/sound/note-lengths.asm"
 
 ; Channels active in the music (usually all 5)

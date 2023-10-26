@@ -212,19 +212,19 @@ InitPals:
 InitNameTable:
 ; initialize nametables + attributes
 	; set up address
-	LDA PPUSTATUS
+	LDA rSTATE
 	LDA #>NAMETABLE_MAP_0
-	STA PPUADDR
+	STA rWORD
 	LDA #<NAMETABLE_MAP_0
-	STA PPUADDR ; happens to be the empty tile we need
+	STA rWORD ; happens to be the empty tile we need
 	TAX
 	; write for $400 bytes
 @Loop:
 	DEX
-	STA PPUDATA
-	STA PPUDATA
-	STA PPUDATA
-	STA PPUDATA
+	STA rDATA
+	STA rDATA
+	STA rDATA
+	STA rDATA
 	BPL @Loop
 	RTS
 
@@ -250,7 +250,7 @@ ReadPPUData:
 @Loop:
 	DEX
 	DEC zBackupX
-	LDA PPUDATA
+	LDA rDATA
 	STA iStringBuffer + $60, X
 	LDX zBackupX
 	BNE @Loop
@@ -329,13 +329,13 @@ GetNthString:
 ; This reads from $F0/$F1 to determine where a "buffer" is.
 ; Basically, a buffer is like this:
 ;
-; PPUADDR  LEN DATA ......
+; rWORD    LEN DATA ......
 ; $20 $04  $03 $E9 $F0 $FB
 ; $25 $5F  $4F $FB
 ; $21 $82  $84 $00 $01 $02 $03
 ; $00
 ;
-; PPUADDR is two bytes (hi,lo) for the address to send to PPUADDR.
+; rWORD is two bytes (hi,lo) for the address to send to rWORD.
 ; LEN is the length, with the following two bitmasks:
 ;
 ;  - $80: Set the "draw vertically" option
@@ -347,10 +347,6 @@ GetNthString:
 ; is incremented to (LEN+2) and the function restarts.
 ; A byte of $00 terminates execution and returns.
 ;
-; There is a similar function, `UpdatePPUFromBufferNMI`,
-; that is called during NMI, but unlike this one,
-; that one does NOT use bitmasks, nor increment the pointer.
-;
 UpdatePPUFromBufferWithOptions:
 	; First, check if we have anything to send to the PPU
 	LDY #$00
@@ -359,13 +355,13 @@ UpdatePPUFromBufferWithOptions:
 	BEQ @Quit
 
 	; Clear address latch
-	LDX PPUSTATUS
+	LDX rSTATE
 	; Set the PPU address to the
 	; address from the PPU buffer
-	STA PPUADDR
+	STA rWORD
 	INY
 	LDA (zPPUDataBufferPointer), Y
-	STA PPUADDR
+	STA rWORD
 	INY
 	LDA (zPPUDataBufferPointer), Y ; Data segment length byte...
 	ASL A
@@ -379,7 +375,7 @@ UpdatePPUFromBufferWithOptions:
 	AND #PPUCtrl_Base2C00 | PPUCtrl_WriteHorizontal | PPUCtrl_Sprite1000 | PPUCtrl_Background1000 | PPUCtrl_SpriteSize8x16 | PPUCtrl_NMIEnabled | $40
 
 @EnableVerticalIncrement:
-	STA PPUCTRL
+	STA rCTRL
 	PLA
 	; Check if the second bit ($40) in the length has been set
 	ASL A
@@ -411,7 +407,7 @@ UpdatePPUFromBufferWithOptions:
 
 @CopySingleTileSkip:
 	LDA (zPPUDataBufferPointer), Y ; Load data from buffer...
-	STA PPUDATA ; ...store it to the PPU.
+	STA rDATA ; ...store it to the PPU.
 	DEX ; Decrease remaining length.
 	BNE @CopyLoop ; Are we done? If no, copy more stuff
 

@@ -31,6 +31,9 @@ UpdateSound:
 ; This function automatically writes to a spot in Zero-Page RAM specified by a
 ; string of data in order to play a sound reliably.
 ;
+; The function ejects early if it detects a given sound effect's class has been
+; turned off.
+;
 ; It also fakes bit priority by only writing values in the spot already written
 ; to if the new value is lower than or equal to the old value.
 PlaySFX:

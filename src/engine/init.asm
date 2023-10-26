@@ -97,7 +97,7 @@ InspiredScreen:
 	LDA zPPUCtrlMirror
 	ORA #PPU_NMI | PPU_OBJ_RES
 	STA zPPUCtrlMirror
-	STA PPUCTRL
+	STA rCTRL
 
 	JSR SetUpStringBuffer
 
@@ -133,7 +133,7 @@ TitleScreen:
 	LDA zPPUCtrlMirror
 	ORA #PPU_NMI
 	STA zPPUCtrlMirror
-	STA PPUCTRL
+	STA rCTRL
 
 	LDA #1
 	JSR DelayFrame_s_
@@ -1276,22 +1276,22 @@ InitPPU_FullScreenUpdate:
 	LDA zPPUCtrlMirror
 	AND #$ff ^ PPU_NMI
 	STA zPPUCtrlMirror
-	STA PPUCTRL
+	STA rCTRL
 	LDA #0
-	STA PPUMASK
+	STA rMASK
 	STA zPPUMaskMirror
 @VBlank:
-	LDA PPUSTATUS
+	LDA rSTATE
 	BPL @VBlank
 	; clear nametable and palettes
 	JSR InitNameTable
 	JSR InitPals
 	JSR HideSprites
-	LDA PPUSTATUS
+	LDA rSTATE
 	LDA #$3F
-	STA PPUADDR
+	STA rWORD
 	LDA #0
-	STA PPUADDR
+	STA rWORD
 	RTS
 
 TitleScreenPaletteAndNameTableSetup:

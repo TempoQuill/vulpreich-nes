@@ -3,6 +3,9 @@ MMC5 = $05
 
 MMC5_VMirror = %01000100
 MMC5_HMirror = %01010000
+MMC5_VFiller = %11110100
+MMC5_HFiller = %11011100
+MMC5_SFiller = %11111100
 
 CHR_A12_INVERSION = $80
 
@@ -45,14 +48,14 @@ NES_2_0 = 8
 ; $2000-$2007
 ;
 
-PPUCTRL = $2000   ; control
-PPUMASK = $2001   ; mask
-PPUSTATUS = $2002 ; status
-OAMADDR = $2003   ; oam location
-OAMDATA = $2004   ; current byte
-PPUSCROLL = $2005 ; scroll position
-PPUADDR = $2006   ; ppu location
-PPUDATA = $2007   ; current byte
+rCTRL = $2000   ; control
+rMASK = $2001   ; mask
+rSTATE = $2002 ; status
+rOAMPC = $2003   ; oam location
+rOAMWRITE = $2004   ; current byte
+rSCROLL = $2005 ; scroll position
+rWORD = $2006   ; ppu location
+rDATA = $2007   ; current byte
 
 ;
 ; APU registers and joypad registers
@@ -63,42 +66,42 @@ PPUDATA = $2007   ; current byte
 ; some features run at 240 Hz rather than the standard 60, marked by *
 ;
 
-SQ1_ENV = $4000   ; 0-3: volume/sweep speed* 4:   volume sweep Flag 5:   counter flag 6-7: cycle id
-SQ1_SWEEP = $4001 ; 0-2: shift multiplier    3:   direction         4-6: period       7:   power flag
-SQ1_LO = $4002    ; 0-7: pitch
-SQ1_HI = $4003    ; 0-2: pitch               3-7: length
+rNR10 = $4000 ; 0-3: volume/sweep speed* 4:   volume sweep Flag 5:   counter flag 6-7: cycle id
+rNR11 = $4001 ; 0-2: shift multiplier    3:   direction         4-6: period       7:   power flag
+rNR12 = $4002 ; 0-7: pitch
+rNR13 = $4003 ; 0-2: pitch               3-7: length
 
-SQ2_ENV = $4004
-SQ2_SWEEP = $4005
-SQ2_LO = $4006
-SQ2_HI = $4007
+rNR20 = $4004
+rNR21 = $4005
+rNR22 = $4006
+rNR23 = $4007
 
 ; $4009 isn't functional
-TRI_LINEAR = $4008 ; 0-6: linear load* 7:   linear flag
-TRI_LO = $400a     ; 0-7: pitch
-TRI_HI = $400b     ; 0-2: pitch        3-7: length load
+rNR30 = $4008 ; 0-6: linear load* 7:   linear flag
+rNR32 = $400a ; 0-7: pitch
+rNR33 = $400b ; 0-2: pitch        3-7: length load
 
 ; $400d isn't functional
-NOISE_ENV = $400c ; 0-3: volume/sweep speed* 4: volume sweep Flag 5: counter flag
-NOISE_LO = $400e  ; 0-3: pitch               7: period loop flag
-NOISE_HI = $400f  ; 3-7: length load
+rNR40 = $400c ; 0-3: volume/sweep speed* 4: volume sweep Flag 5: counter flag
+rNR42 = $400e ; 0-3: pitch               7: period loop flag
+rNR43 = $400f ; 3-7: length load
 
 ; there are a few hardware bugs with the DPCM to beware of
-; firstly, sample playback can clobber JOY1 with forged inputs, most NES title work around this
-; secondly, writes to SND_CHN may replay the sample currently playing, a retrigger if you will
+; firstly, sample playback can clobber rJOY with forged inputs, most NES title work around this
+; secondly, writes to rMIX may replay the sample currently playing, a retrigger if you will
 ; thirdly, a byte gets added to the total size of the currently playing sample
 ;	so a sample with a size of $20 reads $201 bytes of data
-DPCM_ENV = $4010    ; 0-3: pitch 6: loop flag 7: IRQ flag
-DPCM_DELTA = $4011  ; 0-6: delta counter
-DPCM_OFFSET = $4012 ; 0-7: (offset - $c000) / $40
-DPCM_SIZE = $4013   ; 0-7: (size - 1) / $10
+rNR50 = $4010 ; 0-3: pitch 6: loop flag 7: IRQ flag
+rNR51 = $4011 ; 0-6: delta counter
+rNR52 = $4012 ; 0-7: (offset - $c000) / $40
+rNR53 = $4013 ; 0-7: (size - 1) / $10
 
-OAM_DMA = $4014   ; CPU memory page $XX00 - $XXFF
+rOAMDMA = $4014 ; CPU memory page $XX00 - $XXFF
 
-SND_CHN = $4015   ; master APU register: each bit is the corresponding channel power flag, 5-7 are not used
+rMIX = $4015   ; master APU register: each bit is the corresponding channel power flag, 5-7 are not used
 
-JOY1 = $4016
-JOY2 = $4017
+rJOY = $4016
+rFRC = $4017
 
 ;
 ; MMC5 registers
@@ -116,7 +119,7 @@ MMC5_PULSE2_HI = $5007
 MMC5_PCM_MODE_IRQ = $5010
 MMC5_RAW_PCM = $5011
 
-MMC5_SND_CHN = $5015 ; master expansion sound register: only uses bits 0, 1, and 5 if at all
+MMC5_MIXER = $5015 ; master expansion sound register: only uses bits 0, 1, and 5 if at all
 
 ;
 ; MMC5 bank switching
