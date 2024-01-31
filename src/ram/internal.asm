@@ -268,10 +268,35 @@ zCursorYPos:
 zCursorFrame:
 	.dsb 1 ; 00b4
 zOptions:
+; 0-1 - Price Modifier
+; 2-3 - Text speed
+; 4   - Cutscenes
+; 5   - Voices
+; 6   - Sound Effects
+; 7   - Music
+	.dsb 1
+zOptionNumber:
+; 0 - Audio toggle
+; 1 - Cutscenes
+; 2 - Text speed
+; 3 - Price setting
+; 4 - Music test
+; 5 - Sound effects test
+; 6 - Back to title screen
+	.dsb 1
+zNumBCDDigits:
+	.dsb 1
+zOptionNumberSelectedCPL:
+	.dsb 1 ; 00b8
+zAudioFlagPointer:
 	.dsb 1
 	.dsb 1
 	.dsb 1
-	.dsb 40 ; 00b8
+	.dsb 1 ; 00bc
+	.dsb 1
+	.dsb 1
+	.dsb 1
+	.dsb 32 ; 00c0
 zPals:
 	.dsb 32 ; 00e0
 

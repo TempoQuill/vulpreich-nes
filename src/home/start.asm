@@ -45,7 +45,7 @@ ResetPPUAddress:
 ;
 ; Updates joypad press/held values
 ;
-UpdateJoypads:
+UpdateJoypad:
 	; Work around DPCM sample bug.
 	; Some inputs are skipped, leading to polling corruption
 	; most noticeable with forged right presses, but also mistaking
@@ -232,7 +232,7 @@ NMI:
 	LDX zPPUMaskMirror
 	STX rMASK
 	JSR FadePalettes
-	JSR UpdateJoypads
+	JSR UpdateJoypad
 @OffFrame:
 	; sound operates every NMI
 	; advance sound by one frame

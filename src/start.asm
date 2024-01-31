@@ -1,6 +1,7 @@
 ; CONTENTS:
 ;	-title screen code and data
-;	-save menu
+;	-save menu code and data
+;	-options data
 .include "src/engine/init.asm"
 .include "src/engine/save-menu.asm"
 .include "src/data/title/time-stamps.asm"
@@ -13,3 +14,4 @@
 .include "src/data/title/june-sprite.asm"
 .include "src/data/save-menu/layout.asm"
 .include "src/data/save-menu/sprites.asm"
+.include "src/data/options/layout.asm"

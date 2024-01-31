@@ -56,10 +56,28 @@ ENTER_EXIT_ACT_F = 0
 ENTER_EXIT_DIR_F = 6
 ENTER_EXIT_F     = 7
 
-; 0-1 - Price Modifier
-; 2-3 - Text speed
-; 4   - Cutscenes
-; 5   - Voices
-; 6   - Sound Effects
-; 7   - Music
+; bits  flag(s)        Default
+; 0-1 - Price Modifier Normal
+; 2-3 - Text speed     2's
+; 4   - Cutscenes      On
+; 5   - Voices         On
+; 6   - Sound Effects  On
+; 7   - Music          On
 DEFAULT_OPTION = %11111010
+
+PRICE_MOD   = %00000011
+TEXT_SPEED  = %00001100
+CUTSCENES_F = %00010000
+VFX_F       = %00100000
+SFX_F       = %01000000
+MUSIC_F     = %10000000
+
+.enum $0000
+OPTION_AUDIO_FLAGS:	.dsb 1
+OPTION_CUTSCENES:	.dsb 1
+OPTION_TEXT_SPEED:	.dsb 1
+OPTION_PRICE_SETTING:	.dsb 1
+OPTION_MUSIC_TEST:	.dsb 1
+OPTION_SFX_VFX_TEST:	.dsb 1
+OPTION_BACK_TO_TITLE:
+.ende

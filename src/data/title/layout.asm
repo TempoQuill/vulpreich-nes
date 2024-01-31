@@ -58,7 +58,7 @@ TitleScreenLayout:
 	; grass
 	.db $23, $e0, $48, $ff
 	.db $23, $f0, $08
-	; @2024 Tempo Quill
+	; @2025 Tempo Quill
 	; free to air/use when sales end
 	.db $50, $58, $5a, $5a, $5a, $5a, $50, $50
 
@@ -67,7 +67,7 @@ TitleScreenLayout:
 	text $228b, "Save Menu"
 	text $22cc, "Options"
 
-	text $2327, "@2024 Tempo Quill"
+	text $2327, "@2025 Tempo Quill"
 	text $2361, "free to air/use when sales end"
 	text_end
 

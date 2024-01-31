@@ -1,6 +1,8 @@
 ; decorative sprites (used to fill out the background)
 SaveMenuBGSprites:
 	;   y    tile attr x
+	.db $0b, $9f, $41, $68 ; cursor
+	.db $0b, $9d, $41, $70
 	.db $8f, $a7, $02, $b0 ; mailbox flag
 	.db $8f, $a9, $02, $b8
 	.db $9f, $ab, $02, $b0

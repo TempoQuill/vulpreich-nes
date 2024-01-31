@@ -135,18 +135,7 @@ InitSaveMenuBackground:
 
 	LDA #MUSIC_SAVE_MENU
 	STA zMusicQueue
-
-	; fade in
-	LDA zPals
-	AND #COLOR_INDEX
-	SSB PAL_FADE_F
-	STA zPals
-@WaitForFadeIn:
-	LDA #1
-	JSR DelayFrame_s_
-	LDA zPals
-	BMI @WaitForFadeIn
-	RTS
+	JMP AutomaticFadeIn
 
 InitSaveMenuOptionsNSprites:
 	LDX #0
@@ -161,7 +150,7 @@ InitSaveMenuOptionsNSprites:
 	LDY #(SaveMenuBGSprites_END - SaveMenuBGSprites) - 1
 @Loop1:
 	LDA SaveMenuBGSprites, Y
-	STA iVirtualOAM + SAVE_MENU_DECO_OFFS, Y
+	STA iVirtualOAM + SAVE_MENU_CURSOR_OFFS, Y
 	DEY
 	BPL @Loop1
 	LDA #$68
@@ -350,13 +339,6 @@ TrySaveMenuInput:
 	LDY #SFX_SELECT_1
 	JMP PlaySFX
 
-@Back:
-	LDA #$4
-	STA zSaveMenuOption
-	STA zSaveMenuSelectedOption
-	LDY #SFX_SELECT_1
-	JMP PlaySFX
-
 @OptionBit1:
 	TYA
 	AND #1 << UP_BUTTON | 1 << DOWN_BUTTON
@@ -412,4 +394,16 @@ GetInputAction:
 	LDX #0
 @Done:
 	TXA
+	RTS
+
+AutomaticFadeIn:
+	LDA zPals
+	AND #COLOR_INDEX
+	SSB PAL_FADE_F
+	STA zPals
+@WaitForFadeIn:
+	LDA #1
+	JSR DelayFrame_s_
+	LDA zPals
+	BMI @WaitForFadeIn
 	RTS

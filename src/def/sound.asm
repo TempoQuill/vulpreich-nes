@@ -58,7 +58,7 @@ EBH_Fs3:	.dsb 1
 EBH_G3:		.dsb 1
 EBH_Gs3:	.dsb 1
 EBH_A3:		.dsb 1
-EBH_AS3:	.dsb 1
+EBH_As3:	.dsb 1
 EBH_B3:		.dsb 1
 EBH_C4:		.dsb 1
 EBH_Cs4:	.dsb 1

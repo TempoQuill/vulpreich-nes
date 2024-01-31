@@ -13,8 +13,8 @@ ID Offset: 128
 -Minecraft
 
 119-126 sources:
--Andrew Stein - Our Last Goodnight
--WeiselFace - Equestria Train
+-Steven Stevens Guitars - Partition B - Chugs 2
+-WeaselFace - Equestria Train
 -Ensoniq (E)SQ-1
 
 WARNING: This set can only be used in games paired with capable FamiCom mappers.  A minimum program size of 256KiB is required for practical use of this set.

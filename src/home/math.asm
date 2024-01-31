@@ -35,3 +35,7 @@ SimpleDivide:
 
 Purchase:
 	RTS
+
+BCDTo8BitHex:
+@Addends:
+	.db $00, $0a, $64

@@ -23,7 +23,7 @@
 ;
 
 NLT_Title = $64
-NTL_Save = $a4
+NLT_Save = $a4
 
 ;
 ; Triangle Linearity Indeces

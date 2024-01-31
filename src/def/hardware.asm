@@ -87,8 +87,10 @@ rNR42 = $400e ; 0-3: pitch               7: period loop flag
 rNR43 = $400f ; 3-7: length load
 
 ; there are a few hardware bugs with the DPCM to beware of
-; firstly, sample playback can clobber rJOY with forged inputs, most NES title work around this
-; secondly, writes to rMIX may replay the sample currently playing, a retrigger if you will
+; firstly, sample playback can clobber rJOY with forged inputs, most NES title
+;	work around this with rereads, more on this bug at UpdateJoypad
+; secondly, writes to rMIX may replay the sample currently playing, a retrigger
+;	if you will
 ; thirdly, a byte gets added to the total size of the currently playing sample
 ;	so a sample with a size of $20 reads $201 bytes of data
 rNR50 = $4010 ; 0-3: pitch 6: loop flag 7: IRQ flag

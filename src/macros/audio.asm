@@ -131,3 +131,11 @@ IF length > 1
 	ENDR
 ENDIF
 ENDM
+
+MACRO dmc_ptr offset
+	.db (offset & %111111100) >> 2
+ENDM
+
+MACRO dmc_bank pointer
+	.db PRG_DPCM5 + (pointer >> 9)
+ENDM
