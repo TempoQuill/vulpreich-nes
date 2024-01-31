@@ -254,6 +254,15 @@ SubOptionsInputPointersHI:
 SOIP_B:
 SOIP_A:
 SOIP_Up:
+	LDA zOptionNumber
+	CMP #OPTION_CUTSCENES
+	BEQ SOIP_None
+	CMP #OPTION_TEXT_SPEED
+	BEQ SOIP_None
+	CMP #OPTION_BACK_TO_TITLE
+	BCS SOIP_None
+	JMP HandleSubOptionUpPress
+
 SOIP_Down:
 	LDA zOptionNumber
 	CMP #OPTION_CUTSCENES
@@ -281,6 +290,57 @@ SOIP_Right:
 	JMP HandleSubOptionRightPress
 
 SOIP_None:
+	RTS
+
+HandleSubOptionUpPress:
+; 0 - Audio Flags - Turn on flag according to pointer
+; 1 - Prices      - Deflate
+; 2 - Music       - Subtract ten from music ID pointer
+; 3 - SFX / VFX   - Subtract ten from SFX/VFX ID pointer
+	LDA zOptionNumber
+	BEQ @AudioFlags
+	CMP #OPTION_MUSIC_TEST
+	BCC @Prices
+	BEQ @Music
+@SFXVFX:
+	LDX #1
+@SFXVFX_Loop:
+	DEC wOptionsSFXBCD, X
+	BPL @Quit
+	LDA wOptionsSFXBCD, X
+	CLC
+	ADC #10
+	STA wOptionsSFXBCD, X
+	INX
+	CPX #3
+	BCC @SFXVFX_Loop
+	RTS
+@AudioFlags:
+	LDA zAudioFlagPointer
+	ORA zOptions
+	STA zOptions
+	RTS
+@Prices:
+	LDX zOptions
+	DEX
+	TXA
+	AND #PRICE_MOD
+	BEQ @Quit
+	DEC zOptions
+	RTS
+@Music:
+	LDX #1
+@Music_Loop:
+	DEC wOptionsMusicBCD, X
+	BPL @Quit
+	LDA wOptionsMusicBCD, X
+	CLC
+	ADC #10
+	STA wOptionsMusicBCD, X
+	INX
+	CPX #3
+	BCC @Music_Loop
+@Quit:
 	RTS
 
 HandleSubOptionDownPress:
@@ -351,10 +411,10 @@ HandleSubOptionLeftPress:
 	LDX #0
 @SFXVFX_Loop:
 	DEC wOptionsSFXBCD, X
+	BPL @Quit
 	LDA wOptionsSFXBCD, X
 	CLC
 	ADC #10
-	BMI @Quit
 	STA wOptionsSFXBCD, X
 	INX
 	CPX #3
@@ -385,8 +445,8 @@ HandleSubOptionLeftPress:
 	LDX #0
 @Music_Loop:
 	DEC wOptionsMusicBCD, X
-	LDA wOptionsMusicBCD, X
 	BPL @Quit
+	LDA wOptionsMusicBCD, X
 	CLC
 	ADC #10
 	STA wOptionsMusicBCD, X
