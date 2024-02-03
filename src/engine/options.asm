@@ -81,9 +81,26 @@ RunOptions:
 	JSR TryOptionsInput
 	LDA zOptionNumberSelectedCPL
 	CMP #OPTION_BACK_TO_TITLE ^ $ff
+	BEQ @Quit
 	LDA #1
 	JSR DelayFrame_s_
-	JMP RunOptions
+	BEQ RunOptions
+@Quit:
+	LDA #2
+	STA zPalFadeSpeed
+	STA zPalFade
+	LDA zPals
+	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
+	STA zPals
+@CheckPal:
+	LDY zPals + 15
+	CPY #$f
+	BEQ @Terminal
+	LDA #1
+	JSR DelayFrame_s_
+	BEQ @CheckPal
+	; aaaand JUMP!
+	JMP IntroSequence_TitleOnly
 
 OptionsCursorYPositions:
 	.db $1b ; audio
@@ -91,7 +108,7 @@ OptionsCursorYPositions:
 	.db $3b ; text
 	.db $4b ; prices
 	.db $7b ; music
-	.db $8b ; sound effects
+	.db $8b ; sound effects / voice effects
 	.db $9b ; back to title screen
 
 BasicOptionsInput:
@@ -318,16 +335,27 @@ HandleSubOptionAPress:
 @Music:
 	; the x-offset seems a good solution for now
 	; just focus on converting the right spot to hex
-	LDY wOptionsMusicBCD + 2, X
+	LDA wOptionsMusicBCD + 2, X
+	SBC #"0"
+	TAY
 	JSR @MaybeMax
 	BCS @Max
 	; bcd <= 255
-	; add special values equivalent to 100s, 10s according to Y
+	; add special values equivalent to 100s, 10s, 1s according to Y
 	LDA #0
 	ADC @Hundreds, Y
-	LDY wOptionsMusicBCD + 1, X
+	PHA
+	LDA wOptionsMusicBCD + 1, X
+	SBC #"0"
+	TAY
+	PLA
 	ADC @Tens, Y
-	ADC wOptionsMusicBCD, X
+	PHA
+	LDA wOptionsMusicBCD, X
+	SBC #"0"
+	TAY
+	PLA
+	ADC @Ones, Y
 @Play:
 	; store the result now in Y for audio initialization
 	TAY
@@ -346,15 +374,16 @@ HandleSubOptionAPress:
 
 @MaybeMax:
 	; if BCD is > 255, make the value 255 / $ff
-	CPY #2
+	LDA wOptionsMusicBCD + 2, X
+	CMP #"2"
 	BCC @NotMax
 	BNE @IsMax
 	LDA wOptionsMusicBCD + 1, X
-	CMP #5
+	CMP #"5"
 	BCC @NotMax
 	BNE @IsMax
 	LDA wOptionsMusicBCD, X
-	CMP #5
+	CMP #"5"
 @IsMax:
 @NotMax:
 	RTS
@@ -376,6 +405,18 @@ HandleSubOptionAPress:
 	.db 80
 	.db 90
 
+@Ones:
+	.db 0
+	.db 1
+	.db 2
+	.db 3
+	.db 4
+	.db 5
+	.db 6
+	.db 7
+	.db 8
+	.db 9
+
 HandleSubOptionUpPress:
 ; 0 - Audio Flags - Turn on flag according to pointer
 ; 1 - Prices      - Deflate
@@ -390,6 +431,8 @@ HandleSubOptionUpPress:
 	LDX #1
 @SFXVFX_Loop:
 	DEC wOptionsSFXBCD, X
+	LDA wOptionsSFXBCD, X
+	CMP #"0"
 	BPL @Quit
 	LDA wOptionsSFXBCD, X
 	CLC
@@ -416,6 +459,8 @@ HandleSubOptionUpPress:
 	LDX #1
 @Music_Loop:
 	DEC wOptionsMusicBCD, X
+	LDA wOptionsMusicBCD, X
+	CMP #"0"
 	BPL @Quit
 	LDA wOptionsMusicBCD, X
 	CLC
@@ -444,6 +489,7 @@ HandleSubOptionDownPress:
 	LDA wOptionsSFXBCD, X
 	SEC
 	SBC #10
+	CMP #"0"
 	BMI @Quit
 	STA wOptionsSFXBCD, X
 	INX
@@ -471,6 +517,7 @@ HandleSubOptionDownPress:
 	LDA wOptionsMusicBCD, X
 	SEC
 	SBC #10
+	CMP #"0"
 	BMI @Quit
 	STA wOptionsMusicBCD, X
 	INX
@@ -495,6 +542,8 @@ HandleSubOptionLeftPress:
 	LDX #0
 @SFXVFX_Loop:
 	DEC wOptionsSFXBCD, X
+	LDA wOptionsSFXBCD, X
+	CMP #"0"
 	BPL @Quit
 	LDA wOptionsSFXBCD, X
 	CLC
@@ -529,6 +578,8 @@ HandleSubOptionLeftPress:
 	LDX #0
 @Music_Loop:
 	DEC wOptionsMusicBCD, X
+	LDA wOptionsMusicBCD, X
+	CMP #"0"
 	BPL @Quit
 	LDA wOptionsMusicBCD, X
 	CLC
@@ -559,6 +610,7 @@ HandleSubOptionRightPress:
 	LDA wOptionsSFXBCD, X
 	SEC
 	SBC #10
+	CMP #"0"
 	BMI @Quit
 	STA wOptionsSFXBCD, X
 	INX
@@ -595,6 +647,7 @@ HandleSubOptionRightPress:
 	LDA wOptionsMusicBCD, X
 	SEC
 	SBC #10
+	CMP #"0"
 	BMI @Quit
 	STA wOptionsMusicBCD, X
 	INX
