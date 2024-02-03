@@ -54,7 +54,7 @@ IntroSequence_TitleOnly:
 	BEQ @Terminal
 	LDA #1
 	JSR DelayFrame_s_
-	JMP @CheckPal
+	BEQ @CheckPal
 @Terminal:
 	LDA zFilmStandardTimerEven
 	JSR DelayFrame_s_

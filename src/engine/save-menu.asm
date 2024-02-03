@@ -221,7 +221,7 @@ SaveMenuScreen:
 	; Nope.  We're still running.
 	LDA #1
 	JSR DelayFrame_s_
-	JMP @Run
+	BEQ @Run
 @Back:
 	; B was pressed.
 	; Run sound queues
