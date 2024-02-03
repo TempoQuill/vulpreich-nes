@@ -15,9 +15,15 @@ LEFT_BUTTON = 1
 RIGHT_BUTTON = 0
 .ende
 
-OAM_32_32_WIDTH = $20
-OAM_24_32_WIDTH = $18
-OAM_16_16_WIDTH = $08
+;                 L    W   H  ; T
+OAM_32_32_WIDTH = 4 * (4 * 2) ; 32
+OAM_24_32_WIDTH = 4 * (3 * 2) ; 24
+OAM_16_32_WIDTH = 4 * (2 * 2) ; 16
+OAM_8_32_WIDTH  = 4 * (1 * 2) ; 8
+OAM_32_16_WIDTH = 4 * (4 * 1) ; 16
+OAM_24_16_WIDTH = 4 * (3 * 1) ; 12
+OAM_16_16_WIDTH = 4 * (2 * 1) ; 8
+OAM_8_16_WIDTH  = 4 * (1 * 1) ; 4
 
 TITLE_SCREEN_DURATION = $902
 
