@@ -252,7 +252,19 @@ SubOptionsInputPointersHI:
 	dh (SOIP_B - 1)
 
 SOIP_B:
+	LDA #0
+	STA zOptionNumberSelectedCPL
+	RTS
+
 SOIP_A:
+	LDA zOptionNumber
+	CMP #OPTION_BACK_TO_TITLE
+	BCS SOIP_None
+	CMP #OPTION_TEXT_SPEED
+	BCC SOIP_None
+	BEQ SOIP_None
+	JMP HandleSubOptionAPress
+
 SOIP_Up:
 	LDA zOptionNumber
 	CMP #OPTION_CUTSCENES
@@ -291,6 +303,65 @@ SOIP_Right:
 
 SOIP_None:
 	RTS
+
+HandleSubOptionAPress:
+	LDX #0
+	LDA zOptionNumber
+	SEC
+	SBC #OPTION_MUSIC_TEST
+	BEQ @Music
+	LDX #wOptionsSFXBCD - wOptionsMusicBCD
+@Music:
+	LDY wOptionsMusicBCD + 2, X
+	JSR @MaybeMax
+	BCS @Max
+	LDA #0
+	ADC @Hundreds, Y
+	LDY wOptionsMusicBCD + 1, X
+	ADC @Tens, Y
+	ADC wOptionsMusicBCD, X
+@Play:
+	TAY
+	TXA
+	BNE @SFX
+	STY zMusicQueue
+	RTS
+@SFX:
+	JMP PlaySFX
+@Max:
+	LDA #$ff
+	BNE @Play
+
+@MaybeMax:
+	CPY #2
+	BCC @NotMax
+	BNE @IsMax
+	LDA wOptionsMusicBCD + 1, X
+	CMP #5
+	BCC @NotMax
+	BNE @IsMax
+	LDA wOptionsMusicBCD, X
+	CMP #5
+@IsMax:
+@NotMax:
+	RTS
+
+@Hundreds:
+	.db $00
+	.db $64
+	.db $c8
+
+@Tens:
+	.db $00
+	.db $0a
+	.db $14
+	.db $1e
+	.db $28
+	.db $32
+	.db $3c
+	.db $46
+	.db $50
+	.db $5a
 
 HandleSubOptionUpPress:
 ; 0 - Audio Flags - Turn on flag according to pointer
