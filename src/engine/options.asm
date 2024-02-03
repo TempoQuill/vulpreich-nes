@@ -305,34 +305,47 @@ SOIP_None:
 	RTS
 
 HandleSubOptionAPress:
+; 0 - Music   - Play Music
+; 1 - SFX/VFX - Play Sound/Voice Effects
+	; what option index?
 	LDX #0
 	LDA zOptionNumber
 	SEC
-	SBC #OPTION_MUSIC_TEST
+	SBC #OPTION_MUSIC_TEST ; first valid entry
 	BEQ @Music
+	; if not OPTION_MUSIC_TEST, then OPTION_SFX_VFX_TEST
 	LDX #wOptionsSFXBCD - wOptionsMusicBCD
 @Music:
+	; the x-offset seems a good solution for now
+	; just focus on converting the right spot to hex
 	LDY wOptionsMusicBCD + 2, X
 	JSR @MaybeMax
 	BCS @Max
+	; bcd <= 255
+	; add special values equivalent to 100s, 10s according to Y
 	LDA #0
 	ADC @Hundreds, Y
 	LDY wOptionsMusicBCD + 1, X
 	ADC @Tens, Y
 	ADC wOptionsMusicBCD, X
 @Play:
+	; store the result now in Y for audio initialization
 	TAY
 	TXA
 	BNE @SFX
+	; x == 0 == zMusicQueue
 	STY zMusicQueue
 	RTS
 @SFX:
+	; x != 0
+	; non-zero = PlaySFX
 	JMP PlaySFX
 @Max:
 	LDA #$ff
 	BNE @Play
 
 @MaybeMax:
+	; if BCD is > 255, make the value 255 / $ff
 	CPY #2
 	BCC @NotMax
 	BNE @IsMax
@@ -347,21 +360,21 @@ HandleSubOptionAPress:
 	RTS
 
 @Hundreds:
-	.db $00
-	.db $64
-	.db $c8
+	.db 0
+	.db 100
+	.db 200
 
 @Tens:
-	.db $00
-	.db $0a
-	.db $14
-	.db $1e
-	.db $28
-	.db $32
-	.db $3c
-	.db $46
-	.db $50
-	.db $5a
+	.db 0
+	.db 10
+	.db 20
+	.db 30
+	.db 40
+	.db 50
+	.db 60
+	.db 70
+	.db 80
+	.db 90
 
 HandleSubOptionUpPress:
 ; 0 - Audio Flags - Turn on flag according to pointer
