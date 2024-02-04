@@ -428,35 +428,35 @@ MusDTitle7_Noise:
 
 MusDTitle7_DPCM:
 	note_type 1, 4
-	smp_note PM_E2
-	smp_note PM_E2
+	smp_note Chug_E2
+	smp_note Chug_E2
 	smp_note Maj_E2
-	smp_note PM_E2
-	smp_note PM_E2
+	smp_note Chug_E2
+	smp_note Chug_E2
 	note_type 1, 8
 	smp_note Maj_E2
 	note_type 1, 4
 	smp_note Maj_E2
-	smp_note PM_D2
-	smp_note PM_D2
+	smp_note Chug_D2
+	smp_note Chug_D2
 	smp_note Maj_D2
-	smp_note PM_D2
-	smp_note PM_D2
+	smp_note Chug_D2
+	smp_note Chug_D2
 	note_type 1, 8
 	smp_note Maj_D2
 	note_type 1, 4
 	smp_note Maj_D2
-	smp_note PM_A2
-	smp_note PM_A2
+	smp_note Chug_A2
+	smp_note Chug_A2
 	smp_note Maj_A2
-	smp_note PM_A2
-	smp_note PM_A2
-	smp_note PM_A2
+	smp_note Chug_A2
+	smp_note Chug_A2
+	smp_note Chug_A2
 	note_type 1, 8
 	smp_note Maj_A2
 	smp_note Maj_Slide
 	note_type 1, 4
-	smp_note PM_B2
+	smp_note Chug_B2
 	note_type 1, 8
 	smp_note Maj_B2
 	note_type 1, 4

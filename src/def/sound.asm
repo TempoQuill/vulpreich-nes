@@ -13,17 +13,17 @@ A#:	.dsb 2
 B_:	.dsb 2
 .ende
 .enum $0001
-PM_Cs2:		.dsb 1
-PM_D2:		.dsb 1
-PM_Ds2:		.dsb 1
-PM_E2:		.dsb 1
-PM_F2:		.dsb 1
-PM_Fs2:		.dsb 1
-PM_G2:		.dsb 1
-PM_Gs2:		.dsb 1
-PM_A2:		.dsb 1
-PM_As2:		.dsb 1
-PM_B2:		.dsb 1
+Chug_Cs2:		.dsb 1
+Chug_D2:		.dsb 1
+Chug_Ds2:		.dsb 1
+Chug_E2:		.dsb 1
+Chug_F2:		.dsb 1
+Chug_Fs2:		.dsb 1
+Chug_G2:		.dsb 1
+Chug_Gs2:		.dsb 1
+Chug_A2:		.dsb 1
+Chug_As2:		.dsb 1
+Chug_B2:		.dsb 1
 Maj_Slide:	.dsb 1
 Maj_Cs2:	.dsb 1
 Maj_D2:		.dsb 1
