@@ -58,13 +58,31 @@ wSaveMenuEnd:
 	.dsb 1
 wOptionsData:
 wOptionsText:
-	.dsb 133
+	.dsb 3 + $08
+	.dsb 3 + $19
+	.dsb 3 + $12
+	.dsb 3 + $11
+	.dsb 3 + $11
+	.dsb 3 + $06
+	.dsb 3 + $09
+	.dsb 3 + $06
+	.dsb 3
 wOptionsMusicBCD:
 	.dsb 3
-	.dsb 18
+	.dsb 3 + $12 - 3
 wOptionsSFXBCD:
 	.dsb 3
-	.dsb 23
+	.dsb 3 + $14
+wOptionsCheckMarkArea:
+	.dsb 3
+wOptionsCheckTile1:
+	.dsb 1
+	.dsb 3
+wOptionsCheckTile2:
+	.dsb 1
+	.dsb 3
+wOptionsCheckTile3:
+	.dsb 1
 wOptionsAttributes:
 	.dsb 3
 wOptionsAttrRow1:
@@ -81,26 +99,24 @@ wOptionsAttrRow5:
 	.dsb 8
 wOptionsAttrRow6:
 	.dsb 7
-wOptionsCheckMarkArea:
-	.dsb 3
-wOptionsCheckTile1:
-	.dsb 4
-wOptionsCheckTile2:
-	.dsb 4
-wOptionsCheckTile3:
-	.dsb 2
-wOptionsDataEnd:
+	.dsb 1
 wOptionsDynamicAttributes:
+wODARow2Start:
 	.dsb 3
 wODARow2:
 	.dsb 5
 wODARow2_END:
+	.dsb 1
+wODARow4Start:
 	.dsb 3
 wODARow4:
 	.dsb 3
+wODARow3Start:
 	.dsb 3
 wODARow3:
 	.dsb 3
+	.dsb 1
+wODARow5Start:
 	.dsb 3
 wODARow5:
 	.dsb 1
@@ -114,6 +130,7 @@ wOptionsRealTimeSFX:
 	.dsb 3
 wOptionsRealTimeBCDEnd:
 	.dsb 1
+wOptionsDataEnd:
 ; RAM_BackupPlayFile
 ; a copy of RAM_PrimaryPlayFile
 ; only used when primary is corrupt, but written to when saved

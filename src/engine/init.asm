@@ -60,6 +60,7 @@ IntroSequence_TitleOnly:
 	JSR DelayFrame_s_
 	LDX zTitleScreenSelectedOption
 	BEQ @RST
+	BMI @Options
 	DEX ; SELECT + A + B
 	BEQ @RST
 	DEX ; START / A
@@ -67,9 +68,16 @@ IntroSequence_TitleOnly:
 @RST:
 	JMP IntroSequence
 @SaveMenu:
-	LDX zTitleScreenSelectedOption
-	BMI @RST
 	JMP SaveMenuScreen
+@Options:
+	TXA
+	AND #$7f
+	TAX
+	DEX ; SELECT + A + B
+	BEQ @RST
+	DEX ; START / A
+	BNE @RST
+	JMP OptionsRoutine
 
 InspiredScreen:
 	; we're initializing the PPU

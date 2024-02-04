@@ -22,10 +22,44 @@ InitOptionsMenu:
 	STA rCTRL
 	JSR SetUpStringBuffer
 
-	LDY #>wOptionsData
-	STY zPPUDataBufferPointer + 1
 	LDY #<wOptionsData
 	STY zPPUDataBufferPointer
+	LDY #>wOptionsData
+	STY zPPUDataBufferPointer + 1
+
+	LDA #1
+	JSR DelayFrame_s_
+
+	JSR UpdateOptions
+
+	LDY #<wODARow2Start
+	STY zPPUDataBufferPointer
+	LDY #>wODARow2Start
+	STY zPPUDataBufferPointer + 1
+
+	LDA #1
+	JSR DelayFrame_s_
+
+	LDY #<wODARow3Start
+	STY zPPUDataBufferPointer
+	LDY #>wODARow3Start
+	STY zPPUDataBufferPointer + 1
+
+	LDA #1
+	JSR DelayFrame_s_
+
+	LDY #<wODARow4Start
+	STY zPPUDataBufferPointer
+	LDY #>wODARow4Start
+	STY zPPUDataBufferPointer + 1
+
+	LDA #1
+	JSR DelayFrame_s_
+
+	LDY #<wODARow5Start
+	STY zPPUDataBufferPointer
+	LDY #>wODARow5Start
+	STY zPPUDataBufferPointer + 1
 
 	LDA #1
 	JSR DelayFrame_s_
@@ -40,12 +74,19 @@ OptionsRoutine:
 InitOptionsMenuData:
 	LDA #MUSIC_F
 	STA zAudioFlagPointer
-	LDX #wOptionsDataEnd - wOptionsData - 1
-@LayoutLoop:
+	LDX #<(wOptionsDataEnd - wOptionsData)
+@LayoutLoop1:
+	DEX
+	LDA OptionsLayout + $100, X
+	STA wOptionsData + $100, X
+	TXA
+	BNE @LayoutLoop1
+@LayoutLoop2:
+	DEX
 	LDA OptionsLayout, X
 	STA wOptionsData, X
-	DEX
-	BPL @LayoutLoop
+	TXA
+	BNE @LayoutLoop2
 	LDA #"0"
 	LDX #3
 @AudioBCDLoop:
@@ -53,18 +94,6 @@ InitOptionsMenuData:
 	STA wOptionsMusicBCD, X
 	STA wOptionsSFXBCD, X
 	BNE @AudioBCDLoop
-	LDX #wOptionsRealTimeBCDEnd - wOptionsRealTimeBCD - 1
-@RealTimeLoop:
-	LDA OptionsBCDArea, X
-	STA wOptionsRealTimeBCD, X
-	DEX
-	BPL @RealTimeLoop
-	LDX #wOptionsDynamicAttributesEnd - wOptionsDynamicAttributes - 1
-@ODALoop:
-	LDA OptionsDynamicAttributeData, X
-	STA wOptionsDynamicAttributes, X
-	DEX
-	BPL @ODALoop
 	LDA #0
 	STA zOptionNumber
 	STA zOptionNumberSelectedCPL
@@ -117,21 +146,20 @@ UpdateOptions:
 ;object/pal.	RAM
 ;cursor		zOptionNumber v
 ;	zCursorYPos <- OptionsCursorYPositions
-	LDX zOptionNumber
+	LDY zOptionNumber
 	LDA OptionsCursorYPositions, Y
 	STA zCursorYPos
 ;audio pal.	zAudioFlagPointer v
 ;		wODARow2 <- ODAD_Row2Data
 ;cutscenes	zOptions.4 v
 ;	wODARow2 <- ODAD_Row2Data
-	LDX #0
-	LDY #wODARow2_END - wODARow2
+	LDX #(wODARow2_END - wODARow2) - 1
+	LDY #((wODARow2_END - wODARow2) * 2) - 1
 	LDA zOptions
-	AND #OPTION_CUTSCENES
-	BEQ @CutscenesOn
+	AND #CUTSCENES_F
+	BNE @CutscenesOn
 	TYA
 	TAX
-	DEY
 @CutscenesOn:
 	LDA zAudioFlagPointer
 	STA zTempAudioFlagPointer
@@ -140,12 +168,12 @@ UpdateOptions:
 	BMI @DoAudioPalette
 	CLC
 	ADC #(wODARow2_END - wODARow2) * 2
-	LSR zTempAudioFlagPointer
+	ASL zTempAudioFlagPointer
 	BMI @DoAudioPalette
 	ADC #(wODARow2_END - wODARow2) * 2
 @DoAudioPalette:
 	TAX
-	DEX
+	LDY #(wODARow2_END - wODARow2) - 1
 @AudioCutscenAttrLoop:
 	LDA ODAD_Row2Data, X
 	STA wODARow2, Y
@@ -173,6 +201,7 @@ UpdateOptions:
 	LSR A		; &$06
 	LSR A		; &$03
 	TAY
+	DEY
 	LDA #0
 	ADC TextSpeedPricesROMOffsets_Speed, Y
 	PHA
@@ -180,8 +209,10 @@ UpdateOptions:
 	AND #PRICE_MOD
 	TAY
 	PLA
+	DEY
 	ADC TextSpeedPricesROMOffsets_Prices, Y
 	TAY
+	DEY
 @PriceSpeedLoop:
 	LDA ODAD_Row3Data, Y
 	STA wODARow3, X
@@ -192,8 +223,10 @@ UpdateOptions:
 	LDA zOptions
 	AND #PRICE_MOD
 	TAY
+	DEY
 	LDA PricesROMOffset, Y
 	TAY
+	DEY
 @PriceLoop:
 	LDA ODAD_Row4Data, Y
 	STA wODARow4, X
@@ -221,38 +254,58 @@ UpdateOptions:
 	DEY
 	BPL @BCDLoop
 	; now it's time to update zPPUDataBufferPointer
-	; first, is option 0 selected
+	; first, is option 0 selected?
 	LDX zOptionNumberSelectedCPL
+	BEQ @Done
 	INX
-	BEQ @PPUOffset
+	BNE @PPUOffset
 	LDA zInputBottleNeck
-	AND #1 << A_BUTTON | 1 << START_BUTTON
+	AND #1 << UP_BUTTON | 1 << DOWN_BUTTON
 	BEQ @PPUOffset
 	LDA #<wOptionsCheckMarkArea
 	STA zPPUDataBufferPointer
 	LDA #>wOptionsCheckMarkArea
 	STA zPPUDataBufferPointer + 1
 	RTS
-@PPUOffset:
-	LDA #<wODARow2
+@Done:
+	LDA #<wODARow5Start
 	STA zPPUDataBufferPointer
-	LDA #>wODARow2
+	LDA #>wODARow5Start
+	STA zPPUDataBufferPointer + 1
+	RTS
+@PPUOffset:
+	LDA zOptionNumberSelectedCPL
+	FAB
+	ASL A
+	TAY
+	LDA @RAMPointers, Y
+	STA zPPUDataBufferPointer
+	LDA @RAMPointers + 1, Y
 	STA zPPUDataBufferPointer + 1
 	RTS
 
+@RAMPointers:
+	.dw wODARow2Start
+	.dw wODARow2Start
+	.dw wODARow3Start
+	.dw wODARow4Start
+	.dw wODARow5Start
+	.dw wODARow5Start
+	.dw wODARow5Start
+
 TextSpeedPricesROMOffsets_Speed:
-	.db 2
-	.db 8
-	.db 14
+	.db 0
+	.db 6
+	.db 12
 TextSpeedPricesROMOffsets_Prices:
-	.db 2
-	.db 5
-	.db 5
+	.db 3
+	.db 6
+	.db 6
 
 PricesROMOffset:
-	.db 2
-	.db 5
-	.db 8
+	.db 3
+	.db 6
+	.db 9
 
 AudioTestROMOffset:
 	.db 0
@@ -267,7 +320,7 @@ GenerateCheckTile:
 	LDA #0
 	ASL zTempAudioFlagPointer
 	ROL A
-	ORA #$1e
+	EOR #$1f
 	RTS
 
 BasicOptionsInput:
@@ -415,8 +468,8 @@ SubOptionsInputPointersLO:
 	dl (SOIP_Down - 1)
 	dl (SOIP_Left - 1)
 	dl (SOIP_Right - 1)
-	dl (SOIP_A - 1)
 	dl (SOIP_B - 1)
+	dl (SOIP_A - 1)
 
 SubOptionsInputPointersHI:
 	dh (SOIP_None - 1)
@@ -424,10 +477,12 @@ SubOptionsInputPointersHI:
 	dh (SOIP_Down - 1)
 	dh (SOIP_Left - 1)
 	dh (SOIP_Right - 1)
-	dh (SOIP_A - 1)
 	dh (SOIP_B - 1)
+	dh (SOIP_A - 1)
 
 SOIP_B:
+	LDY #SFX_EXCLAMATION_3
+	JSR PlaySFX
 	LDA #0
 	STA zOptionNumberSelectedCPL
 	RTS
@@ -494,7 +549,7 @@ HandleSubOptionAPress:
 @Music:
 	; the x-offset seems a good solution for now
 	; just focus on converting the right spot to hex
-	LDA wOptionsMusicBCD + 2, X
+	LDA wOptionsMusicBCD, X
 	SBC #"0"
 	TAY
 	JSR @MaybeMax
@@ -505,15 +560,19 @@ HandleSubOptionAPress:
 	ADC @Hundreds, Y
 	PHA
 	LDA wOptionsMusicBCD + 1, X
+	SEC
 	SBC #"0"
 	TAY
 	PLA
+	CLC
 	ADC @Tens, Y
 	PHA
-	LDA wOptionsMusicBCD, X
+	LDA wOptionsMusicBCD + 2, X
+	SEC
 	SBC #"0"
 	TAY
 	PLA
+	CLC
 	ADC @Ones, Y
 @Play:
 	; store the result now in Y for audio initialization
@@ -533,7 +592,7 @@ HandleSubOptionAPress:
 
 @MaybeMax:
 	; if BCD is > 255, make the value 255 / $ff
-	LDA wOptionsMusicBCD + 2, X
+	LDA wOptionsMusicBCD, X
 	CMP #"2"
 	BCC @NotMax
 	BNE @IsMax
@@ -541,7 +600,7 @@ HandleSubOptionAPress:
 	CMP #"5"
 	BCC @NotMax
 	BNE @IsMax
-	LDA wOptionsMusicBCD, X
+	LDA wOptionsMusicBCD + 2, X
 	CMP #"5"
 @IsMax:
 @NotMax:
@@ -589,24 +648,27 @@ HandleSubOptionUpPress:
 @SFXVFX:
 	LDX #1
 @SFXVFX_Loop:
-	DEC wOptionsSFXBCD, X
+	INC wOptionsSFXBCD, X
 	LDA wOptionsSFXBCD, X
+	SEC
+	SBC #10
 	CMP #"0"
-	BPL @Quit
-	LDA wOptionsSFXBCD, X
-	CLC
-	ADC #10
+	BMI @Quit
 	STA wOptionsSFXBCD, X
-	INX
-	CPX #3
-	BCC @SFXVFX_Loop
+	DEX
+	BPL @SFXVFX_Loop
 	RTS
 @AudioFlags:
+	LDY #SFX_CURSOR_3
+	JSR PlaySFX
 	LDA zAudioFlagPointer
-	ORA zOptions
+	FAB
+	AND zOptions
 	STA zOptions
 	RTS
 @Prices:
+	LDY #SFX_CURSOR_3
+	JSR PlaySFX
 	LDX zOptions
 	DEX
 	TXA
@@ -617,17 +679,15 @@ HandleSubOptionUpPress:
 @Music:
 	LDX #1
 @Music_Loop:
-	DEC wOptionsMusicBCD, X
+	INC wOptionsMusicBCD, X
 	LDA wOptionsMusicBCD, X
+	SEC
+	SBC #10
 	CMP #"0"
-	BPL @Quit
-	LDA wOptionsMusicBCD, X
-	CLC
-	ADC #10
+	BMI @Quit
 	STA wOptionsMusicBCD, X
-	INX
-	CPX #3
-	BCC @Music_Loop
+	DEX
+	BPL @Music_Loop
 @Quit:
 	RTS
 
@@ -644,24 +704,27 @@ HandleSubOptionDownPress:
 @SFXVFX:
 	LDX #1
 @SFXVFX_Loop:
-	INC wOptionsSFXBCD, X
+	DEC wOptionsSFXBCD, X
 	LDA wOptionsSFXBCD, X
-	SEC
-	SBC #10
 	CMP #"0"
-	BMI @Quit
+	BPL @Quit
+	LDA wOptionsSFXBCD, X
+	CLC
+	ADC #10
 	STA wOptionsSFXBCD, X
-	INX
-	CPX #3
-	BCC @SFXVFX_Loop
+	DEX
+	BPL @SFXVFX_Loop
 	RTS
 @AudioFlags:
+	LDY #SFX_CURSOR_3
+	JSR PlaySFX
 	LDA zAudioFlagPointer
-	FAB
-	AND zOptions
+	ORA zOptions
 	STA zOptions
 	RTS
 @Prices:
+	LDY #SFX_CURSOR_3
+	JSR PlaySFX
 	LDX zOptions
 	INX
 	TXA
@@ -672,16 +735,16 @@ HandleSubOptionDownPress:
 @Music:
 	LDX #1
 @Music_Loop:
-	INC wOptionsMusicBCD, X
+	DEC wOptionsMusicBCD, X
 	LDA wOptionsMusicBCD, X
-	SEC
-	SBC #10
 	CMP #"0"
-	BMI @Quit
+	BPL @Quit
+	LDA wOptionsMusicBCD, X
+	CLC
+	ADC #10
 	STA wOptionsMusicBCD, X
-	INX
-	CPX #3
-	BCC @Music_Loop
+	DEX
+	BPL @Music_Loop
 @Quit:
 	RTS
 
@@ -698,7 +761,7 @@ HandleSubOptionLeftPress:
 	BCC @TextSpeed
 	BEQ @Music
 @SFXVFX:
-	LDX #0
+	LDX #2
 @SFXVFX_Loop:
 	DEC wOptionsSFXBCD, X
 	LDA wOptionsSFXBCD, X
@@ -708,33 +771,38 @@ HandleSubOptionLeftPress:
 	CLC
 	ADC #10
 	STA wOptionsSFXBCD, X
-	INX
-	CPX #3
-	BCC @SFXVFX_Loop
+	DEX
+	BPL @SFXVFX_Loop
 	RTS
 @AudioFlags:
+	LDY #SFX_CURSOR_3
+	JSR PlaySFX
 	LDA zAudioFlagPointer
-	ROL A
-	CMP #VFX_F
-	BCC @Quit
-	ROR zAudioFlagPointer
+	BMI @Quit
+	ASL zAudioFlagPointer
 	RTS
 @Cutscene:
+	LDY #SFX_CURSOR_3
+	JSR PlaySFX
 	LDA zOptions
 	ORA #CUTSCENES_F
 	STA zOptions
 	RTS
 @TextSpeed:
+	LDY #SFX_CURSOR_3
+	JSR PlaySFX
 	LDA zOptions
+	SEC
+	SBC #4
 	AND #TEXT_SPEED
-	BNE @Quit
+	BEQ @Quit
 	LDA zOptions
 	SEC
 	SBC #4
 	STA zOptions
 	RTS
 @Music:
-	LDX #0
+	LDX #2
 @Music_Loop:
 	DEC wOptionsMusicBCD, X
 	LDA wOptionsMusicBCD, X
@@ -744,9 +812,8 @@ HandleSubOptionLeftPress:
 	CLC
 	ADC #10
 	STA wOptionsMusicBCD, X
-	INX
-	CPX #3
-	BCC @Music_Loop
+	DEX
+	BPL @Music_Loop
 @Quit:
 	RTS
 
@@ -763,7 +830,7 @@ HandleSubOptionRightPress:
 	BCC @TextSpeed
 	BEQ @Music
 @SFXVFX:
-	LDX #0
+	LDX #2
 @SFXVFX_Loop:
 	INC wOptionsSFXBCD, X
 	LDA wOptionsSFXBCD, X
@@ -772,35 +839,40 @@ HandleSubOptionRightPress:
 	CMP #"0"
 	BMI @Quit
 	STA wOptionsSFXBCD, X
-	INX
-	CPX #3
-	BCC @SFXVFX_Loop
+	DEX
+	BPL @SFXVFX_Loop
 	RTS
 @AudioFlags:
+	LDY #SFX_CURSOR_3
+	JSR PlaySFX
 	LDA zAudioFlagPointer
-	ROR A
+	LSR A
 	CMP #VFX_F
 	BCC @Quit
-	ROR zAudioFlagPointer
+	LSR zAudioFlagPointer
 	RTS
 @Cutscene:
+	LDY #SFX_CURSOR_3
+	JSR PlaySFX
 	LDA zOptions
 	AND #$ff ^ CUTSCENES_F
 	STA zOptions
 	RTS
 @TextSpeed:
+	LDY #SFX_CURSOR_3
+	JSR PlaySFX
 	LDA zOptions
 	CLC
 	ADC #4
 	AND #TEXT_SPEED
-	BNE @Quit
+	BEQ @Quit
 	LDA zOptions
 	CLC
 	ADC #4
 	STA zOptions
 	RTS
 @Music:
-	LDX #0
+	LDX #2
 @Music_Loop:
 	INC wOptionsMusicBCD, X
 	LDA wOptionsMusicBCD, X
@@ -809,8 +881,7 @@ HandleSubOptionRightPress:
 	CMP #"0"
 	BMI @Quit
 	STA wOptionsMusicBCD, X
-	INX
-	CPX #3
-	BCC @Music_Loop
+	DEX
+	BPL @Music_Loop
 @Quit:
 	RTS

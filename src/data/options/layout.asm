@@ -7,36 +7,28 @@ OptionsLayout:
 	text $218c, "Normal"
 	text $21cc, "Expensive"
 	text $2205, "Music:"
-	text $2212, "---"
-	text $2245, "Sound/Vocals:---"
+	text $2214, "---"
+	text $2245, "Sound/Vocals:  ---"
 	text $2285, "Back to title screen"
-	.db $23, $c1, $03
-	.db      $f0, $f0, $30
-	.db $23, $c9, $0d
-	.db      $55, $55, $30, $0c, $af, $0a, $0f
-	.db $00, $55, $51, $a2, $a0, $22
-	.db $23, $db, $14
-	.db                $a0, $a0, $20, $00, $00
-	.db $00, $55, $55, $50, $50, $aa, $00, $00
-	.db $00, $0f, $0f, $0f, $0f, $0f
-
 OptionsCheckMarks:
 	.db $20, $92, $01, $1e
-	.db $20, $96, $01, $1e
+	.db $20, $98, $01, $1e
 	.db $20, $9e, $01, $1e
+	attribute $2045, f0f030
+	attribute $2085, 5555500caa0b0e005551a2a022
+	attribute $218c, a0a02000000055555050aa0000000f0f0f0f0f03
+
 	.db $00
 
 OptionsDynamicAttributeData:
-	.db $23, $cb, $05
-	.db                $10, $0c, $af, $0a, $0f
+	attribute $208c, 100cae0a03
+	.db $00
 
-	.db $23, $db, $03
-	.db                $a0, $a0, $20
-	.db $23, $d3, $03
-	.db                $a2, $a0, $22
+	attribute $218c, a0a020
+	attribute $210c, a2a022
+	.db $00
 
-	.db $23, $e5, $01
-	.db                          $aa
+	attribute $2214, aa
 
 OptionsBCDArea:
 	text $2214, "000"
@@ -44,25 +36,28 @@ OptionsBCDArea:
 	text_end
 
 ODAD_Row2Data:
-	.db $30, $0c, $af, $0a, $0f ; Music / Cutscenes on
-	.db $30, $2c, $0f, $0a, $0f ; Music / Cutscenes off
-	.db $3a, $0e, $ac, $0a, $0f ; SFX / Cutscenes on
-	.db $3a, $2e, $0c, $0a, $0f ; SFX / Cutscenes off
-	.db $3a, $0e, $af, $0a, $00 ; VFX / Cutscenes on
-	.db $3a, $2e, $0f, $0a, $00 ; VFX / Cutscenes off
+	; 500caa0b0e
+	hex 500caa0b0e ; Music / Cutscenes on
+	hex 502c0a0b0e ; Music / Cutscenes off
+	hex 5a0ea00b0e ; SFX / Cutscenes on
+	hex 5a2e000b0e ; SFX / Cutscenes off
+	hex 5a0eaa030c ; VFX / Cutscenes on
+	hex 5a2e0a030c ; VFX / Cutscenes off
 
 ODAD_Row3Data:
-	.db $00, $02, $02 ; Text on 1's / Prices == Affordable
-	.db $a0, $a2, $22 ; Text on 1's / Prices =! Affordable
-	.db $02, $00, $02 ; Text on 2's / Prices == Affordable
-	.db $a2, $a0, $22 ; Text on 2's / Prices =! Affordable
-	.db $02, $02, $00 ; Text on 3's / Prices == Affordable
-	.db $a2, $a2, $20 ; Text on 3's / Prices =! Affordable
+	; a2a022
+	hex 000202 ; Text on 1's / Prices == Affordable
+	hex a0a222 ; Text on 1's / Prices =! Affordable
+	hex 020002 ; Text on 2's / Prices == Affordable
+	hex a2a022 ; Text on 2's / Prices =! Affordable
+	hex 020200 ; Text on 3's / Prices == Affordable
+	hex a2a220 ; Text on 3's / Prices =! Affordable
 
 ODAD_Row4Data:
-	.db $aa, $a2, $20 ; Prices: Affordable
-	.db $a0, $a0, $20 ; Prices: Normal
-	.db $0a, $02, $00 ; Prices: Expensive
+	; a0a020
+	hex aaa220 ; Prices: Affordable
+	hex a0a020 ; Prices: Normal
+	hex 0a0200 ; Prices: Expensive
 
 ODAD_Row5Data:
 	.db $aa ; Not Testing Audio

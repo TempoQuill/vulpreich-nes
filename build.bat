@@ -1,7 +1,7 @@
 @echo off
 
 echo Assembling...
-tools\asm6f.exe vulpreich.asm -m -L %* bin\vulpreich.nes > bin\assembler.log
+tools\asm6f.exe vulpreich.asm -m -l %* bin\vulpreich.nes > bin\assembler.log
 if %ERRORLEVEL% neq 0 goto buildfail
 move /y vulpreich.lst bin > nul
 echo Done.
