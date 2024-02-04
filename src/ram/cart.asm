@@ -90,15 +90,6 @@ wOptionsCheckTile2:
 wOptionsCheckTile3:
 	.dsb 2
 wOptionsDataEnd:
-wOptionsRealTimeBCD:
-	.dsb 3
-wOptionsRealTimeMusic:
-	.dsb 3
-	.dsb 3
-wOptionsRealTimeSFX:
-	.dsb 3
-wOptionsRealTimeBCDEnd:
-	.dsb 1
 wOptionsDynamicAttributes:
 	.dsb 3
 wODARow2:
@@ -113,8 +104,16 @@ wODARow3:
 	.dsb 3
 wODARow5:
 	.dsb 1
-	.dsb 1
 wOptionsDynamicAttributesEnd:
+wOptionsRealTimeBCD:
+	.dsb 3
+wOptionsRealTimeMusic:
+	.dsb 3
+	.dsb 3
+wOptionsRealTimeSFX:
+	.dsb 3
+wOptionsRealTimeBCDEnd:
+	.dsb 1
 ; RAM_BackupPlayFile
 ; a copy of RAM_PrimaryPlayFile
 ; only used when primary is corrupt, but written to when saved

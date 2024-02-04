@@ -4,6 +4,7 @@
 ;	-options data
 .include "src/engine/init.asm"
 .include "src/engine/save-menu.asm"
+.include "src/engine/options.asm"
 .include "src/data/title/time-stamps.asm"
 .include "src/data/title/lyrics-pointers.asm"
 .include "src/data/title/layout.asm"

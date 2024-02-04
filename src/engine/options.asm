@@ -96,10 +96,11 @@ RunOptions:
 @CheckPal:
 	LDY zPals + 15
 	CPY #$f
-	BEQ @Terminal
+	BEQ @Eject
 	LDA #1
 	JSR DelayFrame_s_
 	BEQ @CheckPal
+@Eject
 	; aaaand JUMP!
 	JMP IntroSequence_TitleOnly
 
@@ -208,6 +209,17 @@ UpdateOptions:
 	TAY
 	LDA ODAD_Row5Data, Y
 	STA wODARow5
+	; copy bcd to later in RAM for PPU
+	; note that this isn't true BCD
+	; text tiles are usually their ASCII value save for contractions
+	LDY #2
+@BCDLoop:
+	LDA wOptionsMusicBCD, Y
+	STA wOptionsRealTimeMusic, Y
+	LDA wOptionsSFXBCD, Y
+	STA wOptionsRealTimeSFX, Y
+	DEY
+	BPL @BCDLoop
 	; now it's time to update zPPUDataBufferPointer
 	; first, is option 0 selected
 	LDX zOptionNumberSelectedCPL
@@ -255,7 +267,7 @@ GenerateCheckTile:
 	LDA #0
 	ASL zTempAudioFlagPointer
 	ROL A
-	ORA #1e
+	ORA #$1e
 	RTS
 
 BasicOptionsInput:

@@ -26,11 +26,6 @@ OptionsCheckMarks:
 	.db $20, $9e, $01, $1e
 	.db $00
 
-OptionsBCDArea:
-	text $2214, "000"
-	text $2254, "000"
-	text_end
-
 OptionsDynamicAttributeData:
 	.db $23, $cb, $05
 	.db                $10, $0c, $af, $0a, $0f
@@ -42,7 +37,11 @@ OptionsDynamicAttributeData:
 
 	.db $23, $e5, $01
 	.db                          $aa
-	.db $00
+
+OptionsBCDArea:
+	text $2214, "000"
+	text $2254, "000"
+	text_end
 
 ODAD_Row2Data:
 	.db $30, $0c, $af, $0a, $0f ; Music / Cutscenes on
