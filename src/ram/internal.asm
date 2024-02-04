@@ -290,6 +290,7 @@ zOptionNumberSelectedCPL:
 	.dsb 1 ; 00b8
 zAudioFlagPointer:
 	.dsb 1
+zTempAudioFlagPointer:
 	.dsb 1
 	.dsb 1
 	.dsb 1 ; 00bc

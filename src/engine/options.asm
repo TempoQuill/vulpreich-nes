@@ -77,11 +77,12 @@ InitOptionsMenuData:
 	RTS
 
 RunOptions:
-	JSR RunCursor_Title
 	JSR TryOptionsInput
 	LDA zOptionNumberSelectedCPL
 	CMP #OPTION_BACK_TO_TITLE ^ $ff
 	BEQ @Quit
+	JSR UpdateOptions
+	JSR RunCursor_Title
 	LDA #1
 	JSR DelayFrame_s_
 	BEQ RunOptions
@@ -110,6 +111,152 @@ OptionsCursorYPositions:
 	.db $7b ; music
 	.db $8b ; sound effects / voice effects
 	.db $9b ; back to title screen
+
+UpdateOptions:
+;object/pal.	RAM
+;cursor		zOptionNumber v
+;	zCursorYPos <- OptionsCursorYPositions
+	LDX zOptionNumber
+	LDA OptionsCursorYPositions, Y
+	STA zCursorYPos
+;audio pal.	zAudioFlagPointer v
+;		wODARow2 <- ODAD_Row2Data
+;cutscenes	zOptions.4 v
+;	wODARow2 <- ODAD_Row2Data
+	LDX #0
+	LDY #wODARow2_END - wODARow2
+	LDA zOptions
+	AND #OPTION_CUTSCENES
+	BEQ @CutscenesOn
+	TYA
+	TAX
+	DEY
+@CutscenesOn:
+	LDA zAudioFlagPointer
+	STA zTempAudioFlagPointer
+	TXA
+	LDX zTempAudioFlagPointer
+	BMI @DoAudioPalette
+	CLC
+	ADC #(wODARow2_END - wODARow2) * 2
+	LSR zTempAudioFlagPointer
+	BMI @DoAudioPalette
+	ADC #(wODARow2_END - wODARow2) * 2
+@DoAudioPalette:
+	TAX
+	DEX
+@AudioCutscenAttrLoop:
+	LDA ODAD_Row2Data, X
+	STA wODARow2, Y
+	DEX
+	DEY
+	BPL @AudioCutscenAttrLoop
+;audio tiles	zOptions.5-zOptions.7 v
+;	wOptionsCheckTile1/2/3 <- tile_1e/tile_1f
+	LDA zOptions
+	AND #AUDIO_MASK
+	STA zTempAudioFlagPointer
+	JSR GenerateCheckTile
+	STA wOptionsCheckTile1
+	JSR GenerateCheckTile
+	STA wOptionsCheckTile2
+	JSR GenerateCheckTile
+	STA wOptionsCheckTile3
+;text speed	zOptions.2-zOptions.3 v
+;		wODARow3 <- ODAD_Row3Data
+;prices		zOptions.0-zOptions.1 v
+;	wODARow3/4 <- ODAD_Row3Data/ODAD_Row4Data
+	LDX #2
+	LDA zOptions
+	AND #TEXT_SPEED	; &$0c
+	LSR A		; &$06
+	LSR A		; &$03
+	TAY
+	LDA #0
+	ADC TextSpeedPricesROMOffsets_Speed, Y
+	PHA
+	LDA zOptions
+	AND #PRICE_MOD
+	TAY
+	PLA
+	ADC TextSpeedPricesROMOffsets_Prices, Y
+	TAY
+@PriceSpeedLoop:
+	LDA ODAD_Row3Data, Y
+	STA wODARow3, X
+	DEY
+	DEX
+	BPL @PriceSpeedLoop
+	LDX #2
+	LDA zOptions
+	AND #PRICE_MOD
+	TAY
+	LDA PricesROMOffset, Y
+	TAY
+@PriceLoop:
+	LDA ODAD_Row4Data, Y
+	STA wODARow4, X
+	DEY
+	DEX
+	BPL @PriceLoop
+;music ID	zOptionNumber v
+;	wODARow5 <- ODAD_Row5Data
+;sfx/vfx ID	zOptionNumber v
+;	wODARow5 <- ODAD_Row5Data
+	LDY zOptionNumber
+	LDA AudioTestROMOffset, Y
+	TAY
+	LDA ODAD_Row5Data, Y
+	STA wODARow5
+	; now it's time to update zPPUDataBufferPointer
+	; first, is option 0 selected
+	LDX zOptionNumberSelectedCPL
+	INX
+	BEQ @PPUOffset
+	LDA zInputBottleNeck
+	AND #1 << A_BUTTON | 1 << START_BUTTON
+	BEQ @PPUOffset
+	LDA #<wOptionsCheckMarkArea
+	STA zPPUDataBufferPointer
+	LDA #>wOptionsCheckMarkArea
+	STA zPPUDataBufferPointer + 1
+	RTS
+@PPUOffset:
+	LDA #<wODARow2
+	STA zPPUDataBufferPointer
+	LDA #>wODARow2
+	STA zPPUDataBufferPointer + 1
+	RTS
+
+TextSpeedPricesROMOffsets_Speed:
+	.db 2
+	.db 8
+	.db 14
+TextSpeedPricesROMOffsets_Prices:
+	.db 2
+	.db 5
+	.db 5
+
+PricesROMOffset:
+	.db 2
+	.db 5
+	.db 8
+
+AudioTestROMOffset:
+	.db 0
+	.db 0
+	.db 0
+	.db 0
+	.db 1
+	.db 2
+	.db 0
+
+GenerateCheckTile:
+	LDA #0
+	ASL zTempAudioFlagPointer
+	ROL A
+	ORA #1e
+	RTS
 
 BasicOptionsInput:
 	LDA zOptionNumberSelectedCPL

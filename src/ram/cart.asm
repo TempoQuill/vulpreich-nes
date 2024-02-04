@@ -103,14 +103,13 @@ wOptionsDynamicAttributes:
 	.dsb 3
 wODARow2:
 	.dsb 5
-	.dsb 1
+wODARow2_END:
 	.dsb 3
 wODARow4:
 	.dsb 3
 	.dsb 3
 wODARow3:
 	.dsb 3
-	.dsb 1
 	.dsb 3
 wODARow5:
 	.dsb 1

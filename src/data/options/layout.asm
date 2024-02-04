@@ -34,13 +34,11 @@ OptionsBCDArea:
 OptionsDynamicAttributeData:
 	.db $23, $cb, $05
 	.db                $10, $0c, $af, $0a, $0f
-	.db $00
 
 	.db $23, $db, $03
 	.db                $a0, $a0, $20
 	.db $23, $d3, $03
 	.db                $a2, $a0, $22
-	.db $00
 
 	.db $23, $e5, $01
 	.db                          $aa
