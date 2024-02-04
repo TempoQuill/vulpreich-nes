@@ -73,16 +73,6 @@ wOptionsMusicBCD:
 wOptionsSFXBCD:
 	.dsb 3
 	.dsb 3 + $14
-wOptionsCheckMarkArea:
-	.dsb 3
-wOptionsCheckTile1:
-	.dsb 1
-	.dsb 3
-wOptionsCheckTile2:
-	.dsb 1
-	.dsb 3
-wOptionsCheckTile3:
-	.dsb 1
 wOptionsAttributes:
 	.dsb 3
 wOptionsAttrRow1:
@@ -99,6 +89,16 @@ wOptionsAttrRow5:
 	.dsb 8
 wOptionsAttrRow6:
 	.dsb 7
+wOptionsCheckMarkArea:
+	.dsb 3
+wOptionsCheckTile1:
+	.dsb 1
+	.dsb 3
+wOptionsCheckTile2:
+	.dsb 1
+	.dsb 3
+wOptionsCheckTile3:
+	.dsb 1
 	.dsb 1
 wOptionsDynamicAttributes:
 wODARow2Start:

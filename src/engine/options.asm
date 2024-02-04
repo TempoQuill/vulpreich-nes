@@ -32,6 +32,14 @@ InitOptionsMenu:
 
 	JSR UpdateOptions
 
+	LDY #<wOptionsCheckMarkArea
+	STY zPPUDataBufferPointer
+	LDY #>wOptionsCheckMarkArea
+	STY zPPUDataBufferPointer + 1
+
+	LDA #1
+	JSR DelayFrame_s_
+
 	LDY #<wODARow2Start
 	STY zPPUDataBufferPointer
 	LDY #>wODARow2Start
@@ -659,22 +667,24 @@ HandleSubOptionUpPress:
 	BPL @SFXVFX_Loop
 	RTS
 @AudioFlags:
-	LDY #SFX_CURSOR_3
-	JSR PlaySFX
 	LDA zAudioFlagPointer
 	FAB
 	AND zOptions
+	CMP zOptions
+	BEQ @Quit
 	STA zOptions
-	RTS
-@Prices:
 	LDY #SFX_CURSOR_3
 	JSR PlaySFX
+	RTS
+@Prices:
 	LDX zOptions
 	DEX
 	TXA
 	AND #PRICE_MOD
 	BEQ @Quit
 	DEC zOptions
+	LDY #SFX_CURSOR_3
+	JSR PlaySFX
 	RTS
 @Music:
 	LDX #1
@@ -716,21 +726,23 @@ HandleSubOptionDownPress:
 	BPL @SFXVFX_Loop
 	RTS
 @AudioFlags:
-	LDY #SFX_CURSOR_3
-	JSR PlaySFX
 	LDA zAudioFlagPointer
 	ORA zOptions
+	CMP zOptions
+	BEQ @Quit
 	STA zOptions
-	RTS
-@Prices:
 	LDY #SFX_CURSOR_3
 	JSR PlaySFX
+	RTS
+@Prices:
 	LDX zOptions
 	INX
 	TXA
 	AND #PRICE_MOD
 	BEQ @Quit
 	INC zOptions
+	LDY #SFX_CURSOR_3
+	JSR PlaySFX
 	RTS
 @Music:
 	LDX #1
@@ -775,22 +787,22 @@ HandleSubOptionLeftPress:
 	BPL @SFXVFX_Loop
 	RTS
 @AudioFlags:
-	LDY #SFX_CURSOR_3
-	JSR PlaySFX
 	LDA zAudioFlagPointer
 	BMI @Quit
 	ASL zAudioFlagPointer
+	LDY #SFX_CURSOR_3
+	JSR PlaySFX
 	RTS
 @Cutscene:
-	LDY #SFX_CURSOR_3
-	JSR PlaySFX
 	LDA zOptions
 	ORA #CUTSCENES_F
+	CMP zOptions
+	BEQ @Quit
 	STA zOptions
-	RTS
-@TextSpeed:
 	LDY #SFX_CURSOR_3
 	JSR PlaySFX
+	RTS
+@TextSpeed:
 	LDA zOptions
 	SEC
 	SBC #4
@@ -800,6 +812,8 @@ HandleSubOptionLeftPress:
 	SEC
 	SBC #4
 	STA zOptions
+	LDY #SFX_CURSOR_3
+	JSR PlaySFX
 	RTS
 @Music:
 	LDX #2
@@ -843,24 +857,24 @@ HandleSubOptionRightPress:
 	BPL @SFXVFX_Loop
 	RTS
 @AudioFlags:
-	LDY #SFX_CURSOR_3
-	JSR PlaySFX
 	LDA zAudioFlagPointer
 	LSR A
 	CMP #VFX_F
 	BCC @Quit
 	LSR zAudioFlagPointer
+	LDY #SFX_CURSOR_3
+	JSR PlaySFX
 	RTS
 @Cutscene:
-	LDY #SFX_CURSOR_3
-	JSR PlaySFX
 	LDA zOptions
 	AND #$ff ^ CUTSCENES_F
+	CMP zOptions
+	BEQ @Quit
 	STA zOptions
-	RTS
-@TextSpeed:
 	LDY #SFX_CURSOR_3
 	JSR PlaySFX
+	RTS
+@TextSpeed:
 	LDA zOptions
 	CLC
 	ADC #4
@@ -870,6 +884,8 @@ HandleSubOptionRightPress:
 	CLC
 	ADC #4
 	STA zOptions
+	LDY #SFX_CURSOR_3
+	JSR PlaySFX
 	RTS
 @Music:
 	LDX #2

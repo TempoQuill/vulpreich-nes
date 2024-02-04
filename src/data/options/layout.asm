@@ -10,13 +10,13 @@ OptionsLayout:
 	text $2214, "---"
 	text $2245, "Sound/Vocals:  ---"
 	text $2285, "Back to title screen"
+	attribute $2045, f0f030
+	attribute $2085, 5555500caa0b0e005551a2a022
+	attribute $218c, a0a02000000055555050aa0000000f0f0f0f0f03
 OptionsCheckMarks:
 	.db $20, $92, $01, $1e
 	.db $20, $98, $01, $1e
 	.db $20, $9e, $01, $1e
-	attribute $2045, f0f030
-	attribute $2085, 5555500caa0b0e005551a2a022
-	attribute $218c, a0a02000000055555050aa0000000f0f0f0f0f03
 
 	.db $00
 
