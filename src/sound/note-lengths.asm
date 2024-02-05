@@ -10,11 +10,11 @@
 ; $x0: 1/16 note
 ; $x1: 1/32 note
 ; $x2: 1/4 note triplet
-; $x3: ?
+; $x3: dotted 1/16 note
 ; $x4: 1/8 note
 ; $x5: dotted 1/8 note
 ; $x6: 1/2 note triplet
-; $x7: ?
+; $x7: 1/4 note <> 1/2 note triplet
 ; $x8: 1/4 note
 ; $x9: dotted 1/4 note
 ; $xA: 1/2 note
@@ -26,7 +26,21 @@ NLT_Title = $64
 NLT_Save = $a4
 
 NoteLengthMultipliers:
-	.db $0C, $06, $10, $12, $18, $24, $20, $50, $30, $48, $60, $90, $C0, $08, $1E
+	.db $0C ; 1/16
+	.db $06 ; 1/32
+	.db $10 ; 1/4/3
+	.db $12 ; 1/16.
+	.db $18 ; 1/8
+	.db $24 ; 1/8.
+	.db $20 ; 1/2/3
+	.db $50 ; 1/4 <> 1/2/3
+	.db $30 ; 1/4
+	.db $48 ; 1/4.
+	.db $60 ; 1/2
+	.db $90 ; 1/2.
+	.db $C0 ; 1
+	.db $08 ; 1/8/3
+	.db $1E ; 1/8 <> 1/32
 
 ;
 ; Triangle Linearity Indeces

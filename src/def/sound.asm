@@ -76,3 +76,23 @@ S_Click:	.dsb 1
 S_Claves:	.dsb 1
 S_Conga:	.dsb 1
 .ende
+
+.enum $0000
+
+_16TH:			.dsb 1
+_32ND:			.dsb 1
+QUARTER_TRIPLET:	.dsb 1
+D_16TH:			.dsb 1
+_8TH:			.dsb 1
+D_8TH:			.dsb 1
+HALF_TRIPLET:		.dsb 1
+Q_HT_TIE:		.dsb 1
+QUARTER:		.dsb 1
+D_QUARTER:		.dsb 1
+HALF:			.dsb 1
+D_HALF:			.dsb 1
+WHOOLE:			.dsb 1
+_8TH_TRIPLET:		.dsb 1
+_8TH_32ND_TIE:		.dsb 1
+
+.ende
