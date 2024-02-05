@@ -25,6 +25,9 @@
 NLT_Title = $64
 NLT_Save = $a4
 
+NoteLengthMultipliers:
+	.db $0C, $06, $10, $12, $18, $24, $20, $50, $30, $48, $60, $90, $C0, $08, $1E
+
 ;
 ; Triangle Linearity Indeces
 ; ==========================

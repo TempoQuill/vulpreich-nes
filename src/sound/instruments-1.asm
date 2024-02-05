@@ -67,7 +67,3 @@ Audio1_InstrumentDVE_F0:
 InstrumentDVE_F0_Short:
 Audio1_InstrumentDVE_F0_Short:
 	.db "@@@@@@@@@@@@@@@@@@@@ABI" + Duty2
-
-NoteLengthMultipliers:
-Audio1_NoteLengthMultipliers:
-	.db $0C, $06, $10, $12, $18, $24, $20, $50, $30, $48, $60, $90, $C0, $08, $1E
