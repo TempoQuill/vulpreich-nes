@@ -1,6 +1,6 @@
 ItemNames:
-	.db "?", $80
-	.db "debit card", $80
-	.db "treat", $80
-	.db "bank letter", $80
-	.db "pack", $80
+	.db "?", 0
+	.db "debit card", 0
+	.db "treat", 0
+	.db "bank letter", 0
+	.db "pack", 0

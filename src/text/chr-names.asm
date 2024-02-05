@@ -1,37 +1,37 @@
 CharacterFullNames:
-	.db "?", $80
-	.db "Iggy Reich", $80
-	.db "Junior Fey", $80
-	.db "James Raren", $80
-	.db "James Raren", $80
-	.db "Phillip Reich", $80
-	.db "Dilan Fey", $80
-	.db "Lila Fey", $80
-	.db "Gary Raren", $80
-	.db "Sidney Esced", $80
-	.db "Bit-Bob", $80 ; composer in Every Song is Personalized
-	.db "Bit-Bob", $80 ; delivery man in Pioneer's Hut
-	.db "Bit-Bob", $80 ; judge in Carryover Dreams
-	.db "Alex", $80
-	.db "INCIDENTAL-LINE", $80
-	.db "RECEPTIONIST-1", $80
-	.db "VETERENARIAN-1", $80
+	.db "?", 0
+	.db "Iggy Reich", 0
+	.db "Junior Fey", 0
+	.db "James Raren", 0
+	.db "James Raren", 0
+	.db "Phillip Reich", 0
+	.db "Dilan Fey", 0
+	.db "Lila Fey", 0
+	.db "Gary Raren", 0
+	.db "Sidney Esced", 0
+	.db "Bit-Bob", 0 ; composer in Every Song is Personalized
+	.db "Bit-Bob", 0 ; delivery man in Pioneer's Hut
+	.db "Bit-Bob", 0 ; judge in Carryover Dreams
+	.db "Alex", 0
+	.db "INCIDENTAL-LINE", 0
+	.db "RECEPTIONIST-1", 0
+	.db "VETERENARIAN-1", 0
 
 CharacterNames:
-	.db "?", $80
-	.db "Iggy", $80
-	.db "June", $80
-	.db "Jim", $80
-	.db "Otis", $80
-	.db "Phil", $80
-	.db "Dill", $80
-	.db "Lila", $80
-	.db "Gary", $80
-	.db "Sidney", $80
-	.db "BITBOB", $80
-	.db "BITBOB", $80
-	.db "BITBOB", $80
-	.db "Alex", $80
-	.db "INC.C1", $80
-	.db "REC.01", $80
-	.db "VET.01", $80
+	.db "?", 0
+	.db "Iggy", 0
+	.db "June", 0
+	.db "Jim", 0
+	.db "Otis", 0
+	.db "Phil", 0
+	.db "Dill", 0
+	.db "Lila", 0
+	.db "Gary", 0
+	.db "Sidney", 0
+	.db "BITBOB", 0
+	.db "BITBOB", 0
+	.db "BITBOB", 0
+	.db "Alex", 0
+	.db "INC.C1", 0
+	.db "REC.01", 0
+	.db "VET.01", 0
