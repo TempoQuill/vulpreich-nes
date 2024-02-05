@@ -29,3 +29,7 @@
 ; Pulse 2 sound effect data
 .include "src/sound/pulse-2-sfx-pointers.asm"
 .include "src/sound/pulse-2-sfx.asm"
+
+; fanfare data
+.include "src/sound/fanfarepointers.asm"
+.include "src/sound/fanfares/objective-complete.asm"

@@ -39,6 +39,7 @@ zCurrentDPCMSFX:
 	.dsb 1
 zCurrentNoiseSFX:
 	.dsb 1
+zCurrentFanfare:
 	.dsb 1
 zCurrentPulse2SFX:
 	.dsb 1 ; 0018
@@ -48,6 +49,7 @@ zDPCMSFX:
 	.dsb 1
 zNoiseDrumSFX:
 	.dsb 1
+zFanfare:
 	.dsb 1 ; 001c
 zPulse2SFX:
 	.dsb 1
@@ -59,11 +61,43 @@ zSweep:
 	.dsb 1
 zTempo:
 	.dsb 1
+zFanfareArea:
+zFanfareTempo:
+	.dsb 1
+zFanfarePointers:
+zFanfarePointerSQ2:
+	.dsb 2 ; 0024
+zFanfarePointerSQ1:
+	.dsb 2
+zFanfarePointerHill:
+	.dsb 2 ; 0028
+zFanfarePointerNoise:
+	.dsb 2
+zFanfarePointerDPCM:
+	.dsb 2 ; 002c
+zFanfare_instrument:
+	.dsb 1
+	.dsb 1
+zFanfare_length:
+	.dsb 1 ; 0030
+	.dsb 1
+	.dsb 1
+zFanfare_offset:
+	.dsb 1
+	.dsb 1 ; 0034
+	.dsb 1
+	.dsb 1
+	.dsb 1
+zFanfare_duration:
+	.dsb 1 ; 0038
+	.dsb 1
+	.dsb 1
+	.dsb 1
+	.dsb 1 ; 003c
+zFanfareAreaEnd:
 ; section: Hardware Assistive RAM
 ; backup registers, banks, addresses, and buffers
 zNMITimer:
-	.dsb 1
-	.dsb 1 ; 0024
 	.dsb 1
 zBackupA:
 	.dsb 1
@@ -127,13 +161,8 @@ zPPUScrollXMirror:
 	.dsb 1
 zPPUScrollYMirror:
 	.dsb 1 ; 0058
-	.dsb 1
-zPalPointer:
-	.dsb 2
 zPalFade:
 	.dsb 1 ; 005c
-zPalFadeOffset:
-	.dsb 1
 zPalFadeSpeed:
 	.dsb 1
 zPalFadePlacement:
@@ -143,30 +172,14 @@ zSaveMenuOption:
 	.dsb 1 ; 0060
 zSaveMenuSelectedOption:
 	.dsb 1
-zCurrentTextByte:
-	.dsb 1
-zTextBank:
-	.dsb 1
-zCurrentTextAddress:
-	.dsb 2 ; 0064
 zSaveMenuROMPointer:
 	.dsb 2
 zSaveMenuRAMPointer:
 	.dsb 2 ; 0068
-	.dsb 2
-	.dsb 2 ; 006c
-	.dsb 2
-	.dsb 2 ; 0070
-	.dsb 2
-	.dsb 2 ; 0074
 zTitleScreenSelectedOption:
-	.dsb 1
 	.dsb 1
 zTitleScreenTimer:
 	.dsb 2 ; 0078
-zSaveFileExists:
-	.dsb 1
-	.dsb 1
 ; Standard film FPS timers
 ; Used to skip NMI 3/5 times for 24 FPS
 zFilmStandardTimerOdd:
@@ -284,8 +297,6 @@ zOptionNumber:
 ; 5 - Sound effects test
 ; 6 - Back to title screen
 	.dsb 1
-zNumBCDDigits:
-	.dsb 1
 zOptionNumberSelectedCPL:
 	.dsb 1 ; 00b8
 zAudioFlagPointer:
@@ -379,6 +390,15 @@ iPulse2SFXOffset:
 	.dsb 1
 iPulse2SFXSweep:
 	.dsb 1 ; 0225
+iFanfare_DurationID:
+	.dsb 5
+iFanfare_Remainder:
+	.dsb 5
+iFanfare_Sub:
+	.dsb 5
+iFanfare_LengthPoints:
+	.dsb 1
+	.dsb 1
 ; section: input
 iBackupInput:
 	.dsb 1
@@ -387,8 +407,6 @@ iBackupInput:
 	.dsb 1 ; 022c
 	.dsb 1
 	.dsb 1
-	.dsb 1
-	.dsb 16
 	.dsb 16 ; 0240
 	.dsb 32
 	.dsb 32

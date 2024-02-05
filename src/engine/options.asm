@@ -105,8 +105,6 @@ InitOptionsMenuData:
 	LDA #0
 	STA zOptionNumber
 	STA zOptionNumberSelectedCPL
-	LDA #3
-	STA zNumBCDDigits
 	LDA #$1b
 	STA zCursorYPos
 	LDA #$18

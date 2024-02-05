@@ -5,6 +5,7 @@ StartProcessingSoundQueue:
 	LDA #$FF
 	STA rFRC
 
+	JSR ProcessFanfare
 	JSR ProcessPulse2SFX
 	JSR ProcessNoiseQueue
 	JSR ProcessDPCMQueue
@@ -16,6 +17,462 @@ StartProcessingSoundQueue:
 	STA zNoiseDrumSFX
 	STA zDPCMSFX
 	STA zMusicQueue
+	STA zFanfare
+	RTS
+
+ProcessFanfare:
+	LDA zFanfare
+	BNE ProcessFanfare_Part2
+	LDA zCurrentFanfare
+	BNE ProcessFanfare_Part3
+ProcessFanfare_Exit:
+	RTS
+
+ProcessFanfare_Part2:
+	STA zCurrentFanfare
+	LDA #0
+	LDY #zFanfareAreaEnd - zFanfareArea
+ProcessFanfare_Part2Loop1:
+	DEY
+	STA zFanfareArea, Y
+	BNE ProcessFanfare_Part2Loop1
+	STA iFanfare_Sub
+	STA iFanfare_Sub + 1
+	STA iFanfare_Sub + 2
+	STA iFanfare_Sub + 3
+	STA iFanfare_Sub + 4
+	LDA zFanfare
+	SEC
+	SBC #SFX_FANFARES
+	ASL A
+	TAY
+	; header pointer
+	LDA FanfareHeaderPointers, Y
+	STA zAuxAddresses + 4
+	LDA FanfareHeaderPointers + 1, Y
+	STA zAuxAddresses + 5
+	; tempo
+	LDY #0
+	LDA (zAuxAddresses + 4), Y
+	STA zFanfareTempo
+	; channel count
+	INY
+	LDA (zAuxAddresses + 4), Y
+	TAX
+	DEX
+ProcessFanfare_Part2Loop2:
+	INC zFanfare_duration, X
+	DEX
+	BPL ProcessFanfare_Part2Loop2
+	LDA (zAuxAddresses + 4), Y
+	ASL A
+	TAX
+	TYA
+	SEC
+	ADC zAuxAddresses + 4
+	STA zAuxAddresses + 4
+	LDA #0
+	ADC zAuxAddresses + 5
+	STA zAuxAddresses + 5
+	TXA
+	TAY
+	DEY
+ProcessFanfare_Part2Loop3:
+	LDA (zAuxAddresses + 4), Y
+	STA zFanfarePointers, Y
+	DEY
+	BPL ProcessFanfare_Part2Loop3
+
+ProcessFanfare_Part3:
+ProcessFanfare_Square2:
+	CLC
+	DEC zFanfare_length
+	BNE +
+	LDA #10
+	STA rNR20
+	LDA #0
+	STA rNR21
+	STA rNR22
+	STA rNR23
++
+	DEC zFanfare_duration
+	BNE ProcessFanfare_Square2End
+
+	LDY zFanfare_offset
+	JSR ProcessFanfare_Square2Bytes
+	STY zFanfare_offset
+
+ProcessFanfare_Square2End:
+	BCS ProcessFanfare_End
+	LDA zFanfarePointerSQ1
+	ORA zFanfarePointerSQ1 + 1
+	BNE ProcessFanfare_Square1
+	RTS
+
+ProcessFanfare_End:
+	LDA #10
+	STA rNR10
+	STA rNR20
+	LDA #0
+	STA rNR11
+	STA rNR12
+	STA rNR13
+	STA rNR21
+	STA rNR22
+	STA rNR23
+	STA rNR30
+	STA rNR32
+	STA rNR33
+	STA zCurrentFanfare
+	STA zFanfare
+	LDY #zFanfareAreaEnd - zFanfareArea
+ProcessFanfare_EndLoop:
+	DEY
+	STA zFanfareArea, Y
+	BNE ProcessFanfare_EndLoop
+	STA iFanfare_Sub
+	STA iFanfare_Sub + 1
+	STA iFanfare_Sub + 2
+	STA iFanfare_Sub + 3
+	STA iFanfare_Sub + 4
+	RTS
+
+ProcessFanfare_Square1:
+	DEC zFanfare_length + 1
+	BNE +
+	LDA #10
+	STA rNR10
+	LDA #0
+	STA rNR11
+	STA rNR12
+	STA rNR13
++
+	DEC zFanfare_duration + 1
+	BNE ProcessFanfare_Square1End
+
+	LDY zFanfare_offset + 1
+	JSR ProcessFanfare_Square1Bytes
+	STY zFanfare_offset + 1
+
+ProcessFanfare_Square1End:
+	LDA zFanfarePointerHill
+	ORA zFanfarePointerHill + 1
+	BNE ProcessFanfare_Hill
+	RTS
+
+ProcessFanfare_Hill:
+	DEC zFanfare_duration + 2
+	BNE ProcessFanfare_HillEnd
+
+	LDY zFanfare_offset + 2
+	JSR ProcessFanfare_HillBytes
+	STY zFanfare_offset + 2
+
+ProcessFanfare_HillEnd:
+	LDA zFanfarePointerNoise
+	ORA zFanfarePointerNoise + 1
+	BNE ProcessFanfare_Noise
+	RTS
+
+ProcessFanfare_Noise:
+	DEC zFanfare_duration + 3
+	BNE ProcessFanfare_NoiseEnd
+
+	LDY zFanfare_offset + 3
+	JSR ProcessFanfare_NoiseBytes
+	STY zFanfare_offset + 3
+
+ProcessFanfare_NoiseEnd:
+	LDA zFanfarePointerDPCM
+	ORA zFanfarePointerDPCM + 1
+	BNE ProcessFanfare_DPCM
+	RTS
+
+ProcessFanfare_DPCM:
+	DEC zFanfare_duration + 4
+	BNE ProcessFanfare_DPCMEnd
+
+	LDY zFanfare_offset + 4
+	JSR ProcessFanfare_DPCMBytes
+	STY zFanfare_offset + 4
+
+ProcessFanfare_DPCMEnd:
+	RTS
+
+ProcessFanfare_Square2Bytes:
+; 80-df, f0-ff	instrument, duration
+; e0-ef		length
+; 7e		rest
+; 02-7c		note
+; 00		stop
+	LDA (zFanfarePointerSQ2), Y
+	BMI @InstrumentOrLength
+	BEQ @Quit
+	INY
+	STY zFanfare_offset
+	LDY zFanfare_instrument
+	STY rNR20
+	LDX #4
+	JSR PlayNote
+	BNE @Note
+	LDY #$10
+	STY rNR20
+@Note:
+	LDX #$7F
+	STX rNR21
+	LDX iFanfare_DurationID
+	JSR CalculateFanfareTempo
+	STA iFanfare_Remainder
+	STX zFanfare_duration
+	LDY zFanfare_offset
+	LDA iFanfare_Remainder
+	CLC
+	ADC iFanfare_Sub
+	STA iFanfare_Sub
+	LDA zFanfare_duration
+	ADC #0
+	STA zFanfare_duration
+	LDA iFanfare_LengthPoints
+	STA zFanfare_length
+	CLC
+	RTS
+@Quit:
+	INY
+	SEC
+	RTS
+
+@InstrumentOrLength:
+	INY
+	TAX
+	AND #$f0
+	CMP #$e0
+	BEQ @Length
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	AND #$7
+	STY zFanfare_offset
+	TAY
+	LDA FanfareInstruments, Y
+	STA zFanfare_instrument
+	TXA
+	AND #$0f
+	STA iFanfare_DurationID
+	LDY zFanfare_offset
+	JMP ProcessFanfare_Square2Bytes
+@Length:
+	TXA
+	AND #$0f
+	STA iFanfare_LengthPoints
+	BNE @NonZero
+	DEC iFanfare_LengthPoints
+@NonZero:
+	JMP ProcessFanfare_Square2Bytes
+
+ProcessFanfare_Square1Bytes:
+; 80-df, f0-ff	instrument, duration
+; e0-ef		length
+; 7e		rest
+; 02-7c		note
+	LDA (zFanfarePointerSQ1), Y
+	BMI @InstrumentOrLength
+	BEQ @Quit
+	STY zFanfare_offset + 1
+	LDY zFanfare_instrument + 1
+	STY rNR10
+	LDX #0
+	JSR PlayNote
+	BNE @Note
+	LDY #$10
+	STY rNR10
+@Note:
+	LDX iFanfare_DurationID + 1
+	JSR CalculateFanfareTempo
+	STA iFanfare_Remainder + 1
+	STX zFanfare_duration + 1
+	LDY zFanfare_offset + 1
+	LDA iFanfare_Remainder + 1
+	CLC
+	ADC iFanfare_Sub + 1
+	STA iFanfare_Sub + 1
+	LDA zFanfare_duration + 1
+	ADC #0
+	STA zFanfare_duration + 1
+	LDA iFanfare_LengthPoints + 1
+	STA zFanfare_length + 1
+@Quit:
+	INY
+	RTS
+
+@InstrumentOrLength:
+	INY
+	TAX
+	AND #$f0
+	CMP #$e0
+	BEQ @Length
+	LSR A
+	LSR A
+	LSR A
+	LSR A
+	AND #$7
+	STY zFanfare_offset + 1
+	TAY
+	LDA FanfareInstruments, Y
+	STA zFanfare_instrument + 1
+	TXA
+	AND #$0f
+	STA iFanfare_DurationID + 1
+	LDY zFanfare_offset + 1
+	JMP ProcessFanfare_Square1Bytes
+@Length:
+	TXA
+	AND #$0f
+	STA iFanfare_LengthPoints + 1
+	BNE @NonZero
+	DEC iFanfare_LengthPoints + 1
+@NonZero:
+	JMP ProcessFanfare_Square1Bytes
+
+FanfareInstruments:
+	.db $08
+	.db $8f
+	.db $8a
+	.db $4f
+	.db $4a
+	.db $75
+	.db $75
+	.db $b5
+
+ProcessFanfare_HillBytes:
+; 80-df, f0-ff	duration
+; e0-ef		length
+; 7e		rest
+; 02-7c		note
+	LDA (zFanfarePointerHill), Y
+	BMI @InstrumentOrLength
+	BEQ @Quit
+	STY zFanfare_offset + 2
+	LDY zFanfare_length + 2
+	STY rNR30
+	LDX #8
+	JSR PlayNote
+	BNE @Note
+	LDY #0
+	STY rNR30
+@Note:
+	LDX iFanfare_DurationID + 2
+	JSR CalculateFanfareTempo
+	STA iFanfare_Remainder + 2
+	STX zFanfare_duration + 2
+	LDY zFanfare_offset + 2
+	LDA iFanfare_Remainder + 2
+	CLC
+	ADC iFanfare_Sub + 2
+	STA iFanfare_Sub + 2
+	LDA zFanfare_duration + 2
+	ADC #0
+	STA zFanfare_duration + 2
+@Quit:
+	INY
+	RTS
+
+@InstrumentOrLength:
+	INY
+	TAX
+	AND #$f0
+	CMP #$e0
+	BEQ @Length
+	TXA
+	AND #$0f
+	STA iFanfare_DurationID + 2
+	JMP ProcessFanfare_HillBytes
+@Length:
+	TXA
+	AND #$0f
+	ASL A
+	ASL A
+	BNE @NonZero
+	LDA #$81
+@NonZero:
+	STA zFanfare_length + 2
+	JMP ProcessFanfare_HillBytes
+
+ProcessFanfare_NoiseBytes:
+; 80-ff	duration
+; 01	rest
+; 02-7e	note
+	LDA (zFanfarePointerNoise), Y
+	BMI @InstrumentOrLength
+	BEQ @Quit
+	TAX
+	DEX
+	BEQ @Rest
+	LSR A
+	STA zNoiseDrumSFX
+@Rest:
+	LDX iFanfare_DurationID + 3
+	JSR CalculateFanfareTempo
+	STA iFanfare_Remainder + 3
+	STX zFanfare_duration + 3
+	LDA iFanfare_Remainder + 3
+	CLC
+	ADC iFanfare_Sub + 3
+	STA iFanfare_Sub + 3
+	LDA zFanfare_duration + 3
+	ADC #0
+	STA zFanfare_duration + 3
+@Quit:
+	INY
+	RTS
+
+@InstrumentOrLength:
+	INY
+	AND #$0f
+	STA iFanfare_DurationID + 3
+	JMP ProcessFanfare_NoiseBytes
+
+ProcessFanfare_DPCMBytes:
+; 80-ff	duration
+; 01	rest
+; 02-7e	note
+	LDA (zFanfarePointerDPCM), Y
+	BMI @InstrumentOrLength
+	BEQ @Quit
+	TAX
+	DEX
+	BEQ @Rest
+	LSR A
+	STA zDPCMSFX
+@Rest:
+	LDX iFanfare_DurationID + 4
+	JSR CalculateFanfareTempo
+	STA iFanfare_Remainder + 4
+	STX zFanfare_duration + 4
+	LDA iFanfare_Remainder + 4
+	CLC
+	ADC iFanfare_Sub + 4
+	STA iFanfare_Sub + 4
+	LDA zFanfare_duration + 4
+	ADC #0
+	STA zFanfare_duration + 4
+@Quit:
+	INY
+	RTS
+
+@InstrumentOrLength:
+	INY
+	AND #$0f
+	STA iFanfare_DurationID + 4
+	JMP ProcessFanfare_DPCMBytes
+
+CalculateFanfareTempo:
+	LDA NoteLengthMultipliers, X
+	STA MMC5_Multiplier1
+	LDA zFanfareTempo
+	STA MMC5_Multiplier2
+	LDA MMC5_Multiplier1
+	LDX MMC5_Multiplier2
 	RTS
 
 ProcessPulse2SFX:
@@ -546,6 +1003,8 @@ ProcessMusicQueue_Square2Patch:
 
 ProcessMusicQueue_Square2Note:
 ; + = note
+	LDX zCurrentFanfare
+	BNE ProcessMusicQueue_Square2ContinueNote
 	LDX zCurrentPulse2SFX
 	BNE ProcessMusicQueue_Square2ContinueNote
 
@@ -583,6 +1042,8 @@ ProcessMusicQueue_Square2ContinueNote:
 ProcessMusicQueue_Square2SustainNote:
 	; note update
 	; SFX playing?  If yes, skip to updating Pulse 1
+	LDX zCurrentFanfare
+	BNE ProcessMusicQueue_Square1
 	LDX zCurrentPulse2SFX
 	BNE ProcessMusicQueue_Square1
 
@@ -660,6 +1121,8 @@ ProcessMusicQueue_HandleSweep:
 	BNE ProcessMusicQueue_Square1Patch
 
 ProcessMusicQueue_Square1Note:
+	LDX zCurrentFanfare
+	BNE ProcessMusicQueue_Square1ContinueNote
 	; We're clear! Play the note!
 	JSR PlaySquare1Note
 
@@ -676,6 +1139,7 @@ ProcessMusicQueue_Square1UpdateNoteOffset:
 ;   Y = sweep
 	STY rNR11
 	STX rNR10
+ProcessMusicQueue_Square1ContinueNote:
 	; set note length
 	LDA iMusicPulse1NoteSubFrames
 	CLC
@@ -686,6 +1150,8 @@ ProcessMusicQueue_Square1UpdateNoteOffset:
 	STA iMusicPulse1NoteLength
 
 ProcessMusicQueue_Square1SustainNote:
+	LDX zCurrentFanfare
+	BNE ProcessMusicQueue_Triangle
 	; note update
 	; load isntrument offset
 	LDY iMusicPulse1InstrumentOffset
@@ -763,9 +1229,12 @@ ProcessMusicQueue_TriangleNoteLength:
 	BEQ ProcessMusicQueue_TriangleSetLength
 
 ProcessMusicQueue_TriangleNote:
+	LDX zCurrentFanfare
+	BNE ProcessMusicQueue_TriangleCnotinueNote
 	; - = note
 	LDX #$08
 	JSR PlayNote
+ProcessMusicQueue_TriangleCnotinueNote:
 	; iMusicHillNoteLength:
 	LDA iMusicHillNoteSubFrames
 	CLC
@@ -840,6 +1309,8 @@ ProcessMusicQueue_NoiseNote:
 ; NOTE - only $02-$10 are valid
 ; $32 - $38 are treated as sound effects
 ; $01 is a rest note
+	LDY zCurrentFanfare
+	BNE ProcessMusicQueue_NoiseLengthCarry
 	LDY zCurrentNoiseSFX
 	BNE ProcessMusicQueue_NoiseLengthCarry
 	LSR A
@@ -885,6 +1356,8 @@ ProcessMusicQueue_DPCMlength:
 	BNE ProcessMusicQueue_DPCMExit11
 
 	; if note length ratio remains non-zero, check for sound effects
+	LDA zCurrentFanfare
+	BNE ProcessMusicQueue_DPCMExit11
 	LDA zCurrentDPCMSFX
 	BNE ProcessMusicQueue_DPCMExit11
 	; Disable - no sound effects playing
@@ -925,6 +1398,8 @@ ProcessMusicQueue_DPCMNotLoop:
 
 ProcessMusicQueue_DPCMNote:
 ; check for sound effects before playing a note
+	LDX zCurrentFanfare
+	BNE ProcessMusicQueue_DPCMSFXExit
 	LDX zCurrentDPCMSFX
 	BNE ProcessMusicQueue_DPCMSFXExit
 

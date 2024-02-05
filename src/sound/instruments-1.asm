@@ -70,4 +70,4 @@ Audio1_InstrumentDVE_F0_Short:
 
 NoteLengthMultipliers:
 Audio1_NoteLengthMultipliers:
-	.db $0C, $06, $10, $10, $18, $24, $20, $50, $30, $48, $60, $90, $C0
+	.db $0C, $06, $10, $12, $18, $24, $20, $50, $30, $48, $60, $90, $C0, $08, $1E
