@@ -130,6 +130,17 @@ TitleScreen:
 	; disable NMI for now
 	JSR InitPPU_FullScreenUpdate
 
+	; initialize note length subs
+	LDA #0
+	STA zMusicPulse1NoteLengthFraction
+	STA zMusicDPCMNoteLengthFraction
+	LDA #$55
+	STA zMusicPulse2NoteLengthFraction
+	LDA #$aa
+	STA zMusicHillNoteLengthFraction
+	LDA #$ff
+	STA zMusicNoiseNoteLengthFraction
+
 	; set fade speed
 	LDX #1
 	STX zPalFade

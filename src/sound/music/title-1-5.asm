@@ -194,7 +194,7 @@ MusDTitle2_Hill:
 MusDTitle3_Hill:
 MusDTitle4_Hill:
 MusDTitle5_Hill:
-	note_type 1, 4
+	note_type 3, 4
 	note E_, 2
 	note E_, 2
 	note E_, 2

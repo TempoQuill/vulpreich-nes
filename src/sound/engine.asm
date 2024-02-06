@@ -6,9 +6,9 @@ StartProcessingSoundQueue:
 	STA rFRC
 
 	JSR ProcessFanfare
-	JSR ProcessPulse2SFX
 	JSR ProcessNoiseQueue
 	JSR ProcessDPCMQueue
+	JSR ProcessPulse2SFX
 	JSR ProcessMusicQueue
 
 	; Reset queues- aaaand it's done!
@@ -43,7 +43,7 @@ ProcessFanfare_Part2Loop1:
 	STA iFanfare_Sub + 4
 	LDA zFanfare
 	SEC
-	SBC #SFX_FANFARES
+	SBC #SFX_FANFARES_START
 	ASL A
 	TAY
 	; header pointer
@@ -488,8 +488,9 @@ ProcessPulse2SFX_Part2:
 	LDY #0
 	STY iPulse2SFXOffset
 	STY iPulse2SFXSweep
+	SEC
+	SBC #SFX_PULSE_2_SOUNDS_START
 	TAY
-	DEY
 
 ProcessPulse2SFX_DesignatePointer:
 	LDA Pulse2SFXVolumes, Y
@@ -554,16 +555,10 @@ ProcessPulse2SFX_End:
 	RTS
 
 Pulse2SFXVolumes:
-	.db $00, $00, $00, $00, $00, $00, $00, $00
-	.db $00, $00, $00, $00, $00, $00, $00, $00
-	.db $00, $00, $00, $00, $00, $00, $00, $00
-	.db $00, $00, $00, $00, $9f, $9f, $00
+	.db $9f, $9f, $00
 
 Pulse2SFXEnvelopes:
-	.db $00, $00, $00, $00, $00, $00, $00, $00
-	.db $00, $00, $00, $00, $00, $00, $00, $00
-	.db $00, $00, $00, $00, $00, $00, $00, $00
-	.db $00, $00, $00, $00, $80, $81, $00
+	.db $80, $81, $00
 
 ;
 ; Noise Channel SFX / Percussion Queue
@@ -884,11 +879,11 @@ ProcessMusicQueue_DefaultNotelength:
 	STA iCurrentPulse1Offset
 	STA iCurrentNoiseOffset
 	STA iCurrentDPCMOffset
-	STA zMusicPulse2NoteLengthFraction
-	STA zMusicPulse1NoteLengthFraction
-	STA zMusicHillNoteLengthFraction
-	STA zMusicNoiseNoteLengthFraction
-	STA zMusicDPCMNoteLengthFraction
+;	STA zMusicPulse2NoteLengthFraction
+;	STA zMusicPulse1NoteLengthFraction
+;	STA zMusicHillNoteLengthFraction
+;	STA zMusicNoiseNoteLengthFraction
+;	STA zMusicDPCMNoteLengthFraction
 	STA zSweep
 
 ProcessMusicQueue_ReadNoteData:
@@ -1249,11 +1244,14 @@ ProcessMusicQueue_TriangleCnotinueNote:
 	CPY #$38
 	BCS ProcessMusicQueue_TriangleMax
 
-	LDA zHillIns
-	CMP #$F0
+	LDX zHillIns
+	CPX #$F0
 	BCS ProcessMusicQueue_TriangleMax
-	CMP #$B0
+	CPX #$A0
 	LDA Triangle15Outta16Lengths, Y
+	BCC ProcessMusicQueue_TriangleSetLength
+	CPX #$B0
+	LDA Triangle5Outta7Lengths, Y
 	BCC ProcessMusicQueue_TriangleSetLength
 	LDA Triangle4Outta7Lengths, Y
 	BCS ProcessMusicQueue_TriangleSetLength
