@@ -4,19 +4,20 @@ Duty2 = 80
 
 InstrumentDVE_80:
 Audio1_InstrumentDVE_80:
-	.db "@AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBCCCCCCCCCCCCDDDDDDDEE" + Duty1
+	.db "@AAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBCCCCCCCCCCCCDDDDDDDDEEEEFFG" + Duty1
+	.db "D" + Duty0
+	.db "F" + Duty2
+	.db "D" + Duty1
 	.db "B" + Duty0
-	.db "C" + Duty2
-	.db "B" + Duty1
-	.db "A" + Duty0
 
 InstrumentDVE_80_Short:
 Audio1_InstrumentDVE_80_Short:
-	.db "@AAAAAAAAABBBBCCCDD" + Duty1
+;	.db "@AAAAAAAAABBBBCCCDD" + Duty1
+	.db "@AAAAABBBBCCCDDEEFF" + Duty1
+	.db "D" + Duty0
+	.db "F" + Duty2
+	.db "D" + Duty1
 	.db "B" + Duty0
-	.db "C" + Duty2
-	.db "B" + Duty1
-	.db "A" + Duty0
 
 InstrumentDVE_90_E0:
 Audio1_InstrumentDVE_90_E0:
