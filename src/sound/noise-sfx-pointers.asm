@@ -30,6 +30,8 @@ NoiseSFXPointersLo:
 	.dl NoiseSFX_None
 	.dl NoiseSFX_None
 	.dl NoiseSFX_Flap
+	.dl NoiseSFX_None
+	.dl NoiseSFX_None
 
 NoiseSFXPointersHi:
 	.dh NoiseSFX_Hihat
@@ -63,3 +65,5 @@ NoiseSFXPointersHi:
 	.dh NoiseSFX_None
 	.dh NoiseSFX_None
 	.dh NoiseSFX_Flap
+	.dh NoiseSFX_None
+	.dh NoiseSFX_None

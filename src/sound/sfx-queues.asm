@@ -31,6 +31,7 @@ SoundEffectDestinations:
 	.db zPulse2SFX
 	.db zNoiseDrumSFX
 	.db zFanfare
+	.db zFanfare
 
 SoundEffectClasses:
 ; %01000000 - Sound effect
@@ -67,3 +68,4 @@ SoundEffectClasses:
 	.db %01000000
 	.db %01000000
 	.db %10000000
+	.db %01000000

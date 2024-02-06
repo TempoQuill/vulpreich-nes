@@ -33,3 +33,4 @@
 ; fanfare data
 .include "src/sound/fanfarepointers.asm"
 .include "src/sound/fanfares/objective-complete.asm"
+.include "src/sound/fanfares/landline-ring.asm"

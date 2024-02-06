@@ -120,9 +120,12 @@ ProcessFanfare_End:
 	STA rNR21
 	STA rNR22
 	STA rNR23
+	LDX zFanfarePointerHill + 1
+	BEQ ProcessFanfare_EndNoHill
 	STA rNR30
 	STA rNR32
 	STA rNR33
+ProcessFanfare_EndNoHill:
 	STA zCurrentFanfare
 	STA zFanfare
 	LDY #zFanfareAreaEnd - zFanfareArea
@@ -527,9 +530,6 @@ ProcessPulse2SFX_Volume:
 	INY
 	STA rNR22
 	STX rNR23
-	LDA rMIX
-	ORA #$0F
-	STA rMIX
 	CPX #$08
 	BCC ProcessPulse2SFX_Tie
 	LDA iPulse2SFXSweep
@@ -555,10 +555,10 @@ ProcessPulse2SFX_End:
 	RTS
 
 Pulse2SFXVolumes:
-	.db $9f, $9f, $00
+	.db $9f, $9f, $10, $10, $10
 
 Pulse2SFXEnvelopes:
-	.db $80, $81, $00
+	.db $80, $81, $10, $10, $10
 
 ;
 ; Noise Channel SFX / Percussion Queue
@@ -646,9 +646,6 @@ ProcessNoiseQueue_Note:
 	STA rNR42
 	LDA #$08
 	STA rNR43
-	LDA rMIX
-	ORA #$0F
-	STA rMIX
 
 ProcessNoiseQueue_Exit:
 	RTS
@@ -1224,7 +1221,7 @@ ProcessMusicQueue_TriangleNoteLength:
 	BEQ ProcessMusicQueue_TriangleSetLength
 
 ProcessMusicQueue_TriangleNote:
-	LDX zCurrentFanfare
+	LDX zFanfarePointerHill + 1
 	BNE ProcessMusicQueue_TriangleCnotinueNote
 	; - = note
 	LDX #$08
@@ -1307,7 +1304,7 @@ ProcessMusicQueue_NoiseNote:
 ; NOTE - only $02-$10 are valid
 ; $32 - $38 are treated as sound effects
 ; $01 is a rest note
-	LDY zCurrentFanfare
+	LDY zFanfarePointerNoise + 1
 	BNE ProcessMusicQueue_NoiseLengthCarry
 	LDY zCurrentNoiseSFX
 	BNE ProcessMusicQueue_NoiseLengthCarry
@@ -1354,7 +1351,7 @@ ProcessMusicQueue_DPCMlength:
 	BNE ProcessMusicQueue_DPCMExit11
 
 	; if note length ratio remains non-zero, check for sound effects
-	LDA zCurrentFanfare
+	LDA zFanfarePointerDPCM + 1
 	BNE ProcessMusicQueue_DPCMExit11
 	LDA zCurrentDPCMSFX
 	BNE ProcessMusicQueue_DPCMExit11
@@ -1396,7 +1393,7 @@ ProcessMusicQueue_DPCMNotLoop:
 
 ProcessMusicQueue_DPCMNote:
 ; check for sound effects before playing a note
-	LDX zCurrentFanfare
+	LDX zFanfarePointerDPCM + 1
 	BNE ProcessMusicQueue_DPCMSFXExit
 	LDX zCurrentDPCMSFX
 	BNE ProcessMusicQueue_DPCMSFXExit
