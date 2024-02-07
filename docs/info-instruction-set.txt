@@ -17,7 +17,7 @@ EOR - Flip bits to A according to memory
 ORA - Combine active bits from memory onto A
 	+ + - - - -
 BIT - Test bits 6 / 7
-	b7- - - - b6
+	b7+ - - - b6
 CMP - Subract memory from A and only store resulting flags
 CPX - Subract memory from X and only store resulting flags
 CPY - Subract memory from Y and only store resulting flags
@@ -81,6 +81,7 @@ TXA - Transfer X to A
 TYA - Transfer Y to A
 TSX - Transfer stack to X
 TXS - Transfer X to stack
+	+ + - - - - (0 -> 01, 1-7f -> 00, 80-ff -> 10)
 
 - misc - 1
 NOP - Do nothing
