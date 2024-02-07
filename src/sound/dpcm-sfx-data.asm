@@ -34,6 +34,9 @@ DMCStartTable:
 	dmc_sfx $dfff ; nothing
 	dmc_sfx $dfff
 	dmc_sfx $dfff
+	dmc_sfx $dfff
+	dmc_sfx $dfff
+	dmc_sfx $dfff
 
 DMCLengthTable:
 	.db $46, $45, $45 ; exclamation
@@ -46,7 +49,7 @@ DMCLengthTable:
 	.db $7a, $69, $8c ; emote 5
 	.db $07, $09, $09 ; percussion
 	.db $03, $03, $03 ; nothing
-	.db $03, $03
+	.db $03, $03, $03 ; nothing
 
 DMCBankTable:
 	audio_bank PRG_DPCM0 ; exclamation
@@ -81,6 +84,7 @@ DMCBankTable:
 	audio_bank PRG_DPCM2
 	audio_bank PRG_DPCM2
 	audio_bank PRG_DPCM2
+	audio_bank PRG_DPCM2
 
 DMCPitchTable:
 	.db $f, $f, $f ; exclamation
@@ -93,4 +97,4 @@ DMCPitchTable:
 	.db $f, $f, $e ; emote 5
 	.db $e, $f, $a ; percussion
 	.db $0, $0, $0 ; nothing
-	.db $0, $0
+	.db $0, $0, $0
