@@ -1257,6 +1257,9 @@ ProcessMusicQueue_TriangleMax:
 	LDA #$7F
 
 ProcessMusicQueue_TriangleSetLength:
+	LDX zFanfarePointerHill + 1
+	BNE ProcessMusicQueue_Noise
+
 	STA rNR30
 	JMP ProcessMusicQueue_Noise
 
