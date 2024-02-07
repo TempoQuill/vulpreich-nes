@@ -55,7 +55,7 @@ NoteLengthMultipliers:
 ; Used for staccato, used by the Wart and title themes
 ;
 
-Triangle15Outta16Lengths:
+Triangle15Outta7Lengths:
 	.db $00
 	.db $03, $07, $0B, $0F, $12, $16, $1A, $1E
 	.db $21, $25, $29, $2D, $30, $34, $38, $3C

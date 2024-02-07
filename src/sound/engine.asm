@@ -1245,7 +1245,7 @@ ProcessMusicQueue_TriangleCnotinueNote:
 	CPX #$F0
 	BCS ProcessMusicQueue_TriangleMax
 	CPX #$A0
-	LDA Triangle15Outta16Lengths, Y
+	LDA Triangle15Outta7Lengths, Y
 	BCC ProcessMusicQueue_TriangleSetLength
 	CPX #$B0
 	LDA Triangle5Outta7Lengths, Y
