@@ -104,7 +104,7 @@ zBackupA:
 zBackupX:
 	.dsb 1
 zBackupY:
-	.dsb 1 ; 0028
+	.dsb 1 ; 0040
 zTableOffset:
 	.dsb 2
 zRAMBank: ; MMC5 backups, and b/c this is ZP, this is optimal speed
@@ -113,16 +113,16 @@ zRAMBank: ; MMC5 backups, and b/c this is ZP, this is optimal speed
 ; zWindow1 - 8000-9fff, zWindow2 - a000-bfff
 ; c000-dfff is the DPCM area, and e000-fff9 is home ROM
 zWindow1:
-	.dsb 1 ; 002c
+	.dsb 1 ; 0044
 zWindow2:
 	.dsb 1
 zCurrentWindow:
 	.dsb 2
 zBackupWindow:
-	.dsb 2 ; 0030
+	.dsb 2 ; 0048
 zPPUDataBufferPointer:
 	.dsb 2
-	.dsb 1 ; 0034
+	.dsb 1 ; 004c
 zCHRWindow0:
 	.dsb 1
 zCHRWindow1:
@@ -135,24 +135,24 @@ zAuxAddresses: ; back up 4 at a time
 ; 1: updates / text
 ; 2: vblank
 ; 3: everything else
-	.dsb 2 ; 0038
+	.dsb 2 ; 0050
 	.dsb 2
 	.dsb 2
 	.dsb 2
 zFactorBuffer:
-	.dsb 4 ; 0040
+	.dsb 4 ; 0058
 zDividerBuffer:
-	.dsb 4 ; 0044
+	.dsb 4 ; 005c
 zAddendBuffer:
-	.dsb 4 ; 0048
+	.dsb 4 ; 0060
 zDifferentialBuffer:
-	.dsb 4 ; 004c
+	.dsb 4 ; 0064
 zInputBottleNeck:
-	.dsb 2 ; 0050
+	.dsb 2 ; 0068
 zInputCurrentState:
 	.dsb 2
 zPPUCtrlMirror:
-	.dsb 1 ; 0054
+	.dsb 1 ; 006c
 zPPUMaskMirror:
 	.dsb 1
 zPPUStatusMirror:
@@ -160,38 +160,38 @@ zPPUStatusMirror:
 zPPUScrollXMirror:
 	.dsb 1
 zPPUScrollYMirror:
-	.dsb 1 ; 0058
+	.dsb 1 ; 0070
 zPalFade:
-	.dsb 1 ; 005c
+	.dsb 1
 zPalFadeSpeed:
 	.dsb 1
 zPalFadePlacement:
 	.dsb 1
 ; section: miscellaneous
 zSaveMenuOption:
-	.dsb 1 ; 0060
+	.dsb 1 ; 0074
 zSaveMenuSelectedOption:
 	.dsb 1
 zSaveMenuROMPointer:
 	.dsb 2
 zSaveMenuRAMPointer:
-	.dsb 2 ; 0068
+	.dsb 2 ; 0078
 zTitleScreenSelectedOption:
 	.dsb 1
 zTitleScreenTimer:
-	.dsb 2 ; 0078
+	.dsb 2
 ; Standard film FPS timers
 ; Used to skip NMI 3/5 times for 24 FPS
 zFilmStandardTimerOdd:
-	.dsb 1 ; 007c
+	.dsb 1 
 zFilmStandardTimerEven:
 	.dsb 1
 zLyricsOffset:
 	.dsb 1
 zStringXOffset:
-	.dsb 1
-zStringXConst:
 	.dsb 1 ; 0080
+zStringXConst:
+	.dsb 1
 ; section: title screen animation variables
 ; only allows 2 objects due to the 8-sprite per scanline limitation.
 ; ANIMATION QUEUE 1 - Iggy / Otis
@@ -213,25 +213,25 @@ zTitleObj1Timer:
 zTitleObj1PointerIndex:
 	.dsb 1
 zTitleObj1XCoord:
-	.dsb 1
+	.dsb 1 ; 0084
 zTitleObj1StartingPoint:
-	.dsb 2 ; 0084
+	.dsb 2
 zTitleObj1FramePointer:
 	.dsb 2
 zTitleObj1IndexPointer:
-	.dsb 2 ; 0088
+	.dsb 2
 zTitleObj1PointerAddresses:
 	.dsb 4
 zTitleObj1YCoord:
 	.dsb 1
 zTitleObj1ScreenEdgeFlags:
-	.dsb 1
-zTitleObj1Resolution:
 	.dsb 1 ; 0090
+zTitleObj1Resolution:
+	.dsb 1
 zTitleObj1OAMPointer:
 	.dsb 2
 zTitleObj1MovementPointer:
-	.dsb 2
+	.dsb 2 ; 0094
 zTitleObj1End:
 ; ANIMATION QUEUE 2 - June / the crow
 zTitleObj2:
@@ -240,46 +240,46 @@ zTitleObj2Timer:
 zTitleObj2PointerIndex:
 	.dsb 1
 zTitleObj2XCoord:
-	.dsb 1
+	.dsb 1 ; 0098
 zTitleObj2StartingPoint:
-	.dsb 2 ; 0098
+	.dsb 2
 zTitleObj2FramePointer:
 	.dsb 2
 zTitleObj2PointerAddresses:
-	.dsb 4 ; 009c
+	.dsb 4
 zTitleObj2IndexPointer:
-	.dsb 2 ; 00a0
+	.dsb 2
 zTitleObj2YCoord:
 	.dsb 1
 zTitleObj2ScreenEdgeFlags:
-	.dsb 1
-zTitleObj2Resolution:
 	.dsb 1 ; 00a4
+zTitleObj2Resolution:
+	.dsb 1
 zTitleObj2OAMPointer:
 	.dsb 2
 zTitleObj2MovementPointer:
-	.dsb 2
+	.dsb 2 ; 00a8
 zTitleObj2End:
 zTitleObjFinished:
 	.dsb 1
 zTitle1ObjIndex:
 	.dsb 1
 zTitle2ObjIndex:
-	.dsb 1
+	.dsb 1 ; 00ac
 zTitleObj1InitPointer:
-	.dsb 2 ; 00ac
+	.dsb 2
 zTitleObj2InitPointer:
 	.dsb 2
 zTitleObjLoopPoint1:
-	.dsb 1 ; 00b0
+	.dsb 1
 zTitleObjLoopPoint2:
 	.dsb 1
 zCursorXPos:
 	.dsb 1
 zCursorYPos:
-	.dsb 1
-zCursorFrame:
 	.dsb 1 ; 00b4
+zCursorFrame:
+	.dsb 1
 zOptions:
 ; 0-1 - Price Modifier
 ; 2-3 - Text speed
@@ -389,7 +389,7 @@ iPulse2SFXVolume:
 iPulse2SFXOffset:
 	.dsb 1
 iPulse2SFXSweep:
-	.dsb 1 ; 0225
+	.dsb 1 ; 0228
 iFanfare_DurationID:
 	.dsb 5
 iFanfare_Remainder:
@@ -397,14 +397,14 @@ iFanfare_Remainder:
 iFanfare_Sub:
 	.dsb 5
 iFanfare_LengthPoints:
-	.dsb 1
+	.dsb 1 ; 0238
 	.dsb 1
 ; section: input
 iBackupInput:
 	.dsb 1
 	.dsb 1
+	.dsb 1 ; 023c
 	.dsb 1
-	.dsb 1 ; 022c
 	.dsb 1
 	.dsb 1
 	.dsb 16 ; 0240
