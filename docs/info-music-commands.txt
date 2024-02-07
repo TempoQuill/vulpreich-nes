@@ -2,17 +2,32 @@ Music
 
 	Pulse 1		Pulse 2		Hill	Noise	DPCM
 00	Sweep switch	Next segment	Repeat current sequence
-01					Rest
+01						Rest
 02-7C	Note					Drum ID	Sample ID
 7E	Rest					N/A	Rest
 80-8F	Instrument 1 + length		15/16	Note length
 90-9F	Instrument 2 + length		15/16
-A0-AF	Instrument 3 + length		15/16
+A0-AF	Instrument 3 + length		5/7
 B0-BF	Instrument 4 + length		4/7
 C0-CF	Instrument 5 + length		4/7
 D0-DF	Instrument 6 + length		4/7
 E0-EF	Instrument 2 + length		4/7
 F0-FF	Instrument 7 + length		Hold
+
+Fanfares
+	Pulse 1		Pulse 2		Hill	Noise	DPCM
+00	Sweep switch	Next segment	Repeat current sequence
+01					Rest
+02-7C	Note					Drum ID	DPCM SFX ID
+7E	Rest					N/A	Rest
+80-8F	env 1 + length			Note length
+90-9F	env 2 + length
+A0-AF	env 3 + length
+B0-BF	env 4 + length
+C0-CF	env 5 + length
+D0-DF	env 6 + length
+E0-EF	stacatto			env	N/A
+F0-FF	env 7 + length
 
 Pulse SFX
 Notes are stored in big=endian pairs of bytes.
