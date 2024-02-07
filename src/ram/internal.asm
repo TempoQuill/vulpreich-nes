@@ -405,6 +405,10 @@ iBackupInput:
 	.dsb 1
 	.dsb 1 ; 023c
 	.dsb 1
+; 0: Menus
+; 1: Overworld
+; 2: Cutscenes
+iGameMilestone:
 	.dsb 1
 	.dsb 1
 	.dsb 16 ; 0240

@@ -439,6 +439,23 @@ RESET:
 	STA MMC5_FillModeColor
 	JMP Start
 
+PRGTerminal:
+	LDA iGameMilestone
+	CMP #1
+	BCC @Menus
+	BEQ @Overworld
+	JMP RESET
+@Menus:
+	JMP RESET
+@Overworld:
+	LDA #PRG_Overworld1
+	STA zWindow1
+	STA MMC5_PRGBankSwitch2
+	LDA #PRG_Overworld2
+	STA zWindow2
+	STA MMC5_PRGBankSwitch3
+	JMP RESET
+
 IRQ:
 	RTI
 

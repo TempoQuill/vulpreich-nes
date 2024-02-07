@@ -12,7 +12,9 @@ PRG_Music0:	.dsb 1
 IFNDEF NSF_FILE
 PRG_GFXEngine:	.dsb 1
 PRG_Names0:	.dsb 1
-		.dsb $6a
+PRG_Overworld1:	.dsb 1
+PRG_Overworld2:	.dsb 1
+		.dsb $68
 ENDIF
 PRG_DPCM0:	.dsb 1
 PRG_DPCM1:	.dsb 1

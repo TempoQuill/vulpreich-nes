@@ -214,9 +214,9 @@ SaveMenuScreen:
 	JSR TrySaveMenuInput
 	JSR AlignSaveMenuOptions
 	JSR RunCursor_SaveMenu
-	; was B just pressed?
+	; was A, B, or start just pressed
 	LDA zInputBottleNeck
-	TSB B_BUTTON
+	AND #1 << A_BUTTON | 1 << B_BUTTON | 1 << START_BUTTON
 	BNE @Back
 	; Nope.  We're still running.
 	LDA #1
@@ -227,8 +227,10 @@ SaveMenuScreen:
 	; Run sound queues
 	LDY #SFX_SELECT_1
 	JSR PlaySFX
-	LDA #$FF
-	STA zMusicQueue
+	LDY #$FF
+	STY zMusicQueue
+	AND #1 << A_BUTTON | 1 << START_BUTTON
+	BNE @AOrStart
 	; Update palette fade speed
 	LDA #1
 	STA zPalFadeSpeed
@@ -246,6 +248,25 @@ SaveMenuScreen:
 	STA zCHRWindow0
 	; aaaand JUMP!
 	JMP IntroSequence_TitleOnly
+@AOrStart:
+	; fade out
+	LDA #2
+	STA zPalFadeSpeed
+	LDA zPals
+	ORA #1 << PAL_FADE_F | 1 << PAL_FADE_DIR_F
+	STA zPals
+	JSR WaitForFadeOut
+	; update CHR windows
+	LDA #CHR_IggysRoomBG
+	STA zCHRWindow2
+	LDA #CHR_IggyOBJ
+	STA zCHRWindow1
+	LDA #CHR_IggyOBJ
+	STA zCHRWindow0
+	LDA #1
+	STA iGameMilestone
+	; aaaand JUMP!
+	JMP PRGTerminal
 
 AlignSaveMenuOptions:
 	; curosr
@@ -336,8 +357,7 @@ TrySaveMenuInput:
 @Select:
 	LDA zSaveMenuOption
 	STA zSaveMenuSelectedOption
-	LDY #SFX_SELECT_1
-	JMP PlaySFX
+	RTS
 
 @OptionBit1:
 	TYA
