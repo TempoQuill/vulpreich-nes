@@ -65,8 +65,13 @@ IFNDEF NSF_FILE
 	.include "src/names-0.asm"
 	.pad $c000, $00
 
-	; bank 08-671 - unused (for now)
-	.dsb (($f1 - PRG_Names0) * $2000), $00
+	; bank 08 - overworld
+	.base $8000
+	.include "src/overworld.asm"
+	.pad $c000, $00
+
+	; bank 0a-71 - unused (for now)
+	.dsb (($f1 - PRG_Overworld2) * $2000), $00
 ENDIF
 
 ; dpcm data - 104K

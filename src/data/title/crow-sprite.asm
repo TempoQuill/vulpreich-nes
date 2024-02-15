@@ -1,3 +1,8 @@
+;
+; +----------------------+
+; |The crow's object data|
+; +----------------------+
+;
 CrowFrames_0_data:
 
 	nesst_meta   0,  0, $d4, 3

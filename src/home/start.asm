@@ -454,7 +454,7 @@ PRGTerminal:
 	LDA #PRG_Overworld2
 	STA zWindow2
 	STA MMC5_PRGBankSwitch3
-	JMP RESET
+	JMP StartOverworld
 
 IRQ:
 	RTI

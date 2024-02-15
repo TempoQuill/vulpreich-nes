@@ -373,3 +373,48 @@ CheckFilmTimers:
 	LDA zFilmStandardTimerEven
 @OnFrame:
 	RTS
+
+InitPPU_FullScreenUpdate:
+	; turn off NMI & PPU
+	LDA zPPUCtrlMirror
+	AND #$ff ^ PPU_NMI
+	STA zPPUCtrlMirror
+	STA rCTRL
+	LDA #0
+	STA rMASK
+	STA zPPUMaskMirror
+@VBlank:
+	LDA rSTATE
+	BPL @VBlank
+	; clear nametable and palettes
+	JSR InitNameTable
+	JSR InitPals
+	JSR HideSprites
+	LDA rSTATE
+	LDA #$3F
+	STA rWORD
+	LDA #0
+	STA rWORD
+	RTS
+
+ShowNewScreen:
+	; sure, we can get the game to show our stuff now
+	LDA #PPU_OBJ | PPU_BG
+	STA zPPUMaskMirror
+	RTS
+
+WaitForFadeOut:
+	LDA #1
+	JSR DelayFrame_s_
+	LDA zPals
+	BMI WaitForFadeOut
+	RTS
+
+SetUpStringBuffer:
+	LDA #<iStringBuffer
+	STA zPPUDataBufferPointer
+	LDA #>iStringBuffer
+	STA zPPUDataBufferPointer + 1
+
+	LDA #1
+	JMP DelayFrame_s_

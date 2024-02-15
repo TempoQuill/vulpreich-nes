@@ -1,3 +1,8 @@
+;
+; +-----------------+
+; |Otis' object data|
+; +-----------------+
+;
 OtisFrames_0_data:
 
 	nesst_meta   0,  0, $8e, 2

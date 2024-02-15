@@ -1,3 +1,8 @@
+;
+; +------------------+
+; |June's object data|
+; +------------------+
+;
 JuneFrames_0_data:
 
 	nesst_meta   0,  0, $61, 1

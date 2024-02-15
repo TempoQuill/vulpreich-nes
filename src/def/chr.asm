@@ -14,9 +14,6 @@ CHR_SaveMenuBG:
 CHR_IggyOBJ:
 	.dsb 6
 	.dsb 1
-CHR_ToyOBJ:
-
-	.dsb 1
 CHR_IggysRoomBG:
 
 	.dsb 1

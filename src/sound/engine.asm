@@ -1671,7 +1671,20 @@ PlayNote_FrequencyOctaveLoop:
 	DEC zOctave
 	BNE PlayNote_FrequencyOctaveLoop
 
+	LDA zNextPitch
+	BEQ PlayNote_SetFrequency
+
 	; tweak the frequency
+	; leave channel 1 if both 1 & 2 ins are $80
+	LDA zPulse1Ins
+	ORA zPulse2Ins
+	AND #$70
+	BNE PlayNote_NotSameFirstIns
+
+	TXA
+	BEQ PlayNote_SetFrequency
+
+PlayNote_NotSameFirstIns:
 	DEC zNextPitch
 
 PlayNote_SetFrequency:

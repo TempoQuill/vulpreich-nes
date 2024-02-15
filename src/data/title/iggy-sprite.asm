@@ -3,12 +3,12 @@
 ; |Iggy's object data|
 ; +------------------+
 ;
-; Iggy's animation data was exported by NES screen tool.  That program gets the
-; byte order wrong, so a macro was made to make implementing OAM logic easier
-; by correcting the byte order.
+; Iggy's animation data, and by extension, everyone else's, were exported from
+; NES screen tool.  That program gets the byte order wrong, so a macro was
+; made to make implementing OAM logic easier by correcting the byte order.
 ;
-; in addition, the logic counts down from a starting point and loops in blocks
-; of four.
+; in addition, the title screen OAM logic counts down from a starting point and
+; loops in blocks of four.
 ;
 
 IggyFrames_0_data:
