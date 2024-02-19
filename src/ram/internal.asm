@@ -303,12 +303,11 @@ zAudioFlagPointer:
 	.dsb 1
 zTempAudioFlagPointer:
 	.dsb 1
-	.dsb 1
-	.dsb 1 ; 00bc
-	.dsb 1
-	.dsb 1
-	.dsb 1
-	.dsb 32 ; 00c0
+zOWObject1:
+	.dsb 5
+zOWObject2:
+	.dsb 5 ; 00c0
+	.dsb 27
 zPals:
 	.dsb 32 ; 00e0
 
