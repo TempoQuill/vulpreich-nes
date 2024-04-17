@@ -18,7 +18,21 @@ CHR_ReichLivingRoomHallBG:
 	.dsb 1
 
 CHR_IggyOBJ:
-	.dsb 9
-	.dsb 9
+REPT 9
+	.dsb 1 ; side
+	.dsb 1 ; front / back
+ENDR
+
+CHR_JuneOBJ:
+REPT 9
+	.dsb 1 ; side
+	.dsb 1 ; front / back
+ENDR
+
+CHR_OtisOBJ:
+REPT 9
+	.dsb 1 ; side
+	.dsb 1 ; front / back
+ENDR
 
 .ende
