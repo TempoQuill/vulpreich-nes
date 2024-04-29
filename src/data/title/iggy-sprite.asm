@@ -80,46 +80,46 @@ IggyFrames_5_data:
 IggyFrames_6_data:
 
 	nesst_meta   0,  0, $ff, 0
-	nesst_meta   0, 16, $46, 0
+	nesst_meta   0, 16, $40, 0
 	nesst_meta   8,  0, $ff, 0
 	nesst_meta   8, 16, $34, 0
 	nesst_meta  16,  0, $18, 0
 	nesst_meta  16, 16, $36, 0
 	nesst_meta  24,  0, $ff, 0
-	nesst_meta  24, 16, $48, 0
+	nesst_meta  24, 16, $42, 0
 
 IggyFrames_7_data:
 
 	nesst_meta   0,  0, $ff, 0
-	nesst_meta   0, 16, $4a, 0
+	nesst_meta   0, 16, $44, 0
 	nesst_meta   8,  0, $ff, 0
 	nesst_meta   8, 16, $34, 0
 	nesst_meta  16,  0, $18, 0
-	nesst_meta  16, 16, $4c, 0
+	nesst_meta  16, 16, $46, 0
 	nesst_meta  24,  0, $ff, 0
-	nesst_meta  24, 16, $4e, 0
+	nesst_meta  24, 16, $48, 0
 
 IggyFrames_8_data:
 
 	nesst_meta   0,  0, $ff, 0
-	nesst_meta   0, 16, $50, 0
+	nesst_meta   0, 16, $4a, 0
 	nesst_meta   8,  0, $3a, 0
-	nesst_meta   8, 16, $52, 0
+	nesst_meta   8, 16, $4c, 0
 	nesst_meta  16,  0, $3c, 0
-	nesst_meta  16, 16, $54, 0
-	nesst_meta  24,  0, $3e, 0
-	nesst_meta  24, 16, $ff, 0
+	nesst_meta  16, 16, $4e, 0
+	nesst_meta  24,  0, $ff, 0
+	nesst_meta  24, 16, $50, 0
 
 IggyFrames_9_data:
 
-	nesst_meta   0,  0, $ff, OAM_REV_X
-	nesst_meta   0, 16, $ff, OAM_REV_X
-	nesst_meta   8,  0, $44, OAM_REV_X
-	nesst_meta   8, 16, $58, OAM_REV_X
-	nesst_meta  16,  0, $42, OAM_REV_X
-	nesst_meta  16, 16, $56, OAM_REV_X
-	nesst_meta  24,  0, $40, OAM_REV_X
-	nesst_meta  24, 16, $ff, OAM_REV_X
+	nesst_meta   0,  0, $ff, 0
+	nesst_meta   0, 16, $52, 0
+	nesst_meta   8,  0, $3e, 0
+	nesst_meta   8, 16, $54, 0
+	nesst_meta  16,  0, $ff, 0
+	nesst_meta  16, 16, $56, 0
+	nesst_meta  24,  0, $ff, 0
+	nesst_meta  24, 16, $58, 0
 
 IggyFrames_10_data:
 
@@ -211,25 +211,25 @@ IggyFrames_17_data:
 
 IggyFrames_18_data:
 
-	nesst_meta   0,  0, $3e, OAM_REV_X
-	nesst_meta   0, 16, $ff, OAM_REV_X
+	nesst_meta   0,  0, $ff, OAM_REV_X
+	nesst_meta   0, 16, $50, OAM_REV_X
 	nesst_meta   8,  0, $3c, OAM_REV_X
-	nesst_meta   8, 16, $54, OAM_REV_X
+	nesst_meta   8, 16, $4e, OAM_REV_X
 	nesst_meta  16,  0, $3a, OAM_REV_X
-	nesst_meta  16, 16, $52, OAM_REV_X
+	nesst_meta  16, 16, $4c, OAM_REV_X
 	nesst_meta  24,  0, $ff, OAM_REV_X
-	nesst_meta  24, 16, $50, OAM_REV_X
+	nesst_meta  24, 16, $4a, OAM_REV_X
 
 IggyFrames_19_data:
 
-	nesst_meta   0,  0, $40, 0
-	nesst_meta   0, 16, $ff, 0
-	nesst_meta   8,  0, $42, 0
-	nesst_meta   8, 16, $56, 0
-	nesst_meta  16,  0, $44, 0
-	nesst_meta  16, 16, $58, 0
-	nesst_meta  24,  0, $ff, 0
-	nesst_meta  24, 16, $ff, 0
+	nesst_meta   0,  0, $ff, OAM_REV_X
+	nesst_meta   0, 16, $58, OAM_REV_X
+	nesst_meta   8,  0, $ff, OAM_REV_X
+	nesst_meta   8, 16, $56, OAM_REV_X
+	nesst_meta  16,  0, $3e, OAM_REV_X
+	nesst_meta  16, 16, $54, OAM_REV_X
+	nesst_meta  24,  0, $ff, OAM_REV_X
+	nesst_meta  24, 16, $52, OAM_REV_X
 
 IggyFrames_20_data:
 
