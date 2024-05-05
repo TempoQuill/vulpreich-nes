@@ -15,5 +15,8 @@ Phillip Reich ends up caught in a legal accident regarding music complaints towa
 # Building:
 Code for this game comes with ASM6F as well as two `.bat` files that the command prompt will recognize.  To build this, go to the command prompt, follow the directory with `cd`, and type `build`.  There are only two configurations that turn the ROM into an NSF file, as well as a Sound Effect mode on top of that.  Feel free to expand the configuration file to make insteresting ROM modifications.
 
+# Contributing
+If you wish to contribute to this repository and make it into the credits, you can select a role at https://discord.gg/3nS8AH3vJ5.
+
 # NSF:
 Implementation is complete, so the code is all there as well as the configuration.  This uses its own `.bat` file though.  To build the NSF, uncomment the NSF configuration, then go to the command prompt, follow the directory, and type `build-nsf`.
