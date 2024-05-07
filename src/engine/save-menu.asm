@@ -102,10 +102,10 @@ InitSaveMenuBackground:
 	LDA #>cPPUBuffer
 	STA zPPUDataBufferPointer + 1
 
-	LDY #TitldNTInitData_END - TitldNTInitData
+	LDY #TitleNTInitData_END - TitleNTInitData
 
 @StringLoop:
-	LDA TitldNTInitData, Y
+	LDA TitleNTInitData, Y
 	STA iStringBuffer, Y
 	DEY
 	BPL @StringLoop

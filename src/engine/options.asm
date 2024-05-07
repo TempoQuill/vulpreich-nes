@@ -8,10 +8,10 @@ InitOptionsMenu:
 	JSR TitleScreenPaletteAndNameTableSetup
 	JSR InitOptionsMenuData
 
-	LDY #TitldNTInitData_END - TitldNTInitData
+	LDY #TitleNTInitData_END - TitleNTInitData
 
 @StringLoop:
-	LDA TitldNTInitData, Y
+	LDA TitleNTInitData, Y
 	STA iStringBuffer, Y
 	DEY
 	BPL @StringLoop

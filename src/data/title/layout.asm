@@ -76,7 +76,7 @@ BeginningText:
 	text $218b, "CATSCRATCH_"
 	text_end
 
-TitldNTInitData:
+TitleNTInitData:
 	.db $20, $00, $7F, $00
 	.db $20, $3F, $7F, $00
 	.db $20, $7E, $7F, $00
@@ -95,7 +95,7 @@ TitldNTInitData:
 	.db $23, $B1, $4F, $00
 	.db $23, $C0, $7F, $00
 	.db $23, $FF, $01, $00
-TitldNTInitData_END:
+TitleNTInitData_END:
 	.db $00
 
 TitleJuniorFey:
