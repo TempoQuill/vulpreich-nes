@@ -97,3 +97,31 @@ OW_OBJECT_Z_COORD:	.dsb 1
 OW_OBJECT_ID:		.dsb 1
 OW_OBJECT_DIRECTION:
 .ende
+
+; overworld collision constants
+.enum 0
+COL_NO_LIMITS:
+COL_0_7:	.dsb 1 ; 0000
+COL_0_1:	.dsb 1 ; 0001
+COL_0_3:	.dsb 1 ; 0010
+COL_0_5:	.dsb 1 ; 0011
+COL_2_7:	.dsb 1 ; 0100
+COL_BLOCK_5:	.dsb 1 ; 0101
+COL_2_3:	.dsb 1 ; 0110
+COL_2_5:	.dsb 1 ; 0111
+COL_4_7:	.dsb 1 ; 1000
+	.dsb 1
+COL_BLOCK_A:	.dsb 1 ; 1010
+COL_4_5:	.dsb 1 ; 1011
+COL_6_7:	.dsb 1 ; 1100
+
+COL_BLOCK_DEFAULT = %1111
+COL_BLOCK_ALL = $ff
+
+COL_EXCLUSIVE = %00000000
+COL_INCLUSIVE = %10000000
+COL_JUMP_EXC = %00001000
+COL_JUMP_INC = %10001000
+COL_JUMP_LO   = 0
+COL_JUMP_HI   = 4
+.ende
