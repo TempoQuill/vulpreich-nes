@@ -1,0 +1,27 @@
+Overworld collision works on a per-tile basis.  There are two tables for each non-ASCII tile: pixel offsets and attributes.  SIDE NOTE: Non-ASCII tiles start at $7d, and wrap around to $1f.
+
+Pixel Offsets:
+	Offsets operate on crumbs paired together to form the base boundaries of a tile's dimension.  Each nybble represents a specific dimension:
+		HI - Horizontal
+		LO - Vertical
+	Each crumb specifies a boundary where a metasprite may walk in each perspective shot:
+		0 - Off
+		1 - 2 pixels
+		2 - 4 pixels
+		3 - 6 pixels
+	If both crumbs in a nybble are equal as and non-zero, the other nybble is left to specify which area a given metasprite is permitted to walk.
+
+	If a nyble is zero, the metasprite can walk anywhere in the tile within that dimension.
+
+Attributes:
+	There are two main attributes to collision detection in VulpReich: Collision configuration and jump/action parameters.
+
+	Configuration is stored in a single flag, which determines whether to OR collision or NOR entry based on collision
+		0 - Exclusive, any collision stops a metasprite
+		1 - Inclusive, collision only occurs where horizontal and vertical bounds intersect.
+	Action is a 7-bit value separated into 3 parts: a high value, a low value, and a flag in between that indicates if there's a special property to begin with.
+		0-2 - Offset to jump down from
+		3   - Action flag
+		4-6 - Offset to jump up from
+	If no offset is given for the action flag to interpret it's up the engine to decide what happens at that tile based on the current area.
+

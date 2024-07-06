@@ -75,6 +75,7 @@ IggysRoomCollisionIndex:
 	db COL_BLOCK_ALL		; $bc
 	db COL_BLOCK_ALL		; $bd
 	db COL_BLOCK_ALL		; $be
+	;         hor.     ver.
 	collision COL_6_7, COL_6_7	; $bf
 	db COL_BLOCK_ALL		; $c0
 	db COL_BLOCK_ALL		; $c1
@@ -245,10 +246,10 @@ IggysRoomCollisionConditions:
 	col_condition COL_EXCLUSIVE, 0, 0	; $c1
 	col_condition COL_EXCLUSIVE, 0, 0	; $c2
 	col_condition COL_EXCLUSIVE, 0, 0	; $c3
-	col_condition COL_EXCLUSIVE, 0, 0	; $c4
-	col_condition COL_EXCLUSIVE, 0, 0	; $c5
-	col_condition COL_EXCLUSIVE, 0, 0	; $c6
-	col_condition COL_EXCLUSIVE, 0, 0	; $c7
+	col_condition COL_JUMP_EXC,  0, 0	; $c4
+	col_condition COL_JUMP_EXC,  0, 0	; $c5
+	col_condition COL_JUMP_EXC,  0, 0	; $c6
+	col_condition COL_JUMP_EXC,  0, 0	; $c7
 	col_condition COL_EXCLUSIVE, 0, 0	; $c8
 	col_condition COL_INCLUSIVE, 0, 0	; $c9
 	col_condition COL_EXCLUSIVE, 0, 0	; $ca
