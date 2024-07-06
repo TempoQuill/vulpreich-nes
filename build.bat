@@ -7,9 +7,7 @@ move /y vulpreich.lst bin > nul
 echo Done.
 echo.
 
-echo SHA1 hash check:
-echo 47ba60fad332fdea5ae44b7979fe1ee78de1d316ee027fea2ad5fe3c0d86f25a PRG0
-echo Yours:
+echo Your hash number:
 certutil -hashfile bin\vulpreich.nes SHA256 | findstr /V ":"
 
 
