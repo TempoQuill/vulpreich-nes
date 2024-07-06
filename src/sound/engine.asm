@@ -6,9 +6,9 @@ StartProcessingSoundQueue:
 	STA rFRC
 
 	JSR ProcessFanfare
+	JSR ProcessPulse2SFX
 	JSR ProcessNoiseQueue
 	JSR ProcessDPCMQueue
-	JSR ProcessPulse2SFX
 	JSR ProcessMusicQueue
 
 	; Reset queues- aaaand it's done!
@@ -658,23 +658,18 @@ ProcessDPCMQueue:
 	BNE ProcessDPCMQueue_Part2
 
 	LDA zCurrentDPCMSFX
-	BNE ProcessDPCMQueue_SoundCheck
-
-	LDA iCurrentDPCMOffset
 	BEQ ProcessDPCMQueue_None
-	RTS
 
-ProcessDPCMQueue_SoundCheck:
 	LDA rMIX
 	AND #$10
 	BNE ProcessDPCMQueue_Exit
 
-ProcessDPCMQueue_None:
 	LDA #$00
 	STA zCurrentDPCMSFX
 	LDA #%00001111
 	STA rMIX
 
+ProcessDPCMQueue_None:
 ProcessDPCMQueue_Exit:
 	RTS
 
@@ -706,6 +701,9 @@ ENDIF
 	STA rMIX
 	RTS
 
+; Music handling:
+; This routine runs last during the sound update before clearing the sound
+; queue.  Responsible for most BGM.
 ProcessMusicQueue_ThenReadNoteData:
 	JMP ProcessMusicQueue_ReadNoteData
 
@@ -713,9 +711,10 @@ ProcessMusicQueue_StopMusic:
 	JMP StopMusic
 
 ProcessMusicQueue:
+	; is the music flag even on?
 	LDY zOptions
 	BPL ProcessMusicQueue_StopMusic
-
+	; yes
 	; start by checking for no music
 	LDY zMusicQueue
 	TYA
@@ -726,26 +725,30 @@ ProcessMusicQueue:
 	LDA zMusicQueue
 	BNE ProcessMusicQueue_MusicQueue1
 
-	; if any music is playing, read note data
+	; if any music is playing, advance by one frame
 	; else return
-	LDA iCurrentMusic
+	LDA zCurrentMusic
 	BNE ProcessMusicQueue_ThenReadNoteData
 	RTS
 
 ProcessMusicQueue_MusicQueue1:
 	; zMusicQueue != 0, initialize
-	LDA iCurrentMusic
+	; save previous song in case of permission
+	LDA zCurrentMusic
 	STA zMusicStack
 	JSR StopMusic
 	LDY zMusicQueue
-	STY iCurrentMusic
+	STY zCurrentMusic
+	; does current song permit the previous one to play afterward?
 	LDA MusicStackPermission, Y
 	BNE ProcessMusicQueue_ReadFirstPointer
 
+	; MusicStackPermission+Y = 0, clear the queue stack
 	LDA #MUSIC_NONE
 	STA zMusicStack
 
 ProcessMusicQueue_ReadFirstPointer:
+	; set music bank
 	DEY
 	LDA SongBanks, Y
 IFNDEF NSF_FILE
@@ -772,12 +775,12 @@ ENDIF
 	LDA iMusicStartPoint
 
 ProcessMusicQueue_SetCurrentPart:
-	STA iCurrentMusicOffset
+	STA zCurrentMusicOffset
 
 ProcessMusicQueue_SetNextPart:
 	; Y = music offset + 1, check if we reached the end
-	INC iCurrentMusicOffset
-	LDY iCurrentMusicOffset
+	INC zCurrentMusicOffset
+	LDY zCurrentMusicOffset
 	CPY iMusicEndPoint
 	BNE ProcessMusicQueue_ReadHeader
 
@@ -876,6 +879,8 @@ ProcessMusicQueue_DefaultNotelength:
 	STA iCurrentPulse1Offset
 	STA iCurrentNoiseOffset
 	STA iCurrentDPCMOffset
+; Fixed-point note accumulators only needed initialization in SMB2:ASSA
+; VulpReich's bankswitching structure allows it to opt out of initialization
 ;	STA zMusicPulse2NoteLengthFraction
 ;	STA zMusicPulse1NoteLengthFraction
 ;	STA zMusicHillNoteLengthFraction
@@ -911,8 +916,8 @@ ProcessMusicQueue_Square2EndOfNote:
 ProcessMusicQueue_EndOfSegment:
 ; 0 = ret
 	; check which song's playing
-	; iCurrentMusic always loops
-	LDY iCurrentMusic
+	; zCurrentMusic always loops
+	LDY zCurrentMusic
 	LDA MusicStackPermission, Y
 	BEQ ProcessMusicQueue_ThenSetNextPart
 
@@ -925,37 +930,45 @@ ProcessMusicQueue_EndOfSegment:
 	JMP ProcessMusicQueue_MusicQueue1
 
 StopMusic:
-; ways to access this routine:
-;	zMusicStack = 0, fallthrough
-;	iCurrentMusic does not meet logic when fanfare ends
-;	Reaching the end-offset without a loop
-;	zMusicQueue is $80
-;	initializing the sound engine for a new song
-	LDA #$10
-	STA rNR10
+; This routine runs when:
+;	zOptions is positive
+;	zMusicQueue = $ff
+;	Song is initializing
+;	Song ends without a loop
+;	zMusicStack = 0
 	LDA #$00
-	STA iCurrentMusic
+	STA zCurrentMusic
+	LDA zFanfarePointerSQ1 + 1
+	BNE ClearChannelPulse2
+
 	STA rNR13
 	STA rNR12
 	STA rNR11
+	LDA #$10
+	STA rNR10
 
-	LDX zCurrentPulse2SFX
+ClearChannelPulse2:
+	LDA zCurrentPulse2SFX
+	ORA zFanfarePointerSQ2 + 1
 	BNE ClearChannelTriangle
 
-	LDA #$10
-	STA rNR20
-	LDA #$00
 	STA rNR23
 	STA rNR22
 	STA rNR21
+	LDA #$10
+	STA rNR20
 
 ClearChannelTriangle:
+	LDA zFanfarePointerHill + 1
+	BNE ClearChannelNoise
+
 	STA rNR30
 	STA rNR33
 	STA rNR32
 
 ClearChannelNoise:
 	LDA zCurrentNoiseSFX
+	ORA zFanfarePointerNoise + 1
 	BNE ClearChannelDPCM
 	STA zCurrentDrum
 	STA rNR43
@@ -965,6 +978,7 @@ ClearChannelNoise:
 
 ClearChannelDPCM:
 	LDA zCurrentDPCMSFX
+	ORA zFanfarePointerDPCM + 1
 	BNE ClearChannelDone
 	JMP ProcessMusicQueue_DPCMDisable
 
@@ -1448,7 +1462,7 @@ ProcessMusicQueue_DPCMSFXExit:
 
 ProcessMusicQueue_DPCMEnd:
 	; check for sound effects before disabling
-	LDX #zCurrentDPCMSFX
+	LDX zCurrentDPCMSFX
 	BNE ProcessMusicQueue_DPCMExit2
 
 ProcessMusicQueue_DPCMDisable:

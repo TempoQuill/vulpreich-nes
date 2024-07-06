@@ -31,7 +31,7 @@ zMusicChannelCount:
 	.dsb 1
 zDPCMNoteRatioLength:
 	.dsb 1
-iCurrentMusic:
+zCurrentMusic:
 	.dsb 1
 zCurrentDrum:
 	.dsb 1 ; 0014
@@ -339,7 +339,7 @@ iMusicNoiseNoteSubFrames:
 	.dsb 1
 iMusicDPCMNoteSubFrames:
 	.dsb 1
-iCurrentMusicOffset:
+zCurrentMusicOffset:
 	.dsb 1
 iPulse2NoteLength:
 	.dsb 1 ; 0210
