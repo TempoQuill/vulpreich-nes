@@ -91,9 +91,9 @@ OPTION_BACK_TO_TITLE:
 
 ; zOWObject?
 .enum $0000
-OW_OBJECT_X_COORD:	.dsb 1
-OW_OBJECT_Y_COORD:	.dsb 1
-OW_OBJECT_Z_COORD:	.dsb 1
+OW_OBJECT_X_COORD:	.dsb 1 ; left / right
+OW_OBJECT_Y_COORD:	.dsb 1 ; scaling degree
+OW_OBJECT_Z_COORD:	.dsb 1 ; master Y position offset
 OW_OBJECT_ID:		.dsb 1
 OW_OBJECT_DIRECTION:
 .ende
