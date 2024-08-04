@@ -131,18 +131,15 @@ ReadJoypad:
 	; send a jolt to the controller
 	LDA #1
 	STA rJOY
-	; send the same jolt to the bottleneck to set C at the end
-	STA zInputBottleNeck
 	; 1 >> 1 = 0, C is not needed right now
 	LSR A
 	STA rJOY
-@Loop:
 	; Read standard controller data
+REPT 8
 	LDA rJOY
 	LSR A
-	; are we done?
 	ROL zInputBottleNeck
-	BCC @Loop
+ENDR
 	; we're done
 	RTS
 
