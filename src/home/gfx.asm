@@ -225,7 +225,7 @@ InitNameTable:
 	STA rDATA
 	STA rDATA
 	STA rDATA
-	BPL @Loop
+	BNE @Loop
 	RTS
 
 ;

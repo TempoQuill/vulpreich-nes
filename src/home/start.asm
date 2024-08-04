@@ -393,7 +393,10 @@ RESET:
 	STA $500, X
 	STA $600, X
 	STA $700, X
+	STA $5c00, X ; mmc5 RAM
+	STA $5d00, X ; mmc5 RAM
 	STA $5e00, X ; mmc5 RAM
+	STA $5f00, X ; mmc5 RAM
 	BNE @Loop
 
 	; select the starter PRG banks
