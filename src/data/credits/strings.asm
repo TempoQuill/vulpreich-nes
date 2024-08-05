@@ -42,6 +42,8 @@ Credits_TempoQuill:
 	.db "Tempo Quill                ", 0
 Credits_SquaSqua:
 	.db "SquaSqua                   ", 0
+Credits_Somari:
+	.db "Somari the Adventurer      ", 0
 Credits_NESst_NEXXT:
 	.db "Using NESst and NEXXT      ", 0
 Credits_MS_Paint:
