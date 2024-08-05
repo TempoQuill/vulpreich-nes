@@ -57,7 +57,7 @@ Credits_Riot:
 Credits_Ray:
 	.db "Ray the Fox and his friends", 0
 Credits_SaveAFox:
-	.db "Makayla Rein via SaveAFox  ", 0
+	.db "Makayla Raines via SaveAFox", 0
 Credits_DanielRosenfeld:
 	.db "Daniel Rosenfeld           ", 0
 Credits_SteveStevensGuitars:
