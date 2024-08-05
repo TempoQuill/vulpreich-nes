@@ -5,7 +5,7 @@ StartProcessingSoundQueue:
 	LDA #$FF
 	STA rFRC
 
-	JSR ProcessFanfare
+	JSR ProcessFanfare ; fanfares / multichannel sfx
 	JSR ProcessPulse2SFX
 	JSR ProcessNoiseQueue
 	JSR ProcessDPCMQueue
@@ -950,7 +950,7 @@ StopMusic:
 ClearChannelPulse2:
 	LDA zCurrentPulse2SFX
 	ORA zFanfarePointerSQ2 + 1
-	BNE ClearChannelTriangle
+	BNE ClearChannelHill
 
 	STA rNR23
 	STA rNR22
@@ -958,7 +958,7 @@ ClearChannelPulse2:
 	LDA #$10
 	STA rNR20
 
-ClearChannelTriangle:
+ClearChannelHill:
 	LDA zFanfarePointerHill + 1
 	BNE ClearChannelNoise
 
@@ -1157,7 +1157,7 @@ ProcessMusicQueue_Square1ContinueNote:
 
 ProcessMusicQueue_Square1SustainNote:
 	LDX zCurrentFanfare
-	BNE ProcessMusicQueue_Triangle
+	BNE ProcessMusicQueue_Hill
 	; note update
 	; load isntrument offset
 	LDY iMusicPulse1InstrumentOffset
@@ -1181,15 +1181,15 @@ ProcessMusicQueue_Square1AfterDecrementInstrumentOffset:
 ProcessMusicQueue_Square1Sweep:
 	STA rNR11
 
-ProcessMusicQueue_Triangle:
+ProcessMusicQueue_Hill:
 	; if offset = 0, skip to next channel
 
 	LDA iMusicHillBigPointer
 	ORA iMusicHillBigPointer + 1
-	BNE ProcessMusicQueue_TriangleStart
+	BNE ProcessMusicQueue_HillStart
 	JMP ProcessMusicQueue_Noise
 
-ProcessMusicQueue_TriangleStart:
+ProcessMusicQueue_HillStart:
 	LDA iMusicHillBigPointer
 	STA zCurrentMusicPointer + 1
 	LDA iMusicHillBigPointer + 1
@@ -1197,10 +1197,10 @@ ProcessMusicQueue_TriangleStart:
 
 	; if note length doesn't reach 0, skip to next channel
 	DEC iMusicHillNoteLength
-	BEQ ProcessMusicQueue_TriangleByte
+	BEQ ProcessMusicQueue_HillByte
 	JMP ProcessMusicQueue_Noise
 
-ProcessMusicQueue_TriangleByte:
+ProcessMusicQueue_HillByte:
 	; next byte
 	; 0 = loop
 	; + = note length
@@ -1208,9 +1208,9 @@ ProcessMusicQueue_TriangleByte:
 	LDY iCurrentHillOffset
 	INC iCurrentHillOffset
 	LDA (zCurrentMusicPointer), Y
-	BEQ ProcessMusicQueue_TriangleLoopSegment
+	BEQ ProcessMusicQueue_HillLoopSegment
 
-	BPL ProcessMusicQueue_TriangleNote
+	BPL ProcessMusicQueue_HillNote
 
 	; - = note length
 	; instrument
@@ -1218,7 +1218,7 @@ ProcessMusicQueue_TriangleByte:
 	AND #$F0
 	STA zHillIns
 
-ProcessMusicQueue_TriangleNoteLength:
+ProcessMusicQueue_HillNoteLength:
 	; note length
 	TXA
 	JSR ProcessMusicQueue_PatchNoteLength
@@ -1232,15 +1232,15 @@ ProcessMusicQueue_TriangleNoteLength:
 	LDY iCurrentHillOffset
 	INC iCurrentHillOffset
 	LDA (zCurrentMusicPointer), Y
-	BEQ ProcessMusicQueue_TriangleSetLength
+	BEQ ProcessMusicQueue_HillSetLength
 
-ProcessMusicQueue_TriangleNote:
+ProcessMusicQueue_HillNote:
 	LDX zFanfarePointerHill + 1
-	BNE ProcessMusicQueue_TriangleCnotinueNote
+	BNE ProcessMusicQueue_HillCnotinueNote
 	; - = note
 	LDX #$08
 	JSR PlayNote
-ProcessMusicQueue_TriangleCnotinueNote:
+ProcessMusicQueue_HillCnotinueNote:
 	; iMusicHillNoteLength:
 	LDA iMusicHillNoteSubFrames
 	CLC
@@ -1249,37 +1249,37 @@ ProcessMusicQueue_TriangleCnotinueNote:
 	LDA iHillNoteLength
 	ADC #0
 	STA iMusicHillNoteLength
-	BMI ProcessMusicQueue_TriangleMax
+	BMI ProcessMusicQueue_HillMax
 
 	TAY
 	CPY #$38
-	BCS ProcessMusicQueue_TriangleMax
+	BCS ProcessMusicQueue_HillMax
 
 	LDX zHillIns
 	CPX #$F0
-	BCS ProcessMusicQueue_TriangleMax
+	BCS ProcessMusicQueue_HillMax
 	CPX #$A0
-	LDA Triangle15Outta7Lengths, Y
-	BCC ProcessMusicQueue_TriangleSetLength
+	LDA Hill15Outta16Lengths, Y
+	BCC ProcessMusicQueue_HillSetLength
 	CPX #$B0
-	LDA Triangle5Outta7Lengths, Y
-	BCC ProcessMusicQueue_TriangleSetLength
-	LDA Triangle4Outta7Lengths, Y
-	BCS ProcessMusicQueue_TriangleSetLength
+	LDA Hill5Outta7Lengths, Y
+	BCC ProcessMusicQueue_HillSetLength
+	LDA Hill4Outta7Lengths, Y
+	BCS ProcessMusicQueue_HillSetLength
 
-ProcessMusicQueue_TriangleMax:
+ProcessMusicQueue_HillMax:
 	LDA #$7F
 
-ProcessMusicQueue_TriangleSetLength:
+ProcessMusicQueue_HillSetLength:
 	LDX zFanfarePointerHill + 1
 	BNE ProcessMusicQueue_Noise
 
 	STA rNR30
 	JMP ProcessMusicQueue_Noise
 
-ProcessMusicQueue_TriangleLoopSegment:
+ProcessMusicQueue_HillLoopSegment:
 	STA iCurrentHillOffset
-	JMP ProcessMusicQueue_TriangleByte
+	JMP ProcessMusicQueue_HillByte
 
 ProcessMusicQueue_Noise:
 	; if offset = 0, skip to next channel
@@ -1638,7 +1638,7 @@ PlaySquare1Note:
 ;   X = channel
 ;       $00: square 1
 ;       $04: square 2
-;       $08: triangle
+;       $08: hill
 ;       $0C: noise
 ; Output
 ;   A = $00 for rest, hi frequency otherwise
@@ -1648,11 +1648,11 @@ PlayNote:
 
 	CPX #$08
 	LDA #$00
-	BCS PlayNote_TriangleRest
+	BCS PlayNote_HillRest
 
 	LDA #$10
 
-PlayNote_TriangleRest:
+PlayNote_HillRest:
 	STA rNR10, X
 	LDA #$00
 	RTS

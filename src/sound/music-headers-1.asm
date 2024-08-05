@@ -3,16 +3,16 @@
 ; =============
 ;
 ; These are broken down by song segment and point to the note length table and
-; and individual channel data. Square 2 is the main pointer, and triangle,
+; and individual channel data. Square 2 is the main pointer, and hill,
 ; square 1, and noise are stored as offets relative to the main pointer.
 ;
 ; Bytes:
 ;   00: Note length table (from $8F00)
 ;   01: Main address / Square 2 (lo)
 ;   02: Main address / Square 2 (hi)
-;   03: Triangle offset from Square 1
+;   03: Hill offset from Square 1
 ;   04: Square 1 offset from Square 2
-;   05: Noise offset from Triangle
+;   05: Noise offset from Hill
 ;   06: DPCM offset from Noise
 ;
 ; For the musicHeader macro, specifying $00 is "none", -1 for noise/pcm is "omit".

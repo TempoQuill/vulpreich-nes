@@ -43,19 +43,25 @@ NoteLengthMultipliers:
 	.db $1E ; 1/8 <> 1/32
 
 ;
-; Triangle Linearity Indeces
+; Hill Linearity Indeces
 ; ==========================
 ;
-; The triangle channel goes by two linearity ratios that both max out at $7F
+; The hill channel goes by four linearity ratios that all max out at $7F
 ;
-; $80 / $A0 - 15/16 RATIO
-; The more common of the two, particularly useful for prevalant bass and leads
+; $80-$90 - 15/16 RATIO
+; The more common of the four, particularly useful for prevalant bass and leads
 ;
-; $B0-$F0 - 4/7 RATIO
-; Used for staccato, used by the Wart and title themes
+; $A0 - 5/7 RATIO
+; Used in the title screen to separate very low notes more obviously
+;
+; $B0-$E0 - 4/7 RATIO
+; Used for staccato
+;
+; $F0 - HELD NOTES
+; Used in tandom with $80-$90
 ;
 
-Triangle15Outta7Lengths:
+Hill15Outta16Lengths:
 	.db $00
 	.db $03, $07, $0B, $0F, $12, $16, $1A, $1E
 	.db $21, $25, $29, $2D, $30, $34, $38, $3C
@@ -65,7 +71,7 @@ Triangle15Outta7Lengths:
 	.db $7F, $7F, $7F, $7F, $7F, $7F, $7F, $7F
 	.db $7F, $7F, $7F, $7F, $7F, $7F, $7F, $7F
 
-Triangle5Outta7Lengths:
+Hill5Outta7Lengths:
 	.db   0
 	.db   2,   5,   8,  11,  14,  17,  20,  22
 	.db  25,  28,  31,  34,  37,  50,  42,  45
@@ -75,7 +81,7 @@ Triangle5Outta7Lengths:
 	.db 117, 120, 122, 125, 127, 127, 127, 127
 	.db 127, 127, 127, 127, 127, 127, 127, 127
 
-Triangle4Outta7Lengths:
+Hill4Outta7Lengths:
 	.db $00
 	.db $02, $04, $06, $09, $0B, $0D, $10, $12
 	.db $14, $16, $19, $1B, $1D, $20, $22, $24
