@@ -7,15 +7,15 @@ zNoiseIndexPointer:
 	.dsb 2 ; 0004
 zNoiseSFXOffset:
 	.dsb 1
-zMusicPulse1NoteLengthFraction:
+zMusicPulse1FPNA:
 	.dsb 1
-zMusicPulse2NoteLengthFraction:
+zMusicPulse2FPNA:
 	.dsb 1 ; 0008
-zMusicHillNoteLengthFraction:
+zMusicHillFPNA:
 	.dsb 1
-zMusicNoiseNoteLengthFraction:
+zMusicNoiseFPNA:
 	.dsb 1
-zMusicDPCMNoteLengthFraction:
+zMusicDPCMFPNA:
 	.dsb 1
 zHillIns:
 	.dsb 1 ; 000c

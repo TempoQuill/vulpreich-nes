@@ -132,14 +132,14 @@ TitleScreen:
 
 	; initialize note length subs
 	LDA #0
-	STA zMusicPulse1NoteLengthFraction
-	STA zMusicDPCMNoteLengthFraction
+	STA zMusicPulse1FPNA
+	STA zMusicDPCMFPNA
 	LDA #$55
-	STA zMusicPulse2NoteLengthFraction
+	STA zMusicPulse2FPNA
 	LDA #$aa
-	STA zMusicHillNoteLengthFraction
+	STA zMusicHillFPNA
 	LDA #$ff
-	STA zMusicNoiseNoteLengthFraction
+	STA zMusicNoiseFPNA
 
 	; set fade speed
 	LDX #1

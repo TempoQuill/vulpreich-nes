@@ -871,7 +871,7 @@ ProcessMusicQueue_DefaultNotelength:
 	STA iMusicDPCMNoteLength
 	STA zDPCMNoteRatioLength
 
-	; initialize offsets / fractions
+	; initialize offsets / accumulators
 	LDA #$00
 	STA zCurrentDrum
 	STA iCurrentPulse2Offset
@@ -881,11 +881,11 @@ ProcessMusicQueue_DefaultNotelength:
 	STA iCurrentDPCMOffset
 ; Fixed-point note accumulators only needed initialization in SMB2:ASSA
 ; VulpReich's bankswitching structure allows it to opt out of initialization
-;	STA zMusicPulse2NoteLengthFraction
-;	STA zMusicPulse1NoteLengthFraction
-;	STA zMusicHillNoteLengthFraction
-;	STA zMusicNoiseNoteLengthFraction
-;	STA zMusicDPCMNoteLengthFraction
+;	STA zMusicPulse2FPNA
+;	STA zMusicPulse1FPNA
+;	STA zMusicHillFPNA
+;	STA zMusicNoiseFPNA
+;	STA zMusicDPCMFPNA
 	STA zSweep
 
 ProcessMusicQueue_ReadNoteData:
@@ -1039,8 +1039,8 @@ ProcessMusicQueue_Square2ContinueNote:
 	; set note length
 	LDA iMusicPulse2NoteSubFrames
 	CLC
-	ADC zMusicPulse2NoteLengthFraction
-	STA zMusicPulse2NoteLengthFraction
+	ADC zMusicPulse2FPNA
+	STA zMusicPulse2FPNA
 	LDA iPulse2NoteLength
 	ADC #0
 	STA iMusicPulse2NoteLength
@@ -1149,8 +1149,8 @@ ProcessMusicQueue_Square1ContinueNote:
 	; set note length
 	LDA iMusicPulse1NoteSubFrames
 	CLC
-	ADC zMusicPulse1NoteLengthFraction
-	STA zMusicPulse1NoteLengthFraction
+	ADC zMusicPulse1FPNA
+	STA zMusicPulse1FPNA
 	LDA iPulse1NoteLength
 	ADC #0
 	STA iMusicPulse1NoteLength
@@ -1244,8 +1244,8 @@ ProcessMusicQueue_HillCnotinueNote:
 	; iMusicHillNoteLength:
 	LDA iMusicHillNoteSubFrames
 	CLC
-	ADC zMusicHillNoteLengthFraction
-	STA zMusicHillNoteLengthFraction
+	ADC zMusicHillFPNA
+	STA zMusicHillFPNA
 	LDA iHillNoteLength
 	ADC #0
 	STA iMusicHillNoteLength
@@ -1334,8 +1334,8 @@ ProcessMusicQueue_NoiseNote:
 ProcessMusicQueue_NoiseLengthCarry:
 	LDA iMusicNoiseNoteSubFrames
 	CLC
-	ADC zMusicNoiseNoteLengthFraction
-	STA zMusicNoiseNoteLengthFraction
+	ADC zMusicNoiseFPNA
+	STA zMusicNoiseFPNA
 	LDA iNoiseNoteLength
 	ADC #0
 	STA iMusicNoiseNoteLength
@@ -1448,8 +1448,8 @@ ENDIF
 ProcessMusicQueue_DPCMSFXExit:
 	LDA iMusicDPCMNoteSubFrames
 	CLC
-	ADC zMusicDPCMNoteLengthFraction
-	STA zMusicDPCMNoteLengthFraction
+	ADC zMusicDPCMFPNA
+	STA zMusicDPCMFPNA
 	LDA iDPCMNoteLength
 	ADC #0
 	STA iMusicDPCMNoteLength
