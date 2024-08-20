@@ -25,6 +25,8 @@ Credits_Metasprites:
 	.db "Object Assembly            ", 0
 Credits_SpriteScaling:
 	.db "Object Prescaling          ", 0
+Credits_PictureTools:
+	.db "Picture Tools              ", 0
 Credits_Prerendering:
 	.db "Prerendering               ", 0
 Credits_StandardFPS:
