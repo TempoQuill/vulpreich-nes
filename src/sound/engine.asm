@@ -879,7 +879,7 @@ ProcessMusicQueue_DefaultNotelength:
 	STA iCurrentPulse1Offset
 	STA iCurrentNoiseOffset
 	STA iCurrentDPCMOffset
-; Fixed-point note accumulators only needed initialization in SMB2:ASSA
+; Fixed-point note accumulators only needed initialization in SMB2:ASBP
 ; VulpReich's bankswitching structure allows it to opt out of initialization
 ;	STA zMusicPulse2FPNA
 ;	STA zMusicPulse1FPNA
